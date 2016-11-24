@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -247,17 +247,9 @@ void MapCell::LoadObjects(CellSpawns* sp)
 		for(GOSpawnList::iterator i = sp->GOSpawns.begin(); i != sp->GOSpawns.end(); ++i)
 		{
 			GameObject* go = _mapmgr->CreateGameObject((*i)->entry);
-			if(go->Load(*i))
+			//go->SetInstanceID(_mapmgr->GetInstanceID()); missing in current revision idk need a specialist
+			if (go->Load(*i))
 			{
-				//uint32 state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
-
-				// FIX ME - burlex
-				/*
-				if(pInstance && pInstance->FindObject((*i)->stateNpcLink))
-				{
-					go->SetByte(GAMEOBJECT_BYTES_1, 0, (state ? 0 : 1));
-				}*/
-
 				go->m_loadedFromDB = true;
 				go->PushToWorld(_mapmgr);
 			}

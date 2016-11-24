@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,38 +19,35 @@
  */
 
 #include "StdAfx.h"
+
+GameObject::GameObject(){
+	sLog.outError("GameObject being instantiated with default constructor.");
+
+	ARCEMU_ASSERT(false);
+}
+
 GameObject::GameObject(uint64 guid)
 {
 	m_objectTypeId = TYPEID_GAMEOBJECT;
 	m_valuesCount = GAMEOBJECT_END;
 	m_uint32Values = _fields;
-	memset(m_uint32Values, 0, (GAMEOBJECT_END)*sizeof(uint32));
+	std::fill(m_uint32Values, &m_uint32Values[GAMEOBJECT_END], 0);
 	m_updateMask.SetCount(GAMEOBJECT_END);
 	SetUInt32Value(OBJECT_FIELD_TYPE, TYPE_GAMEOBJECT | TYPE_OBJECT);
 	SetGUID(guid);
-	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-	m_wowGuid.Init(GetGUID());
-	SetScale(1);  //info->Size  );
-	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-	counter = 0; //not needed at all but to prevent errors that var was not initialized, can be removed in release
+	SetAnimProgress(100);
+	m_wowGuid.Init(guid);
+	SetScale(1);
 	bannerslot = bannerauraslot = -1;
 	m_summonedGo = false;
 	invisible = false;
 	invisibilityFlag = INVIS_FLAG_NORMAL;
-	spell = 0;
 	m_summoner = NULL;
 	charges = -1;
-	m_ritualcaster = 0;
-	m_ritualtarget = 0;
-	m_ritualmembers = NULL;
-	m_ritualspell = 0;
-	m_quests = NULL;
 	pInfo = NULL;
 	myScript = NULL;
 	m_spawn = 0;
-	loot.gold = 0;
 	m_deleted = false;
-	usage_remaining = 1;
 	m_respawnCell = NULL;
 	m_rotation = 0;
 	m_overrides = 0;
@@ -61,11 +58,6 @@ GameObject::GameObject(uint64 guid)
 GameObject::~GameObject()
 {
 	sEventMgr.RemoveEvents(this);
-	if(m_ritualmembers)
-	{
-		delete[] m_ritualmembers;
-		m_ritualmembers = NULL;
-	}
 
 	if(myScript != NULL)
 	{
@@ -95,37 +87,28 @@ GameObject::~GameObject()
 
 bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)
 {
-	pInfo = GameObjectNameStorage.LookupEntry(entry);
-	if(pInfo == NULL)
-	{
-		LOG_ERROR("Something tried to create a GameObject with invalid entry %u", entry);
-		return false;
-	}
-
 	Object::_Create(mapid, x, y, z, ang);
 	SetEntry(entry);
 
 	m_overrides = overrides;
-//	SetFloatValue( GAMEOBJECT_POS_X, x );
-//	SetFloatValue( GAMEOBJECT_POS_Y, y );
-//	SetFloatValue( GAMEOBJECT_POS_Z, z );
-//	SetFloatValue( GAMEOBJECT_FACING, ang );
+
 	SetPosition(x, y, z, ang);
 	SetParentRotation(0, r0);
 	SetParentRotation(1, r1);
 	SetParentRotation(2, r2);
 	SetParentRotation(3, r3);
 	UpdateRotation();
-	SetByte(GAMEOBJECT_BYTES_1, 3, 0);
-	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	SetAnimProgress(0);
+	SetState(GAMEOBJECT_STATE_CLOSED);
 	SetDisplayId(pInfo->DisplayID);
 	SetType(static_cast<uint8>(pInfo->Type));
+
 	InitAI();
-	_LoadQuests();
 
 	return true;
 }
 
+/* Need to be checked if it is unused...
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 {
 	Spell* spp = sSpellFactoryMgr.NewSpell(this, dbcSpell.LookupEntry(sp), false, NULL);
@@ -136,9 +119,9 @@ void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 void GameObject::TrapSearchTarget()
 {
 	Update(100);
-}
+}*/
 
-void GameObject::Update(uint32 p_time)
+void GameObject::Update(unsigned long time_passed)
 {
 	if(m_event_Instanceid != m_instanceId)
 	{
@@ -151,65 +134,6 @@ void GameObject::Update(uint32 p_time)
 
 	if(m_deleted)
 		return;
-
-	if(spell && (GetByte(GAMEOBJECT_BYTES_1, 0) == 1))
-	{
-		if(checkrate > 1)
-		{
-			if(counter++ % checkrate)
-				return;
-		}
-
-		for(std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
-		{
-			float dist;
-
-			Object* o = *itr;
-
-			dist = GetDistanceSq(o);
-
-			if(o != m_summoner && o->IsUnit() && dist <= range)
-			{
-				if(m_summonedGo)
-				{
-					if(!m_summoner)
-					{
-						ExpireAndDelete();
-						return;
-					}
-
-					if(!isAttackable(m_summoner, o))
-						continue;
-				}
-
-				Spell* sp = sSpellFactoryMgr.NewSpell(this, spell, true, NULL);
-				SpellCastTargets tgt(o->GetGUID());
-				tgt.m_destX = GetPositionX();
-				tgt.m_destY = GetPositionY();
-				tgt.m_destZ = GetPositionZ();
-				sp->prepare(&tgt);
-
-				// proc on trap trigger
-				if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
-				{
-					if(m_summoner != NULL)
-						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
-				}
-
-				if(m_summonedGo)
-				{
-					ExpireAndDelete();
-					return;
-				}
-
-				if(spell->EffectImplicitTargetA[0] == 16 ||
-				        spell->EffectImplicitTargetB[0] == 16)
-				{
-					return;	 // on area don't continue.
-				}
-			}
-		}
-	}
 }
 
 void GameObject::Spawn(MapMgr* m)
@@ -228,13 +152,11 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 	if(!IsInWorld())
 		return;
 
-	loot.items.clear();
-
 	//This is for go get deleted while looting
 	if(m_spawn)
 	{
-		SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>(m_spawn->state));
-		SetUInt32Value(GAMEOBJECT_FLAGS, m_spawn->flags);
+		SetState(static_cast<uint8>(m_spawn->state));
+		SetFlags(m_spawn->flags);
 	}
 
 	CALL_GO_SCRIPT_EVENT(this, OnDespawn)();
@@ -308,49 +230,14 @@ void GameObject::SaveToDB()
 	   << GetParentRotation(0) << ","
 	   << GetParentRotation(2) << ","
 	   << GetParentRotation(3) << ","
-	   << GetUInt32Value(GAMEOBJECT_BYTES_1) << ","
-	   << GetUInt32Value(GAMEOBJECT_FLAGS) << ","
+	   << uint32(GetState()) << ","
+	   << GetFlags() << ","
 	   << GetFaction() << ","
 	   << GetScale() << ","
 	   << "0,"
 	   << m_phase << ","
 	   << m_overrides << ")";
 	WorldDatabase.Execute(ss.str().c_str());
-}
-
-void GameObject::SaveToFile(std::stringstream & name)
-{
-
-	std::stringstream ss;
-
-	ss << "INSERT INTO gameobject_spawns VALUES("
-	   << ((m_spawn == NULL) ? 0 : m_spawn->id) << ","
-	   << GetEntry() << ","
-	   << GetMapId() << ","
-	   << GetPositionX() << ","
-	   << GetPositionY() << ","
-	   << GetPositionZ() << ","
-	   << GetOrientation() << ","
-//		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
-	   << uint64(0) << ","
-	   << GetParentRotation(0) << ","
-	   << GetParentRotation(2) << ","
-	   << GetParentRotation(3) << ","
-	   << GetByte(GAMEOBJECT_BYTES_1, 0) << ","
-	   << GetUInt32Value(GAMEOBJECT_FLAGS) << ","
-	   << GetFaction() << ","
-	   << GetScale() << ","
-	   << "0,"
-	   << m_phase << ","
-	   << m_overrides << ")";
-
-	FILE* OutFile;
-
-	OutFile = fopen(name.str().c_str(), "wb");
-	if(!OutFile) return;
-	fwrite(ss.str().c_str(), 1, ss.str().size(), OutFile);
-	fclose(OutFile);
-
 }
 
 void GameObject::InitAI()
@@ -361,106 +248,8 @@ void GameObject::InitAI()
 	if( pInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 		Rebuild();
 
-	// this fixes those fuckers in booty bay
-	if(pInfo->SpellFocus == 0 &&
-	        pInfo->sound1 == 0 &&
-	        pInfo->sound2 == 0 &&
-	        pInfo->sound3 != 0 &&
-	        pInfo->sound5 != 3 &&
-	        pInfo->sound9 == 1)
-		return;
-
-	uint32 spellid = 0;
-	if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
-	{
-		spellid = pInfo->sound3;
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
-	{
-		// get spellid from attached gameobject if there is such - by sound2 field
-		if(pInfo->sound2 != 0)
-		{
-
-			GameObjectInfo* gi = GameObjectNameStorage.LookupEntry(pInfo->sound2);
-			if(gi == NULL)
-			{
-				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);
-				return;
-			}
-
-			spellid = gi->sound3;
-		}
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
-	{
-		m_ritualmembers = new uint32[pInfo->SpellFocus];
-		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->SpellFocus);
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
-	{
-		Lock* pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
-		if(pLock)
-		{
-			for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
-			{
-				if(pLock->locktype[i])
-				{
-					if(pLock->locktype[i] == 2) //locktype;
-					{
-						//herbalism and mining;
-						if(pLock->lockmisc[i] == LOCKTYPE_MINING || pLock->lockmisc[i] == LOCKTYPE_HERBALISM)
-						{
-							CalcMineRemaining(true);
-						}
-					}
-				}
-			}
-		}
-
-	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
-	{
-		CalcFishRemaining(true);
-	}
-
 	if(myScript == NULL)
 		myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
-
-	// hackfix for bad spell in BWL
-	if(!spellid || spellid == 22247)
-		return;
-
-	SpellEntry* sp = dbcSpell.LookupEntryForced(spellid);
-	if(!sp)
-	{
-		spell = NULL;
-		return;
-	}
-	else
-	{
-		spell = sp;
-	}
-	//ok got valid spell that will be casted on target when it comes close enough
-	//get the range for that
-
-	float r = 0;
-
-	for(uint32 i = 0; i < 3; i++)
-	{
-		if(sp->Effect[i])
-		{
-			float t = GetRadius(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[i]));
-			if(t > r)
-				r = t;
-		}
-	}
-
-	if(r < 0.1)//no range
-		r = GetMaxRange(dbcSpellRange.LookupEntry(sp->rangeIndex));
-
-	range = r * r; //square to make code faster
-	checkrate = 20;//once in 2 seconds
-
 }
 
 bool GameObject::Load(GOSpawn* spawn)
@@ -470,9 +259,7 @@ bool GameObject::Load(GOSpawn* spawn)
 
 	m_spawn = spawn;
 	m_phase = spawn->phase;
-	//SetRotation(spawn->o);
-	SetUInt32Value(GAMEOBJECT_FLAGS, spawn->flags);
-//	SetLevel(spawn->level);
+	SetFlags(spawn->flags);
 	SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>(spawn->state));
 	if(spawn->faction)
 	{
@@ -489,187 +276,6 @@ void GameObject::DeleteFromDB()
 		WorldDatabase.Execute("DELETE FROM gameobject_spawns WHERE id=%u", m_spawn->id);
 }
 
-void GameObject::EventCloseDoor()
-{
-	// gameobject_flags +1 closedoor animate restore the pointer flag.
-	// by cebernic
-	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-	RemoveFlag(GAMEOBJECT_FLAGS, 1);
-}
-
-void GameObject::UseFishingNode(Player* player)
-{
-	sEventMgr.RemoveEvents(this);
-	if(!HasFlag(GAMEOBJECT_FLAGS, 32))     // Clicking on the bobber before something is hooked
-	{
-		player->GetSession()->OutPacket(SMSG_FISH_NOT_HOOKED);
-		EndFishing(player, true);
-		return;
-	}
-
-	/* Unused code: sAreaStore.LookupEntry(GetMapMgr()->GetAreaID(GetPositionX(),GetPositionY()))->ZoneId*/
-	uint32 zone = player->GetAreaID();
-	if(zone == 0)   // If the player's area ID is 0, use the zone ID instead
-		zone = player->GetZoneId();
-
-	FishingZoneEntry* entry = FishingZoneStorage.LookupEntry(zone);
-	if(entry == NULL)   // No fishing information found for area or zone, log an error, and end fishing
-	{
-		LOG_ERROR("ERROR: Fishing zone information for zone %d not found!", zone);
-		EndFishing(player, true);
-		return;
-	}
-	uint32 maxskill = entry->MaxSkill;
-	uint32 minskill = entry->MinSkill;
-
-	if(player->_GetSkillLineCurrent(SKILL_FISHING, false) < maxskill)
-		player->_AdvanceSkillLine(SKILL_FISHING, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
-
-	GameObject* school = NULL;
-	for(InRangeSet::iterator it = GetInRangeSetBegin(); it != GetInRangeSetEnd(); ++it)
-	{
-		if((*it) == NULL || !(*it)->IsGameObject() || TO_GAMEOBJECT(*it)->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
-			continue;
-		school = TO< GameObject* >(*it);
-		if(!isInRange(school, (float)school->GetInfo()->sound1))
-		{
-			school = NULL;
-			continue;
-		}
-		else
-			break;
-	}
-
-	if(school != NULL)    // open school loot if school exists
-	{
-
-		if(school->GetMapMgr() != NULL)
-			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->sound1, school->GetMapMgr()->iInstanceMode);
-		else
-			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->sound1, 0);
-
-		player->SendLoot(school->GetGUID(), LOOT_FISHING, school->GetMapId());
-		EndFishing(player, false);
-		school->CatchFish();
-
-		if(!school->CanFish())
-			sEventMgr.AddEvent(school, &GameObject::Despawn, (uint32)0, (1800000 + RandomUInt(3600000)), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);       // respawn in 30 - 90 minutes
-	}
-	else if(Rand(((player->_GetSkillLineCurrent(SKILL_FISHING, true) - minskill) * 100) / maxskill))           // Open loot on success, otherwise FISH_ESCAPED.
-	{
-		lootmgr.FillFishingLoot(&loot, zone);
-		player->SendLoot(GetGUID(), LOOT_FISHING, GetMapId());
-		EndFishing(player, false);
-	}
-	else // Failed
-	{
-		player->GetSession()->OutPacket(SMSG_FISH_ESCAPED);
-		EndFishing(player, true);
-	}
-
-}
-
-void GameObject::EndFishing(Player* player, bool abort)
-{
-	Spell* spell = player->GetCurrentSpell();
-
-	if(spell)
-	{
-		if(abort)   // abort because of a reason
-		{
-			//FIX ME: here 'failed' should appear over progress bar
-			spell->SendChannelUpdate(0);
-			//spell->cancel();
-			spell->finish(false);
-		}
-		else		// spell ended
-		{
-			spell->SendChannelUpdate(0);
-			spell->finish();
-		}
-	}
-
-	if(!abort)
-		sEventMgr.AddEvent(this, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	else
-		ExpireAndDelete();
-}
-
-void GameObject::FishHooked(Player* player)
-{
-	WorldPacket  data(12);
-	data.Initialize(SMSG_GAMEOBJECT_CUSTOM_ANIM);
-	data << GetGUID();
-	data << (uint32)(0); // value < 4
-	player->GetSession()->SendPacket(&data);
-	//SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-	//BuildFieldUpdatePacket(player, GAMEOBJECT_FLAGS, 32);
-	SetUInt32Value(GAMEOBJECT_FLAGS, 32);
-}
-
-/////////////
-/// Quests
-
-void GameObject::AddQuest(QuestRelation* Q)
-{
-	m_quests->push_back(Q);
-}
-
-void GameObject::DeleteQuest(QuestRelation* Q)
-{
-	list<QuestRelation*>::iterator it;
-	for(it = m_quests->begin(); it != m_quests->end(); ++it)
-	{
-		if(((*it)->type == Q->type) && ((*it)->qst == Q->qst))
-		{
-			delete(*it);
-			m_quests->erase(it);
-			break;
-		}
-	}
-}
-
-Quest* GameObject::FindQuest(uint32 quest_id, uint8 quest_relation)
-{
-	list< QuestRelation* >::iterator it;
-	for(it = m_quests->begin(); it != m_quests->end(); ++it)
-	{
-		QuestRelation* ptr = (*it);
-		if((ptr->qst->id == quest_id) && (ptr->type & quest_relation))
-		{
-			return ptr->qst;
-		}
-	}
-	return NULL;
-}
-
-uint16 GameObject::GetQuestRelation(uint32 quest_id)
-{
-	uint16 quest_relation = 0;
-	list< QuestRelation* >::iterator it;
-	for(it = m_quests->begin(); it != m_quests->end(); ++it)
-	{
-		if((*it) != NULL && (*it)->qst->id == quest_id)
-		{
-			quest_relation |= (*it)->type;
-		}
-	}
-	return quest_relation;
-}
-
-uint32 GameObject::NumOfQuests()
-{
-	return (uint32)m_quests->size();
-}
-
-void GameObject::_LoadQuests()
-{
-	sQuestMgr.LoadGOQuests(this);
-}
-
-/**
-* Summoned Go's
-*/
 void GameObject::_Expire()
 {
 	sEventMgr.RemoveEvents(this);
@@ -677,9 +283,7 @@ void GameObject::_Expire()
 	if(IsInWorld())
 		RemoveFromWorld(true);
 
-	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, ((Object*)this), EVENT_DELETE_TIMER, 1000, 1);
 	delete this;
-	//this = NULL;
 }
 
 void GameObject::ExpireAndDelete()
@@ -697,17 +301,6 @@ void GameObject::ExpireAndDelete()
 		delete this;
 }
 
-//! Deactivates selected gameobject ex. stops doors from opening/closing.
-void GameObject::Deactivate()
-{
-	SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
-}
-
-void GameObject::Activate()
-{
-	SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
-}
-
 void GameObject::CallScriptUpdate()
 {
 	ARCEMU_ASSERT(myScript != NULL);
@@ -723,10 +316,10 @@ void GameObject::OnPushToWorld()
 
 	// We have a field supposedly for this, but it's pointless to waste CPU time for this
 	// unless it's longer than a minute ( since usually then it's much longer )
-	if( ( pInfo->Type == GAMEOBJECT_TYPE_CHEST ) && ( pInfo->sound3 == 0 ) ){
+	if( ( pInfo->Type == GAMEOBJECT_TYPE_CHEST ) && ( pInfo->raw.sound3 == 0 ) ){
 		time_t restockTime = 60 * 1000;
-		if( pInfo->sound2 > 60 )
-			restockTime = pInfo->sound2 * 1000;
+		if( pInfo->raw.sound2 > 60 )
+			restockTime = pInfo->raw.sound2 * 1000;
 
 		EventMgr::getSingleton().AddEvent( this, &GameObject::ReStock, EVENT_GO_CHEST_RESTOCK, restockTime, 0, 0 );
 	}
@@ -749,42 +342,16 @@ void GameObject::OnRemoveInRangeObject(Object* pObj)
 void GameObject::RemoveFromWorld(bool free_guid)
 {
 	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
-	data << GetGUID();
+	data << uint64(GetGUID());
 	SendMessageToSet(&data, true);
 
-	sEventMgr.RemoveEvents( this );
 	Object::RemoveFromWorld(free_guid);
-}
-
-//! Gameobject contains loot ex. chest
-bool GameObject::HasLoot()
-{
-	if(loot.gold > 0)
-		return true;
-
-	for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr)
-	{
-		if(itr->item.itemproto->Bonding == ITEM_BIND_QUEST || itr->item.itemproto->Bonding == ITEM_BIND_QUEST2)
-			continue;
-
-		if(itr->iItemsCount > 0)
-			return true;
-	}
-	return false;
 }
 
 uint32 GameObject::GetGOReqSkill()
 {
-	//! Hardcoded values are BAD.
-	if(GetEntry() == 180215)
-		return 300;
-
-	//! Gameobject does not require a skill, so let everyone use it.
-	if(GetInfo() == NULL)
-		return 0;
-
 	//! Here we check the SpellFocus table against the dbcs
-	Lock* lock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
+	Lock *lock = dbcLock.LookupEntryForced(GetInfo()->raw.sound0);
 	if(!lock) return 0;
 	for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
 	{
@@ -806,7 +373,6 @@ void GameObject::SetRotation(float rad)
 		rad = 1.f + 0.125f * sin;
 	else
 		rad = 1.25f + 0.125f * sin;
-//	SetFloatValue(GAMEOBJECT_ROTATION, rad);
 }
 
 void GameObject::UpdateRotation()
@@ -832,28 +398,40 @@ void GameObject::UpdateRotation()
 	}
 }
 
-void GameObject::SetState(uint8 state)
-{
-	SetByte(GAMEOBJECT_BYTES_1, 0, state);
+void GameObject::CastSpell(uint64 TargetGUID, SpellEntry *sp){
+	Spell *s = new Spell(this, sp, true, NULL);
+
+	SpellCastTargets tgt(TargetGUID);
+
+	tgt.m_destX = GetPositionX();
+	tgt.m_destY = GetPositionY();
+	tgt.m_destZ = GetPositionZ();
+
+	s->prepare(&tgt);
 }
 
-uint8 GameObject::GetState()
-{
-	return GetByte(GAMEOBJECT_BYTES_1, 0);
+void GameObject::CastSpell(uint64 TargetGUID, uint32 SpellID){
+	SpellEntry *sp = dbcSpell.LookupEntryForced(SpellID);
+	if(sp == NULL){
+		sLog.outError("GameObject %u tried to cast a non-existing Spell %u.", pInfo->ID, SpellID);
+		return;
+	}
+
+	CastSpell(TargetGUID, sp);
 }
 
-void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
+void GameObject::Damage(uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID){
 	// If we are already destroyed there's nothing to damage!
 	if( hitpoints == 0 )
 		return;
 	
-	if( damage >= hitpoints ){
+	if(damage >= hitpoints){
 		// Instant destruction
 		hitpoints = 0;
 		
-		SetFlags( GAMEOBJECT_FLAG_DESTROYED );
-		SetFlags( GetFlags() & ~GAMEOBJECT_FLAG_DAMAGED );
-		SetDisplayId( pInfo->sound9); // destroyed display id
+		SetFlags(GAMEOBJECT_FLAG_DESTROYED);
+		SetFlags(GetFlags() & ~GAMEOBJECT_FLAG_DAMAGED);
+		SetDisplayId(pInfo->raw.sound9); // destroyed display id
 
 		CALL_GO_SCRIPT_EVENT( this, OnDestroyed)();
 	
@@ -861,22 +439,22 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 		// Simply damaging
 		hitpoints -= damage;
 		
-		if( !HasFlags( GAMEOBJECT_FLAG_DAMAGED ) ){
+		if(!HasFlags(GAMEOBJECT_FLAG_DAMAGED)){
 			// Intact  ->  Damaged
 			
 			// Are we below the intact-damaged transition treshold?
-			if( hitpoints <= ( maxhitpoints - pInfo->SpellFocus ) ){
-				SetFlags( GAMEOBJECT_FLAG_DAMAGED );
-				SetDisplayId( pInfo->sound4 ); // damaged display id
+			if(hitpoints <= (maxhitpoints - pInfo->raw.sound0)){
+				SetFlags(GAMEOBJECT_FLAG_DAMAGED);
+				SetDisplayId(pInfo->raw.sound4); // damaged display id
 			}
 		}
 
-		CALL_GO_SCRIPT_EVENT( this, OnDamaged )( damage );
+		CALL_GO_SCRIPT_EVENT(this, OnDamaged)(damage);
 	}
 	
-	uint8 animprogress = static_cast< uint8 >( Arcemu::round( hitpoints/ float( maxhitpoints ) ) * 255 );
-	SetAnimProgress( animprogress );
-	SendDamagePacket( damage, AttackerGUID, ControllerGUID, SpellID );
+	uint8 animprogress = static_cast< uint8 >(Arcemu::round(hitpoints/ float(maxhitpoints)) * 255);
+	SetAnimProgress(animprogress);
+	SendDamagePacket(damage, AttackerGUID, ControllerGUID, SpellID);
 }
 
 void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
@@ -893,21 +471,22 @@ void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 Co
 void GameObject::Rebuild(){
 	SetFlags( GetFlags() & uint32( ~( GAMEOBJECT_FLAG_DAMAGED | GAMEOBJECT_FLAG_DESTROYED ) ) );
 	SetDisplayId( pInfo->DisplayID );
-	maxhitpoints = pInfo->SpellFocus + pInfo->sound5;
+	maxhitpoints = pInfo->raw.sound0 + pInfo->raw.sound5;
 	hitpoints = maxhitpoints;
 }
 
+// Needs to be rescripted
 void GameObject::ReStock(){
 	// this hasn't been looted yet so we don't want to restock
-	if( loot.items.empty() )
+	if(loot.items.empty())
 		return;
 
-	if( !loot.looters.empty() )
+	if(!loot.looters.empty())
 		return;
 
-	if( loot.HasRoll() )
+	if(loot.HasRoll())
 		return;
-
-	lootmgr.FillGOLoot( &loot, pInfo->sound1, m_mapMgr->iInstanceMode );
+	
+	lootmgr.FillGOLoot(&loot, pInfo->raw.sound1, m_mapMgr->iInstanceMode);
 }
 

@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,7 +51,7 @@ enum EventTypes
     EVENT_TOTEM_SEEK_TARGET_AREA_AURA,
     EVENT_ENSLAVE_EXPIRE,
     EVENT_PLAYER_TAXI_DISMOUNT,
-    EVENT_GAMEOBJECT_DOOR_CLOSE,
+    EVENT_GAMEOBJECT_CLOSE,
     EVENT_PLAYER_ALLOW_TRIGGERPORT,
     EVENT_PET_SPELL_COOLDOWN,
     EVENT_GAMEOBJECT_UNHOOK,
@@ -126,7 +126,6 @@ enum EventTypes
     EVENT_MAP_SPAWN_EVENTS,
     EVENT_PLAYER_DUEL_COUNTDOWN,
     EVENT_PLAYER_DUEL_BOUNDARY_CHECK,
-    EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET,
     EVENT_PLAYER_TELEPORT,
     EVENT_UNIT_DIMINISHING_RETURN,
     EVENT_UNIT_UNROOT,
@@ -226,6 +225,7 @@ enum EventTypes
     EVENT_FRIEND_AREA_AURA_UPDATE,
     EVENT_ENEMY_AREA_AURA_UPDATE,
     EVENT_OWNER_AREA_AURA_UPDATE,
+	EVENT_STOP_CHANNELING,
     EVENT_IOC_CAPTURE_CP_1,
     EVENT_IOC_CAPTURE_CP_2,
     EVENT_IOC_CAPTURE_CP_3,

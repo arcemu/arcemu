@@ -1,7 +1,9 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
+ *
+ * Copyright (C) 2008-2014 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1261,7 +1263,46 @@ enum Opcodes
     MSG_SET_RAID_DIFFICULTY                         = 0x4EB,	// implemented
     CMSG_WORLD_STATE_UI_TIMER_UPDATE                = 0x4F6,	// implemented
     SMSG_WORLD_STATE_UI_TIMER_UPDATE                = 0x4F7,	// implemented
-    NUM_MSG_TYPES                                   = 0x4F8,	// max msg number
+    CMSG_CHAR_RACE_CHANGE                           = 0x4F8,	// not implemented
+    MSG_VIEW_PHASE_SHIFT                            = 0x4F9,	// not implemented
+    SMSG_TALENTS_INVOLUNTARILY_RESET                = 0x4FA,	// not implemented uint8
+    CMSG_DEBUG_SERVER_GEO                           = 0x4FB,	// not implemented
+    SMSG_DEBUG_SERVER_GEO                           = 0x4FC,	// not implemented
+    SMSG_LOOT_SLOT_CHANGED                          = 0x4FD,	// not implemented
+    UMSG_UPDATE_GROUP_INFO                          = 0x4FE,	// not implemented
+    CMSG_READY_FOR_ACCOUNT_DATA_TIMES               = 0x4FF,	// not implemented
+    CMSG_QUERY_QUESTS_COMPLETED                     = 0x500,	// not implemented
+    SMSG_QUERY_QUESTS_COMPLETED_RESPONSE            = 0x501,	// not implemented
+    CMSG_GM_REPORT_LAG                              = 0x502,	// not implemented
+    CMSG_AFK_MONITOR_INFO_REQUEST                   = 0x503,	// not implemented
+    SMSG_AFK_MONITOR_INFO_RESPONSE                  = 0x504,	// not implemented
+    CMSG_AFK_MONITOR_INFO_CLEAR                     = 0x505,	// not implemented
+    SMSG_CORPSE_NOT_IN_INSTANCE                     = 0x506,	// not implemented
+    CMSG_GM_NUKE_CHARACTER                          = 0x507,	// not implemented
+    CMSG_SET_ALLOW_LOW_LEVEL_RAID1                  = 0x508,	// not implemented
+    CMSG_SET_ALLOW_LOW_LEVEL_RAID2                  = 0x509,	// not implemented
+    SMSG_CAMERA_SHAKE                               = 0x50A,	// not implemented uint32 SpellEffectCameraShakes.dbc index, uint32
+    SMSG_SOCKET_GEMS_RESULT                         = 0x50B,	// not implemented
+    CMSG_SET_CHARACTER_MODEL                        = 0x50C,	// not implemented
+    SMSG_REDIRECT_CLIENT                            = 0x50D,	// not implemented uint32 ip, uint16 port, uint32 unk, uint8[20] hash (ip + port, seed=sessionkey)
+    CMSG_REDIRECTION_FAILED                         = 0x50E,	// not implemented something with networking
+    SMSG_SUSPEND_COMMS                              = 0x50F,	// not implemented
+    CMSG_SUSPEND_COMMS_ACK                          = 0x510,	// not implemented
+    SMSG_FORCE_SEND_QUEUED_PACKETS                  = 0x511,	// not implemented
+    CMSG_REDIRECTION_AUTH_PROOF                     = 0x512,	// not implemented
+    CMSG_DROP_NEW_CONNECTION                        = 0x513,	// not implemented
+    SMSG_SEND_ALL_COMBAT_LOG                        = 0x514,	// not implemented
+    SMSG_OPEN_LFG_DUNGEON_FINDER                    = 0x515,	// not implemented
+    SMSG_MOVE_SET_COLLISION_HGT                     = 0x516,	// not implemented
+    CMSG_MOVE_SET_COLLISION_HGT_ACK                 = 0x517,	// not implemented
+    MSG_MOVE_SET_COLLISION_HGT                      = 0x518,	// not implemented
+    CMSG_CLEAR_RANDOM_BG_WIN_TIME                   = 0x519,	// not implemented
+    CMSG_CLEAR_HOLIDAY_BG_WIN_TIME                  = 0x51A,	// not implemented
+    CMSG_COMMENTATOR_SKIRMISH_QUEUE_COMMAND         = 0x51B,	// not implemented
+    SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT1         = 0x51C,	// not implemented
+    SMSG_COMMENTATOR_SKIRMISH_QUEUE_RESULT2         = 0x51D,	// not implemented
+    SMSG_MULTIPLE_MOVES                             = 0x51E,	// not implemented uncompressed version of SMSG_COMPRESSED_MOVES
+    NUM_MSG_TYPES                                   = 0x51F		// End of Opcodes
 };
 
 enum FriendsResult

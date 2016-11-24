@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -772,7 +772,10 @@ enum LOCKTYPES
     LOCKTYPE_GAHZRIDIAN             = 15,
     LOCKTYPE_BLASTING               = 16,
     LOCKTYPE_SLOW_OPEN              = 17,
-    LOCKTYPE_SLOW_CLOSE             = 18
+    LOCKTYPE_SLOW_CLOSE             = 18,
+    LOCKTYPE_FISHING                = 19,
+    LOCKTYPE_INSCRIPTION            = 20,
+    LOCKTYPE_VEHICLE                = 21
 };
 
 enum TIMER_TYPE
@@ -827,7 +830,7 @@ enum SpellEffects
     SPELL_EFFECT_LANGUAGE,                  //    39
     SPELL_EFFECT_DUAL_WIELD,                //    40
     SPELL_EFFECT_LEAP_41,                   //    41
-    SPELL_EFFECT_SUMMON_GUARDIAN,           //    42
+    SPELL_EFFECT_JUMP_BEHIND_TARGET,        //    42
     SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER,//    43
     SPELL_EFFECT_SKILL_STEP,                //    44
     SPELL_EFFECT_UNDEFINED_45,              //    45
@@ -859,7 +862,7 @@ enum SpellEffects
     SPELL_EFFECT_PICKPOCKET,                //    71
     SPELL_EFFECT_ADD_FARSIGHT,              //    72
     SPELL_EFFECT_UNTRAIN_TALENTS,           //    73
-    SPELL_EFFECT_USE_GLYPH,	                //    74
+    SPELL_EFFECT_USE_GLYPH,                 //    74
     SPELL_EFFECT_HEAL_MECHANICAL,           //    75
     SPELL_EFFECT_SUMMON_OBJECT_WILD,        //    76
     SPELL_EFFECT_SCRIPT_EFFECT,             //    77
@@ -894,7 +897,7 @@ enum SpellEffects
     SPELL_EFFECT_SUMMON_OBJECT_SLOT3,       //    106
     SPELL_EFFECT_SUMMON_OBJECT_SLOT4,       //    107
     SPELL_EFFECT_DISPEL_MECHANIC,           //    108
-    SPELL_EFFECT_SUMMON_DEAD_PET,           //    109
+    SPELL_EFFECT_SUMMON_DEAD_PET,           //    109 Maybe RESURRECT_DEAD_PET is better
     SPELL_EFFECT_DESTROY_ALL_TOTEMS,        //    110
     SPELL_EFFECT_DURABILITY_DAMAGE,         //    111
     SPELL_EFFECT_NONE_112,                  //    112
@@ -910,45 +913,47 @@ enum SpellEffects
     SPELL_EFFECT_UNKNOWN1,                  //    122
     SPELL_EFFECT_START_TAXI,                //    123
     SPELL_EFFECT_PLAYER_PULL,               //    124
-    SPELL_EFFECT_UNKNOWN4,                  //    125
-    SPELL_EFFECT_UNKNOWN5,                  //    126
+    SPELL_EFFECT_MODIFY_THREAT_PERCENT,     //    125
+    SPELL_EFFECT_STEAL_BENEFICIAL_BUFF,     //    126
     SPELL_EFFECT_PROSPECTING,               //    127
     SPELL_EFFECT_APPLY_FRIEND_AREA_AURA,    //    128
     SPELL_EFFECT_APPLY_ENEMY_AREA_AURA,     //    129
-    SPELL_EFFECT_UNKNOWN10,                 //    130
-    SPELL_EFFECT_UNKNOWN11,                 //    131
+    SPELL_EFFECT_REDIRECT_THREAT,           //    130
+    SPELL_EFFECT_PLAY_SOUND,                //    131
     SPELL_EFFECT_PLAY_MUSIC,                //    132
     SPELL_EFFECT_FORGET_SPECIALIZATION,     //    133
     SPELL_EFFECT_KILL_CREDIT,               //    134
-    SPELL_EFFECT_UNKNOWN15,                 //    135
-    SPELL_EFFECT_UNKNOWN16,                 //    136
-    SPELL_EFFECT_UNKNOWN17,                 //    137
-    SPELL_EFFECT_UNKNOWN18,                 //    138
+    SPELL_EFFECT_CALL_PET,                  //    135
+    SPELL_EFFECT_HEAL_PCT,                  //    136
+    SPELL_EFFECT_ENERGIZE_PCT,              //    137
+    SPELL_EFFECT_LEAP_BACK,                 //    138
     SPELL_EFFECT_CLEAR_QUEST,               //    139
-    SPELL_EFFECT_UNKNOWN20,                 //    140
-    SPELL_EFFECT_UNKNOWN21,                 //    141
+    SPELL_EFFECT_FORCE_CAST,                //    140
+    SPELL_EFFECT_FORCE_CAST_WITH_VALUE,     //    141
     SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE,  //    142
     SPELL_EFFECT_APPLY_OWNER_AREA_AURA,     //    143
-    SPELL_EFFECT_UNKNOWN23,                 //    144
-    SPELL_EFFECT_UNKNOWN24,                 //    145
+    SPELL_EFFECT_KNOCK_BACK_DEST,           //    144
+    SPELL_EFFECT_PULL_TOWARDS_DEST,         //    145
     SPELL_EFFECT_ACTIVATE_RUNES,            //    146
-    SPELL_EFFECT_UNKNOWN26,                 //    147
-    SPELL_EFFECT_UNKNOWN27,                 //    148
-    SPELL_EFFECT_QUEST_FAIL,                //    149
-    SPELL_EFFECT_UNKNOWN28,                 //    150
-    SPELL_EFFECT_UNKNOWN29,                 //    151
-    SPELL_EFFECT_UNKNOWN30,                 //    152
+    SPELL_EFFECT_QUEST_FAIL,                //    147
+	SPELL_EFFECT_TRIGGER_MISSILE_SPELL_WITH_VALUE,                 //    148
+    SPELL_EFFECT_CHARGE_DEST,               //    149
+    SPELL_EFFECT_QUEST_START,               //    150
+    SPELL_EFFECT_TRIGGER_SPELL_2,           //    151
+    SPELL_EFFECT_SUMMON_RAF_FRIEND,         //    152
     SPELL_EFFECT_SUMMON_TARGET,             //    153
-    SPELL_EFFECT_SUMMON_REFER_A_FRIEND,     //    154
+    SPELL_EFFECT_DISCOVER_TAXI,             //    154
     SPELL_EFFECT_TAME_CREATURE,             //    155
     SPELL_EFFECT_ADD_SOCKET,                //    156
-    SPELL_EFFECT_CREATE_ITEM2,				//    157
-    SPELL_EFFECT_MILLING,					//    158
-    SPELL_EFFECT_UNKNOWN37,                 //    159
-    SPELL_EFFECT_UNKNOWN38,                 //    160
+    SPELL_EFFECT_CREATE_ITEM2,              //    157
+    SPELL_EFFECT_MILLING,                   //    158
+    SPELL_EFFECT_ALLOW_RENAME_PET,          //    159
+    SPELL_EFFECT_UNKNOWN2,                  //    160
     SPELL_EFFECT_LEARN_SPEC,                //    161
     SPELL_EFFECT_ACTIVATE_SPEC,             //    162
-    TOTAL_SPELL_EFFECTS,                    //    163
+    SPELL_EFFECT_UNKNOWN3,                  //    163
+    SPELL_EFFECT_REMOVE_AURA,               //    164
+    TOTAL_SPELL_EFFECTS,                    //    165
 };
 
 // target type flags
@@ -1648,7 +1653,7 @@ class SERVER_DECL Spell : public EventableObject
 		// Cancels the current spell
 		void cancel();
 		// Update spell state based on time difference
-		void update(uint32 difftime);
+		void Update(unsigned long time_passed);
 		// Casts the spell
 		void cast(bool);
 		// Finishes the casted spell
@@ -1830,6 +1835,9 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectSummonPlayer(uint32 i);
 		void SpellEffectActivateObject(uint32 i);
 		void SpellEffectBuildingDamage(uint32 i);
+		void SpellEffectBuildingRepair(uint32 i);
+		void SpellEffectBuildingSwitchState(uint32 i);
+		void SpellEffectKillCreditPlayer(uint32 i);
 		void SpellEffectEnchantHeldItem(uint32 i);
 		void SpellEffectSetMirrorName(uint32 i);
 		void SpellEffectSelfResurrect(uint32 i);
@@ -1851,6 +1859,7 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectResurrectNew(uint32 i);
 		void SpellEffectAttackMe(uint32 i);
 		void SpellEffectSkinPlayerCorpse(uint32 i);
+		void SpellEffectSpiritHeal(uint32 i);
 		void SpellEffectSkill(uint32 i);
 		void SpellEffectApplyPetAA(uint32 i);
 		void SpellEffectDummyMelee(uint32 i);
@@ -1862,12 +1871,14 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectApplyFriendAA(uint32 i);
 		void SpellEffectApplyEnemyAA(uint32 i);
 		void SpellEffectRedirectThreat(uint32 i);
+		void SpellEffectPlaySound(uint32 i);
 		void SpellEffectPlayMusic(uint32 i);
 		void SpellEffectForgetSpecialization(uint32 i);
 		void SpellEffectKillCredit(uint32 i);
 		void SpellEffectRestorePowerPct(uint32 i);
 		void SpellEffectTriggerSpellWithValue(uint32 i);
 		void SpellEffectApplyOwnerAA(uint32 i);
+		void SpellEffectPullTowards(uint32 i);
 		void SpellEffectCreatePet(uint32 i);
 		void SpellEffectTeachTaxiPath(uint32 i);
 		void SpellEffectDualWield2H(uint32 i);
@@ -1879,9 +1890,14 @@ class SERVER_DECL Spell : public EventableObject
 		void SpellEffectLearnSpec(uint32 i);
 		void SpellEffectActivateSpec(uint32 i);
 		void SpellEffectActivateRunes(uint32 i);
+		void SpellEffectQuestFail(uint32 i);
+		void SpellEffectChargeDest(uint32 i);
+		void SpellEffectQuestStart(uint32 i);
+		void SpellEffectRaFriend(uint32 i);
+		void SpellEffectRemoveAura(uint32 i);
 		void SpellEffectJumpTarget(uint32 i)
 		{
-
+			//I dont know why it is here... maybe could be removed?
 		}
 		void SpellEffectJumpBehindTarget(uint32 i);
 

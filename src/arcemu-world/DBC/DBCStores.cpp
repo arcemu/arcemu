@@ -427,7 +427,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false);
 	LOAD_DBC("DBC/SummonProperties.dbc", summonpropertiesformat, true, dbcSummonProperties, false);
 	LOAD_DBC("DBC/NameGen.dbc", namegenentryformat, true, dbcNameGen, true);
-	LOAD_DBC("DBC/LFGDungeons.dbc", LFGDungeonEntryformat, true, dbcLFGDungeon, false);
+	LOAD_DBC("DBC/LFGDungeons.dbc", LFGDungeonEntryformat, true, dbcLFGDungeon, false); //Is it not important to handle it?
 	LOAD_DBC( "DBC/Vehicle.dbc", VehicleEntryfmt, true, dbcVehicle, true );
 	LOAD_DBC( "DBC/VehicleSeat.dbc", VehicleSeatEntryfmt, true, dbcVehicleSeat, false );
 

@@ -25,7 +25,8 @@ SET(sources
 	ChannelHandler.cpp 
 	CharacterHandler.cpp 
 	Chat.cpp 
-	ChatHandler.cpp 
+	ChatHandler.cpp
+	CObjectFactory.cpp
 	CombatHandler.cpp 
 	Container.cpp 
 	Corpse.cpp 
@@ -46,6 +47,19 @@ SET(sources
 	GameObject.cpp 
 	GMTicket.cpp 
 	GMTicketCommands.cpp
+	GO_QuestGiver.cpp
+	GO_Trap.cpp
+	GO_SpellCaster.cpp
+	GO_SpellFocus.cpp
+	GO_FishingNode.cpp
+	CRitual.cpp
+	GO_Ritual.cpp
+	GO_Chest.cpp
+	GO_Destructible.cpp
+	GO_FishingHole.cpp
+	GO_Button.cpp
+	GO_Door.cpp
+	GO_Goober.cpp
 	Gossip.cpp
 	Group.cpp 
 	GroupHandler.cpp 
@@ -176,6 +190,7 @@ SET( headers
 	Channel.h
 	ChannelMgr.h
 	Chat.h
+	CObjectFactory.h
 	CollideInterface.h
 	CommonScheduleThread.h
 	Entities/Summons/CompanionSummon.h
@@ -196,6 +211,20 @@ SET( headers
 	EventMgr.h
 	faction.h
 	GameObject.h
+	GO_Questgiver.h
+	GO_Trap.h
+	GO_SpellCaster.h
+	GO_SpellFocus.h
+	GO_FishingNode.h
+	CRitual.h
+	GO_Ritual.h
+	GO_Chest.h
+	GO_Destructible.h
+	GO_FishingHole.h
+	GO_Lootable.h
+	GO_Button.h
+	GO_Door.h
+	GO_Goober.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h
@@ -205,6 +234,7 @@ SET( headers
 	Item.h
 	ItemInterface.h
 	ItemPrototype.h
+	IUpdatable.h
 	LfgMgr.h
 	LocalizationMgr.h
 	LogonCommClient.h

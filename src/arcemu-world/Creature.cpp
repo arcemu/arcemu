@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -264,9 +264,9 @@ Creature::~Creature()
 	//but it got a reference to m_owner
 }
 
-void Creature::Update(uint32 p_time)
+void Creature::Update(unsigned long time_passed)
 {
-	Unit::Update(p_time);
+	Unit::Update(time_passed);
 
 	if(m_corpseEvent)
 	{

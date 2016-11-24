@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,7 +38,6 @@ Item::Item()//this is called when constructing as container
 	m_factionDBC = NULL;
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_inQueue = false;
-	m_extensions = NULL;
 	m_loadedFromDB = false;
 	ItemExpiresOn = 0;
 	Enchantments.clear();
@@ -72,7 +71,6 @@ void Item::Init(uint32 high, uint32 low)
 	m_factionDBC = NULL;
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	m_inQueue = false;
-	m_extensions = NULL;
 	m_loadedFromDB = false;
 	//////////////////////////////////////////////////////////
 	SetLowGUID(low);

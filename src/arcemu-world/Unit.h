@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -990,7 +990,7 @@ class SERVER_DECL Unit : public Object
 		friend class AIInterface;
 		friend class Aura;
 
-		virtual void Update(uint32 time);
+		void Update(unsigned long time_passed);
 		virtual void RemoveFromWorld(bool free_guid);
 		virtual void OnPushToWorld();
 
@@ -1699,6 +1699,24 @@ class SERVER_DECL Unit : public Object
 		bool m_temp_summon;
 
 		void CancelSpell(Spell* ptr);
+
+
+		////////////////////////////////////////////////////////
+		//void EventStopChanneling( bool abort )
+		// Stops channeling the current spell
+		//
+		//Parameters
+		// bool abort - if true the spell will be finished
+		// unsuccessfully
+		//
+		//Return Value
+		// None
+		//
+		//
+		////////////////////////////////////////////////////////
+		void EventStopChanneling(bool abort);
+
+
 		void EventStrikeWithAbility(uint64 guid, SpellEntry* sp, uint32 damage);
 		void DispelAll(bool positive);
 
@@ -1994,6 +2012,5 @@ class SERVER_DECL Unit : public Object
 		
 		void SendEnvironmentalDamageLog( uint64 guid, uint8 type, uint32 damage );
 };
-
 
 #endif

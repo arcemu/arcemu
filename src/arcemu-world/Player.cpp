@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -874,12 +874,12 @@ bool Player::Create(WorldPacket & data)
 }
 
 
-void Player::Update(uint32 p_time)
+void Player::Update(unsigned long time_passed)
 {
 	if(!IsInWorld())
 		return;
 
-	Unit::Update(p_time);
+	Unit::Update(time_passed);
 	uint32 mstime = getMSTime();
 
 	RemoveGarbageItems();
@@ -896,10 +896,10 @@ void Player::Update(uint32 p_time)
 
 	if(m_onAutoShot)
 	{
-		if(m_AutoShotAttackTimer > p_time)
+		if(m_AutoShotAttackTimer > time_passed)
 		{
 			//LOG_DEBUG( "HUNTER AUTOSHOT 0) %i, %i", m_AutoShotAttackTimer, p_time );
-			m_AutoShotAttackTimer -= p_time;
+			m_AutoShotAttackTimer -= time_passed;
 		}
 		else
 		{
@@ -909,8 +909,8 @@ void Player::Update(uint32 p_time)
 	}
 	else if(m_AutoShotAttackTimer > 0)
 	{
-		if(m_AutoShotAttackTimer > p_time)
-			m_AutoShotAttackTimer -= p_time;
+		if (m_AutoShotAttackTimer > time_passed)
+			m_AutoShotAttackTimer -= time_passed;
 		else
 			m_AutoShotAttackTimer = 0;
 	}
@@ -922,10 +922,10 @@ void Player::Update(uint32 p_time)
 		if(m_UnderwaterTime)
 		{
 			// not taking dmg yet
-			if(p_time >= m_UnderwaterTime)
+			if(time_passed >= m_UnderwaterTime)
 				m_UnderwaterTime = 0;
 			else
-				m_UnderwaterTime -= p_time;
+				m_UnderwaterTime -= time_passed;
 		}
 
 		if(!m_UnderwaterTime)
@@ -947,7 +947,7 @@ void Player::Update(uint32 p_time)
 		if(m_UnderwaterTime < m_UnderwaterMaxTime)
 		{
 			// regenning
-			m_UnderwaterTime += (p_time * 10);
+			m_UnderwaterTime += (time_passed * 10);
 
 			if(m_UnderwaterTime >= m_UnderwaterMaxTime)
 			{
@@ -984,13 +984,13 @@ void Player::Update(uint32 p_time)
 
 	if(m_pvpTimer)
 	{
-		if(p_time >= m_pvpTimer)
+		if (time_passed >= m_pvpTimer)
 		{
 			RemovePvPFlag();
 			m_pvpTimer = 0;
 		}
 		else
-			m_pvpTimer -= p_time;
+			m_pvpTimer -= time_passed;
 	}
 
 	if(sWorld.Collision)
@@ -1011,16 +1011,11 @@ void Player::Update(uint32 p_time)
 			m_indoorCheckTimer = mstime + COLLISION_INDOOR_CHECK_INTERVAL;
 		}
 
-		/*if( mstime >= m_flyhackCheckTimer )
-		{
-			_FlyhackCheck();
-			m_flyhackCheckTimer = mstime + 10000;
-		}*/
 	}
 
 	if(m_drunk > 0)
 	{
-		m_drunkTimer += p_time;
+		m_drunkTimer += time_passed;
 
 		if(m_drunkTimer > 10000)
 			HandleSobering();
@@ -6594,12 +6589,14 @@ void Player::UpdateNearbyGameObjects()
 				}
 			}
 			bool bPassed = !deactivate;
-			if(go->isQuestGiver())
+			if(go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 			{
-				if(go->HasQuests() && go->NumOfQuests() > 0)
+				Arcemu::GO_QuestGiver *questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+
+				if(questgiver->HasQuests() && questgiver->NumOfQuests() > 0)
 				{
-					std::list<QuestRelation*>::iterator itr2 = go->QuestsBegin();
-					for(; itr2 != go->QuestsEnd(); ++itr2)
+					std::list<QuestRelation*>::iterator itr2 = questgiver->QuestsBegin();
+					for(; itr2 != questgiver->QuestsEnd(); ++itr2)
 					{
 						QuestRelation* qr = (*itr2);
 

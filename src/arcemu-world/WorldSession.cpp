@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -272,8 +272,14 @@ void WorldSession::LogoutPlayer(bool Save)
 						> (obj)->loot.looters.erase(_player->GetLowGUID());
 						break;
 					case TYPEID_GAMEOBJECT:
-						TO < GameObject *
-						> (obj)->loot.looters.erase(_player->GetLowGUID());
+						GameObject *go = TO_GAMEOBJECT(obj);
+
+						if (!go->IsLootable())
+							break;
+
+						Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(go);
+
+						pLGO->loot.looters.erase(_player->GetLowGUID());
 						break;
 				}
 			}

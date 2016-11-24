@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -116,6 +116,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "printStackTrace.h"
 #endif
 
+#include "IUpdatable.h"
 #include "WUtil.h"
 #include "UpdateFields.h"
 #include "UpdateMask.h"
@@ -167,6 +168,21 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Entities/Summons/WildSummon.h"
 #include "DynamicObject.h"
 #include "GameObject.h"
+#include "GO_Lootable.h"
+#include "GO_Door.h"
+#include "GO_Button.h"
+#include "GO_Questgiver.h"
+#include "GO_Chest.h"
+#include "GO_Trap.h"
+#include "GO_FishingHole.h"
+#include "GO_Goober.h"
+#include "GO_SpellCaster.h"
+#include "GO_SpellFocus.h"
+#include "GO_FishingNode.h"
+#include "CRitual.h"
+#include "GO_Ritual.h"
+#include "GO_Destructible.h"
+#include "CObjectFactory.h"
 #include "Group.h"
 #include "Guild.h"
 #include "HonorHandler.h"

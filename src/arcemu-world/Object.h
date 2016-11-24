@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -156,15 +156,15 @@ class Spell;
 //  Object
 //  Base object for every item, unit, player, corpse, container, etc
 //====================================================================
-class SERVER_DECL Object : public EventableObject
+class SERVER_DECL Object : public EventableObject, public Arcemu::IUpdatable
 {
 	public:
 		typedef std::set<Object*> InRangeSet;
-		typedef std::map<string, void*> ExtensionSet;
 
+		Object();
 		virtual ~Object();
 
-		virtual void Update(uint32 time) { }
+		void Update(unsigned long time_passed){}
 
 		//! True if object exists in world, else false
 		bool IsInWorld() { return m_mapMgr != NULL; }
@@ -702,8 +702,6 @@ class SERVER_DECL Object : public EventableObject
 		virtual Group* GetGroup() { return NULL; }
 
 	protected:
-		Object();
-
 		//void _Create (uint32 guidlow, uint32 guidhigh);
 		void _Create(uint32 mapid, float x, float y, float z, float ang);
 
@@ -761,34 +759,7 @@ class SERVER_DECL Object : public EventableObject
 
 		int32 m_instanceId;
 
-		ExtensionSet* m_extensions;
-
-		// so we can set from scripts. :)
-		void _SetExtension(const string & name, void* ptr);
-
 	public:
-
-		template<typename T>
-		void SetExtension(const string & name, T ptr)
-		{
-			_SetExtension(name, ((void*)ptr));
-		}
-
-		template<typename T>
-		T GetExtension(const string & name)
-		{
-			if(m_extensions == NULL)
-				return ((T)NULL);
-			else
-			{
-				ExtensionSet::iterator itr = m_extensions->find(name);
-				if(itr == m_extensions->end())
-					return ((T)NULL);
-				else
-					return ((T)itr->second);
-			}
-		}
-
 		bool m_loadedFromDB;
 
 		// Spell currently casting

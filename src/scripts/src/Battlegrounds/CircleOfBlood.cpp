@@ -31,25 +31,25 @@ void CircleOfBlood::OnCreate(){
 	GameObject *obj = NULL;
 	
 	obj = SpawnGameObject(183972, 562, 6177.707520f, 227.348145f, 3.604374f, -2.260201f, 32, 1375, 1.0f);
-	obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	obj->SetState(1);
 	obj->SetParentRotation(2, 0.90445f);
 	obj->SetParentRotation(3, -0.426569f);
 	obj->PushToWorld(m_mapMgr);
 	
 	obj = SpawnGameObject(183973, 562, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f);
-	obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	obj->SetState(1);
 	obj->SetParentRotation(2, 0.426569f);
 	obj->SetParentRotation(3, 0.904455f);
 	m_gates.insert(obj);
 	
 	obj = SpawnGameObject(183970, 562, 6299.115723f, 296.549438f, 3.308032f, 0.881392f, 32, 1375, 1.0f);
-	obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	obj->SetState(1);
 	obj->SetParentRotation(2, 0.426569f);
 	obj->SetParentRotation(3, 0.904455f);
 	obj->PushToWorld(m_mapMgr);
 	
 	obj = SpawnGameObject(183971, 562, 6287.276855f, 282.187714f, 3.810925f, -2.260201f, 32, 1375, 1.0f);
-	obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	obj->SetState(1);
 	obj->SetParentRotation(2, 0.904455f);
 	obj->SetParentRotation(3, -0.426569f);
 	m_gates.insert(obj);
@@ -59,19 +59,19 @@ void CircleOfBlood::OnCreate(){
 
 void CircleOfBlood::HookOnShadowSight(){
 	m_buffs[0] = SpawnGameObject(184664, 562, 6249.276855f, 275.187714f, 11.201481f, -2.260201f, 32, 1375, 1.0f);
-	m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	m_buffs[0]->SetState(1);
 	m_buffs[0]->SetParentRotation(2, 0.904455f);
 	m_buffs[0]->SetParentRotation(3, -0.426569f);
 	m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
-	m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	m_buffs[0]->SetAnimProgress(100);
 	m_buffs[0]->PushToWorld(m_mapMgr);
 	
 	m_buffs[1] = SpawnGameObject(184664, 562, 6228.546387f, 249.709854f, 11.201481f, 0.881392f, 32, 1375, 1.0f);
-	m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	m_buffs[1]->SetState(1);
 	m_buffs[1]->SetParentRotation(2, 0.90445f);
 	m_buffs[1]->SetParentRotation(3, -0.426569f);
 	m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
-	m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	m_buffs[1]->SetAnimProgress(100);
 	m_buffs[1]->PushToWorld(m_mapMgr);
 }
 

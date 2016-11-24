@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -109,10 +109,10 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectStuck,					//SPELL_EFFECT_STUCK - 84
 	&Spell::SpellEffectSummonPlayer,			//SPELL_EFFECT_SUMMON_PLAYER - 85
 	&Spell::SpellEffectActivateObject,			//SPELL_EFFECT_ACTIVATE_OBJECT - 86
-	&Spell::SpellEffectBuildingDamage,				//SPELL_EFFECT_BUILDING_DAMAGE - 87
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_REPAIR - 88
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_KILL_CREDIT_90 - 90
+	&Spell::SpellEffectBuildingDamage,		    //SPELL_EFFECT_BUILDING_DAMAGE - 87
+	&Spell::SpellEffectBuildingRepair,			//SPELL_EFFECT_BUILDING_REPAIR - 88
+	&Spell::SpellEffectBuildingSwitchState,		//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
+	&Spell::SpellEffectKillCreditPlayer,		//SPELL_EFFECT_KILL_CREDIT_90 - 90
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_THREAT_ALL - 91 UNUSED
 	&Spell::SpellEffectEnchantHeldItem,			//SPELL_EFFECT_ENCHANT_HELD_ITEM - 92
 	&Spell::SpellEffectSetMirrorName,			//SPELL_EFFECT_SUMMON_PHANTASM - 93 OLD
@@ -139,21 +139,21 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectAttackMe,				//SPELL_EFFECT_ATTACK_ME - 114
 	&Spell::SpellEffectDurabilityDamagePCT,     //SPELL_EFFECT_DURABILITY_DAMAGE_PCT - 115
 	&Spell::SpellEffectSkinPlayerCorpse,		//SPELL_EFFECT_SKIN_PLAYER_CORPSE - 116
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_SPIRIT_HEAL - 117//Not used
+	&Spell::SpellEffectSpiritHeal,				//SPELL_EFFECT_SPIRIT_HEAL - 117//Not used
 	&Spell::SpellEffectSkill,					//SPELL_EFFECT_SKILL - 118
 	&Spell::SpellEffectApplyPetAA,				//SPELL_EFFECT_APPLY_PET_AURA - 119
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_TELEPORT_GRAVEYARD - 120//Not used
 	&Spell::SpellEffectDummyMelee,				//SPELL_EFFECT_DUMMYMELEE	- 121
-	&Spell::SpellEffectNULL,					// unknown - 122 //not used
+	&Spell::SpellEffectNULL,					// unknown1 - 122 //not used
 	&Spell::SpellEffectStartTaxi,				//SPELL_EFFECT_START_TAXI - 123 // http://www.wowhead.com/?spell=54575
 	&Spell::SpellEffectPlayerPull,				//SPELL_EFFECT_PLAYER_PULL - 124 - http://thottbot.com/e2312
 	&Spell::SpellEffectReduceThreatPercent,     //SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 	&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
-	&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
+	&Spell::SpellEffectProspecting,				// Prospecting - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
 	&Spell::SpellEffectApplyFriendAA,			// Apply Aura friendly
 	&Spell::SpellEffectApplyEnemyAA,			// Apply Aura enemy
-	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
-	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
+	&Spell::SpellEffectRedirectThreat,			// Redirecting threat - 130 // http://www.thottbot.com/s34477
+	&Spell::SpellEffectPlaySound,				// Play Sound - 131
 	&Spell::SpellEffectPlayMusic,				// Play Music - 132 // http://www.thottbot.com/s46852
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
 	&Spell::SpellEffectKillCredit,				// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
@@ -163,18 +163,18 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectKnockBack2,				// knockback2 - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
 	&Spell::SpellEffectClearQuest,				// Remove Quest - 139
 	&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
-	&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
-	&Spell::SpellEffectTriggerSpellWithValue,	//SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
+	&Spell::SpellEffectNULL,					// Force Cast with value // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
+	&Spell::SpellEffectTriggerSpellWithValue,	// SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
 	&Spell::SpellEffectApplyOwnerAA,			// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
-	&Spell::SpellEffectNULL,					// unknown - 144
-	&Spell::SpellEffectNULL,					// unknown - 145
+	&Spell::SpellEffectKnockBack,				// Knock back - 144
+	&Spell::SpellEffectPullTowards,				// Pull towards - 145
 	&Spell::SpellEffectActivateRunes,			// Activate Rune - 146
-	&Spell::SpellEffectNULL,					// Quest Fail - 147
-	&Spell::SpellEffectNULL,					// unknown - 148
-	&Spell::SpellEffectNULL,					// unknown - 149
-	&Spell::SpellEffectNULL,					// unknown - 150
+	&Spell::SpellEffectQuestFail,			    // Quest Fail - 147
+	&Spell::SpellEffectTriggerMissile,		    // Trigger missile - 148
+	&Spell::SpellEffectChargeDest,			    // Charge - 149
+	&Spell::SpellEffectQuestStart,			    // Quest Start - 150
 	&Spell::SpellEffectTriggerSpell,			// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
-	&Spell::SpellEffectNULL,					// Summon Refer-a-Friend - 152
+	&Spell::SpellEffectRaFriend,			    // Summon Refer-a-Friend - 152
 	&Spell::SpellEffectCreatePet,				// Create tamed pet - 153
 	&Spell::SpellEffectTeachTaxiPath,			// "Teach" a taxi path - 154
 	&Spell::SpellEffectDualWield2H,				// DualWield2H (ex: Titan's Grip) - 155
@@ -182,9 +182,11 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectCreateItem2,				//157 SPELL_EFFECT_CREATE_ITEM_2
 	&Spell::SpellEffectMilling,					// Milling - 158
 	&Spell::SpellEffectRenamePet,				// Allow Pet Rename - 159
-	&Spell::SpellEffectNULL,					// unknown - 160
+	&Spell::SpellEffectNULL,					// unknown2 - 160
 	&Spell::SpellEffectLearnSpec,				// Learn or unlearn a spec - 161
 	&Spell::SpellEffectActivateSpec,			// Activate a spec - 162
+	&Spell::SpellEffectNULL,					// unknown3 - 163
+	&Spell::SpellEffectRemoveAura,			    // Remove aura - 164
 };
 
 const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
@@ -279,7 +281,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
 	"BUILDING_DAMAGE",           //    87
 	"BUILDING_REPAIR",           //    88
 	"BUILDING_SWITCH_STATE",     //    89
-	"KILL_CREDIT_90",               //    90
+	"KILL_CREDIT_90",            //    90
 	"THREAT_ALL",                //    91
 	"ENCHANT_HELD_ITEM",         //    92
 	"SET_MIRROR_NAME",           //    93
@@ -314,43 +316,46 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
 	"UNKNOWN1",                  //    122
 	"START_TAXI",                //    123
 	"PLAYER_PULL",               //    124
-	"UNKNOWN4",                  //    125
-	"UNKNOWN5",                  //    126
+	"MODIFY_THREAT_PERCENT",     //    125
+	"STEAL_BENEFICIAL_BUFF",     //    126
 	"PROSPECTING",               //    127
 	"APPLY_FRIEND_AREA_AURA",    //    128
 	"APPLY_RAID_AREA_AURA",      //    129
-	"UNKNOWN10",                 //    130
-	"UNKNOWN11",                 //    131
+	"REDIRECT_THREAT",           //    130
+	"PLAY_SOUND",                //    131
 	"PLAY_MUSIC",                //    132
 	"FORGET_SPECIALIZATION",     //    133
 	"KILL_CREDIT",               //    134
-	"UNKNOWN15",                 //    135
-	"UNKNOWN16",                 //    136
+	"CALL_PET",                  //    135
+	"HEAL_PCT",                  //    136
 	"RESTORE_POWER_PCT",         //    137
 	"KNOCKBACK2",                //    138
 	"CLEAR_QUEST",               //    139
-	"UNKNOWN20",                 //    140
-	"UNKNOWN21",                 //    141
+	"FORCE_CAST",                //    140
+	"FORCE_CAST_WITH_VALUE",     //    141
 	"TRIGGER_SPELL_WITH_VALUE",  //    142
 	"APPLY_OWNER_AREA_AURA",     //    143
-	"UNKNOWN23",                 //    144
-	"UNKNOWN24",                 //    145
+	"KNOCK_BACK_DEST",           //    144
+	"PULL_TOWARDS_DEST",         //    145
 	"ACTIVATE_RUNES",            //    146
 	"QUEST_FAIL",                //    147
-	"UNKNOWN26",                 //    148
-	"UNKNOWN27",                 //    149
-	"UNKNOWN28",                 //    150
+	"TRIGGER_MISSILE_SPELL_WITH_VALUE",  //    148
+	"CHARGE_DEST",               //    149
+	"QUEST_START",               //    150
 	"SUMMON_TARGET",             //    151
-	"UNKNOWN30",                 //    152
+	"SUMMON_RAF_FRIEND",         //    152
 	"TAME_CREATURE",             //    153
-	"UNKNOWN32",                 //    154
-	"UNKNOWN33",                 //    155
-	"UNKNOWN34",                 //    156
-	"UNKNOWN35",                 //    157
+	"DISCOVER_TAXI",             //    154
+	"TAME_CREATURE",             //    155
+	"ADD_SOCKET",                //    156
+	"CREATE_ITEM2",              //    157
 	"MILLING",                   //    158
 	"ALLOW_PET_RENAME",          //    159
-	"UNKNOWN36",                 //    160
-	"UNKNOWN37"                  //    161 //used by spell 63624(dual talents)
+	"UNKNOWN2",                  //    160
+	"LEARN_SPEC"                 //    161
+	"ACTIVATE_SPEC"              //    162
+	"UNKNOWN3"                   //    163
+	"REMOVE_AURA"                //    164
 };
 
 void Spell::ApplyAA(uint32 i)   // Apply Area Aura
@@ -2138,6 +2143,65 @@ void Spell::SpellEffectSummonWild(uint32 i, SummonPropertiesEntry* spe, Creature
 	}
 }
 
+/* Conflict added in commit https://github.com/arcemu/arcemu/commit/efff403378b59be51e31602108574c634d98434c
+void Spell::SpellEffectSummonWild(uint32 i) // Summon Wild
+{
+//these are some creatures that have your faction and do not respawn
+//number of creatures is actually dmg (the usual formula), sometimes =3 sometimes =1
+//if( u_caster == NULL || !u_caster->IsInWorld() )
+// return;
+if( ( !m_caster->IsGameObject() && !m_caster->IsUnit() ) || !m_caster->IsInWorld() )
+return;
+uint32 cr_entry = GetProto()->EffectMiscValue[i];
+CreatureProto * proto = CreatureProtoStorage.LookupEntry(cr_entry);
+CreatureInfo * info = CreatureNameStorage.LookupEntry(cr_entry);
+if(!proto || !info)
+{
+sLog.outError("Warning : Missing summon creature template %u used by spell %u!",cr_entry,GetProto()->Id);
+return;
+}
+float x, y, z;
+if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
+{
+x = m_targets.m_destX;
+y = m_targets.m_destY;
+z = m_targets.m_destZ;
+}
+else
+{
+x = m_caster->GetPositionX();
+y = m_caster->GetPositionY();
+z = m_caster->GetPositionZ();
+}
+for(int j= 0;j<damage;j++)
+{
+float m_fallowAngle=-((float(M_PI)/2)*j);
+float tempx = x + (GetRadius(i)*(cosf(m_fallowAngle+m_caster->GetOrientation())));
+float tempy = y + (GetRadius(i)*(sinf(m_fallowAngle+m_caster->GetOrientation())));
+Creature * p = m_caster->GetMapMgr()->CreateCreature(cr_entry);
+Arcemu::Util::ARCEMU_ASSERT(p != NULL);
+p->Load(proto, tempx, tempy, z);
+p->SetZoneId( m_caster->GetZoneId() );
+if ( p->GetProto()->Faction == 35 )
+{
+p->SetSummonedByGUID( m_caster->GetGUID() );
+p->SetCreatedByGUID( m_caster->GetGUID() );
+if( m_caster->IsGameObject() )
+p->SetFaction( TO_GAMEOBJECT( m_caster )->GetFaction() );
+else
+p->SetFaction( TO_UNIT( m_caster )->GetFaction( ) );
+}
+else
+{
+p->SetFaction(proto->Faction );
+}
+p->PushToWorld( m_caster->GetMapMgr());
+//make sure they will be desummoned (roxor)
+sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+}
+}
+*/
+
 void Spell::SpellEffectSummonGuardian(uint32 i, SummonPropertiesEntry* spe, CreatureProto* proto, LocationVector & v)
 {
 
@@ -2567,10 +2631,10 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				else if(gameObjTarget)
 				{
 					GameObjectInfo* info = gameObjTarget->GetInfo();
-					if(gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
+					if(gameObjTarget->GetState() == 0)
 						return;
 
-					Lock* lock = dbcLock.LookupEntry(info->SpellFocus);
+					Lock* lock = dbcLock.LookupEntry(info->raw.sound0);
 					if(lock == 0)
 						return;
 
@@ -2579,18 +2643,20 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 						if(lock->locktype[j] == 2 && lock->minlockskill[j] && lockskill >= lock->minlockskill[j])
 						{
 							v = lock->minlockskill[j];
-							gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
-							gameObjTarget->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+							gameObjTarget->SetFlags(0);
+							gameObjTarget->SetState(GAMEOBJECT_STATE_CLOSED);
 							//Add Fill GO loot here
-							if(gameObjTarget->loot.items.size() == 0)
-							{
-								if(gameObjTarget->GetMapMgr() != NULL)
-									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
-								else
-									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+							if (gameObjTarget->IsLootable()){
+								Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
 
+								if (pLGO->loot.items.size() == 0){
+									if (gameObjTarget->GetMapMgr() != NULL)
+										lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+									else
+										lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
 
-								DetermineSkillUp(SKILL_LOCKPICKING, v / 5); //to prevent free skill up
+									DetermineSkillUp(SKILL_LOCKPICKING, v / 5); //to prevent free skill up
+								}
 							}
 							loottype = LOOT_CORPSE;
 							//End of it
@@ -2607,31 +2673,26 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				uint32 v = gameObjTarget->GetGOReqSkill();
 				bool bAlreadyUsed = false;
 
-				if(Rand(100.0f)) // 3% chance to fail//why?
-				{
-					if(TO< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_HERBALISM) < v)
-					{
-						//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
-						return;
-					}
-					else
-					{
-						if(gameObjTarget->loot.items.size() == 0)
-						{
-							if(gameObjTarget->GetMapMgr() != NULL)
-								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
-							else
-								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+				if (static_cast< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_HERBALISM) < v){
+					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
+					return;
+
+				}else{
+					if (gameObjTarget->IsLootable()){
+						Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
+
+							if (pLGO->loot.items.size() == 0){
+								if (gameObjTarget->GetMapMgr() != NULL)
+									lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+								else
+									lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+						}else{
+								bAlreadyUsed = true;
 						}
-						else
-							bAlreadyUsed = true;
 					}
-					loottype = LOOT_SKINNING;
 				}
-				else
-				{
-					SendCastResult(SPELL_FAILED_TRY_AGAIN);
-				}
+				loottype = LOOT_SKINNING;
+
 				//Skill up
 				if(!bAlreadyUsed) //Avoid cheats with opening/closing without taking the loot
 					DetermineSkillUp(SKILL_HERBALISM, v / 5);
@@ -2644,29 +2705,24 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				uint32 v = gameObjTarget->GetGOReqSkill();
 				bool bAlreadyUsed = false;
 
-				if(Rand(100.0f))     // 3% chance to fail//why?
-				{
-					if(TO< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_MINING) < v)
-					{
-						//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
-						return;
-					}
-					else if(gameObjTarget->loot.items.size() == 0)
-					{
-						if(gameObjTarget->GetMapMgr() != NULL)
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
-						else
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
-					}
-					else
-						bAlreadyUsed = true;
+				if (static_cast< Player* >(m_caster)->_GetSkillLineCurrent(SKILL_MINING) < v){
+					//SendCastResult(SPELL_FAILED_LOW_CASTLEVEL);
+					return;
+				}else if (gameObjTarget->IsLootable()){
+					Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
 
-					loottype = LOOT_SKINNING;
+					if (pLGO->loot.items.size() == 0){
+						if (gameObjTarget->GetMapMgr() != NULL)
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+						else
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+					}
+
+				}else{
+					bAlreadyUsed = true;
 				}
-				else
-				{
-					SendCastResult(SPELL_FAILED_TRY_AGAIN);
-				}
+				loottype = LOOT_SKINNING;
+
 				//Skill up
 				if(!bAlreadyUsed) //Avoid cheats with opening/closing without taking the loot
 					DetermineSkillUp(SKILL_MINING, v / 5);
@@ -2679,7 +2735,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					if(p_caster->m_bg->HookSlowLockOpen(gameObjTarget, p_caster, this))
 						return;
 
-				uint32 spellid = !gameObjTarget->GetInfo()->Unknown1 ? 23932 : gameObjTarget->GetInfo()->Unknown1;
+				uint32 spellid = !gameObjTarget->GetInfo()->raw.Unknown1 ? 23932 : gameObjTarget->GetInfo()->raw.Unknown1;
 				SpellEntry* en = dbcSpell.LookupEntry(spellid);
 				Spell* sp = sSpellFactoryMgr.NewSpell(p_caster, en, true, NULL);
 				SpellCastTargets tgt;
@@ -2690,8 +2746,10 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			break;
 		case LOCKTYPE_QUICK_CLOSE:
 			{
-				if(!gameObjTarget) return;
-				gameObjTarget->EventCloseDoor();
+				if(gameObjTarget == NULL)
+					return;
+
+				gameObjTarget->Use(m_caster->GetGUID());
 			}
 			break;
 
@@ -2699,15 +2757,17 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			if( gameObjTarget == NULL )
 				return;
 
-			if( ( p_caster != NULL ) && ( p_caster->m_bg != NULL ) )
+			if( ( p_caster != NULL ) && ( p_caster->m_bg != NULL ) )    // gameObjTarget->Use(m_caster->GetGUID());
 				p_caster->m_bg->HookQuickLockOpen( gameObjTarget, p_caster, this );
-
+			
 			// there is no break here on purpose
 
 		default://not profession
 			{
-				if(!gameObjTarget)
+				if(gameObjTarget == NULL)
 					return;
+
+				gameObjTarget->Use(m_caster->GetGUID());
 
 				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(p_caster);
 				CALL_INSTANCE_SCRIPT_EVENT(gameObjTarget->GetMapMgr(), OnGameObjectActivate)(gameObjTarget, p_caster);
@@ -2721,12 +2781,15 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					return;
 				}
 
-				if(gameObjTarget->loot.items.size() == 0)
-				{
-					if(gameObjTarget->GetMapMgr() != NULL)
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
-					else
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+				if (gameObjTarget->IsLootable()){
+					Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(gameObjTarget);
+
+					if (pLGO->loot.items.size() == 0){
+						if (gameObjTarget->GetMapMgr() != NULL)
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+						else
+							lootmgr.FillGOLoot(&pLGO->loot, gameObjTarget->GetInfo()->raw.sound1, 0);
+					}
 				}
 				loottype = LOOT_CORPSE ;
 			}
@@ -3173,9 +3236,16 @@ void Spell::SpellEffectSpawn(uint32 i)
 
 void Spell::SpellEffectSummonObject(uint32 i)
 {
-	if(!u_caster) return;
+	if(u_caster == NULL)
+		return;
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
+
+	GameObjectInfo *info = GameObjectNameStorage.LookupEntry(entry);
+	if(info == NULL){
+		sLog.outError("Spell %u ( %s ) Effect %u tried to summon a GameObject with ID %u. GameObject is not in the database.", m_spellInfo->Id, m_spellInfo->Name, i, entry);
+		return;
+	}
 
 	uint32 mapid = u_caster->GetMapId();
 	float px = u_caster->GetPositionX();
@@ -3184,12 +3254,15 @@ void Spell::SpellEffectSummonObject(uint32 i)
 	float orient = m_caster->GetOrientation();
 	float posx = 0, posy = 0, posz = 0;
 
-	if(entry == GO_FISHING_BOBBER && p_caster)
-	{
+	GameObject *go = NULL;
+
+	if(info->Type == GAMEOBJECT_TYPE_FISHINGNODE){
+		if(p_caster == NULL)
+			return;
+
 		float co = cos(orient);
 		float si = sin(orient);
 		MapMgr* map = m_caster->GetMapMgr();
-		Spell* spell = u_caster->GetCurrentSpell();
 
 		float r;
 		for(r = 20; r > 10; r--)
@@ -3207,123 +3280,48 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		posx = px + r * co;
 		posy = py + r * si;
 
-		// Todo / Fix me: This should be loaded / cached
-		uint32 zone = p_caster->GetAreaID();
-		if(zone == 0)   // If the player's area ID is 0, use the zone ID instead
-			zone = p_caster->GetZoneId();
+		go = u_caster->GetMapMgr()->CreateGameObject(entry);
 
-		uint32 minskill;
-		FishingZoneEntry* fishentry = FishingZoneStorage.LookupEntry(zone);
-		if(!fishentry)   // Check database if there is fishing area / zone information, if not, return
-			return;
-
-		// Todo / Fix me: Add fishskill to the calculations
-		minskill = fishentry->MinSkill;
-		spell->SendChannelStart(20000);   // 30 seconds
-		/*spell->SendSpellStart();
-		spell->SendCastResult(SPELL_CANCAST_OK);
-		spell->SendSpellGo ();*/
-
-		GameObject* go = u_caster->GetMapMgr()->CreateGameObject(GO_FISHING_BOBBER);
-
-		go->CreateFromProto(GO_FISHING_BOBBER, mapid, posx, posy, posz, orient);
-		go->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
-		go->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+		go->CreateFromProto(entry, mapid, posx, posy, posz, orient);
+		go->SetFlags(0);
+		go->SetState(GAMEOBJECT_STATE_OPEN);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
-		u_caster->SetChannelSpellTargetGUID(go->GetGUID());
+		go->SetFaction(u_caster->GetFaction());
 		go->Phase(PHASE_SET, u_caster->GetPhase());
-
 		go->PushToWorld(m_caster->GetMapMgr());
 
-		if(lootmgr.IsFishable(zone))     // Only set a 'splash' if there is any loot in this area / zone
-		{
-			uint32 seconds[] = { 0, 4, 10, 14 };
-			uint32 rnd = RandomUInt(3);
-			sEventMgr.AddEvent(go, &GameObject::FishHooked, TO< Player* >(m_caster), EVENT_GAMEOBJECT_FISH_HOOKED, seconds[ rnd ] * 1000, 1, 0);
-		}
-		sEventMgr.AddEvent(go, &GameObject::EndFishing, TO< Player* >(m_caster), false, EVENT_GAMEOBJECT_END_FISHING, 17 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		p_caster->SetSummonedObject(go);
-	}
-	else
-	{
+		u_caster->SetChannelSpellTargetGUID(go->GetGUID());
+
+
+	}else{
+
 		posx = px;
 		posy = py;
-		GameObjectInfo* goI = GameObjectNameStorage.LookupEntry(entry);
-		if(!goI)
-		{
-			if(p_caster)
-			{
-				sChatHandler.BlueSystemMessage(p_caster->GetSession(), "non-existent gameobject %u tried to be created by SpellEffectSummonObject. Report to devs!", entry);
-			}
-			return;
-		}
-		if(m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ)
-		{
+		if((m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION) && (m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ)){
 			posx = m_targets.m_destX;
 			posy = m_targets.m_destY;
 			pz = m_targets.m_destZ;
 		}
-		GameObject* go = m_caster->GetMapMgr()->CreateGameObject(entry);
+		go = m_caster->GetMapMgr()->CreateGameObject(entry);
 
 		go->CreateFromProto(entry, mapid, posx, posy, pz, orient);
-		go->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 		go->Phase(PHASE_SET, u_caster->GetPhase());
 		go->PushToWorld(m_caster->GetMapMgr());
 		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		if(entry == 17032 && p_caster)   // this is a portal
-		{
-			// enable it for party only
-			go->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-			//disable by default
-			WorldPacket* pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_BYTES_1, 1 << 24);
-			SubGroup* pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
-			if(pGroup)
-			{
-				p_caster->GetGroup()->Lock();
-				for(GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin(); itr != pGroup->GetGroupMembersEnd(); ++itr)
-				{
-					if((*itr)->m_loggedInPlayer && m_caster != (*itr)->m_loggedInPlayer)
-						(*itr)->m_loggedInPlayer->GetSession()->SendPacket(pkt);
-				}
-				p_caster->GetGroup()->Unlock();
-			}
-			delete pkt;
-		}
-		else if(entry == 36727 || entry == 177193 || entry == 194108)    // Portal of Summoning and portal of doom
-		{
-			if(!p_caster) return;
-
-			//Player * pTarget = p_caster->GetMapMgr()->GetPlayer( p_caster->GetSelection() );
-			Player* pTarget = objmgr.GetPlayer((uint32)p_caster->GetSelection());
-			if(!pTarget || !pTarget->IsInWorld())
+		if(info->Type == GAMEOBJECT_TYPE_RITUAL){
+			if(p_caster == NULL)
 				return;
-			go->m_ritualmembers[0] = p_caster->GetLowGUID();
-			go->m_ritualcaster = p_caster->GetLowGUID();
-			go->m_ritualtarget = pTarget->GetLowGUID();
-			go->m_ritualspell = static_cast<uint16>(GetProto()->Id);
-		}
-		else if(entry == 186811 || entry == 181622)    // ritual of refreshment, ritual of souls
-		{
-			if(!p_caster) return;
+			Arcemu::GO_Ritual *rgo = static_cast< Arcemu::GO_Ritual* >(go);
 
-			go->m_ritualmembers[0] = p_caster->GetLowGUID();
-			go->m_ritualcaster = p_caster->GetLowGUID();
-			go->m_ritualtarget = 0;
-			go->m_ritualspell = static_cast<uint16>(GetProto()->Id);
+			rgo->GetRitual()->Setup(p_caster->GetLowGUID(), static_cast< uint32 >(p_caster->GetSelection()), m_spellInfo->Id);
+
 		}
-		else if(entry == 186812 || entry == 181621)    // Refreshment Table, Soulwell
-		{
-			go->charges = goI->sound1;
-		}
-		else//Lightwell,if there is some other type -- add it
-		{
-			go->charges = 5;//Max 5 charges
-		}
-		if(p_caster)
-			p_caster->SetSummonedObject(go);//p_caster
 	}
+
+	if(p_caster != NULL)
+		p_caster->SetSummonedObject(go);
 }
 
 void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
@@ -3559,6 +3557,49 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 
 	p_caster->HandleSpellLoot(i_caster->GetProto()->ItemId);
 }
+
+//Merged from dfighter branch... need to be checked why SpellEffectOpenLockItem exists already...
+/*void Spell::SpellEffectOpenLockItem(uint32 i)
+{
+	Unit* caster = u_caster;
+	if (caster == NULL && i_caster != NULL)
+		caster = i_caster->GetOwner();
+	if (caster == NULL || !caster->IsPlayer())
+		return;
+	if (p_caster != NULL && i_caster != NULL){
+		p_caster->HandleSpellLoot(i_caster->GetProto()->ItemId);
+	}
+	if (gameObjTarget == NULL || !gameObjTarget->IsInWorld())
+		return;
+	if (sQuestMgr.OnGameObjectActivate((static_cast<Player*>(caster)), gameObjTarget))
+		static_cast<Player*>(caster)->UpdateNearbyGameObjects();
+	CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(caster));
+	CALL_INSTANCE_SCRIPT_EVENT(gameObjTarget->GetMapMgr(), OnGameObjectActivate)(gameObjTarget, TO_PLAYER(caster));
+	gameObjTarget->SetState( GAMEOBJECT_STATE_OPEN );
+	if (gameObjTarget->GetEntry() == 183146)
+	{
+		gameObjTarget->Despawn(0, 1);
+		return;
+	}
+	if (gameObjTarget->GetType() == GAMEOBJECT_TYPE_CHEST)
+	{
+		if (gameObjTarget->GetMapMgr() != NULL)
+			lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1, gameObjTarget->GetMapMgr()->iInstanceMode);
+		else
+			lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1, 0);
+		if (gameObjTarget->loot.items.size() > 0)
+		{
+			static_cast<Player*>(caster)->SendLoot(gameObjTarget->GetGUID(), LOOT_CORPSE, gameObjTarget->GetMapId());
+		}
+	}
+	// cebernic: atm doors works fine.
+	if (gameObjTarget->GetType() == GAMEOBJECT_TYPE_DOOR
+		|| gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER)
+		gameObjTarget->SetFlags(gameObjTarget->GetFlags() | 1);
+	if (gameObjTarget->GetMapMgr()->GetMapInfo()->type == INSTANCE_NULL)//don't close doors for instances
+		sEventMgr.AddEvent(gameObjTarget, &GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE, 10000, 1, 0);
+	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)0, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6 * 60 * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+}*/
 
 void Spell::SpellEffectProficiency(uint32 i)
 {
@@ -4080,7 +4121,33 @@ void Spell::SpellEffectBuildingDamage(uint32 i){
 	gameObjTarget->Damage( damage, u_caster->GetGUID(), controller->GetGUID(), m_spellInfo->Id );
 }
 
+void Spell::SpellEffectBuildingRepair(uint32 i)
+{
+	if (gameObjTarget == NULL)
+		return;
 
+	if (gameObjTarget->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+		return;
+
+	if (u_caster == NULL)
+		return;
+	/* not implemented yet
+	 Bling Bling? Need to be finished... enemies->damage, friends->heal
+	 Maybe SpellEfectBuildingDamage not correct?
+	 Exist any neutral vehicle which takes the faction of the player?*/
+}
+
+void Spell::SpellEffectBuildingSwitchState(uint32 i){ 
+	return;
+	/* not implemented yet
+	I've been looking for the Switch States... */
+}
+
+void Spell::SpellEffectKillCreditPlayer(uint32 i){
+	return;
+	/* not implemented yet
+	Missing stuff in Playerclass*/
+}
 
 void Spell::SpellEffectEnchantHeldItem(uint32 i)
 {
@@ -4421,14 +4488,6 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	GoSummon->PushToWorld(m_caster->GetMapMgr());
 
-	if(GoSummon->GetType() == GAMEOBJECT_TYPE_TRAP)
-	{
-		GoSummon->invisible = true;
-		GoSummon->invisibilityFlag = INVIS_FLAG_TRAP;
-		GoSummon->charges = 1;
-		GoSummon->checkrate = 1;
-		sEventMgr.AddEvent(GoSummon, &GameObject::TrapSearchTarget, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET, 100, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	}
 	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	GoSummon->SetSummoned(u_caster);
@@ -4671,6 +4730,12 @@ void Spell::SpellEffectSkinPlayerCorpse(uint32 i)
 		// send loot
 		p_caster->SendLoot(corpse->GetGUID(), LOOT_SKINNING, corpse->GetMapId());
 	}
+}
+
+void Spell::SpellEffectSpiritHeal(uint32 i){
+	return;
+	/* not implemented yet
+	Only one spell? Bring back to life*/
 }
 
 void Spell::SpellEffectSkill(uint32 i)
@@ -5073,6 +5138,20 @@ void Spell::SpellEffectRedirectThreat(uint32 i)
 	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());
 }
 
+void Spell::SpellEffectPlaySound(uint32 i)
+{
+	/*not implemented yet, need to do some changes in PlayMusic...
+	uint32 soundid = m_spellInfo->EffectMiscValue[i];
+
+	if (soundid == 0)
+	{
+		LOG_ERROR("Spell %u ( %s ) has no sound ID to play. Spell needs fixing!", m_spellInfo->Id, m_spellInfo->Name);
+		return;
+	}
+
+	m_caster->PlaySoundToSet(soundid);*/
+}
+
 void Spell::SpellEffectPlayMusic(uint32 i)
 {
 	uint32 soundid = m_spellInfo->EffectMiscValue[ i ];
@@ -5145,6 +5224,13 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 void Spell::SpellEffectApplyOwnerAA(uint32 i)
 {
 	ApplyAA(i);
+}
+
+void Spell::SpellEffectPullTowards(uint32 i)
+{
+	return;
+	/*not implemented yet
+	it is only one spell?*/
 }
 
 void Spell::SpellEffectCreatePet(uint32 i)
@@ -5569,9 +5655,49 @@ void Spell::SpellEffectActivateRunes(uint32 i)
 	}
 }
 
+void Spell::SpellEffectQuestFail(uint32 i)
+{
+	return;
+	/*not implemented yet
+	need to send something*/
+}
+
+void Spell::SpellEffectChargeDest(uint32 i)
+{
+	return;
+	/*not implemented yet
+	need to do something with player*/
+}
+
+void Spell::SpellEffectQuestStart(uint32 i)
+{
+	return;
+	/*not implemented yet
+	push something to player*/
+}
+
 void Spell::SpellEffectSetMirrorName(uint32 i)
 {
 	WorldPacket data(SMSG_CLEAR_TARGET, 8);
 	data << uint64(m_caster->GetGUID());
 	m_caster->SendMessageToSet(&data, true);
+}
+
+void Spell::SpellEffectRaFriend(uint32 i)
+{
+	return;
+	/*not implemented yet
+	need a new table in login which keeps the referrer and the reffered accounts.
+	After this it could be included to player and then to the commandlist.
+	To Refer a Friend its important to get the data inside the logindb.
+	At the end the ArcemuCore users need to fill this table... maybe with their homepage...*/
+}
+
+void Spell::SpellEffectRemoveAura(uint32 i)
+{
+	return;
+	/*not implemented yet
+	if(unitTarget !unitTarget->IsPlayer())
+		return;
+	unitTarget->RemoveAllAuraByNameHash*/
 }

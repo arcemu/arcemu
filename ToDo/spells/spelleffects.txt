@@ -1,0 +1,18 @@
+Need to be scripted:
+SpellEffectBuildingRepair
+SpellEffectBuildingSwitchState
+SpellEffectKillCreditPlayer
+SpellEffectSpiritHeal
+SpellEffectPlaySound
+SpellEffectPullTowards
+SpellEffectQuestFail
+SpellEffectChargeDest
+SpellEffectQuestStart
+SpellEffectRaFriend
+SpellEffectRemoveAura
+SpellEffectPullTowards
+
+Need to be changed:
+SpellEffectBuildingDamage
+SpellEffectPlayMusic
+SpellEffectJumpTarget (empty{} in Spell.h)

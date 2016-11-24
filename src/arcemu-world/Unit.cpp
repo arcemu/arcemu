@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -725,9 +725,9 @@ Unit::~Unit()
 	RemoveGarbage();
 }
 
-void Unit::Update(uint32 p_time)
+void Unit::Update(unsigned long time_passed)
 {
-	_UpdateSpells(p_time);
+	_UpdateSpells(time_passed);
 
 	RemoveGarbage();
 
@@ -735,25 +735,25 @@ void Unit::Update(uint32 p_time)
 	{
 		//-----------------------POWER & HP REGENERATION-----------------
 		/* Please don't do temp fixes. Better report to me. Thx. Shady */
-		if(p_time >= m_H_regenTimer)
+		if(time_passed >= m_H_regenTimer)
 			RegenerateHealth();
 		else
-			m_H_regenTimer -= static_cast<uint16>(p_time);
+			m_H_regenTimer -= static_cast<uint16>(time_passed);
 
-		if(p_time >= m_P_regenTimer)
+		if(time_passed >= m_P_regenTimer)
 		{
 			RegeneratePower(false);
 			m_interruptedRegenTime = 0;
 		}
 		else
 		{
-			m_P_regenTimer -= static_cast<uint16>(p_time);
+			m_P_regenTimer -= static_cast<uint16>(time_passed);
 			if(m_interruptedRegenTime)
 			{
-				if(p_time >= m_interruptedRegenTime)
+				if(time_passed >= m_interruptedRegenTime)
 					RegeneratePower(true);
 				else
-					m_interruptedRegenTime -= p_time;
+					m_interruptedRegenTime -= time_passed;
 			}
 		}
 
@@ -761,7 +761,7 @@ void Unit::Update(uint32 p_time)
 		if(m_aiInterface != NULL)
 		{
 			if(m_useAI)
-				m_aiInterface->Update(p_time);
+				m_aiInterface->Update(time_passed);
 			else if(!m_aiInterface->MoveDone())  //pending move
 				m_aiInterface->UpdateMovementSpline();
 		}
@@ -774,7 +774,7 @@ void Unit::Update(uint32 p_time)
 				// diminishing return stuff
 				if(m_diminishTimer[x] && !m_diminishAuraCount[x])
 				{
-					if(p_time >= m_diminishTimer[x])
+					if(time_passed >= m_diminishTimer[x])
 					{
 						// resetting after 15 sec
 						m_diminishTimer[x] = 0;
@@ -783,7 +783,7 @@ void Unit::Update(uint32 p_time)
 					else
 					{
 						// reducing, still.
-						m_diminishTimer[x] -= static_cast<uint16>(p_time);
+						m_diminishTimer[x] -= static_cast<uint16>(time_passed);
 						++count;
 					}
 				}
@@ -791,10 +791,6 @@ void Unit::Update(uint32 p_time)
 			if(!count)
 				m_diminishActive = false;
 		}
-
-		/*		//if health changed since last time. Would be perfect if it would work for creatures too :)
-				if(m_updateMask.GetBit(UNIT_FIELD_HEALTH))
-					EventHealthChangeSinceLastUpdate();*/
 	}
 }
 
@@ -5108,7 +5104,7 @@ void Unit::_UpdateSpells(uint32 time)
 	if(m_currentSpell != NULL)
 	{
 //		m_spellsbusy=true;
-		m_currentSpell->update(time);
+		m_currentSpell->Update(time);
 //		m_spellsbusy=false;
 	}
 }
@@ -7265,6 +7261,17 @@ void Unit::CancelSpell(Spell* ptr)
 		sEventMgr.RemoveEvents(this, EVENT_UNIT_DELAYED_SPELL_CANCEL);
 		m_currentSpell->cancel();
 	}
+}
+
+void Unit::EventStopChanneling(bool abort){
+	Spell *s = GetCurrentSpell();
+
+	if (s == NULL)
+		return;
+
+	s->SendChannelUpdate(0);
+	s->finish(abort);
+
 }
 
 void Unit::EventStrikeWithAbility(uint64 guid, SpellEntry* sp, uint32 damage)

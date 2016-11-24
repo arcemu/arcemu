@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1658,7 +1658,7 @@ void Spell::AddTime(uint32 type)
 	}
 }
 
-void Spell::update(uint32 difftime)
+void Spell::Update(unsigned long time_passed)
 {
 	// skip cast if we're more than 2/3 of the way through
 	// TODO: determine which spells can be cast while moving.
@@ -1694,13 +1694,12 @@ void Spell::update(uint32 difftime)
 	{
 		case SPELL_STATE_PREPARING:
 			{
-				//printf("spell::update m_timer %u, difftime %d, newtime %d\n", m_timer, difftime, m_timer-difftime);
-				if((int32)difftime >= m_timer)
+				if(static_cast< int32 >(time_passed) >= m_timer)
 					cast(true);
 				else
 				{
-					m_timer -= difftime;
-					if((int32)difftime >= m_timer)
+					m_timer -= time_passed;
+					if(static_cast< int32 >(time_passed) >= m_timer)
 					{
 						m_timer = 0;
 						cast(true);
@@ -1714,10 +1713,10 @@ void Spell::update(uint32 difftime)
 			{
 				if(m_timer > 0)
 				{
-					if((int32)difftime >= m_timer)
+					if(static_cast< int32 >(time_passed) >= m_timer)
 						m_timer = 0;
 					else
-						m_timer -= difftime;
+						m_timer -= time_passed;
 				}
 				if(m_timer <= 0)
 				{
@@ -2330,7 +2329,7 @@ void Spell::SendChannelUpdate(uint32 time)
 			if(dynObj)
 				dynObj->Remove();
 
-			if(dynObj == NULL && m_pendingAuras.find(m_caster->GetGUID()) == m_pendingAuras.end())  //no persistant aura or aura on caster
+			if(dynObj == NULL /* && m_pendingAuras.find(m_caster->GetGUID()) == m_pendingAuras.end() */) //no persistant aura or aura on caster
 			{
 				u_caster->SetChannelSpellTargetGUID(0);
 				u_caster->SetChannelSpellId(0);
@@ -2360,34 +2359,22 @@ void Spell::SendChannelUpdate(uint32 time)
 
 void Spell::SendChannelStart(uint32 duration)
 {
-	if(!m_caster->IsGameObject())
-	{
-		// Send Channel Start
+	if(!m_caster->IsGameObject()){
 		WorldPacket data(MSG_CHANNEL_START, 22);
-		data << m_caster->GetNewGUID();
-		data << GetProto()->Id;
-		data << duration;
+		
+		data << WoWGuid(m_caster->GetNewGUID());
+		data << uint32(m_spellInfo->Id);
+		data << uint32(duration);
+
 		m_caster->SendMessageToSet(&data, true);
 	}
 
 	m_castTime = m_timer = duration;
 
-	if(u_caster != NULL)
+	if(u_caster != NULL){
 		u_caster->SetChannelSpellId(GetProto()->Id);
-
-	/*
-	Unit* target = objmgr.GetCreature( TO< Player* >( m_caster )->GetSelection());
-	if(!target)
-		target = objmgr.GetObject<Player>( TO< Player* >( m_caster )->GetSelection());
-	if(!target)
-		return;
-
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT,target->GetGUIDLow());
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT+1,target->GetGUIDHigh());
-	//disabled it can be not only creature but GO as well
-	//and GO is not selectable, so this method will not work
-	//these fields must be filled @ place of call
-	*/
+		sEventMgr.AddEvent(u_caster, &Unit::EventStopChanneling, false, EVENT_STOP_CHANNELING, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	}
 }
 
 void Spell::SendResurrectRequest(Player* target)
@@ -3484,13 +3471,18 @@ uint8 Spell::CanCast(bool tolerate)
 				if(!(*itr)->IsGameObject())
 					continue;
 
-				if((TO_GAMEOBJECT(*itr))->GetType() != GAMEOBJECT_TYPE_SPELL_FOCUS)
+				if ((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
 					continue;
 
-				if(!(p_caster->GetPhase() & (*itr)->GetPhase()))    //We can't see this, can't be the focus, skip further checks
+				GameObject *go = TO_GAMEOBJECT(*itr);
+
+				if (go->GetType() != GAMEOBJECT_TYPE_SPELL_FOCUS)
 					continue;
 
-				GameObjectInfo* info = TO_GAMEOBJECT(*itr)->GetInfo();
+				if(!(p_caster->GetPhase() & go->GetPhase()))    //We can't see this, can't be the focus, skip further checks
+					continue;
+
+				GameObjectInfo* info = go->GetInfo();
 				if(!info)
 				{
 					LOG_DEBUG("Warning: could not find info about game object %u", (*itr)->GetEntry());
@@ -3498,16 +3490,16 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 
 				// professions use rangeIndex 1, which is 0yds, so we will use 5yds, which is standard interaction range.
-				if(info->sound1)
-					focusRange = float(info->sound1);
+				if(info->raw.sound1)
+					focusRange = float(info->raw.sound1);
 				else
 					focusRange = GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));
 
 				// check if focus object is close enough
-				if(!IsInrange(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), (*itr), (focusRange * focusRange)))
+				if(!IsInrange(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), go, (focusRange * focusRange)))
 					continue;
 
-				if(info->SpellFocus == GetProto()->RequiresSpellFocus)
+				if(info->raw.sound0 == GetProto()->RequiresSpellFocus)
 				{
 					found = true;
 					break;

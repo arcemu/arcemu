@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,11 +29,10 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 		return false;
 
 	// Override these flags to avoid mistakes in proto
-	SetUInt32Value(GAMEOBJECT_FLAGS, 40);
-	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	SetFlags(40);
+	SetAnimProgress(100);
 
 	//Maybe this would be the perfect way, so there would be no extra checks in Object.cpp:
-	//SetByte( GAMEOBJECT_BYTES_1, 0, GAMEOBJECT_TYPE_TRANSPORT );
 	//but these fields seems to change often and between server flavours (ArcEmu, Aspire, name another one) - by: VLack aka. VLsoft
 	if(pInfo)
 		pInfo->Type = GAMEOBJECT_TYPE_TRANSPORT;
@@ -87,7 +86,7 @@ bool FillPathVector(uint32 PathID, TransportPath & Path)
 bool Transporter::GenerateWaypoints()
 {
 	TransportPath path;
-	FillPathVector(GetInfo()->SpellFocus, path);
+	FillPathVector(GetInfo()->raw.sound0, path);
 
 	if(path.Size() == 0) return false;
 
@@ -473,7 +472,13 @@ void ObjectMgr::LoadTransporters()
 		uint32 entry = QR->Fetch()[0].GetUInt32();
 		int32 period = QR->Fetch()[2].GetInt32();
 
+		GameObjectInfo *i = GameObjectNameStorage.LookupEntry(entry);
+		if (i == NULL)
+			continue;
+
 		Transporter* pTransporter = new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | entry);
+		pTransporter->SetInfo(i);
+
 		if(!pTransporter->CreateAsTransporter(entry, "", period))
 		{
 			LOG_ERROR("Transporter %s failed creation for some reason.", QR->Fetch()[1].GetString());

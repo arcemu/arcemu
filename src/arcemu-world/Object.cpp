@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,7 +58,6 @@ Object::Object() : m_position(0, 0, 0, 0), m_spawnLocation(0, 0, 0, 0)
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
 	Active = false;
 	m_inQueue = false;
-	m_extensions = NULL;
 	m_loadedFromDB = false;
 
 	m_faction = dbcFactionTemplate.LookupRow(0);
@@ -81,9 +80,6 @@ Object::~Object()
 
 	// for linux
 	m_instanceId = INSTANCEID_NOT_IN_WORLD;
-
-	if(m_extensions != NULL)
-		delete m_extensions;
 
 	if(m_currentSpell)
 	{
@@ -163,8 +159,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 	// gameobject stuff
 	if(IsGameObject())
 	{
-//		switch( GetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_TYPEID) )
-		switch(m_uint32Values[GAMEOBJECT_BYTES_1])
+		switch (TO_GAMEOBJECT(this)->GetType())
 		{
 			case GAMEOBJECT_TYPE_MO_TRANSPORT:
 				{
@@ -524,7 +519,7 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 		}
 		else if(flags & UPDATEFLAG_HAS_POSITION)  //0x40
 		{
-			if(flags & UPDATEFLAG_TRANSPORT && m_uint32Values[GAMEOBJECT_BYTES_1] == GAMEOBJECT_TYPE_MO_TRANSPORT)
+			if (flags & UPDATEFLAG_TRANSPORT && TO_GAMEOBJECT(this)->GetType() == GAMEOBJECT_TYPE_MO_TRANSPORT)
 			{
 				*data << (float)0;
 				*data << (float)0;
@@ -641,10 +636,15 @@ void Object::_BuildValuesUpdate(ByteBuffer* data, UpdateMask* updateMask, Player
 			GameObject* go = TO_GAMEOBJECT(this);
 			QuestLogEntry* qle;
 			GameObjectInfo* info;
-			if(go->HasQuests())
+			Arcemu::GO_QuestGiver *questgiver = NULL;
+
+			if (go->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
+				questgiver = static_cast< Arcemu::GO_QuestGiver* >(go);
+
+			if (questgiver != NULL && questgiver->HasQuests())
 			{
 				std::list<QuestRelation*>::iterator itr;
-				for(itr = go->QuestsBegin(); itr != go->QuestsEnd(); ++itr)
+				for(itr = questgiver->QuestsBegin(); itr != questgiver->QuestsEnd(); ++itr)
 				{
 					QuestRelation* qr = (*itr);
 					if(qr != NULL)
@@ -2030,7 +2030,7 @@ bool Object::CanActivate()
 
 		case TYPEID_GAMEOBJECT:
 			{
-				if(TO_GAMEOBJECT(this)->HasAI() && TO_GAMEOBJECT(this)->GetType() != GAMEOBJECT_TYPE_TRAP)
+				if( TO_GAMEOBJECT( this )->GetType() != GAMEOBJECT_TYPE_TRAP)
 					return true;
 			}
 			break;
@@ -2167,14 +2167,6 @@ void Object::PlaySoundToSet(uint32 sound_entry)
 	data << sound_entry;
 
 	SendMessageToSet(&data, true);
-}
-
-void Object::_SetExtension(const string & name, void* ptr)
-{
-	if(m_extensions == NULL)
-		m_extensions = new ExtensionSet;
-
-	m_extensions->insert(make_pair(name, ptr));
 }
 
 bool Object::IsInBg()

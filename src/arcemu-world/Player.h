@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -946,7 +946,7 @@ class SERVER_DECL Player : public Unit
 		void RemoveFromWorld();
 		bool Create(WorldPacket & data);
 
-		void Update(uint32 time);
+		void Update(unsigned long time_passed);
 		void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
 		void BuildPetSpellList(WorldPacket & data);
 		void SetAFKReason(std::string reason) { m_cache->SetStringValue(CACHE_AFK_DND_REASON, reason); };

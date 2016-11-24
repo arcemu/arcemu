@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -313,10 +313,26 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 
 	// spell cancel on movement, for now only fishing is added
 	Object* t_go = _player->m_SummonedObject;
-	if(t_go)
-	{
-		if(t_go->GetEntry() == GO_FISHING_BOBBER)
-			TO_GAMEOBJECT(t_go)->EndFishing(GetPlayer(), true);
+	if (t_go != NULL){
+
+		if (t_go->IsGameObject()){
+
+			GameObject *go = TO_GAMEOBJECT(t_go);
+
+				if (go->GetType() == GAMEOBJECT_TYPE_FISHINGNODE){
+
+					Arcemu::GO_FishingNode *fn = static_cast< Arcemu::GO_FishingNode* >(go);
+					fn->EndFishing(true);
+					
+					Spell *s = _player->GetCurrentSpell();
+					if (s != NULL){
+						s->SendChannelUpdate(0);
+						s->finish(false);
+					}
+
+				}
+
+			}
 	}
 
 	/************************************************************************/

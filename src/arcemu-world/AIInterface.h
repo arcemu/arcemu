@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -248,38 +248,13 @@ struct SplinePoint
 	uint32 arrive; //mstime the npc reaches the destination
 };
 
-/*
-#if ENABLE_SHITTY_STL_HACKS == 1
-typedef HM_NAMESPACE::hash_map<Unit*, int32> TargetMap;
-#else
-namespace HM_NAMESPACE
-{
-	template <>
-	struct hash<Unit*>
-	{
-		union __vp {
-			size_t s;
-			Unit* p;
-		};
 
-		size_t operator()(Unit* __x) const
-		{
-			__vp vp;
-			vp.p = __x;
-			return vp.s;
-		}
-	};
-};
-
-typedef HM_NAMESPACE::hash_map<Unit*, int32, HM_NAMESPACE::hash<Unit*> > TargetMap;
-#endif
-*/
 typedef HM_NAMESPACE::hash_map<uint64, int32> TargetMap;
 
 typedef std::set<Unit*> AssistTargetSet;
 typedef std::map<uint32, AI_Spell*> SpellMap;
 
-class SERVER_DECL AIInterface
+class SERVER_DECL AIInterface : public Arcemu::IUpdatable
 {
 	public:
 
@@ -393,7 +368,7 @@ class SERVER_DECL AIInterface
 		void EventChangeFaction(Unit* ForceAttackersToHateThisInstead = NULL);	//we have to tell our current enemies to stop attacking us, we should also forget about our targets
 
 		// Update
-		virtual void Update(uint32 p_time);
+		void Update(unsigned long time_passed);
 
 		void SetReturnPosition();
 

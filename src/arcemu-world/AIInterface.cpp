@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -192,16 +192,16 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		(*this.*AIEventHandlers[event])(pUnit, misc1);
 }
 
-void AIInterface::Update(uint32 p_time)
+void AIInterface::Update(unsigned long time_passed)
 {
 	float tdist;
 	if(m_AIType == AITYPE_TOTEM)
 	{
-		_UpdateTotem(p_time);
+		_UpdateTotem(time_passed);
 		return;
 	}
 
-	_UpdateTimer(p_time);
+	_UpdateTimer(time_passed);
 	_UpdateTargets();
 
 	if(m_Unit->isAlive() && m_AIState != STATE_IDLE
@@ -216,23 +216,23 @@ void AIInterface::Update(uint32 p_time)
 
 				if(pPet->GetPetAction() == PET_ACTION_ATTACK || pPet->GetPetState() != PET_STATE_PASSIVE)
 				{
-					_UpdateCombat(p_time);
+					_UpdateCombat(time_passed);
 				}
 			}
 			//we just use any creature as a pet guardian
 			else if(!m_Unit->IsPet())
 			{
-				_UpdateCombat(p_time);
+				_UpdateCombat(time_passed);
 			}
 		}
 		else
 		{
-			_UpdateCombat(p_time);
+			_UpdateCombat(time_passed);
 		}
 	}
 
 	UpdateMovementSpline();
-	_UpdateMovement(p_time);
+	_UpdateMovement(time_passed);
 
 	if(m_AIState == STATE_EVADE)
 	{
@@ -265,9 +265,9 @@ void AIInterface::Update(uint32 p_time)
 
 	if(m_fleeTimer)
 	{
-		if(m_fleeTimer > p_time)
+		if(m_fleeTimer > time_passed)
 		{
-			m_fleeTimer -= p_time;
+			m_fleeTimer -= time_passed;
 			_CalcDestinationAndMove(getNextTarget(), 5.0f);
 		}
 		else
@@ -292,7 +292,7 @@ void AIInterface::Update(uint32 p_time)
 
 	if(!getNextTarget() && !m_fleeTimer && m_creatureState == STOPPED && m_AIState == STATE_IDLE && m_Unit->isAlive())
 	{
-		if(timed_emote_expire <= p_time)    // note that creature might go idle and p_time might get big next time ...We do not skip emotes because of lost time
+		if(timed_emote_expire <= time_passed)    // note that creature might go idle and time_passed might get big next time ...We do not skip emotes because of lost time
 		{
 			if((*next_timed_emote)->type == 1)   //standstate
 			{
@@ -319,7 +319,7 @@ void AIInterface::Update(uint32 p_time)
 				next_timed_emote = timed_emotes->begin();
 		}
 		else
-			timed_emote_expire -= p_time;
+			timed_emote_expire -= time_passed;
 	}
 }
 

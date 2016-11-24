@@ -31,13 +31,13 @@ void RuinsOfLordaeron::OnCreate(){
 	GameObject *obj = NULL;
 
 	obj = SpawnGameObject(185917, 572, 1278.647705f, 1730.556641f, 31.605574f, 1.684245f, 32, 1375, 1.0f);
-	obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	obj->SetState(1);
 	obj->SetParentRotation(2, 0.746058f);
 	obj->SetParentRotation(3, 0.665881f);
 	m_gates.insert(obj);
 	
 	obj = SpawnGameObject(185918, 572, 1293.560791f, 1601.937988f, 31.605574f, -1.457349f, 32, 1375, 1.0f);
-	obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	obj->SetState(1);
 	obj->SetParentRotation(2, -0.665881f);
 	obj->SetParentRotation(3, 0.746058f);
 	m_gates.insert(obj);
@@ -47,19 +47,19 @@ void RuinsOfLordaeron::OnCreate(){
 
 void RuinsOfLordaeron::HookOnShadowSight(){
 	m_buffs[0] = SpawnGameObject(184664, 572, 1328.729268f, 1632.738403f, 34.838585f, 2.611449f, 32, 1375, 1.0f);
-	m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	m_buffs[0]->SetState(1);
 	m_buffs[0]->SetParentRotation(2, 0.904455f);
 	m_buffs[0]->SetParentRotation(3, -0.426569f);
 	m_buffs[0]->SetType(GAMEOBJECT_TYPE_TRAP);
-	m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	m_buffs[0]->SetAnimProgress(100);
 	m_buffs[0]->PushToWorld(m_mapMgr);
 	
 	m_buffs[1] = SpawnGameObject(184664, 572, 1243.306763f, 1699.334351f, 34.837566f, 5.713773f, 32, 1375, 1.0f);
-	m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	m_buffs[1]->SetState(1);
 	m_buffs[1]->SetParentRotation(2, 0.90445f);
 	m_buffs[1]->SetParentRotation(3, -0.426569f);
 	m_buffs[1]->SetType(GAMEOBJECT_TYPE_TRAP);
-	m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	m_buffs[1]->SetAnimProgress(100);
 	m_buffs[1]->PushToWorld(m_mapMgr);
 
 }

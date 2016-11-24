@@ -1,7 +1,7 @@
 /*
 * ArcEmu MMORPG Server
 * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
-* Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+* Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -504,12 +504,15 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			tempPlayerVec[0].clear();
 			tempPlayerVec[1].clear();
 
+			// We try to add the players who queued for a specific Bg/Arena instance to
+			// the Bg/Arena where they queued to, and add the rest to another list 
 			for(it3 = m_queuedPlayers[i][j].begin(); it3 != m_queuedPlayers[i][j].end();)
 			{
 				it4 = it3++;
 				plrguid = *it4;
 				plr = objmgr.GetPlayer(plrguid);
 
+				// Player has left the game or switched level group since queuing ( by leveling for example ) 
 				if(!plr || GetLevelGrouping(plr->getLevel()) != j)
 				{
 					m_queuedPlayers[i][j].erase(it4);
@@ -522,7 +525,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					iitr = m_instances[i].find(plr->m_bgQueueInstanceId);
 					if(iitr == m_instances[i].end())
 					{
-						// queue no longer valid
+						// queue no longer valid, since instance has closed since queuing 
 						plr->GetSession()->SystemMessage(plr->GetSession()->LocalizedWorldSrv(52), plr->m_bgQueueInstanceId);
 						plr->m_bgIsQueued = false;
 						plr->m_bgQueueType = 0;
@@ -531,7 +534,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						continue;
 					}
 
-					// can we join?
+					// can we join the specified Bg instance?
 					bg = iitr->second;
 					if(bg->CanPlayerJoin(plr, bg->GetType()))
 					{
@@ -548,7 +551,8 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				}
 			}
 
-			// try to join existing instances
+			// Now that we have a list of players who didn't queue for a specific instance
+			// try to add them to a Bg/Arena that is already under way 
 			for(iitr = m_instances[i].begin(); iitr != m_instances[i].end(); ++iitr)
 			{
 				if(iitr->second->HasEnded() || iitr->second->GetLevelGroup() != j)
@@ -599,6 +603,8 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				}
 			}
 
+			// Now that that we added everyone we could to a running Bg/Arena
+			// We shall see if we can start a new one! 
 			if(IS_ARENA(i))
 			{
 				// enough players to start a round?

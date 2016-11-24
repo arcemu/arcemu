@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -371,7 +371,7 @@ class SERVER_DECL Creature : public Unit
 		void CreateWayPoint(uint32 WayPointID, uint32 mapid, float x, float y, float z, float ang);
 
 		/// Updates
-		virtual void Update(uint32 time);
+		void Update(unsigned long time_passed);
 
 		/// Creature inventory
 		ARCEMU_INLINE uint32 GetItemIdBySlot(uint32 slot) { return m_SellItems->at(slot).itemid; }

@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -766,7 +766,12 @@ void LootRoll::Finalize()
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* go = _mgr->GetGameObject(GET_LOWGUID_PART(_guid));
-		if(go) pLoot = &go->loot;
+		if (go != NULL){
+			if (go->IsLootable()){
+				Arcemu::GO_Lootable *pLGO = static_cast< Arcemu::GO_Lootable* >(go);
+				pLoot = &pLGO->loot;
+			}
+		}
 	}
 
 	if(!pLoot)

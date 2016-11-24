@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -156,11 +156,12 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode(WorldPacket & recv_data)
 			qst_giver = quest_giver;
 		else
 			return;
-		bValid = quest_giver->isQuestGiver();
-		if(quest_giver->isQuestGiver())
+		bValid = false;
+		if(quest_giver->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 		{
 			bValid = true;
-			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)quest_giver->GetQuestRelation(qst->id), false);
+			Arcemu::GO_QuestGiver *qg = static_cast< Arcemu::GO_QuestGiver* >(quest_giver);
+			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)qg->GetQuestRelation(qst->id), false);
 		}
 	}
 	else if(guidtype == HIGHGUID_TYPE_ITEM)
@@ -369,17 +370,19 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode(WorldPacket & recv_data)
 			qst_giver = quest_giver;
 		else
 			return; // oops..
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		bValid = false;
+		if (quest_giver->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 		{
-			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
+			bValid = true;
+			Arcemu::GO_QuestGiver *qg = static_cast< Arcemu::GO_QuestGiver* >(quest_giver);
+			qst = qg->FindQuest(quest_id, QUESTGIVER_QUEST_END);
 			/*if(!qst) sQuestMgr.FindQuest(quest_id);*/
 			if(!qst)
 			{
 				LOG_ERROR("WARNING: Cannot get reward for quest %u, as it doesn't exist at GO %u.", quest_id, quest_giver->GetEntry());
 				return;
 			}
-			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)quest_giver->GetQuestRelation(qst->id), false);
+			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)qg->GetQuestRelation(qst->id), false);
 		}
 	}
 
@@ -452,17 +455,18 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode(WorldPacket & recvPacket)
 			qst_giver = quest_giver;
 		else
 			return; // oops..
-		bValid = quest_giver->isQuestGiver();
-		if(bValid)
+		bValid = false;
+		if (quest_giver->GetType() == GAMEOBJECT_TYPE_QUESTGIVER)
 		{
-			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
+			Arcemu::GO_QuestGiver *qg = static_cast< Arcemu::GO_QuestGiver* >(quest_giver);
+			qst = qg->FindQuest(quest_id, QUESTGIVER_QUEST_END);
 			/*if(!qst) sQuestMgr.FindQuest(quest_id);*/
 			if(!qst)
 			{
 				LOG_ERROR("WARNING: Cannot complete quest %u, as it doesn't exist at GO %u.", quest_id, quest_giver->GetEntry());
 				return;
 			}
-			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)quest_giver->GetQuestRelation(qst->id), false);
+			status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), qst, (uint8)qg->GetQuestRelation(qst->id), false);
 		}
 	}
 

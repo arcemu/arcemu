@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -588,11 +588,11 @@ bool World::SetInitialWorldSettings()
 	return true;
 }
 
-void World::Update(time_t diff)
+void World::Update(unsigned long time_passed)
 {
-	eventholder->Update((uint32)diff);
+	eventholder->Update((uint32)time_passed);
 	sAuctionMgr.Update();
-	UpdateQueuedSessions((uint32)diff);
+	UpdateQueuedSessions((uint32)time_passed);
 #ifdef SESSION_CAP
 	if(GetSessionCount() >= SESSION_CAP)
 		TerminateProcess(GetCurrentProcess(), 0);

@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2014 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -681,6 +681,154 @@ bool ChatHandler::HandleMonsterYellCommand(const char* args, WorldSession* m_ses
 	return true;
 }
 
+bool ChatHandler::HandleGORebuild(const char *args, WorldSession *m_session){
+	if (args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if (go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	if (go->GetType() != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING){
+		RedSystemMessage(m_session, "Selected GameObject is not of Type 35 (DESTRUCTIBLE).");
+		return true;
+	}
+
+	Arcemu::GO_Destructible *dgo = TO< Arcemu::GO_Destructible* >(go);
+
+	dgo->Rebuild();
+
+	GreenSystemMessage(m_session, "GameObject has been rebuilt.");
+	GreenSystemMessage(m_session, "New hitpoints %u", dgo->GetHP());
+
+	return true;
+}
+
+bool ChatHandler::HandleGODamage(const char *args, WorldSession *m_session){
+	if (args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if (go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	if (go->GetType() != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING){
+		RedSystemMessage(m_session, "Selected GameObject is not of Type 35 (DESTRUCTIBLE).");
+		return true;
+	}
+
+	uint32 damage = 0;
+	uint32 spellid = 0;
+
+	if (sscanf(args, "%u %u", &damage, &spellid) != 2){
+		if (damage == 0)
+			return false;
+	}
+
+	if (spellid == 0)
+		spellid = 57609;
+
+	Arcemu::GO_Destructible *dgo = TO< Arcemu::GO_Destructible* >(go);
+
+	if (dgo->GetHP() == 0){
+		RedSystemMessage(m_session, "Cannot further damage a destroyed GameObject");
+		return true;
+	}
+
+	dgo->Damage(damage, m_session->GetPlayer()->GetGUID(), 0, spellid);
+
+	GreenSystemMessage(m_session, "GameObject has been damaged for %u hitpoints", damage);
+	GreenSystemMessage(m_session, "New hitpoints %u", dgo->GetHP());
+
+	return true;
+}
+
+bool ChatHandler::HandleGOFaction(const char *args, WorldSession *m_session){
+	if(args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if(go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	uint32 faction = 0;
+	if(sscanf(args, "%u", &faction) != 1){
+		return false;
+	}
+
+	go->SetFaction(faction);
+	GreenSystemMessage(m_session, "Set GO faction to %u.", faction);
+
+		return true;
+}
+
+bool ChatHandler::HandleGOFlags(const char *args, WorldSession *m_session){
+	if(args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if(go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	uint32 flags = 0;
+	if(sscanf(args, "%u", &flags) != 1)
+		return false;
+
+	go->SetFlags(flags);
+	GreenSystemMessage(m_session, "Set GO Flags to %u", flags);
+
+	return true;
+}
+
+bool ChatHandler::HandleGOState(const char *args, WorldSession *m_session){
+	if(args == NULL)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if(go == NULL){
+		RedSystemMessage(m_session, "No GameObject is selected.");
+		return true;
+	}
+
+	uint32 state = 0;
+	if(sscanf(args, "%u", &state) != 1)
+		return false;
+
+	go->SetState(static_cast< uint8 >(state));
+	GreenSystemMessage(m_session, "Set GO State to %u", state);
+	return true;
+}
+
+bool ChatHandler::HandleGOSelectByGUID(const char *args, WorldSession *m_session){
+	if(args == NULL)
+		return false;
+
+	uint32 guid = 0;
+	if(sscanf(args, "%u", &guid) != 1){
+		return false;
+	}
+
+	if(guid == 0)
+		return false;
+
+	GameObject *go = m_session->GetPlayer()->GetMapMgr()->GetGameObject(guid);
+	if(go == NULL){
+		RedSystemMessage(m_session, "No GameObject was found with GUID %u", guid);
+		return true;
+	}
+
+	m_session->GetPlayer()->m_GM_SelectedGO = go->GetGUID();
+	GreenSystemMessage(m_session, "Selected GameObject [ %s ] which is %.3f meters away from you.", go->GetInfo()->Name, m_session->GetPlayer()->CalcDistance(go));
+	return true;
+}
 
 bool ChatHandler::HandleGOSelect(const char* args, WorldSession* m_session)
 {
@@ -849,7 +997,7 @@ bool ChatHandler::HandleGOSpawn(const char* args, WorldSession* m_session)
 	gs->entry = go->GetEntry();
 	gs->facing = go->GetOrientation();
 	gs->faction = go->GetFaction();
-	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
+	gs->flags = go->GetFlags();
 	gs->id = objmgr.GenerateGameObjectSpawnID();
 	gs->o = 0.0f;
 	gs->o1 = go->GetParentRotation(0);
@@ -859,8 +1007,7 @@ bool ChatHandler::HandleGOSpawn(const char* args, WorldSession* m_session)
 	gs->x = go->GetPositionX();
 	gs->y = go->GetPositionY();
 	gs->z = go->GetPositionZ();
-	gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
-	//gs->stateNpcLink = 0;
+	gs->state = go->GetState();
 	gs->phase = go->GetPhase();
 	gs->overrides = go->GetOverrides();
 
@@ -946,15 +1093,16 @@ bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 		return true;
 	}
 
-	SystemMessage(m_session, "%s Information:",	MSG_COLOR_SUBWHITE);
-	SystemMessage(m_session, "%s SpawnID:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->m_spawn != NULL ? GObj->m_spawn->id : 0);
-	SystemMessage(m_session, "%s Entry:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetEntry());
-	SystemMessage(m_session, "%s Model:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID));
-	SystemMessage(m_session, "%s State:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetByte(GAMEOBJECT_BYTES_1, 0));
-	SystemMessage(m_session, "%s flags:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value(GAMEOBJECT_FLAGS));
+	SystemMessage(m_session, "%s Information:",	 MSG_COLOR_SUBWHITE);
+	SystemMessage(m_session, "%s SpawnID:%s%u",	 MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->m_spawn != NULL ? GObj->m_spawn->id : 0);
+	SystemMessage(m_session, "%s Entry:%s%u",    MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetEntry());
+	SystemMessage(m_session, "%s GUID:%s%u",     MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetLowGUID());
+	SystemMessage(m_session, "%s Model:%s%u",    MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetDisplayId());
+	SystemMessage(m_session, "%s State:%s%u",    MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetState());
+	SystemMessage(m_session, "%s flags:%s%u",    MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetFlags());
 	SystemMessage(m_session, "%s dynflags:%s%u", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value(GAMEOBJECT_DYNAMIC));
-	SystemMessage(m_session, "%s faction:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetFaction());
-	SystemMessage(m_session, "%s phase:%s%u",	MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetPhase());
+	SystemMessage(m_session, "%s faction:%s%u",	 MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetFaction());
+	SystemMessage(m_session, "%s phase:%s%u",    MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetPhase());
 
 	char gotypetxt[50];
 	switch(GObj->GetType())
@@ -1060,10 +1208,10 @@ bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 
 	if(GOInfo->Name)
 		SystemMessage(m_session, "%s Name:%s%s", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GOInfo->Name);
-	SystemMessage(m_session, "%s Size:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetScale());
-	SystemMessage(m_session, "%s Parent Rotation O1:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(1));
-	SystemMessage(m_session, "%s Parent Rotation O2:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(2));
-	SystemMessage(m_session, "%s Parent Rotation O3:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(3));
+		SystemMessage(m_session, "%s Size:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetScale());
+		SystemMessage(m_session, "%s Parent Rotation O1:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(1));
+		SystemMessage(m_session, "%s Parent Rotation O2:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(2));
+		SystemMessage(m_session, "%s Parent Rotation O3:%s%f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetParentRotation(3));
 
 	if( GOInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
 		SystemMessage(m_session, "%s HP:%s%u/%u", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetHP(), GObj->GetMaxHP() );
@@ -1080,45 +1228,39 @@ bool ChatHandler::HandleGOEnable(const char* args, WorldSession* m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	if(GObj->GetUInt32Value(GAMEOBJECT_DYNAMIC) == 1)
+	if(GObj->IsActive())
 	{
 		// Deactivate
-		GObj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
+		GObj->Deactivate();
 		BlueSystemMessage(m_session, "Gameobject deactivated.");
 	}
 	else
 	{
 		// /Activate
-		GObj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
+		GObj->Activate();
 		BlueSystemMessage(m_session, "Gameobject activated.");
 	}
 	sGMLog.writefromsession(m_session, "activated/deactivated gameobject %s, entry %u", GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name, GObj->GetEntry());
 	return true;
 }
 
-bool ChatHandler::HandleGOActivate(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleGOOpen(const char* args, WorldSession *m_session)
 {
 	GameObject* GObj = m_session->GetPlayer()->GetSelectedGo();
-	if(!GObj)
+	if(GObj == NULL)
 	{
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	if(GObj->GetByte(GAMEOBJECT_BYTES_1, 0) == 1)
-	{
-		// Close/Deactivate
-		GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-		GObj->RemoveFlag(GAMEOBJECT_FLAGS, 1);
-		BlueSystemMessage(m_session, "Gameobject closed.");
-	}
-	else
-	{
-		// Open/Activate
-		GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		GObj->SetFlag(GAMEOBJECT_FLAGS, 1);
+
+	if (GObj->GetState() != GAMEOBJECT_STATE_OPEN){
+		GObj->SetState(GAMEOBJECT_STATE_OPEN);
 		BlueSystemMessage(m_session, "Gameobject opened.");
 	}
-	sGMLog.writefromsession(m_session, "opened/closed gameobject %s, entry %u", GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name, GObj->GetEntry());
+	else{
+		GObj->SetState(GAMEOBJECT_STATE_CLOSED);
+		BlueSystemMessage(m_session, "Gameobject closed.");
+	}
 	return true;
 }
 
@@ -1340,7 +1482,7 @@ bool ChatHandler::HandleGOAnimProgress(const char* args, WorldSession* m_session
 		return false;
 
 	uint32 ap = atol(args);
-	GObj->SetByte(GAMEOBJECT_BYTES_1, 3, static_cast<uint8>(ap));
+	GObj->SetAnimProgress(static_cast<uint8>(ap));
 	BlueSystemMessage(m_session, "Set ANIMPROGRESS to %u", ap);
 	return true;
 }
