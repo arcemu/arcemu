@@ -903,6 +903,9 @@ uint8 Spell::prepare(SpellCastTargets* targets)
 		return SPELL_FAILED_DONT_REPORT;
 	}
 
+    //crash fix
+    if( this == 0 )
+        return SPELL_FAILED_NOT_READY;
 	uint8 ccr;
 
 	// In case spell got cast from a script check fear/wander states
@@ -1915,7 +1918,7 @@ void Spell::SendCastResult(uint8 result)
 
 	if(!plr && u_caster)
 		plr = u_caster->m_redirectSpellPackets;
-	if(!plr) return;
+	if( !plr || !plr->IsPlayer() ) return;//crash fix
 
 	// for some reason, the result extra is not working for anything, including SPELL_FAILED_REQUIRES_SPELL_FOCUS
 	switch(result)

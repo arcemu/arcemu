@@ -78,7 +78,7 @@ void MapCell::SetActivity(bool state)
 		// Move all objects to active set.
 		for(ObjectSet::iterator itr = _objects.begin(); itr != _objects.end(); ++itr)
 		{
-			if(!(*itr)->IsActive() && (*itr)->CanActivate())
+			if(( *itr ) && !(*itr)->IsActive() && (*itr)->CanActivate()) //crash fix
 				(*itr)->Activate(_mapmgr);
 		}
 

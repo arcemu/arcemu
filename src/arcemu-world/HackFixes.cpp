@@ -6727,6 +6727,15 @@ void ApplyNormalFixes()
 	}
 
 	/**********************************************************
+	 *	Bone Shield
+	**********************************************************/
+	sp = dbcSpell.LookupEntryForced( 49222 ); 
+	if( sp != NULL )
+    {
+		sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
+    }
+
+	/**********************************************************
 	 *	Death Grip
 	 **********************************************************/
 	sp = CheckAndReturnSpellEntry(49576);

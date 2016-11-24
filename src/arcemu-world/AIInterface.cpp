@@ -826,6 +826,10 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					if(!m_nextSpell || !getNextTarget())
 						return;  // this shouldn't happen
 
+                    //crashfix
+                    if( m_nextSpell->spell == 0 && m_nextSpell->procChance >= 100000 )
+                        return;
+
 					SpellCastTime* sd = dbcSpellCastTime.LookupEntry(m_nextSpell->spell->CastingTimeIndex);
 
 					float distance = m_Unit->CalcDistance(getNextTarget());
@@ -2230,6 +2234,10 @@ WayPoint* AIInterface::getWayPoint(uint32 wpid)
 
 void AIInterface::_UpdateMovement(uint32 p_time)
 {
+    //crashfix
+    if( this == 0 )
+        return;
+
 	if(!m_Unit->isAlive())
 	{
 		StopMovement(0);
