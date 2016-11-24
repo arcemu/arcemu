@@ -764,6 +764,7 @@ void Guild::AddGuildMember(PlayerInfo* pMember, WorldSession* pClient, int32 For
 	{
 		pMember->m_loggedInPlayer->SetGuildId(m_guildId);
 		pMember->m_loggedInPlayer->SetGuildRank(r->iId);
+		pMember->m_loggedInPlayer->SendGuildMOTD();
 	}
 
 	CharacterDatabase.Execute("INSERT INTO guild_data VALUES(%u, %u, %u, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", m_guildId, pMember->guid, r->iId);
