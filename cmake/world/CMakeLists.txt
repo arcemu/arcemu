@@ -286,7 +286,9 @@ include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${DEPENDENCY_LIBS} ${EXTRA_LIBS_PATH} )
 
-add_executable( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
+SET(WIN_RESOURCE_FILE ${ROOT_PATH}/src/arcemu-world/resources.rc)
+
+ADD_EXECUTABLE( ${PROJECT_NAME} ${SRCS} ${HEADERS} ${WIN_RESOURCE_FILE} )
 
 IF( CMAKE_GENERATOR MATCHES Visual*)
 	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h ${prefix}/StdAfx.cpp)
