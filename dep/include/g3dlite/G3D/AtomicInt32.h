@@ -70,75 +70,80 @@ public:
 
     /** Returns the old value, before the add. */
     int32 add(const int32 x) {
-#       if defined(G3D_WIN32)
-
+        /*
+         * select atomic functions by used compiler
+         */
+#       if defined(_MSC_VER)
+            /*
+             * This implies win32, use the Interlocked* functions
+             */
             return InterlockedExchangeAdd(&m_value, x);
-
-#       elif defined(G3D_LINUX) || defined(G3D_FREEBSD)
-
-/*
- * since this is linux or freebsd, we should be using gcc right now.
- * So why not use the builtin atomic functions provided by it?
- * 
- * Of course this is a bad idea, someone may be using llvm, icc or
- * something really exotic. anyway, We guess GCC for now.
- *
- * there are new atomic functions since gcc-4.7,
- * while the older ones will be deprecated in the future,
- * but I dont care for now.
- */
-
-            return __sync_fetch_and_add(&m_value, 1);
-
-#       elif defined(G3D_OSX)
-
-            int32 old = m_value;
-            OSAtomicAdd32(x, &m_value);
-            return old;
-
+#       elif defined __GNUC__ && ((__GNUC_ == 4 && __GNUC_MINOR__ >= 1) || __GNUC_ > 4)
+            /*
+             * Use builtin atomic functions
+             */
+            return __sync_fetch_and_add(&m_value, x);
+#       else
+#           pragma error "FATAL ERROR: unsupported compiler."
 #       endif
     }
 
     /** Returns old value. */
     int32 sub(const int32 x) {
-        return add(-x);
+        /*
+         * select atomic functions by used compiler
+         */
+#       if defined(_MSC_VER)
+            /*
+             * This implies win32, use the Interlocked* functions
+             */
+            return InterlockedExchangeSubtract(&m_value, x);
+#       elif defined __GNUC__ && ((__GNUC_ == 4 && __GNUC_MINOR__ >= 1) || __GNUC_ > 4)
+            /*
+             * Use builtin atomic functions
+             */
+            return __sync_fetch_and_sub(&m_value, x);
+#       else
+#           pragma error "FATAL ERROR: unsupported compiler."
+#       endif
     }
 
-    void increment() {
-#       if defined(G3D_WIN32)
-            // Note: returns the newly incremented value
-            InterlockedIncrement(&m_value);
-#       elif defined(G3D_LINUX) || defined(G3D_FREEBSD)
-            add(1);
-#       elif defined(G3D_OSX)
-            // Note: returns the newly incremented value
-            OSAtomicIncrement32(&m_value);
+    int32 increment() {
+        /*
+         * select atomic functions by used compiler
+         */
+#       if defined(_MSC_VER)
+            /*
+             * This implies win32, use the Interlocked functions
+             */
+            return InterlockedIncrement(&m_value);
+#       elif defined __GNUC__ && ((__GNUC_ == 4 && __GNUC_MINOR__ >= 1) || __GNUC_ > 4)
+            /*
+             * Use builtin atomic functions
+             */
+            return __sync_add_and_fetch(&m_value, 1);
+#       else
+#           pragma error "FATAL ERROR: unsupported compiler."
 #       endif
     }
 
     /** Returns zero if the result is zero after decrement, non-zero otherwise.*/
     int32 decrement() {
-#       if defined(G3D_WIN32)
-            // Note: returns the newly decremented value
+        /*
+         * select atomic functions by used compiler
+         */
+#       if defined(_MSC_VER)
+            /*
+             * This implies win32, use the Interlocked* functions
+             */
             return InterlockedDecrement(&m_value);
-#       elif defined(G3D_LINUX)  || defined(G3D_FREEBSD)
-
-/*
- * since this is linux or freebsd, we should be using gcc right now.
- * So why not use the builtin atomic functions provided by it?
- * 
- * Of course this is a bad idea, someone may be using llvm, icc or
- * something really exotic. anyway, We guess GCC for now.
- *
- * there are new atomic functions since gcc-4.7,
- * while the older ones will be deprecated in the future,
- * but I dont care for now.
- */
+#       elif defined __GNUC__ && ((__GNUC_ == 4 && __GNUC_MINOR__ >= 1) || __GNUC_ > 4)
+            /*
+             * Use builtin atomic functions
+             */
             return __sync_sub_and_fetch(&m_value, 1);
-
-#       elif defined(G3D_OSX)
-            // Note: returns the newly decremented value
-            return OSAtomicDecrement32(&m_value);
+#       else
+#           pragma error "FATAL ERROR: unsupported compiler."
 #       endif
     }
 
@@ -153,36 +158,21 @@ public:
         Under VC6 the sign bit may be lost.
      */ 
     int32 compareAndSet(const int32 comperand, const int32 exchange) {
-#       if defined(G3D_WIN32)
+        /*
+         * select atomic functions by used compiler
+         */
+#       if defined(_MSC_VER)
+            /*
+             * This implies win32, use the Interlocked* functions
+             */
             return InterlockedCompareExchange(&m_value, exchange, comperand);
-#       elif defined(G3D_LINUX) || defined(G3D_FREEBSD)
-
-/*
- * since this is linux or freebsd, we should be using gcc right now.
- * So why not use the builtin atomic functions provided by it?
- * 
- * Of course this is a bad idea, someone may be using llvm, icc or
- * something really exotic. anyway, We guess GCC for now.
- *
- * there are new atomic functions since gcc-4.7,
- * while the older ones will be deprecated in the future,
- * but I dont care for now.
- */
-
+#       elif defined __GNUC__ && ((__GNUC_ == 4 && __GNUC_MINOR__ >= 1) || __GNUC_ > 4)
+            /*
+             * Use builtin atomic functions
+             */
             return __sync_val_compare_and_swap(&m_value, comperand, exchange);
-
-#       elif defined(G3D_OSX)
-            // Based on Apache Portable Runtime
-            // http://koders.com/c/fid3B6631EE94542CDBAA03E822CA780CBA1B024822.aspx
-            int32 ret;
-            asm volatile ("lock; cmpxchgl %1, %2"
-                          : "=a" (ret)
-                          : "r" (exchange), "m" (m_value), "0"(comperand)
-                          : "memory", "cc");
-            return ret;
-
-            // Note that OSAtomicCompareAndSwap32 does not return a useful value for us
-            // so it can't satisfy the cmpxchgl contract.
+#       else
+#           pragma error "FATAL ERROR: unsupported compiler."
 #       endif
     }
 
