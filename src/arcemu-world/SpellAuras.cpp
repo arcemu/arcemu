@@ -3052,7 +3052,7 @@ void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 				amptitude *= caster->GetCastSpeedMod();
 		}
 
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe, true, mod->m_amount,
+		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe, true, mod->m_amount, m_target,
 		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
@@ -3095,25 +3095,30 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 			return;
 
 
-		float amptitude = static_cast<float>(GetSpellProto()->EffectAmplitude[mod->i]);
-		Unit* caster = GetUnitCaster();
-		uint32 numticks = GetSpellDuration(m_spellProto, caster) / m_spellProto->EffectAmplitude[mod->i];
-		if(caster != NULL)
+		float amptitude = static_cast< float >(GetSpellProto()->EffectAmplitude[mod->i]);
+		Unit* u_caster = GetUnitCaster();
+		uint32 numticks = GetSpellDuration(m_spellProto, u_caster) / m_spellProto->EffectAmplitude[mod->i];
+		if(u_caster != NULL)
 		{
-			SM_FFValue(caster->SM_FAmptitude, &amptitude, m_spellProto->SpellGroupType);
-			SM_PFValue(caster->SM_PAmptitude, &amptitude, m_spellProto->SpellGroupType);
+			SM_FFValue(u_caster->SM_FAmptitude, &amptitude, m_spellProto->SpellGroupType);
+			SM_PFValue(u_caster->SM_PAmptitude, &amptitude, m_spellProto->SpellGroupType);
 			if(m_spellProto->ChannelInterruptFlags != 0)
-				amptitude *= caster->GetCastSpeedMod();
+				amptitude *= u_caster->GetCastSpeedMod();
 		}
 
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger, false, int32(0),
-		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		if(trigger->EffectImplicitTargetA[0] == 76)
+			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger, false, int32(0), u_caster,
+		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, static_cast< int32 >(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		else
+			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger, false, int32(0), m_target,
+		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, static_cast< int32 >(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
 	}
 }
 
-void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue)
+void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo, bool overridevalues, int32 overridevalue, Unit* caster)
 {
-	Spell* spell = sSpellFactoryMgr.NewSpell(m_target, spellInfo, true, this);
+	Spell* spell = sSpellFactoryMgr.NewSpell(caster, spellInfo, true, this);
 	if(overridevalues)
 	{
 		spell->m_overrideBasePoints = true;
