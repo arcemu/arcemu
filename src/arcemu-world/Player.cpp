@@ -28,6 +28,54 @@ UpdateMask Player::m_visibleUpdateMask;
 #define MACHINEGUN 25026
 #define DROPMINE 25024
 #define SHIELD 27759
+
+//chat message defines//////////////////////////////////////////////////////////////////////////////
+// SendChatMessage() and SendChatMessageToPlayer() types
+/* Value | Description
+ * ------------------------------------
+ * 0	 | CHAT_MSG_SYSTEM
+ * 1	 | CHAT_MSG_SAY
+ * 2	 | CHAT_MSG_PARTY
+ * 3 	 | CHAT_MSG_RAID
+ * 4 	 | CHAT_MSG_GUILD
+ * 5 	 | CHAT_MSG_OFFICER
+ * 6 	 | CHAT_MSG_YELL
+ * 7 	 | CHAT_MSG_WHISPER
+ * 9 	 | CHAT_MSG_WHISPER_INFORM
+ * 10 	 | CHAT_MSG_EMOTE
+ * 11 	 | CHAT_MSG_TEXT_EMOTE
+ * 23 	 | CHAT_MSG_AFK
+ * 24 	 | CHAT_MSG_DND
+ * 25 	 | CHAT_MSG_IGNORED
+ * 26 	 | CHAT_MSG_SKILL
+ * 27 	 | CHAT_MSG_LOOT
+ * 28 	 | CHAT_MSG_MONEY
+ */
+#define PLAYER_ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES 17
+#define PLAYER_ALLOWED_CHAT_MESSAGE_TYPES 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 24, 25, 26, 27, 28
+//
+// SendChatMessage() and SendChatMessageToPlayer() languages
+/* Value | Description
+ * ------------------------------------
+ * 0	 | LANG_UNIVERSAL
+ * 1	 | LANG_ORCISH
+ * 2 	 | LANG_DARNASSIAN
+ * 3 	 | LANG_TAURAHE
+ * 6 	 | LANG_DWARVISH
+ * 7 	 | LANG_COMMON
+ * 8 	 | LANG_DEMONIC
+ * 9 	 | LANG_TITAN
+ * 10 	 | LANG_THELASSIAN
+ * 11 	 | LANG_DRACONIC
+ * 12 	 | LANG_GNOMISH
+ * 13 	 | LANG_TROLL
+ * 14 	 | LANG_GUTTERSPEAK
+ * 33 	 | LANG_DRAENEI
+ */
+#define ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES 14
+#define ALLOWED_CHAT_MESSAGE_LANGUAGES 0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 static uint32 TonkSpecials[4] = {FLAMETHROWER, MACHINEGUN, DROPMINE, SHIELD};
 
 //	 0x3F = 0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 for 80 level
@@ -13140,6 +13188,45 @@ void Player::ApplyFeralAttackPower(bool apply, Item* item)
 
 void Player::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 delay)
 {
+// define NO_SEND_CHAT_MESSAGE_CHECKS to disable these checks
+#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+
+	bool typeIsAllowed = false; // initialize with 'false'; we assume that it's not allowed
+	bool languageIsAllowed = false; // initialize with 'false'; we assume that it's not allowed
+
+	uint8 allowedTypes[PLAYER_ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES] = {PLAYER_ALLOWED_CHAT_MESSAGE_TYPES}; // defines are at the beginning of the file
+	uint32 allowedLanguages[ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES] = {ALLOWED_CHAT_MESSAGE_LANGUAGES}; // defines are at the beginning of the file
+
+	for (int i = 0; i < PLAYER_ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES; i++) // look if there are values matching
+	{
+		if (type == allowedTypes[i])
+		{
+			typeIsAllowed = true;
+			break;
+		}
+	}
+
+	if (typeIsAllowed == false) // not allowed; abort method
+	{
+		return;
+	}
+
+	for (int i = 0; i < ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES; i++) // look if there are values matching
+	{
+		if (lang == allowedLanguages[i])
+		{
+			languageIsAllowed = true;
+			break;
+		}
+	}
+
+	if (languageIsAllowed == false) // not allowed; abort method
+	{
+		return;
+	}
+
+#endif NO_SEND_CHAT_MESSAGE_CHECKS
+
 	if(delay)
 	{
 		sEventMgr.AddEvent(this, &Player::SendChatMessage, type, lang, msg, uint32(0), EVENT_UNIT_CHAT_MSG, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -13153,6 +13240,45 @@ void Player::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 de
 
 void Player::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)
 {
+// define NO_SEND_CHAT_MESSAGE_CHECKS to disable these checks
+#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+
+	bool typeIsAllowed = false; // initialize with 'false'; we assume that it's not allowed
+	bool languageIsAllowed = false; // initialize with 'false'; we assume that it's not allowed
+
+	uint8 allowedTypes[PLAYER_ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES] = {PLAYER_ALLOWED_CHAT_MESSAGE_TYPES}; // defines are at the beginning of the file
+	uint32 allowedLanguages[ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES] = {ALLOWED_CHAT_MESSAGE_LANGUAGES}; // defines are at the beginning of the file
+
+	for (int i = 0; i < PLAYER_ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES; i++) // look if there are values matching
+	{
+		if (type == allowedTypes[i])
+		{
+			typeIsAllowed = true;
+			break;
+		}
+	}
+
+	if (typeIsAllowed == false) // not allowed; abort method
+	{
+		return;
+	}
+
+	for (int i = 0; i < ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES; i++) // look if there are values matching
+	{
+		if (lang == allowedLanguages[i])
+		{
+			languageIsAllowed = true;
+			break;
+		}
+	}
+
+	if (languageIsAllowed == false) // not allowed; abort method
+	{
+		return;
+	}
+
+#endif NO_SEND_CHAT_MESSAGE_CHECKS
+
 	if(plr == NULL)
 		return;
 	WorldPacket* data = sChatHandler.FillMessageData(type, lang, msg, GetGUID());

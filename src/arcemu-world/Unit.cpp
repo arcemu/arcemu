@@ -25,6 +25,41 @@
 
 #include "StdAfx.h"
 
+//chat message defines//////////////////////////////////////////////////////////////////////////////
+// SendChatMessageAlternateEntry() types
+/* Value | Description
+ * ------------------------------------
+ * 8	 | CHAT_MSG_WHISPER_MOB
+ * 12	 | CHAT_MSG_MONSTER_SAY
+ * 13	 | CHAT_MSG_MONSTER_PARTY
+ * 14	 | CHAT_MSG_MONSTER_YELL
+ * 15	 | CHAT_MSG_MONSTER_WHISPER
+ * 16	 | CHAT_MSG_MONSTER_EMOTE
+ */
+#define ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES 6
+#define ALLOWED_CHAT_MESSAGE_TYPES 8, 12, 13, 14, 15, 16
+//
+// SendChatMessageAlternateEntry() languages
+/* Value | Description
+ * ------------------------------------
+ * 0	 | LANG_UNIVERSAL
+ * 1	 | LANG_ORCISH
+ * 2 	 | LANG_DARNASSIAN
+ * 3 	 | LANG_TAURAHE
+ * 6 	 | LANG_DWARVISH
+ * 7 	 | LANG_COMMON
+ * 8 	 | LANG_DEMONIC
+ * 9 	 | LANG_TITAN
+ * 10 	 | LANG_THELASSIAN
+ * 11 	 | LANG_DRACONIC
+ * 12 	 | LANG_GNOMISH
+ * 13 	 | LANG_TROLL
+ * 14 	 | LANG_GUTTERSPEAK
+ * 33 	 | LANG_DRAENEI
+ */
+#define ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES 14
+#define ALLOWED_CHAT_MESSAGE_LANGUAGES 0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static float AttackToRageConversionTable[PLAYER_LEVEL_CAP + 1] =
 {
@@ -5257,6 +5292,45 @@ void Unit::Emote(EmoteType emote)
 
 void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char* msg)
 {
+// define NO_SEND_CHAT_MESSAGE_CHECKS to disable these checks
+#ifndef NO_SEND_CHAT_MESSAGE_CHECKS
+
+	bool typeIsAllowed = false; // initialize with 'false'; we assume that it's not allowed
+	bool languageIsAllowed = false; // initialize with 'false'; we assume that it's not allowed
+
+	uint8 allowedTypes[ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES] = {ALLOWED_CHAT_MESSAGE_TYPES}; // defines are at the beginning of the file
+	uint32 allowedLanguages[ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES] = {ALLOWED_CHAT_MESSAGE_LANGUAGES}; // defines are at the beginning of the file
+
+	for (int i = 0; i < ALLOWED_CHAT_MESSAGE_TYPES_NUM_VALUES; i++) // look if there are values matching
+	{
+		if (type == allowedTypes[i])
+		{
+			typeIsAllowed = true;
+			break;
+		}
+	}
+
+	if (typeIsAllowed == false) // not allowed; abort method
+	{
+		return;
+	}
+
+	for (int i = 0; i < ALLOWED_CHAT_MESSAGE_LANGUAGES_NUM_VALUES; i++) // look if there are values matching
+	{
+		if (lang == allowedLanguages[i])
+		{
+			languageIsAllowed = true;
+			break;
+		}
+	}
+
+	if (languageIsAllowed == false) // not allowed; abort method
+	{
+		return;
+	}
+
+#endif NO_SEND_CHAT_MESSAGE_CHECKS
+
 	size_t UnitNameLength = 0, MessageLength = 0;
 	CreatureInfo* ci;
 
