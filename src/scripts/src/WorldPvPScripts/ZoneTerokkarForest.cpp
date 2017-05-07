@@ -1,9 +1,21 @@
-/**
- * Summit MMORPG Server Software
- * Copyright (c) 2008 Summit Server Team
- * See COPYING for license details.
+/*
+ * ArcScripts for ArcEmu MMORPG Server
+ * Copyright (C) 2009-2013 ArcEmu Team <http://www.arcemu.org/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
 #include "StdAfx.h"
 
 //DELETE FROM gameobject_spawns WHERE `Map` = 530 AND `entry` in (183104, 183411, 182301, 183412, 183413, 183414);
@@ -11,6 +23,37 @@
 #define BANNER_RANGE 900
 #define UPDATE_PERIOD 5000
 #define CAPTURE_RATE 20
+
+// Zone ID
+#define ZONE_TEROKKAR_FOREST									3519
+
+//Worldstates
+#define WORLDSTATE_TEROKKAR_TOWER1_NEUTRAL						2681
+#define WORLDSTATE_TEROKKAR_TOWER1_ALLIANCE						2683
+#define WORLDSTATE_TEROKKAR_TOWER1_HORDE						2682
+
+#define WORLDSTATE_TEROKKAR_TOWER2_NEUTRAL						2686
+#define WORLDSTATE_TEROKKAR_TOWER2_ALLIANCE						2684
+#define WORLDSTATE_TEROKKAR_TOWER2_HORDE						2685
+
+#define WORLDSTATE_TEROKKAR_TOWER3_NEUTRAL						2690
+#define WORLDSTATE_TEROKKAR_TOWER3_ALLIANCE						2688
+#define WORLDSTATE_TEROKKAR_TOWER3_HORDE						2689
+
+#define WORLDSTATE_TEROKKAR_TOWER4_NEUTRAL						2696
+#define WORLDSTATE_TEROKKAR_TOWER4_ALLIANCE						2694
+#define WORLDSTATE_TEROKKAR_TOWER4_HORDE						2695
+
+#define WORLDSTATE_TEROKKAR_TOWER5_NEUTRAL						2693
+#define WORLDSTATE_TEROKKAR_TOWER5_ALLIANCE						2691
+#define WORLDSTATE_TEROKKAR_TOWER5_HORDE						2692
+
+#define WORLDSTATE_TEROKKAR_ALLIANCE_TOWERS_CONTROLLED			2621
+#define WORLDSTATE_TEROKKAR_HORDE_TOWERS_CONTROLLED				2622
+
+#define WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY				2623
+#define WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE				2625
+
 
 // Towers
 enum Towers
@@ -46,35 +89,6 @@ static const uint32 g_allianceStateFields[5]	= {	WORLDSTATE_TEROKKAR_TOWER1_ALLI
 static const uint32 g_neutralStateFields[5]		= {	WORLDSTATE_TEROKKAR_TOWER1_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER2_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER3_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER4_NEUTRAL,	WORLDSTATE_TEROKKAR_TOWER5_NEUTRAL };
 
 // updates clients visual counter, and adds the buffs to players if needed
-HEARTHSTONE_INLINE void UpdateTowerCount(shared_ptr<MapMgr> mgr)
-{
-	mgr->GetStateManager().UpdateWorldState(WORLDSTATE_TEROKKAR_ALLIANCE_TOWERS_CONTROLLED, TFg_allianceTowers);
-	mgr->GetStateManager().UpdateWorldState(WORLDSTATE_TEROKKAR_HORDE_TOWERS_CONTROLLED, TFg_hordeTowers);
-
-	if(TFg_superiorTeam == 0 && TFg_allianceTowers != 5)
-	{
-		mgr->RemovePositiveAuraFromPlayers(0, BLESSING_OF_AUCHINDOUND);
-		TFg_superiorTeam = -1;
-	}
-
-	if(TFg_superiorTeam == 1 && TFg_hordeTowers != 5)
-	{
-		mgr->RemovePositiveAuraFromPlayers(1, BLESSING_OF_AUCHINDOUND);
-		TFg_superiorTeam = -1;
-	}
-
-	if(TFg_allianceTowers == 5 && TFg_superiorTeam != 0)
-	{
-		TFg_superiorTeam = 0;
-		mgr->CastSpellOnPlayers(0, BLESSING_OF_AUCHINDOUND);
-	}
-
-	if(TFg_hordeTowers == 5 && TFg_superiorTeam != 1)
-	{
-		TFg_superiorTeam = 1;
-		mgr->CastSpellOnPlayers(1, BLESSING_OF_AUCHINDOUND);
-	}
-}
 
 enum BannerStatus
 {
@@ -83,6 +97,10 @@ enum BannerStatus
     BANNER_STATUS_HORDE = 2,
 };
 
+//////////////////////////////////////////////////////////////////////////
+// Banner AI
+//////////////////////////////////////////////////////////////////////////
+
 class TerokkarForestBannerAI : public GameObjectAIScript
 {
 		map<uint32, uint32> StoredPlayers;
@@ -90,10 +108,13 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 		const char* ControlPointName;
 		uint32 towerid;
 		uint32 m_bannerStatus;
+		set< Object* >::iterator itr, itrend;
 
 	public:
+	static GameObjectAIScript* Create(GameObject* go) { return new TerokkarForestBannerAI(go); }
+	GameObject*  pBanner;
 
-		TerokkarForestBannerAI(GameObjectPointer go) : GameObjectAIScript(go)
+		TerokkarForestBannerAI(GameObject* go) : GameObjectAIScript(go)
 		{
 			m_bannerStatus = BANNER_STATUS_NEUTRAL;
 			Status = 50;
@@ -140,17 +161,19 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 			//   the value of the map is a timestamp of the last update, to avoid cpu time wasted
 			//   doing lookups of objects that have already been updated
 
-			unordered_set<PlayerPointer>::iterator itr = _gameobject->GetInRangePlayerSetBegin();
-			unordered_set<PlayerPointer>::iterator itrend = _gameobject->GetInRangePlayerSetEnd();
+			itr = _gameobject->GetInRangePlayerSetBegin();
+			itrend = _gameobject->GetInRangePlayerSetEnd();
 			map<uint32, uint32>::iterator it2, it3;
 			uint32 timeptr = (uint32)UNIXTIME;
 			bool in_range;
 			bool is_valid;
-			PlayerPointer plr;
+			Player* plr;
+			MapMgr* mgr = _gameobject->GetMapMgr();
 
 			for(; itr != itrend; ++itr)
 			{
-				if(!(*itr)->IsPvPFlagged() || (*itr)->InStealth())
+				plr = TO< Player* >(*itr);
+				if(!plr->IsPvPFlagged() || !(plr->isAlive()) && !(plr->IsStealth()) && !(plr->m_invisible) && !(plr->SchoolImmunityList[0]))
 					is_valid = false;
 				else
 					is_valid = true;
@@ -163,8 +186,8 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 					// new player :)
 					if(in_range)
 					{
-						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 1);
-						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
+						plr->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 1);
+						plr->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
 						StoredPlayers.insert(make_pair((*itr)->GetLowGUID(), timeptr));
 
 						if(is_valid)
@@ -176,12 +199,12 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 					// oldie
 					if(!in_range)
 					{
-						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 0);
+						plr->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_DISPLAY, 0);
 						StoredPlayers.erase(it2);
 					}
 					else
 					{
-						(*itr)->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
+						plr->SendWorldStateUpdate(WORLDSTATE_TEROKKAR_PVP_CAPTURE_BAR_VALUE, Status);
 						it2->second = timeptr;
 						if(is_valid)
 							plrcounts[(*itr)->GetTeam()]++;
@@ -196,19 +219,18 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 				SetArtKit();
 
 				// send message to everyone in the zone, has been captured by the Alliance
-				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Alliance!|r", ControlPointName);
+				mgr->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Alliance!|r", ControlPointName);
 
 				// tower update
 				TFg_allianceTowers++;
-				UpdateTowerCount(_gameobject->GetMapMgr());
+				UpdateTowerCount();
 
 				// state update
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 1);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_allianceStateFields[towerid], 1);
 
 				// woot
 				TFg_towerOwners[towerid] = 1;
-				UpdateInDB();
 			}
 			else if(Status == 0 && m_bannerStatus != BANNER_STATUS_HORDE)
 			{
@@ -216,19 +238,18 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 				SetArtKit();
 
 				// send message to everyone in the zone, has been captured by the Horde
-				_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Horde!|r", ControlPointName);
+				mgr->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00%s has been taken by the Horde!|r", ControlPointName);
 
 				// tower update
 				TFg_hordeTowers++;
-				UpdateTowerCount(_gameobject->GetMapMgr());
+				UpdateTowerCount();
 
 				// state update
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 1);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_hordeStateFields[towerid], 1);
 
 				// woot
 				TFg_towerOwners[towerid] = 0;
-				UpdateInDB();
 			}
 			else if(m_bannerStatus != BANNER_STATUS_NEUTRAL)
 			{
@@ -240,17 +261,16 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 					SetArtKit();
 
 					TFg_allianceTowers--;
-					UpdateTowerCount(_gameobject->GetMapMgr());
+					UpdateTowerCount();
 
-					_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Alliance have lost control of %s!|r", ControlPointName);
+					mgr->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Alliance have lost control of %s!|r", ControlPointName);
 
 					// state update
-					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 0);
-					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 1);
+					mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_allianceStateFields[towerid], 0);
+					mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 1);
 
 					// woot
 					TFg_towerOwners[towerid] = -1;
-					UpdateInDB();
 				}
 				else if(m_bannerStatus == BANNER_STATUS_HORDE && Status >= 50)
 				{
@@ -259,17 +279,16 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 					SetArtKit();
 
 					TFg_hordeTowers--;
-					UpdateTowerCount(_gameobject->GetMapMgr());
+					UpdateTowerCount();
 
-					_gameobject->GetMapMgr()->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Horde have lost control of %s!|r", ControlPointName);
+					mgr->SendPvPCaptureMessage(ZONE_TEROKKAR_FOREST, ZONE_TEROKKAR_FOREST, "|cffffff00The Horde have lost control of %s!|r", ControlPointName);
 
 					// state update
-					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 0);
-					_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 1);
+					mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_hordeStateFields[towerid], 0);
+					mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 1);
 
 					// woot
 					TFg_towerOwners[towerid] = -1;
-					UpdateInDB();
 				}
 			}
 
@@ -325,11 +344,13 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 		void SetArtKit()
 		{
 			static const uint32 artkits_flagpole[3] = { 3, 2, 1 };
-//		_gameobject->SetUInt32Value(GAMEOBJECT_ARTKIT, artkits_flagpole[m_bannerStatus]);
 		}
 
 		void OnSpawn()
 		{
+			MapMgr* mgr = _gameobject->GetMapMgr();
+			Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
+
 			m_bannerStatus = BANNER_STATUS_NEUTRAL;
 
 			// preloaded data, do we have any?
@@ -339,12 +360,12 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 				Status = 0;
 
 				// state update
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_hordeStateFields[towerid], 1);
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_hordeStateFields[towerid], 1);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
 
 				// countz
 				TFg_hordeTowers++;
-				UpdateTowerCount(_gameobject->GetMapMgr());
+				UpdateTowerCount();
 				SetArtKit();
 			}
 			else if(TFg_towerOwners[towerid] == 0)
@@ -353,12 +374,12 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 				Status = 100;
 
 				// state update
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_allianceStateFields[towerid], 1);
-				_gameobject->GetMapMgr()->GetStateManager().UpdateWorldState(g_neutralStateFields[towerid], 0);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_allianceStateFields[towerid], 1);
+				mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ), g_neutralStateFields[towerid], 0);
 
 				// countz
 				TFg_allianceTowers++;
-				UpdateTowerCount(_gameobject->GetMapMgr());
+				UpdateTowerCount();
 				SetArtKit();
 			}
 
@@ -366,27 +387,50 @@ class TerokkarForestBannerAI : public GameObjectAIScript
 			RegisterAIUpdateEvent(UPDATE_PERIOD);
 		}
 
-		//////////////////////////////////////////////////////////////////////////
-		// Save Data To DB
-		//////////////////////////////////////////////////////////////////////////
-		void UpdateInDB()
-		{
-			static const char* fieldnames[TOWER_COUNT] = { "Terokkar-Tower1-status", "Terokkar-Tower2-status", "Terokkar-Tower3-status", "Terokkar-Tower4-status", "Terokkar-Tower5-status" };
-			const char* msg = "-1";
-			if(Status == 100)
-				msg = "0";
-			else
-				msg = "1";
+void UpdateTowerCount()
+{
+	Player* plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords(_gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ() - 34);
+	if (!plr)
+		return;
 
-			WorldStateManager::SetPersistantSetting(fieldnames[towerid], msg);
-		}
+	MapMgr* mgr = plr->GetMapMgr();
+	if (!mgr)
+		return;
+
+	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ),WORLDSTATE_TEROKKAR_ALLIANCE_TOWERS_CONTROLLED, TFg_allianceTowers);
+	mgr->GetWorldStatesHandler().SetWorldStateForZone(ZONE_TEROKKAR_FOREST, mgr->GetAreaID( _gameobject->GetPositionX(), _gameobject->GetPositionY() ),WORLDSTATE_TEROKKAR_HORDE_TOWERS_CONTROLLED, TFg_hordeTowers);
+
+	if(TFg_superiorTeam == 0 && TFg_allianceTowers != 5)
+	{
+		plr->RemoveAura(BLESSING_OF_AUCHINDOUND);
+		TFg_superiorTeam = -1;
+	}
+
+	if(TFg_superiorTeam == 1 && TFg_hordeTowers != 5)
+	{
+		plr->RemoveAura(BLESSING_OF_AUCHINDOUND);
+		TFg_superiorTeam = -1;
+	}
+
+	if(TFg_allianceTowers == 5 && TFg_superiorTeam != 0)
+	{
+		TFg_superiorTeam = 0;
+		plr->CastSpell(plr, BLESSING_OF_AUCHINDOUND, false);
+	}
+
+	if(TFg_hordeTowers == 5 && TFg_superiorTeam != 1)
+	{
+		TFg_superiorTeam = 1;
+		plr->CastSpell(plr, BLESSING_OF_AUCHINDOUND, false);
+	}
+}
 };
 
 //////////////////////////////////////////////////////////////////////////
 // Zone Hook
 //////////////////////////////////////////////////////////////////////////
 
-void TFZoneHook(PlayerPointer plr, uint32 Zone, uint32 OldZone)
+void TFZoneHook(Player* plr, uint32 Zone, uint32 OldZone)
 {
 	if(!plr)
 		return;
@@ -399,91 +443,27 @@ void TFZoneHook(PlayerPointer plr, uint32 Zone, uint32 OldZone)
 	else if(OldZone == ZONE_TEROKKAR_FOREST)
 	{
 		if(TFg_superiorTeam == plr->GetTeam())
-			plr->RemovePositiveAura(BLESSING_OF_AUCHINDOUND);
+			plr->RemoveAura(BLESSING_OF_AUCHINDOUND);
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Object Spawn Data
-//////////////////////////////////////////////////////////////////////////
-
-struct sgodata
-{
-	uint32 entry;
-	float posx;
-	float posy;
-	float posz;
-	float facing;
-	float orientation[4];
-	uint32 state;
-	uint32 flags;
-	uint32 faction;
-	float scale;
-	uint32 is_banner;
-};
-
-void TFSpawnObjects(shared_ptr<MapMgr> pmgr)
-{
-	if(!pmgr || pmgr->GetMapId() != 530)
-		return;
-
-	const static sgodata godata[] =
+uint32 BANNERS[] =
 	{
-		{ 183104, -3081.65f, 5335.03f, 17.1853f, -2.14675f, 0, 0, 0.878817f, -0.477159f, 1, 32, 0, 1 },
-		{ 183411, -2939.9f, 4788.73f, 18.987f, 2.77507f, 0, 0, 0.983255f, 0.182236f, 1, 32, 0, 1 },
-		{ 183412, -3174.94f, 4440.97f, 16.2281f, 1.86750f, 0, 0, 0.803857f, 0.594823f, 1, 32, 0, 1 },
-		{ 183413, -3603.31f, 4529.15f, 20.9077f, 0.994838f, 0, 0, 0.477159f, 0.878817f, 1, 32, 0, 1 },
-		{ 183414, -3812.37f, 4899.3f, 17.7249f, 0.087266f, 0, 0, 0.043619f, 0.999048f, 1, 32, 0, 1 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	183104,
+	183411,
+	183412,
+	183413,
+	183414,
+	0
 	};
-
-	uint32 i;
-	const sgodata* p;
-	for(i = 0; i < 5; ++i)
-	{
-		p = &godata[i];
-
-		GameObjectPointer pGo = NULLGOB;
-		pGo = pmgr->GetInterface()->SpawnGameObject(p->entry, p->posx, p->posy, p->posz, p->facing, false, 0, 0);
-		if(!pGo)
-			continue;
-
-		pGo->SetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE, p->state);
-		pGo->SetUInt32Value(GAMEOBJECT_FLAGS, p->flags);
-		pGo->SetUInt32Value(GAMEOBJECT_FACTION, p->faction);
-
-		for(uint32 j = 0; j < 4; ++j)
-		{
-			pGo->SetFloatValue(GAMEOBJECT_ROTATION + j, p->orientation[j]);
-		}
-
-		// now make his script
-		pGo->SetScript(new TerokkarForestBannerAI(pGo));
-
-		pGo->PushToWorld(pmgr);
-
-		pGo->GetScript()->OnSpawn();
-	}
-}
 
 void SetupPvPTerokkarForest(ScriptMgr* mgr)
 {
+	//Banner AI
+	mgr->register_gameobject_script(BANNERS, &TerokkarForestBannerAI::Create);
+
 	// register instance hooker
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_ZONE, (void*)&TFZoneHook);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_CONTINENT_CREATE, (void*)&TFSpawnObjects);
-
-	// load data
-	const string Tower1 = WorldStateManager::GetPersistantSetting("Terokkar-Tower1-status", "-1");
-	const string Tower2 = WorldStateManager::GetPersistantSetting("Terokkar-Tower2-status", "-1");
-	const string Tower3 = WorldStateManager::GetPersistantSetting("Terokkar-Tower3-status", "-1");
-	const string Tower4 = WorldStateManager::GetPersistantSetting("Terokkar-Tower4-status", "-1");
-	const string Tower5 = WorldStateManager::GetPersistantSetting("Terokkar-Tower5-status", "-1");
-
-	TFg_towerOwners[TOWER_1] = atoi(Tower1.c_str());
-	TFg_towerOwners[TOWER_2] = atoi(Tower2.c_str());
-	TFg_towerOwners[TOWER_3] = atoi(Tower3.c_str());
-	TFg_towerOwners[TOWER_4] = atoi(Tower4.c_str());
-	TFg_towerOwners[TOWER_5] = atoi(Tower5.c_str());
 }
 
 
