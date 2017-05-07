@@ -936,7 +936,8 @@ void Player::Update(uint32 p_time)
 				uint32 damage = m_uint32Values[UNIT_FIELD_MAXHEALTH] / 10;
 
 				SendEnvironmentalDamageLog(GetGUID(), uint8(DAMAGE_DROWNING), damage);
-				DealDamage(this, damage, 0, 0, 0);
+				
+				(this, damage, 0, 0, 0);
 				m_UnderwaterLastDmg = mstime + 1000;
 			}
 		}
@@ -966,7 +967,8 @@ void Player::Update(uint32 p_time)
 			uint32 damage = m_uint32Values[UNIT_FIELD_MAXHEALTH] / 5;
 
 			SendEnvironmentalDamageLog(GetGUID(), uint8(DAMAGE_LAVA), damage);
-			DealDamage(this, damage, 0, 0, 0);
+			
+			(this, damage, 0, 0, 0);
 			m_UnderwaterLastDmg = mstime + 1000;
 		}
 	}
@@ -12550,6 +12552,8 @@ void Player::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		return;
 	if(pVictim->IsSpiritHealer())
 		return;
+	if(pVictim->GetGroup()->HasMember(m_session->GetPlayer()))
+		return; // if pVictim is grouped with dealer then return 0 damage
 
 	if(this != pVictim)
 	{
