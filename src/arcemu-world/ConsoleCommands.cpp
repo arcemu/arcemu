@@ -389,20 +389,17 @@ bool HandleClearConsoleCommand(BaseConsole* pConsole, int argc, const char* argv
 
 bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
-	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0);
-	return true;
+	// This function is disabled until the user activates it via CMake.
 
-	/*
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+
 	if( argc < 2 || strlen(argv[1]) < 3 )
 		return false;
 
-	char str[200];
 	int ret = 0;
 	uint32 mstime = getMSTime();
 
-	snprintf(str, 200, "%sConsole initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
-		MSG_COLOR_LIGHTRED, argv[1]);
-	sWorld.SendWorldText(str, 0);
+	pConsole->Write("Console initiated server-side reload of table `%s`. The server may experience some lag while this occurs.\n", argv[1]);
 
 	if( !stricmp(argv[1], "spell_disable") )
 	{
@@ -420,24 +417,37 @@ bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* arg
 
 	if (ret == 0)
 	{
-		pConsole->Write( "Database reload failed.\r\n" );
-		snprintf(str, 200, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
+		pConsole->Write( "Database reload failed.\n" );
 	}
 	else
 	{
 		uint32 timediff = (unsigned int)(getMSTime() - mstime);
-		pConsole->Write( "Database reload completed in %u ms.\r\n", timediff );
-		snprintf( str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, timediff );
+		pConsole->Write( "Database reload completed in %u ms.\n", timediff );
 	}
-	sWorld.SendWorldText( str, 0 );
 
 	return true;
 
-	*/
+#else
 
+	pConsole->Write("Support for reloading tables on the fly was disabled in ArcEmu revision 3621 due to stability issues. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.\n", 0);
+	return true;
+
+#endif
 }
-bool HandleScriptEngineReloadCommand(BaseConsole*, int, const char* [])
+bool HandleScriptEngineReloadCommand(BaseConsole* pConsole, int, const char* [])
 {
+	// This function is disabled until the user activates it via CMake.
+
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+
 	sScriptMgr.ReloadScriptEngines();
+	pConsole->Write("You reloaded scripts.\n");
+
+#else
+
+	pConsole->Write("Reloading scripts was disabled because of possible misbehavior if you are using \"RegisterTimedEvent\" in scripts. Check \"BUILD_EXPERIMENTAL_RELOAD_FUNCTIONS\" in CMake and rebuild ArcEmu to reenable this feature.\n", 0);
+
+#endif
+
 	return true;
 }

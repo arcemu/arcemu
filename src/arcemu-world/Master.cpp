@@ -164,6 +164,11 @@ bool Master::Run(int argc, char** argv)
 	sLog.outBasic(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
 	sLog.outErrorSilent(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH); // Echo off.
 
+#ifdef EXPERIMENTAL_RELOAD_FUNCTIONS
+	sLog.outBasic("WARNING: Experimental reload functions are activated!");
+	sLog.outErrorSilent("WARNING: Experimental reload functions are activated!");
+#endif
+
 	if(do_version)
 	{
 		sLog.Close();
