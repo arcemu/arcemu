@@ -2778,50 +2778,116 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 	float AverageResistance = 0.0f;
 	float ArmorReduce;
 
-	if((*dmg).school_type == 0)//physical
+	if((*dmg).school_type == SCHOOL_NORMAL) // Physical
 	{
 		if(this->IsPlayer())
-			ArmorReduce = PowerCostPctMod[0] + ((float)pVictim->GetResistance(0) * (ArmorPctReduce + TO< Player* >(this)->CalcRating(PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING)) / 100.0f);
+			ArmorReduce = PowerCostPctMod[SCHOOL_NORMAL] + (static_cast< float >(pVictim->GetResistance(SCHOOL_NORMAL)) * (ArmorPctReduce + TO< Player* >(this)->CalcRating(PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING)) / 100.0f);
 		else
 			ArmorReduce = 0.0f;
 
-		if(ArmorReduce >= pVictim->GetResistance(0))		// fully penetrated :O
+		if(ArmorReduce >= pVictim->GetResistance(SCHOOL_NORMAL))		// Fully penetrated
 			return;
 
-//		double Reduction = double(pVictim->GetResistance(0)) / double(pVictim->GetResistance(0)+400+(85*getLevel()));
+//		double Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL)) / double(pVictim->GetResistance(SCHOOL_NORMAL)+400+(85*getLevel()));
 		//dmg reduction formula from xinef
 		double Reduction = 0;
-		if(getLevel() < 60) Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0) + 400 + (85 * getLevel()));
-		else if(getLevel() > 59 && getLevel() < PLAYER_LEVEL_CAP) Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0) - 22167.5 + (467.5 * getLevel()));
-		//
-		else Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0) + 10557.5);
-		if(Reduction > 0.75f) Reduction = 0.75f;
-		else if(Reduction < 0) Reduction = 0;
-		if(Reduction) dmg[0].full_damage = (uint32)(dmg[0].full_damage * (1 - Reduction));	 // no multiply by 0
+		if(getLevel() < 80)
+			Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL) - ArmorReduce) / double(pVictim->GetResistance(SCHOOL_NORMAL) + 400 + (85 * getLevel()));
+		else if(getLevel() > 79 && getLevel() < PLAYER_LEVEL_CAP)
+			Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL) - ArmorReduce) / double(pVictim->GetResistance(SCHOOL_NORMAL) - 22167.5 + (467.5 * getLevel()));
+		else
+			Reduction = double(pVictim->GetResistance(SCHOOL_NORMAL) - ArmorReduce) / double(pVictim->GetResistance(SCHOOL_NORMAL) + 10557.5);
+		if(Reduction > 0.75f)
+			Reduction = 0.75f;
+		else if(Reduction < 0)
+			Reduction = 0;
+		if(Reduction)
+			dmg[SCHOOL_NORMAL].full_damage = static_cast< uint32 >(dmg[SCHOOL_NORMAL].full_damage * (1 - Reduction));	 // no multiply by 0
 	}
 	else
 	{
-		// applying resistance to other type of damage
-		int32 RResist = float2int32((pVictim->GetResistance((*dmg).school_type) + ((pVictim->getLevel() > getLevel()) ? (pVictim->getLevel() - this->getLevel()) * 5 : 0)) - PowerCostPctMod[(*dmg).school_type]);
-		if(RResist < 0)
-			RResist = 0;
-		AverageResistance = (float)(RResist) / (float)(getLevel() * 5) * 0.75f;
-		if(AverageResistance > 0.75f)
-			AverageResistance = 0.75f;
+		// Magical resistances
+		// Based on http://www.wowwiki.com/Resistance
+		// And http://elitistjerks.com/f15/t44675-resistance_mechanics_wotlk/
 
-		// NOT WOWWIKILIKE but i think it's actually to add some fullresist chance from resistances
-		if(!ability || !(ability->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY))
+		int32 resistance_rating;
+		uint32 victim_level = pVictim->getLevel();
+		uint32 caster_level = getLevel();
+		// This is for players only
+		if( IsPlayer() )
+			resistance_rating = pVictim->GetResistance( (*dmg).school_type ) + std::max( static_cast< int32 >(victim_level - caster_level)*5, int32(0) ) - std::min( GetUInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE), pVictim->GetResistance( (*dmg).school_type ) );
+		else
+			resistance_rating = pVictim->GetResistance( (*dmg).school_type ) + std::max( static_cast< int32 >(victim_level - caster_level)*5, int32(0) ) - std::min( static_cast< uint32 >(PowerCostPctMod[(*dmg).school_type]), pVictim->GetResistance( (*dmg).school_type ) );
+		
+		if( resistance_rating <= 0 || (!pVictim->IsPlayer() && pVictim->getLevel() > PLAYER_LEVEL_CAP && (*dmg).school_type == SCHOOL_HOLY) )
 		{
-			float Resistchance = (float)pVictim->GetResistance((*dmg).school_type) / (float)pVictim->getLevel();
-			Resistchance *= Resistchance;
-			if(Rand(Resistchance))
-				AverageResistance = 1.0f;
+			(*dmg).resisted_damage = 0;
+			return;
 		}
 
-		if(AverageResistance > 0)
-			(*dmg).resisted_damage = (uint32)(((*dmg).full_damage) * AverageResistance);
-		else
+		float lvl_diff = 1 + ( 0.075f * (victim_level - caster_level) );
+
+		// If lvl_diff is higher than 13 levels, victim can't resist any damage
+		if ( lvl_diff < 0.0f )
+		{
 			(*dmg).resisted_damage = 0;
+			return;
+		}
+		
+		// Base constant modified by lvl_diff
+		float constant = victim_level * 5.0f;
+		if( victim_level > caster_level )
+			constant *= lvl_diff;
+		else if( victim_level < caster_level )
+			constant /= lvl_diff;
+
+		// Calculating average resistance
+		AverageResistance = (1.0f * resistance_rating) / static_cast< float >(constant + resistance_rating);
+		if(AverageResistance > 0.9f)
+			AverageResistance = 0.9f;
+
+		// Ff average resistance is lower than 0, we can't resist
+		if(AverageResistance <= 0.0f)
+		{
+			(*dmg).resisted_damage = 0;
+			return;
+		}
+
+		// 0,10,20,30,40,50,60,70,80,90,100% chance to resist
+		float probability[11] = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
+
+		// Calculate probability
+		for( int i = 0; i < 11; i++ )
+		{
+			probability[i] = static_cast< float >( 0.5f - 2.5f*abs( (i/10.0f) - AverageResistance ) ) * 100.0f;
+
+			if( probability[i] < 0 )
+				probability[i] = 0.0f;
+
+		}
+
+		// Remember, if we have higher resist, so there is no 0% chance to resist.
+		// We always have to resist something!
+		bool must_resist = false;
+		if( probability[0] == 0.0f )
+			must_resist = true;
+
+		uint32 r = 0;
+		uint32 resisted_dmg = 0;
+		float probabilitysum = 0.0f;
+		while( (resisted_dmg == 0 && must_resist) && r < 11 )
+		{
+			if( Rand( probability[r]+probabilitysum ) )
+			{
+				resisted_dmg = (*dmg).full_damage * ( r / 10 );
+				break;
+			}
+			else
+				probabilitysum += probability[r];
+			r++;
+		}
+
+		(*dmg).resisted_damage = resisted_dmg;
 	}
 }
 
