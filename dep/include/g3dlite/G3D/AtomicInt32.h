@@ -97,7 +97,7 @@ public:
             /*
              * This implies win32, use the Interlocked* functions
              */
-            return InterlockedExchangeSubtract(&m_value, x);
+            return InterlockedExchangeAdd(&m_value, -x);
 #       elif defined __GNUC__ && ((__GNUC_ == 4 && __GNUC_MINOR__ >= 1) || __GNUC_ > 4)
             /*
              * Use builtin atomic functions
