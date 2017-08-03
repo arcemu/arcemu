@@ -33,11 +33,7 @@ extern "C" {
 #endif
 
 /* generic includes. */
-#ifdef _MSC_VER
-#include "winvs_stdint.h"
-#else
 #include <stdint.h>
-#endif
 
 #include <sys/types.h>
 

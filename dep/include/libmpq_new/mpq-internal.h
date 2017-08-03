@@ -23,11 +23,7 @@
 #define _MPQ_INTERNAL_H
 
 /* generic includes. */
-#ifdef _MSC_VER
-#include "winvs_stdint.h"
-#else
 #include <stdint.h>
-#endif
 #include <stdio.h>
 
 /* define return value if nothing failed. */
