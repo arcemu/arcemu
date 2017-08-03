@@ -65,7 +65,7 @@ inline double __fastcall drand48() {
     return ::rand() / double(RAND_MAX);
 }
 
-#if !defined(_WIN64)
+#if defined(_M_IX86)
 
 /**
    Win32 implementation of the C99 fast rounding routines.

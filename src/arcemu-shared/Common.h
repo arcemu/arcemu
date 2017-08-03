@@ -472,7 +472,7 @@ static inline uint32 int32abs2uint32(const int value)
 /// Fastest Method of float2int32
 static inline int float2int32(const float value)
 {
-#if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
+#if defined(_M_IX86) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
 	int i;
 	__asm
 	{
@@ -492,7 +492,7 @@ static inline int float2int32(const float value)
 /// Fastest Method of long2int32
 static inline int long2int32(const double value)
 {
-#if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
+#if defined(_M_IX86) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
 	int i;
 	__asm
 	{
