@@ -128,10 +128,15 @@ ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( msvc_version)
-	IF(DEFINED ${msvc_version} AND ${msvc_version} GREATER "1599" )
+	IF(DEFINED msvc_version AND ${msvc_version} GREATER "1599" )
 		add_definitions(-DHAS_CXX0X)
 	ENDIF()
 	
+	# Silence hash_map deprecation warning for VS2015 and up
+	IF(DEFINED msvc_version AND ${msvc_version} GREATER "1899" )
+		add_definitions(-D_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS)
+	ENDIF()
+
 	#This fixes PCH issues 'Inconsistent values for /Zm'
 	IF( ${CMAKE_CXX_FLAGS} MATCHES "(/Zm)([0-9]+)" )
 		STRING( REGEX REPLACE "(/Zm)([0-9]+)" "\\1${VISUALSTUDIO_COMPILERHEAPLIMIT}" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} )
