@@ -39,6 +39,7 @@ void OutputCrashLogLine(const char* format, ...);
 
 extern CircularQueue<uint32, 30> last_spells;
 
+#ifndef _M_ARM
 class SERVER_DECL CStackWalker : public StackWalker
 {
 	public:
@@ -48,6 +49,7 @@ class SERVER_DECL CStackWalker : public StackWalker
 		void OnCallstackEntry(CallstackEntryType eType, CallstackEntry & entry);
 		void OnDbgHelpErr(LPCSTR szFuncName, DWORD gle, DWORD64 addr);
 };
+#endif
 
 void StartCrashHandler();
 void OnCrash(bool Terminate);

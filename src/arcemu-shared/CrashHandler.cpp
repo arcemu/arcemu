@@ -61,7 +61,7 @@ void StartCrashHandler()
 	// just piss us off. :P
 
 	// Check for a debugger.
-#ifndef X64
+#ifdef _M_IX86
 	DWORD code;
 
 	__asm
@@ -208,6 +208,7 @@ void PrintCrashInformation(PEXCEPTION_POINTERS except)
 	echo("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 }
 
+#ifndef _M_ARM
 void CStackWalker::OnSymInit(LPCSTR szSearchPath, DWORD symOptions, LPCSTR szUserName)
 {
 
@@ -265,6 +266,7 @@ void CStackWalker::OnOutput(LPCSTR szText)
 	fprintf(m_file, "   %s", szText);
 	fclose(m_file);
 }
+#endif
 
 bool died = false;
 
