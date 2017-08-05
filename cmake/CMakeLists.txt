@@ -223,8 +223,10 @@ if(WIN32)
 			SET( EXTRA_LIBS ${EXTRA_LIBS} libmysql_release_win32.lib )
 		endif()
 	endif()
-	#Needed for socket stuff and crash handler
-	SET(EXTRA_LIBS ${EXTRA_LIBS} ws2_32.lib dbghelp.lib )
+	#Needed for socket stuff
+	SET(EXTRA_LIBS ${EXTRA_LIBS} ws2_32.lib )
+	#Needed for crash handler
+	SET(EXTRA_LIBS ${EXTRA_LIBS} dbghelp.lib )
 elseif(APPLE)
 	SET( EXTRA_LIBS ${EXTRA_LIBS} "-framework Carbon" )
 elseif(IS_LINUX)
