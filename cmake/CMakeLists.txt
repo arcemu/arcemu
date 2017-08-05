@@ -230,8 +230,6 @@ if(WIN32)
 	endif()
 	#Needed for socket stuff
 	SET(EXTRA_LIBS ${EXTRA_LIBS} ws2_32.lib )
-	#Needed for crash handler
-	SET(EXTRA_LIBS ${EXTRA_LIBS} dbghelp.lib )
 elseif(APPLE)
 	SET( EXTRA_LIBS ${EXTRA_LIBS} "-framework Carbon" )
 elseif(IS_LINUX)
