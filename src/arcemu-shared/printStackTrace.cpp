@@ -24,7 +24,7 @@
  */
 extern SERVER_DECL void printStackTrace(char* buffer, int bufferSize)
 {
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(WIN32) && defined(_DEBUG) && (defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64))
 	// find out map file name
 	char modname[500];
 	MapFile::getModuleMapFilename(modname, sizeof(modname));

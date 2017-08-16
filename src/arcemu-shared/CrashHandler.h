@@ -31,7 +31,7 @@ void OutputCrashLogLine(const char* format, ...);
 
 #include "Common.h"
 
-#ifdef WIN32
+#if defined(WIN32) && (defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64))
 
 #include <DbgHelp.h>
 #include "StackWalker.h"
@@ -39,7 +39,6 @@ void OutputCrashLogLine(const char* format, ...);
 
 extern CircularQueue<uint32, 30> last_spells;
 
-#ifndef _M_ARM
 class SERVER_DECL CStackWalker : public StackWalker
 {
 	public:
@@ -49,7 +48,6 @@ class SERVER_DECL CStackWalker : public StackWalker
 		void OnCallstackEntry(CallstackEntryType eType, CallstackEntry & entry);
 		void OnDbgHelpErr(LPCSTR szFuncName, DWORD gle, DWORD64 addr);
 };
-#endif
 
 void StartCrashHandler();
 void OnCrash(bool Terminate);
@@ -59,6 +57,8 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs);
 
 #define THREAD_TRY_EXECUTION __try{
 #define THREAD_HANDLE_CRASH  }__except( HandleCrash( GetExceptionInformation() ) ) {}
+
+#define CRASHHANDLER_ENABLED
 
 #else
 
