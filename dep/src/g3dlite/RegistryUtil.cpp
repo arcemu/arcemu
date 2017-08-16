@@ -16,6 +16,8 @@
 #include "G3D/RegistryUtil.h"
 #include "G3D/System.h"
 
+#pragma comment(lib, "advapi32")
+
 namespace G3D {
 
 // static helpers
