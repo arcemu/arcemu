@@ -37,9 +37,6 @@ Vagrant.configure("2") do |config|
 	 apt-get install -y git cmake make g++ mysql-server mysql-client
 	 apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev
 	 
-	 # Switch to the Arcemu user
-	 su - arcemu
-	 
 	 # Set up database user and databases
 	 echo "CREATE USER arcemu@localhost IDENTIFIED BY 'arcemu';" > db.sql
 	 echo "CREATE DATABASE arcemu_world;" >> db.sql
@@ -52,23 +49,22 @@ Vagrant.configure("2") do |config|
 	 rm db.sql
 	 
 	 # Clone source from github. NOTE: This can take a long time.
-	 mkdir arcemu
-	 cd arcemu
-	 git clone https://github.com/arcemu/arcemu.git src 2>&1
+	 mkdir -p /home/arcemu/arcemu
+	 git clone https://github.com/arcemu/arcemu.git /home/arcemu/arcemu/src 2>&1
 	 
 	 # Load database schemas
-	 cat src/sql/logon_structure.sql | mysql -u arcemu --password=arcemu arcemu_logon
-	 cat src/sql/world_structure.sql | mysql -u arcemu --password=arcemu arcemu_world
-	 cat src/sql/character_structure.sql | mysql -u arcemu --password=arcemu arcemu_character
+	 cat /home/arcemu/arcemu/src/sql/logon_structure.sql | mysql -u arcemu --password=arcemu arcemu_logon
+	 cat /home/arcemu/arcemu/src/sql/world_structure.sql | mysql -u arcemu --password=arcemu arcemu_world
+	 cat /home/arcemu/arcemu/src/sql/character_structure.sql | mysql -u arcemu --password=arcemu arcemu_character
 	 
 	 # Create an admin account, admin:admin
-	 echo "INSERT INTO accounts VALUES (1,'admin','','8301316d0d8448a34fa6d0c6bf1cbfa2b4a1a93a','az',0,'0000-00-00 00:00:00','','a
+	 echo "INSERT INTO accounts VALUES (1,'admin','','8301316d0d8448a34fa6d0c6bf1cbfa2b4a1a93a','az',0,NOW(),'','a
 dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 
 	 # Configure build
-	 mkdir bin
-	 mkdir build
-	 cd build
+	 mkdir /home/arcemu/arcemu/bin
+	 mkdir /home/arcemu/arcemu/build
+	 cd /home/arcemu/arcemu/build
 	 cmake -DCMAKE_INSTALL_PREFIX=/home/arcemu/arcemu/bin ../src/cmake 2>&1
 	
 	 # Build! NOTE: This can take a very long time.
@@ -78,14 +74,15 @@ dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 make install
 	 
 	 # Create DBC and maps directories
-	 cd ..
-	 cd bin
-	 mkdir DBC
-	 mkdir maps
+	 mkdir -p /home/arcemu/arcemu/bin/DBC
+	 mkdir -p /home/arcemu/arcemu/bin/maps
 
 	 # Copy config files
+	 mkdir -p /home/arcemu/arcemu/bin/etc
 	 cp /home/arcemu/arcemu/src/configs/* /home/arcemu/arcemu/bin/etc
-
+	 
+	 # Make everything owned by the arcemu user
+	 chown -R arcemu:arcemu /home/arcemu
      
   SHELL
 end
