@@ -20,20 +20,20 @@ Vagrant.configure("2") do |config|
   
   # Provision the virtual machine with shell commands
   config.vm.provision "shell", inline: <<-SHELL
-     # Enable password based authentication for SSH
+	 # Enable password based authentication for SSH
 	 sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config
 	 service ssh restart
 	 
-     # Create an arcemu user with password arcemu
+	 # Create an arcemu user with password arcemu
 	 useradd -m -s /bin/bash arcemu
 	 echo "arcemu:arcemu" | chpasswd
-     
+	 
 	 # Set up mysql server root password before installing
 	 debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 	 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 	 
 	 # Install dependencies
-     apt-get update
+	 apt-get update
 	 apt-get install -y git cmake make g++ mysql-server mysql-client
 	 apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev
 	 
@@ -49,6 +49,7 @@ Vagrant.configure("2") do |config|
 	 echo "GRANT ALL PRIVILEGES ON arcemu_character.* TO arcemu@localhost;" >> db.sql
 	 echo "GRANT ALL PRIVILEGES ON arcemu_logon.* TO arcemu@localhost;" >> db.sql
 	 cat db.sql | mysql -u root --password=root
+	 rm db.sql
 	 
 	 # Clone source from github. NOTE: This can take a long time.
 	 mkdir arcemu
@@ -65,8 +66,8 @@ Vagrant.configure("2") do |config|
 	 mkdir build
 	 cd build
 	 cmake -DCMAKE_INSTALL_PREFIX=/home/arcemu/arcemu/bin ../src/cmake 2>&1
-     
-     # Build! NOTE: This can take a very long time.
+	
+	 # Build! NOTE: This can take a very long time.
 	 make
 	 
 	 # Install the binaries
