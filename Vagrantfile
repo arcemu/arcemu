@@ -61,6 +61,10 @@ Vagrant.configure("2") do |config|
 	 cat src/sql/world_structure.sql | mysql -u arcemu --password=arcemu arcemu_world
 	 cat src/sql/character_structure.sql | mysql -u arcemu --password=arcemu arcemu_character
 	 
+	 # Create an admin account, admin:admin
+	 echo "INSERT INTO accounts VALUES (1,'admin','','8301316d0d8448a34fa6d0c6bf1cbfa2b4a1a93a','az',0,'0000-00-00 00:00:00','','a
+dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
+	 
 	 # Configure build
 	 mkdir bin
 	 mkdir build
@@ -72,7 +76,7 @@ Vagrant.configure("2") do |config|
 	 
 	 # Install the binaries
 	 make install
-	 
+
 	 # Copy config files
 	 cp /home/arcemu/arcemu/src/configs/* /home/arcemu/arcemu/bin/etc
 
