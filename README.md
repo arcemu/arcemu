@@ -1,5 +1,9 @@
 # ![logo](http://arcemu.org/forums/public/style_images/1_arcemulogo.png) Arcemu
 
+## Build Status
+
+[![Build Status](https://travis-ci.com/arcemu/arcemu.svg?branch=master)](https://travis-ci.com/arcemu/arcemu)
+
 ## Introduction
 
 Arcemu is a World of Warcraft server package. Based on the popular Ascent project (defunct as of 2007) it aims to provide players with a gameplay very close or identical to the real thing as of World of Warcraft version 3.3.5a.
