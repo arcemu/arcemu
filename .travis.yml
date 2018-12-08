@@ -6,13 +6,13 @@ compiler: gcc
 addons:
   apt:
     packages:
-	  - g++
-	  - zlib1g-dev
-	  - libssl-dev
-	  - libpcre3-dev
-	  - libbz2-dev
-	  - libmysqlclient-dev
-	  - libmysql++-dev
+      - g++
+      - zlib1g-dev
+      - libssl-dev
+      - libpcre3-dev
+      - libbz2-dev
+      - libmysqlclient-dev
+      - libmysql++-dev
 
 install: true
 
