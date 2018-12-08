@@ -1,0 +1,25 @@
+sudo: false
+dist: xenial
+language: cpp
+compiler: gcc
+
+addons:
+  apt:
+    packages:
+	  - g++
+	  - zlib1g-dev
+	  - libssl-dev
+	  - libpcre3-dev
+	  - libbz2-dev
+	  - libmysqlclient-dev
+	  - libmysql++-dev
+
+install: true
+
+script:
+  - mkdir bin
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX=bin ../src/cmake
+  - make
+  - make install
