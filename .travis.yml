@@ -20,6 +20,6 @@ script:
   - mkdir bin
   - mkdir build
   - cd build
-  - cmake -DCMAKE_INSTALL_PREFIX=bin ../src/cmake
+  - cmake -DCMAKE_INSTALL_PREFIX=bin ../cmake
   - make
   - make install
