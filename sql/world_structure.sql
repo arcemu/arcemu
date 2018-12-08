@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.20, for Win64 (x86)
+-- MySQL dump 10.13  Distrib 5.7.24, for Linux (x86_64)
 --
--- Host: localhost    Database: world_orig
+-- Host: localhost    Database: arcemu_world
 -- ------------------------------------------------------
--- Server version	5.5.20
+-- Server version	5.7.24-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -2373,7 +2373,7 @@ CREATE TABLE `spell_effects_override` (
 
 LOCK TABLES `spell_effects_override` WRITE;
 /*!40000 ALTER TABLE `spell_effects_override` DISABLE KEYS */;
-INSERT INTO `spell_effects_override` VALUES (57840,0,0,0,0,0,0,0,0,0,0,4);
+INSERT INTO `spell_effects_override` VALUES (57840,0,0,0,0,0,0,0,0,0,0,4),(379,0,0,0,0,0,0,0,0,21,0,0);
 /*!40000 ALTER TABLE `spell_effects_override` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2875,7 +2875,7 @@ CREATE TABLE `world_db_version` (
 
 LOCK TABLES `world_db_version` WRITE;
 /*!40000 ALTER TABLE `world_db_version` DISABLE KEYS */;
-INSERT INTO `world_db_version` VALUES ('2012-01-31_02-35_killing_spree');
+INSERT INTO `world_db_version` VALUES ('2012-08-14_21-25_worldmap_info');
 /*!40000 ALTER TABLE `world_db_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2949,7 +2949,8 @@ CREATE TABLE `worldmap_info` (
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   `cooldown` int(10) unsigned NOT NULL DEFAULT '0',
   `lvl_mod_a` int(10) unsigned NOT NULL DEFAULT '0',
-  `required_quest` int(10) unsigned NOT NULL DEFAULT '0',
+  `required_quest_1` int(10) unsigned NOT NULL DEFAULT '0',
+  `required_quest_2` int(10) unsigned NOT NULL DEFAULT '0',
   `required_item` int(10) unsigned NOT NULL DEFAULT '0',
   `heroic_keyid_1` int(30) NOT NULL DEFAULT '0',
   `heroic_keyid_2` int(30) NOT NULL DEFAULT '0',
@@ -3098,4 +3099,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-02-01  5:19:52
+-- Dump completed on 2018-12-08 14:20:11
