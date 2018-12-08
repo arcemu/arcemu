@@ -393,14 +393,14 @@ void oLog::Init(int32 fileLogLevel, LogType logType)
 	{
 		case LOGON_LOG:
 			{
-				logNormalFilename = "logon-normal.log";
-				logErrorFilename = "logon-error.log";
+				logNormalFilename = "log/logon-normal.log";
+				logErrorFilename = "log/logon-error.log";
 				break;
 			}
 		case WORLD_LOG:
 			{
-				logNormalFilename = "world-normal.log";
-				logErrorFilename = "world-error.log";
+				logNormalFilename = "log/world-normal.log";
+				logErrorFilename = "log/world-error.log";
 				break;
 			}
 	}

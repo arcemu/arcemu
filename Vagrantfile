@@ -73,12 +73,13 @@ dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 # Install the binaries
 	 make install
 	 
-	 # Create DBC and maps directories
+	 # Create some directories
 	 mkdir -p /home/arcemu/arcemu/bin/DBC
 	 mkdir -p /home/arcemu/arcemu/bin/maps
+	 mkdir -p /home/arcemu/arcemu/bin/etc
+	 mkdir -p /home/arcemu/arcemu/bin/log
 
 	 # Copy config files
-	 mkdir -p /home/arcemu/arcemu/bin/etc
 	 cp /home/arcemu/arcemu/src/configs/* /home/arcemu/arcemu/bin/etc
 	 
 	 # Make everything owned by the arcemu user
