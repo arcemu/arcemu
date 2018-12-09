@@ -3,23 +3,16 @@ dist: xenial
 language: cpp
 compiler: gcc
 
-addons:
-  apt:
-    packages:
-      - g++
-      - zlib1g-dev
-      - libssl-dev
-      - libpcre3-dev
-      - libbz2-dev
-      - libmysqlclient-dev
-      - libmysql++-dev
+services:
+  - docker
 
 install: true
 
+before_script:
+  - cd extras/docker/arcemu_build
+  - docker build -t arcemu_build .
+  - cd ../../../
+
 script:
   - mkdir bin
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_INSTALL_PREFIX=bin ../cmake
-  - make
-  - make install
+  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
