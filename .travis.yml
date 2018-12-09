@@ -16,3 +16,4 @@ before_script:
 script:
   - mkdir bin
   - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
+  - ls -la ./bin
