@@ -1,0 +1,38 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+
+  # Don't check for Vagrant base box updates automatically
+  config.vm.box_check_update = false
+
+  # Forward ports
+  config.vm.network "forwarded_port", guest: 22, host: 2222
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+	vb.cpus = 1
+    vb.memory = "2048"
+  end
+  
+  # Provision the virtual machine with shell commands
+  config.vm.provision "shell", inline: <<-SHELL
+	 # Enable password based authentication for SSH
+	 sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config
+	 service ssh restart
+	 
+	 # Install dependencies
+	 wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+	 sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+	 apt-get update
+	 apt-get install -y default-jre-headless docker.io jenkins
+	 
+	 # Enable Docker REST API locally
+	 sed -i 's|-H fd://|-H tcp://127.0.0.1:8888 -H fd://|g' /lib/systemd/system/docker.service
+	 systemctl daemon-reload
+	 service docker restart
+ 
+  SHELL
+end
