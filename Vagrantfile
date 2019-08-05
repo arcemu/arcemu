@@ -50,7 +50,9 @@ Vagrant.configure("2") do |config|
 	 
 	 # Clone source from github. NOTE: This can take a long time.
 	 mkdir -p /home/arcemu/arcemu
-	 git clone https://github.com/arcemu/arcemu.git /home/arcemu/arcemu/src 2>&1
+	 mkdir -p /home/arcemu/arcemu/src
+	 cp -r /vagrant/.git /home/arcemu/arcemu/src/
+	 cd /home/arcemu/arcemu/src && git reset --hard HEAD
 	 
 	 # Load database schemas
 	 cat /home/arcemu/arcemu/src/sql/logon_structure.sql | mysql -u arcemu --password=arcemu arcemu_logon
