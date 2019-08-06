@@ -22,12 +22,13 @@ For installation instructions see the wiki and the forums.
 
 You can get yourself a quick and dirty installation by using Vagrant. It will set up a virtual machine for you, with Arcemu installed.
 
+* Install Vagrant and VirtualBox
 * Create a directory somewhere
-* Download the Arcemu Vagrantfile and place it there
+* Check out Arcemu code to that directory
 * Go to the created directory in the command line / shell
 * Issue the command 'vagrant up', and wait until the process finishes.
 
-Vagrant will download an OS for the virtual machine and then install Arcemu, this process will take a while.
+Vagrant will download an OS for the virtual machine and then build and install Arcemu, this process will take a while.
 After it is done, you can log in to the box using SSH.
 
 ssh -p 2222 localhost
