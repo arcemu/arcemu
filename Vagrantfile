@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
 	vb.cpus = 1
-    vb.memory = "1024"
+    vb.memory = "4096"
   end
   
   # Provision the virtual machine with shell commands
@@ -36,6 +36,10 @@ Vagrant.configure("2") do |config|
 	 apt-get update
 	 apt-get install -y git cmake make g++ mysql-server mysql-client
 	 apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev
+	 
+	 # Enable PTrace for debugging
+	 echo 0 > /proc/sys/kernel/yama/ptrace_scope
+	 echo "kernel.yama.ptrace_scope = 0" > /etc/sysctl.d/10-ptrace.conf
 	 
 	 # Set up database user and databases
 	 echo "CREATE USER arcemu@localhost IDENTIFIED BY 'arcemu';" > db.sql
@@ -70,10 +74,10 @@ dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 cmake -DCMAKE_INSTALL_PREFIX=/home/arcemu/arcemu/bin ../src/cmake 2>&1
 	
 	 # Build! NOTE: This can take a very long time.
-	 make
+	 #make
 	 
 	 # Install the binaries
-	 make install
+	 #make install
 	 
 	 # Create some directories
 	 mkdir -p /home/arcemu/arcemu/bin/DBC
