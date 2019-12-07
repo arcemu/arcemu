@@ -778,7 +778,7 @@ Aura::Aura(SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool
 
 	if(!IsPassive())
 	{
-		expirytime = (uint32)UNIXTIME;
+        castTime = (uint32)UNIXTIME;
 	}
 
 	m_visualSlot = 0xFF;
@@ -8738,7 +8738,7 @@ void Aura::SpellAuraCallStabledPet(bool apply)
 
 void Aura::ResetDuration()
 {
-	expirytime = static_cast< uint32 >( UNIXTIME );
+    castTime = static_cast< uint32 >( UNIXTIME );
 	sEventMgr.ModifyEventTimeLeft(this, EVENT_AURA_REMOVE, GetDuration());
 }
 
