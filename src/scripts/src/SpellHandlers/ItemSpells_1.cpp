@@ -824,6 +824,96 @@ bool ChampioningTabards(uint32 i, Aura* a, bool apply)
 	return true;
 }
 
+////////////////////////////////////////////////////////////////////////
+//Melodious Rapture dummy spell effect handler
+//
+//Precondition(s)
+//  Casted by Player.
+//
+//Effect
+//  Finds a nearby rat
+//  despawns it
+//  spawns an enthralled rat that will follow the player
+//  gives credit to the player for the quest "Deeprun Rat Roundup"
+//
+////////////////////////////////////////////////////////////////////////
+bool MelodiousRapture( uint32 i, Spell* s )
+{
+    Player* p_caster = s->p_caster;
+
+    if(p_caster == NULL)
+        return true;
+
+    Creature *enthralledRat = NULL;
+
+    for( Object::InRangeSet::iterator itr = s->p_caster->GetInRangeSetBegin(); itr != s->p_caster->GetInRangeSetEnd(); ++itr )
+    {
+        Object *o = *itr;
+        if( o->IsCreature() )
+        {
+            Creature *c = static_cast< Creature* >( o );
+            /// Get a Rat
+            if( c->GetProto()->Id == 13016 )
+            {
+                /// Let's only deal with fairly close rats
+                if( p_caster->GetDistanceSq( c ) > 10.0f )
+                {
+                    continue;
+                }
+
+                /// Spawn an Enthralled Rat at it's position
+                enthralledRat = c->GetMapMgr()->GetInterface()->SpawnCreature( 13017,
+                                                               c->GetPositionX(),
+                                                               c->GetPositionY(),
+                                                               c->GetPositionZ(),
+                                                               c->GetOrientation(),
+                                                               true,
+                                                               false,
+                                                               0,
+                                                               0 );
+
+                /// It should look like a Rat, not a female Orc warrior
+                enthralledRat->SetDisplayId( c->GetDisplayId() );
+
+                /// Despawn the simple rat, with a respawn timer
+                c->Despawn(0, 10 * 1000 );
+                break;
+            }
+        }
+    }
+
+    /// If we indeed found a rat to enthrall
+    if( enthralledRat != NULL )
+    {
+        /// Make it friendly to the player
+        enthralledRat->SetFaction( p_caster->GetFaction() );
+
+        /// It should have the enthralled visual
+        enthralledRat->CastSpell( enthralledRat, 21051, true );
+
+        /// Despawn in half a minute
+        enthralledRat->Despawn( 30 * 1000, 0 );
+
+        /// Follow player
+        enthralledRat->GetAIInterface()->SetUnitToFollow( p_caster );
+
+        /// Give quest credit for the player if applicable
+        QuestLogEntry *questLogEntry = p_caster->GetQuestLogForEntry( 6661 );
+        if( questLogEntry != NULL )
+        {
+            Quest *quest = questLogEntry->GetQuest();
+            if( questLogEntry->GetMobCount(0) < quest->required_mobcount[0] )
+            {
+                questLogEntry->SetMobCount(0, questLogEntry->GetMobCount(0) + 1);
+                questLogEntry->SendUpdateAddKill(0);
+                questLogEntry->UpdatePlayerFields();
+            }
+        }
+    }
+
+    return true;
+}
+
 
 ///////////////////////////////////////////////////////////////
 //Spinning dummy effect handler
@@ -1028,6 +1118,7 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 	};
 	mgr->register_dummy_aura(DrinkDummySpellIDs, &DrinkDummyAura);
 	mgr->register_dummy_aura(75973, &X53Mount);
+    mgr->register_dummy_spell(21050, &MelodiousRapture);
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
