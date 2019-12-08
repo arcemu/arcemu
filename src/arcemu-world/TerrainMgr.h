@@ -84,6 +84,7 @@ struct TileMapLiquidHeader
 class TileMap
 {
 	public:
+        static const uint16 AREA_INVALID = -1;
 
 		//Area Map
 		uint16 m_area;
@@ -119,7 +120,7 @@ class TileMap
 		TileMap()
 		{
 			m_areaMap = NULL;
-			m_area = 0;
+            m_area = AREA_INVALID;
 			m_tileHeight = 0;
 			m_heightMapFlags = 0;
 			m_heightMap8F = NULL;
@@ -326,6 +327,14 @@ class TerrainHolder
 				return 0;
 			uint32 rv = tile->m_map.GetArea(x, y);
 			tile->DecRef();
+
+            // Yes this is a dirty hack. However Deeprun Tram doesn't seem to have a map file,
+            // so let's return the exploration flag / Id of that area here
+            if( ( rv == TileMap::AREA_INVALID )  && ( m_mapid == 369 ) )
+            {
+                return 843;
+            }
+
 			return rv;
 		}
 
