@@ -4382,7 +4382,8 @@ void Unit::AddAura(Aura* aur)
 						}
 						AlreadyApplied++;
 						//update duration,the same aura (update the whole stack whenever we cast a new one)
-                        m_auras[x]->ResetDuration();
+                        //Need to set duration first because duration is restored from db when loading character.
+                        m_auras[x]->SetDuration( aur->GetDuration() );
 
 						if(maxStack <= AlreadyApplied)
 						{
