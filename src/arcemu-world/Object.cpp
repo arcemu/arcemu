@@ -656,8 +656,11 @@ void Object::_BuildValuesUpdate(ByteBuffer* data, UpdateMask* updateMask, Player
 							        ||	(qr->type & QUESTGIVER_QUEST_END && target->HasQuest(qst->id))
 							  )
 							{
-								activate_quest_object = true;
-								break;
+                                if( sQuestMgr.PlayerMeetsReqs(target, qst, false) == QMGR_QUEST_AVAILABLE )
+                                {
+                                    activate_quest_object = true;
+                                    break;
+                                }
 							}
 						}
 					}
