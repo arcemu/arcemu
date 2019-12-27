@@ -107,6 +107,7 @@ SET(sources
 	TradeHandler.cpp 
 	TransporterHandler.cpp 
 	Unit.cpp 
+	UpdateBuilder.cpp
 	Vehicle.cpp 
 	VehicleHandler.cpp
 	WayPoints.cpp 
@@ -256,6 +257,7 @@ SET( headers
 	Entities/Summons/TotemSummon.h
 	TransporterHandler.h
 	Unit.h
+	UpdateBuilder.h
 	UpdateFields.h
 	UpdateMask.h
 	Vehicle.h
