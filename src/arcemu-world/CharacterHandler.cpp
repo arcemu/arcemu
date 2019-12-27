@@ -1012,8 +1012,6 @@ void WorldSession::FullLogin(Player* plr)
 	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
-	// Recruiting message
-	_player->BroadcastMessage(RECRUITING);
 	// Shows Online players, and connection peak
 	_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
 	                          MSG_COLOR_SEXGREEN, sWorld.GetSessionCount(), MSG_COLOR_SEXBLUE, sWorld.PeakSessionCount, MSG_COLOR_SEXBLUE, sWorld.mAcceptedConnections);

@@ -241,6 +241,5 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 
 #endif
 
-#define RECRUITING "Info: |cff00FF7FArcEmu is recruiting developers: Join us on irc.freenode.net #arcemu"
 #define BUGTRACKER "https://github.com/arcemu/arcemu/issues"
 
