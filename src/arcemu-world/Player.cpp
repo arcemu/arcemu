@@ -6596,6 +6596,7 @@ void Player::UpdateNearbyGameObjects()
 			bool bPassed = !deactivate;
 			if(go->isQuestGiver())
 			{
+                bPassed = false;
 				if(go->HasQuests() && go->NumOfQuests() > 0)
 				{
 					std::list<QuestRelation*>::iterator itr2 = go->QuestsBegin();
