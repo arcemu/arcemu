@@ -7184,14 +7184,7 @@ void Player::RemoveItemsFromWorld()
 
 uint32 Player::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 {
-	int count = 0;
-	if(target == this)
-	{
-		// we need to send create objects for all items.
-		count += GetItemInterface()->m_CreateForPlayer(data);
-	}
-	count += Unit::BuildCreateUpdateBlockForPlayer(data, target);
-	return count;
+    return Object::BuildCreateUpdateBlockForPlayer( data, target );
 }
 
 void Player::Kick(uint32 delay /* = 0 */)

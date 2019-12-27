@@ -207,6 +207,16 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 
 uint32 UpdateBuilder::BuildCreateUpdateBlockForPlayer( ByteBuffer* data, Object* object, Player* target )
 {
+    uint32 count = 0;
+
+    if( object->IsPlayer() )
+    {
+        if( target == object )
+        {
+            count += TO_PLAYER( object )->GetItemInterface()->m_CreateForPlayer( data );
+        }
+    }
+
     uint16 flags = 0;
     uint32 flags2 = 0;
 
@@ -325,6 +335,7 @@ uint32 UpdateBuilder::BuildCreateUpdateBlockForPlayer( ByteBuffer* data, Object*
     // this will cache automatically if needed
     _BuildValuesUpdate(data, &updateMask, object, target);
 
-    // update count: 1 ;)
-    return 1;
+    // update count: +1 ;)
+    count += 1;
+    return count;
 }
