@@ -240,6 +240,3 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Shaman.h"
 
 #endif
-
-#define BUGTRACKER "https://github.com/arcemu/arcemu/issues"
-

@@ -21,6 +21,8 @@
 #include "StdAfx.h"
 #include "git_version.h"
 
+#define BUGTRACKER "https://github.com/arcemu/arcemu/issues"
+
 LoginErrorCode VerifyName(const char* name, size_t nlen)
 {
 	const char* p;
