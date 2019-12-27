@@ -30,6 +30,8 @@ class UpdateBuilder
 {
 public:
     static void _BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask, Object *object, Player* target );
+
+    static uint32 BuildCreateUpdateBlockForPlayer( ByteBuffer* data, Object *object, Player* target );
 };
 
 #endif

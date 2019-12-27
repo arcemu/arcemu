@@ -158,6 +158,8 @@ class Spell;
 //====================================================================
 class SERVER_DECL Object : public EventableObject
 {
+    friend class UpdateBuilder;
+
 	public:
 		typedef std::set<Object*> InRangeSet;
 		typedef std::map<string, void*> ExtensionSet;
