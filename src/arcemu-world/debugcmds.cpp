@@ -1153,3 +1153,19 @@ bool ChatHandler::HandleClearWorldStatesCommand( const char *args, WorldSession 
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugPlaySoundCommand(const char *args, WorldSession *session)
+{
+	Player *player = session->GetPlayer();
+
+	uint32 sound = atol( args );
+	if( sound == 0 )
+	{
+		RedSystemMessage( session, "You need to specify a sound id. Example: 5154" );
+		return true;
+	}
+
+	player->PlaySoundToSet( sound );
+
+	return true;
+}

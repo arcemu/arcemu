@@ -285,7 +285,7 @@ void CommandTableStorage::Init()
 		{ "landwalk",            'd', &ChatHandler::HandleDebugLandWalk,           "",                                                                                                                  NULL, 0, 0, 0 },
 		{ "waterwalk",           'd', &ChatHandler::HandleDebugWaterWalk,          "",                                                                                                                  NULL, 0, 0, 0 },
 		{ "castspell",           'd', &ChatHandler::HandleCastSpellCommand,        ".castspell <spellid> - Casts spell on target.",                                                                     NULL, 0, 0, 0 },
-		{ "castself",            'd', &ChatHandler::HandleCastSelfCommand,         ".castself <spellId> - Target casts spell <spellId> on itself.",                                                     NULL, 0, 0, 0 },
+		{ "castself",            'd', &ChatHandler::HandleCastSelfCommand,         ".castself <spellId> - Target casts spell <spellId> on itself.",                                                     NULL, 0, 0, 0 },
 		{ "castspellne",         'd', &ChatHandler::HandleCastSpellNECommand,      ".castspellne <spellid> - Casts spell on target (only plays animations, doesn't handle effects or range/facing/etc.", NULL, 0, 0, 0 },
 		{ "aggrorange",          'd', &ChatHandler::HandleAggroRangeCommand,       ".aggrorange - Shows aggro Range of the selected Creature.",                                                         NULL, 0, 0, 0 },
 		{ "knockback",           'd', &ChatHandler::HandleKnockBackCommand,        ".knockback <value> - Knocks you back.",                                                                             NULL, 0, 0, 0 },
@@ -318,6 +318,7 @@ void CommandTableStorage::Init()
 		{ "updateworldstate",    'd', &ChatHandler::HandleUpdateWorldStateCommand, "Sets the specified worldstate field to the specified value",                                                        NULL, 0, 0, 0 },
 		{ "initworldstates",     'd', &ChatHandler::HandleInitWorldStatesCommand,  "(re)initializes the worldstates.",                                                                                  NULL, 0, 0, 0 },
 		{ "clearworldstates",    'd', &ChatHandler::HandleClearWorldStatesCommand, "Clears the worldstates",                                                                                            NULL, 0, 0, 0 },
+		{ "playsound", 'd', &ChatHandler::HandleDebugPlaySoundCommand, "Plays sound to the player's set",												NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);
