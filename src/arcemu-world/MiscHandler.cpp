@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 void WorldSession::HandleRepopRequestOpcode(WorldPacket & recv_data)
 {
@@ -458,13 +459,13 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 					if(_player->HasQuestForItem(i->item.itemproto->ItemId))
 						return;
 				}
-			pCreature->BuildFieldUpdatePacket(_player, UNIT_DYNAMIC_FLAGS, 0);
+			UpdateBuilder::SendFieldUpdatePacket(_player, pCreature, UNIT_DYNAMIC_FLAGS, 0 );
 
 			if(!pCreature->Skinned)
 			{
 				if(lootmgr.IsSkinnable(pCreature->GetEntry()))
 				{
-					pCreature->BuildFieldUpdatePacket(_player, UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+					UpdateBuilder::SendFieldUpdatePacket(_player, pCreature, UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 				}
 			}
 		}

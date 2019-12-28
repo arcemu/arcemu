@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 {
@@ -3276,7 +3277,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			// enable it for party only
 			go->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 			//disable by default
-			WorldPacket* pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_BYTES_1, 1 << 24);
+			WorldPacket* pkt = UpdateBuilder::BuildFieldUpdatePacket(go, GAMEOBJECT_BYTES_1, 1 << 24 );
 			SubGroup* pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
 			if(pGroup)

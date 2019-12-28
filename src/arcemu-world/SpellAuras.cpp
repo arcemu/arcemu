@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 {
@@ -7577,7 +7578,7 @@ void Aura::SpellAuraEmphaty(bool apply)
 	if(apply)
 		dynflags |= U_DYN_FLAG_PLAYER_INFO;
 
-	m_target->BuildFieldUpdatePacket(caster, UNIT_DYNAMIC_FLAGS, dynflags);
+	UpdateBuilder::SendFieldUpdatePacket(caster, m_target, UNIT_DYNAMIC_FLAGS, dynflags);
 }
 
 void Aura::SpellAuraModOffhandDamagePCT(bool apply)

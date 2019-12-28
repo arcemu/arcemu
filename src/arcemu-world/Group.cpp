@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 Group::Group(bool Assign)
 {
@@ -1023,14 +1024,14 @@ void Group::UpdateAllOutOfRangePlayersFor(Player* pPlayer)
 					if(u1)
 					{
 						data.clear();
-						plr->BuildValuesUpdateBlockForPlayer(&data, &hisMask);
+						UpdateBuilder::BuildValuesUpdateBlockForPlayer(&data, &hisMask, plr);
 						pPlayer->PushUpdateData(&data, 1);
 					}
 
 					if(u2)
 					{
 						data.clear();
-						pPlayer->BuildValuesUpdateBlockForPlayer(&data, &myMask);
+						UpdateBuilder::BuildValuesUpdateBlockForPlayer(&data, &myMask, pPlayer);
 						plr->PushUpdateData(&data, 1);
 					}
 				}
@@ -1194,7 +1195,7 @@ void Group::SendLootUpdates(Object* o)
 	Flags |= U_DYN_FLAG_LOOTABLE;
 	Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
 
-	o->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, Flags);
+	UpdateBuilder::BuildFieldUpdatePacket(&buf, o, UNIT_DYNAMIC_FLAGS, Flags );
 
 	Lock();
 

@@ -34,6 +34,16 @@ public:
     static uint32 BuildCreateUpdateBlockForPlayer( ByteBuffer* data, Object *object, Player* target );
 
     static void _BuildMovementUpdate( ByteBuffer* data, uint16 flags, uint32 flags2, Object *object, Player* target );
+
+    static WorldPacket* BuildFieldUpdatePacket(Object* object, uint32 index, uint32 value);
+
+    static void SendFieldUpdatePacket(Player* Target, Object* object, uint32 Index, uint32 Value);
+
+    static void BuildFieldUpdatePacket(ByteBuffer* buf, Object* object, uint32 Index, uint32 Value);
+
+    static uint32 BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, Object* object, Player* target);
+
+    static uint32 BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, UpdateMask* mask, Object* object);
 };
 
 #endif

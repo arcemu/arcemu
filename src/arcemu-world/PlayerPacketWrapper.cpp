@@ -18,6 +18,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 void Player::SendTalentResetConfirm()
 {
@@ -654,7 +655,7 @@ void Player::SendLootUpdate(Object* o)
 	Flags |= U_DYN_FLAG_LOOTABLE;
 	Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
 
-	o->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, Flags);
+	UpdateBuilder::BuildFieldUpdatePacket(&buf, o, UNIT_DYNAMIC_FLAGS, Flags );
 
 	PushUpdateData(&buf, 1);
 }
@@ -726,8 +727,8 @@ void Player::TagUnit(Object* o)
 	ByteBuffer buf(500);
 	ByteBuffer buf1(500);
 
-	o->BuildFieldUpdatePacket(&buf1, UNIT_DYNAMIC_FLAGS, Flags);
-	o->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, o->GetUInt32Value(UNIT_DYNAMIC_FLAGS));
+	UpdateBuilder::BuildFieldUpdatePacket(&buf1, o, UNIT_DYNAMIC_FLAGS, Flags );
+	UpdateBuilder::BuildFieldUpdatePacket(&buf, o, UNIT_DYNAMIC_FLAGS, o->GetUInt32Value(UNIT_DYNAMIC_FLAGS) );
 
 	SendUpdateDataToSet(&buf1, &buf, true);
 }

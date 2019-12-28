@@ -7698,7 +7698,7 @@ void Unit::SendPowerUpdate(bool self)
 	SendMessageToSet(&data, self);
 
 	//VLack: On 3.1.3, create and send a field update packet to everyone else, as this is the only way to update their GUI with the power values.
-	WorldPacket* pkt = BuildFieldUpdatePacket(UNIT_FIELD_POWER1 + GetPowerType(), amount);
+	WorldPacket* pkt = UpdateBuilder::BuildFieldUpdatePacket(this, UNIT_FIELD_POWER1 + GetPowerType(), amount);
 	SendMessageToSet(pkt, false);
 	delete pkt;
 }

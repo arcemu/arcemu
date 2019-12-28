@@ -270,13 +270,7 @@ class SERVER_DECL Object : public EventableObject
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
 
-		uint32  BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, Player* target);
-		uint32  BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, UpdateMask* mask);
-		uint32  BuildOutOfRangeUpdateBlock(ByteBuffer* buf);
-
-		WorldPacket* BuildFieldUpdatePacket(uint32 index, uint32 value);
-		void BuildFieldUpdatePacket(Player* Target, uint32 Index, uint32 Value);
-		void BuildFieldUpdatePacket(ByteBuffer* buf, uint32 Index, uint32 Value);
+		//uint32  BuildOutOfRangeUpdateBlock(ByteBuffer* buf);
 
 		virtual void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 

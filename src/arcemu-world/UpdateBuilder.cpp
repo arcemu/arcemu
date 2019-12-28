@@ -596,3 +596,102 @@ void UpdateBuilder::_BuildMovementUpdate( ByteBuffer* data, uint16 flags, uint32
 			*data << uint64(0);   //?
 	}
 }
+
+//That is dirty fix it actually creates update of 1 field with
+//the given value ignoring existing changes in fields and so on
+//useful if we want update this field for certain players
+//NOTE: it does not change fields. This is also very fast method
+WorldPacket* UpdateBuilder::BuildFieldUpdatePacket(Object *object, uint32 index, uint32 value)
+{
+	// uint64 guidfields = GetGUID();
+	// uint8 guidmask = 0;
+	WorldPacket* packet = new WorldPacket(1500);
+	packet->SetOpcode(SMSG_UPDATE_OBJECT);
+
+	*packet << (uint32)1;//number of update/create blocks
+//	*packet << (uint8)0;//unknown //VLack: removed for 3.1
+
+	*packet << (uint8) UPDATETYPE_VALUES;		// update type == update
+	*packet << object->GetNewGUID();
+
+	uint32 mBlocks = index / 32 + 1;
+	*packet << (uint8)mBlocks;
+
+	for(uint32 dword_n = mBlocks - 1; dword_n; dword_n--)
+		*packet << (uint32)0;
+
+	*packet << (((uint32)(1)) << (index % 32));
+	*packet << value;
+
+	return packet;
+}
+
+void UpdateBuilder::SendFieldUpdatePacket(Player* Target, Object *object, uint32 Index, uint32 Value)
+{
+	ByteBuffer buf(500);
+	buf << uint8(UPDATETYPE_VALUES);
+	buf << object->GetNewGUID();
+
+	uint32 mBlocks = Index / 32 + 1;
+	buf << (uint8)mBlocks;
+
+	for(uint32 dword_n = mBlocks - 1; dword_n; dword_n--)
+		buf << (uint32)0;
+
+	buf << (((uint32)(1)) << (Index % 32));
+	buf << Value;
+
+	Target->PushUpdateData(&buf, 1);
+}
+
+void UpdateBuilder::BuildFieldUpdatePacket(ByteBuffer* buf, Object *object, uint32 Index, uint32 Value)
+{
+	*buf << uint8(UPDATETYPE_VALUES);
+	*buf << object->GetNewGUID();
+
+	uint32 mBlocks = Index / 32 + 1;
+	*buf << (uint8)mBlocks;
+
+	for(uint32 dword_n = mBlocks - 1; dword_n; dword_n--)
+		*buf << (uint32)0;
+
+	*buf << (((uint32)(1)) << (Index % 32));
+	*buf << Value;
+}
+
+uint32 UpdateBuilder::BuildValuesUpdateBlockForPlayer(ByteBuffer* data, Object *object, Player* target)
+{
+	UpdateMask updateMask;
+	updateMask.SetCount(object->GetValuesCount());
+	object->_SetUpdateBits(&updateMask, target);
+	const WoWGuid &wowGuid = object->GetNewGUID();
+	for(uint32 x = 0; x < object->GetValuesCount(); ++x)
+	{
+		if(updateMask.GetBit(x))
+		{
+			*data << (uint8) UPDATETYPE_VALUES;		// update type == update
+			ARCEMU_ASSERT(wowGuid.GetNewGuidLen() > 0);
+			*data << wowGuid;
+
+			_BuildValuesUpdate(data, &updateMask, object, target);
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+uint32 UpdateBuilder::BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, UpdateMask* mask, Object* object)
+{
+	const WoWGuid &wowGuid = object->GetNewGUID();
+	ARCEMU_ASSERT(wowGuid.GetNewGuidLen() > 0);
+
+	// returns: update count
+	// update type == update
+	*buf << (uint8) UPDATETYPE_VALUES;
+	*buf << wowGuid;
+	_BuildValuesUpdate(buf, mask, object, 0);
+
+	// 1 update.
+	return 1;
+}

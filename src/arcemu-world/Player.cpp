@@ -19,6 +19,8 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
+
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_INDOOR_CHECK_INTERVAL 1000
 #define CANNON 24933 //39692, 34154
@@ -6301,12 +6303,12 @@ bool Player::removeDeletedSpell(uint32 SpellID)
 
 void Player::EventActivateGameObject(GameObject* obj)
 {
-	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 1 | 8);
+	UpdateBuilder::SendFieldUpdatePacket(this, obj, GAMEOBJECT_DYNAMIC, 1 | 8 );
 }
 
 void Player::EventDeActivateGameObject(GameObject* obj)
 {
-	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 0);
+	UpdateBuilder::SendFieldUpdatePacket(this, obj, GAMEOBJECT_DYNAMIC, 0 );
 }
 
 void Player::EventTimedQuestExpire( uint32 questid ){
@@ -8658,7 +8660,7 @@ void Player::BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag)
 			Group* pGroup = TO< Player* >(curObj)->GetGroup();
 			if(!pGroup && pGroup != GetGroup())
 			{
-				BuildFieldUpdatePacket(TO< Player* >(curObj), index, flag);
+				UpdateBuilder::SendFieldUpdatePacket(TO< Player* >(curObj), this, index, flag);
 			}
 		}
 	}

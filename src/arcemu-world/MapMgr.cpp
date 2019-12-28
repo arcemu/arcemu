@@ -943,7 +943,7 @@ void MapMgr::_UpdateObjects()
 			pOwner = TO< Item* >(pObj)->GetOwner();
 			if(pOwner != NULL)
 			{
-				count = TO< Item* >(pObj)->BuildValuesUpdateBlockForPlayer(&update, pOwner);
+				count = UpdateBuilder::BuildValuesUpdateBlockForPlayer(&update, TO< Item* >( pObj ), pOwner );
 				// send update to owner
 				if(count)
 				{
@@ -960,7 +960,7 @@ void MapMgr::_UpdateObjects()
 				if(pObj->IsPlayer())
 				{
 					// need to be different! ;)
-					count = pObj->BuildValuesUpdateBlockForPlayer(&update, TO< Player* >(pObj));
+					count = UpdateBuilder::BuildValuesUpdateBlockForPlayer(&update, pObj, TO< Player* >( pObj ));
 					if(count)
 					{
 						TO< Player* >(pObj)->PushUpdateData(&update, count);
@@ -972,7 +972,7 @@ void MapMgr::_UpdateObjects()
 					TO< Unit* >(pObj)->EventHealthChangeSinceLastUpdate();
 
 				// build the update
-				count = pObj->BuildValuesUpdateBlockForPlayer(&update, static_cast< Player* >(NULL));
+				count = UpdateBuilder::BuildValuesUpdateBlockForPlayer(&update, pObj, static_cast< Player* >(NULL));
 
 				if(count)
 				{
