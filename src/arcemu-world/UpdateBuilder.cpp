@@ -62,7 +62,7 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 			Flags &= ~oldFlags;
 		}
 
-		object->SetUInt32Value( UNIT_DYNAMIC_FLAGS, Flags );
+		object->SetUInt32ValueNoUpdate( UNIT_DYNAMIC_FLAGS, Flags );
 
 		updateMask->SetBit(UNIT_DYNAMIC_FLAGS);
 
@@ -159,7 +159,7 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 	oldflags = object->GetUInt32Value( GAMEOBJECT_DYNAMIC );
 	if(!updateMask->GetBit(GAMEOBJECT_DYNAMIC))
 	    updateMask->SetBit(GAMEOBJECT_DYNAMIC);
-	object->SetUInt32Value( GAMEOBJECT_DYNAMIC,  1 | 8 ); // 8 to show sparkles
+	object->SetUInt32ValueNoUpdate( GAMEOBJECT_DYNAMIC,  1 | 8 ); // 8 to show sparkles
 	reset = true;
     }
 
@@ -196,10 +196,10 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 	switch(object->GetTypeId())
 	{
 	    case TYPEID_UNIT:
-		object->SetUInt32Value( UNIT_DYNAMIC_FLAGS, oldflags );
+		object->SetUInt32ValueNoUpdate( UNIT_DYNAMIC_FLAGS, oldflags );
 		break;
 	    case TYPEID_GAMEOBJECT:
-		object->SetUInt32Value( GAMEOBJECT_DYNAMIC, oldflags );
+		object->SetUInt32ValueNoUpdate( GAMEOBJECT_DYNAMIC, oldflags );
 		break;
 	}
     }

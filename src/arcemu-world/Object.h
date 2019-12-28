@@ -381,6 +381,14 @@ class SERVER_DECL Object : public EventableObject
 		}
 
 		void EventSetUInt32Value(uint32 index, uint32 value);
+
+		/// Directly set uint32 property and DO NOT flag for update. You probably want to use SetUInt32Value method instead!
+		void SetUInt32ValueNoUpdate(const uint32 index, const uint32 value)
+		{
+			m_uint32Values[ index ] = value;
+		}
+
+		/// Set uint32 property and flag for update.
 		void  SetUInt32Value(const uint32 index, const uint32 value);
 
 		//! Set uint64 property
