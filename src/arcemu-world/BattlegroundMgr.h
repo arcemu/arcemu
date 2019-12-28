@@ -90,11 +90,13 @@ enum BattleGroundStatus
 // uint32 bg     -  ID of the battleground the creature is a battlemaster of
 //
 //////////////////////////////////////////////////////////////////////////////
+# pragma pack(push,STORAGE_ALIGNMENT)
 struct BGMaster
 {
 	uint32 entry;
 	uint32 bg;
 };
+#pragma pack(pop)
 
 struct BGScore
 {

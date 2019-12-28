@@ -724,7 +724,7 @@ void Master::_UnhookSignals()
 
 }
 
-#ifdef WIN32
+#ifdef WIN32 && (defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64))
 
 Mutex m_crashedMutex;
 

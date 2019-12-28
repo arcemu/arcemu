@@ -530,10 +530,14 @@ void LogonServer::Run(int argc, char** argv)
 	sLog.Close();
 }
 
+#if defined(WIN32) && (defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64))
+
 void OnCrash(bool Terminate)
 {
 
 }
+
+#endif
 
 void LogonServer::CheckForDeadSockets()
 {

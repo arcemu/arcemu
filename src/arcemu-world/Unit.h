@@ -85,8 +85,7 @@ public:
 	virtual void operator()( Aura *aura ){}
 };
 
-
-#pragma pack(push, 1)
+#pragma pack(push,STORAGE_ALIGNMENT)
 struct DisplayBounding
 {
 	uint32 displayid;

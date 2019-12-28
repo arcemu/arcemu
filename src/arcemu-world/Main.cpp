@@ -54,7 +54,9 @@ int win32_main(int argc, char** argv)
 {
 	SetThreadName("Main Thread");
 
+#ifdef CRASHHANDLER_ENABLED
 	StartCrashHandler();
+#endif
 
 	//Andy: windows only, helps fight heap allocation on allocations lower then 16KB
 	unsigned long arg = 2;

@@ -520,8 +520,11 @@ static bool checkForCPUID() {
     // all known supported architectures have cpuid
     // add cases for incompatible architectures if they are added
     // e.g., if we ever support __powerpc__ being defined again
-
+#if defined(__arm__)
+    return false;
+#else
     return true;
+#endif
 }
 
 
@@ -560,7 +563,7 @@ void System::getStandardProcessorExtensions() {
 #endif
 }
 
-#if defined(G3D_WIN32) && !defined(G3D_64BIT)
+#if defined(G3D_WIN32) && defined(_M_IX86)
     #pragma message("Port System::memcpy SIMD to all platforms")
 /** Michael Herf's fast memcpy */
 void memcpyMMX(void* dst, const void* src, int nbytes) {
@@ -611,7 +614,7 @@ void memcpyMMX(void* dst, const void* src, int nbytes) {
 #endif
 
 void System::memcpy(void* dst, const void* src, size_t numBytes) {
-#if defined(G3D_WIN32) && !defined(G3D_64BIT)
+#if defined(G3D_WIN32) && defined(_M_IX86)
     memcpyMMX(dst, src, numBytes);
 #else
     ::memcpy(dst, src, numBytes);
@@ -621,7 +624,7 @@ void System::memcpy(void* dst, const void* src, size_t numBytes) {
 
 /** Michael Herf's fastest memset. n32 must be filled with the same
     character repeated. */
-#if defined(G3D_WIN32) && !defined(G3D_64BIT)
+#if defined(G3D_WIN32) && defined(_M_IX86)
     #pragma message("Port System::memfill SIMD to all platforms")
 
 // On x86 processors, use MMX
@@ -660,7 +663,7 @@ void memfill(void *dst, int n32, unsigned long i) {
 
 
 void System::memset(void* dst, uint8 value, size_t numBytes) {
-#if defined(G3D_WIN32) && !defined(G3D_64BIT)
+#if defined(G3D_WIN32) && defined(_M_IX86)
     uint32 v = value;
     v = v + (v << 8) + (v << 16) + (v << 24); 
     G3D::memfill(dst, v, numBytes);
@@ -1677,7 +1680,7 @@ std::string System::currentDateString() {
 
 // VC on Intel
 void System::cpuid(CPUIDFunction func, uint32& areg, uint32& breg, uint32& creg, uint32& dreg) {
-#if !defined(G3D_64BIT)
+#if defined(_M_IX86)
     // Can't copy from assembler direct to a function argument (which is on the stack) in VC.
     uint32 a,b,c,d;
 
@@ -1695,6 +1698,8 @@ void System::cpuid(CPUIDFunction func, uint32& areg, uint32& breg, uint32& creg,
     breg = b; 
     creg = c;
     dreg = d;
+#elif defined(_M_ARM)
+	int CPUInfo[4] = { 0 };
 #else
     int CPUInfo[4];
     __cpuid(CPUInfo, func);
@@ -1708,6 +1713,15 @@ void System::cpuid(CPUIDFunction func, uint32& areg, uint32& breg, uint32& creg,
 #elif defined(G3D_OSX) && ! defined(G3D_OSX_INTEL)
 
 // non-intel OS X; no CPUID
+void System::cpuid(CPUIDFunction func, uint32& eax, uint32& ebx, uint32& ecx, uint32& edx) {
+    eax = 0;
+    ebx = 0;
+    ecx = 0;
+    edx = 0;
+}
+
+#elif defined(G3D_LINUX) && defined(__arm__)
+// non-x86 CPU; no CPUID, at least in userspace
 void System::cpuid(CPUIDFunction func, uint32& eax, uint32& ebx, uint32& ecx, uint32& edx) {
     eax = 0;
     ebx = 0;

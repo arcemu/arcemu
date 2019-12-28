@@ -23,6 +23,10 @@
  *  2005-08-05   v5	- Removed most Lint (http://www.gimpel.com/) errors... thanks to Okko Willeboordse!
  *
  **********************************************************************/
+
+ // limit to supported architectures
+#if defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64)
+
 #define NOMINMAX
 
 #include <windows.h>
@@ -36,6 +40,7 @@
 // If VC7 and later, then use the shipped 'dbghelp.h'-file
 #if _MSC_VER >= 1300
 #include <dbghelp.h>
+#pragma comment(lib, "dbghelp")
 #else
 // ARCEMU_INLINE the important dbghelp.h-declarations...
 typedef enum
@@ -1233,3 +1238,5 @@ void StackWalker::OnOutput(LPCSTR buffer)
 {
 	OutputDebugStringA(buffer);
 }
+
+#endif

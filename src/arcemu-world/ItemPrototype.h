@@ -568,7 +568,7 @@ enum ITEM_LIMIT_FLAGS
     ILFLAG_EQUIP_ONLY	= 1,
 };
 
-#pragma pack(push,1)
+#pragma pack(push,STORAGE_ALIGNMENT)
 struct SocketInfo
 {
 	uint32 SocketColor;

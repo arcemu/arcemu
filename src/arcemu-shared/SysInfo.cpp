@@ -23,7 +23,6 @@
 #ifdef WIN32
 #include <Windows.h>
 #include <psapi.h>
-#pragma comment(lib, "Psapi")
 #endif
 
 #if defined(linux) || defined(__linux)

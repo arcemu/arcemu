@@ -36,7 +36,7 @@ void OutputCrashLogLine(const char* format, ...)
 	va_end(ap);
 }
 
-#ifdef WIN32
+#if defined(WIN32) && (defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64))
 
 #include "CircularQueue.h"
 Mutex m_crashLock;
@@ -61,7 +61,7 @@ void StartCrashHandler()
 	// just piss us off. :P
 
 	// Check for a debugger.
-#ifndef X64
+#ifdef _M_IX86
 	DWORD code;
 
 	__asm

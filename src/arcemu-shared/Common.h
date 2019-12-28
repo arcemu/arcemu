@@ -169,12 +169,35 @@ enum MsTimeVariables
 #define CONFIG "Release"
 #endif
 
-#ifdef X64
-#define ARCH "X64"
+/*
+ * Detect and define the right architecture string
+ */
+#if defined(__amd64__) || defined(_M_AMD64)
+#  define ARCH "X64"
+#elif defined(__i386__) || defined(_M_IX86)
+#  define ARCH "X86"
+#elif defined(__arm__) || defined(_M_ARM)
+#  define ARCH "ARM"
 #else
-#define ARCH "X86"
+#  pragma error "FATAL ERROR: unknown architecture."
 #endif
 
+/*
+ * define appropriate alignment for Storage structs for different architectures
+ * for now only arm needs special care, x86 seems to handle unaligned access just fine,
+ * though there may be the potential of optimization.
+ */
+#if defined(__arm__) || defined(_M_ARM)
+#  define STORAGE_ALIGNMENT 4
+#else
+#  define STORAGE_ALIGNMENT 1
+#endif
+/*
+ * This is some clever logic that increments base_offset to the next multiple of STORAGE_ALIGNMENT
+ * It works because integerdivision cuts off any remainders, e.g. 3/4=0, 4/4=1
+ * I do hope that the ocmpiler will optimize this calculation out though.
+ */
+#define ALIGN_OFFSET(base_offset) ( ( ( base_offset + STORAGE_ALIGNMENT - 1 ) / STORAGE_ALIGNMENT ) * STORAGE_ALIGNMENT );
 
 #if PLATFORM == PLATFORM_WIN32
 #define STRCASECMP stricmp
@@ -449,7 +472,7 @@ static inline uint32 int32abs2uint32(const int value)
 /// Fastest Method of float2int32
 static inline int float2int32(const float value)
 {
-#if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
+#if defined(_M_IX86) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
 	int i;
 	__asm
 	{
@@ -469,7 +492,7 @@ static inline int float2int32(const float value)
 /// Fastest Method of long2int32
 static inline int long2int32(const double value)
 {
-#if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
+#if defined(_M_IX86) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
 	int i;
 	__asm
 	{
