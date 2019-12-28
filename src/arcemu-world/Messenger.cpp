@@ -37,3 +37,38 @@ void Messenger::SendSpellLog(Object *Caster, Object *Target, uint32 Ability, uin
 
 	Caster->SendMessageToSet(&data, true);
 }
+
+void Messenger::SendSpellNonMeleeDamageLog(Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToset)
+{
+	if(!Caster || !Target || !SpellID)
+		return;
+
+	uint32 Overkill = 0;
+
+	if(Damage > Target->GetUInt32Value(UNIT_FIELD_HEALTH))
+		Overkill = Damage - Target->GetUInt32Value(UNIT_FIELD_HEALTH);
+
+	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, 48);
+
+	data << Target->GetNewGUID();
+	data << Caster->GetNewGUID();
+	data << uint32(SpellID);                      // SpellID / AbilityID
+	data << uint32(Damage);                       // All Damage
+	data << uint32(Overkill);					// Overkill
+	data << uint8(g_spellSchoolConversionTable[School]);     // School
+	data << uint32(AbsorbedDamage);               // Absorbed Damage
+	data << uint32(ResistedDamage);               // Resisted Damage
+	data << uint8(PhysicalDamage);        // Physical Damage (true/false)
+	data << uint8(0);                     // unknown or it binds with Physical Damage
+	data << uint32(BlockedDamage);		       // Physical Damage (true/false)
+
+	// unknown const
+	if(CriticalHit)
+		data << uint8(7);
+	else
+		data << uint8(5);
+
+	data << uint32(0);
+
+	Caster->SendMessageToSet(&data, bToset);
+}

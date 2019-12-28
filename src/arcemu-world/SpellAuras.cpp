@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 {
@@ -4369,7 +4370,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 	//deal damage before we add healing bonus to damage
 	m_caster->DealDamage(m_target, dmg_amount, 0, 0, sp->Id, true);
-	m_caster->SendSpellNonMeleeDamageLog(m_caster, m_target, sp->Id, dmg_amount, (uint8) sp->School, 0, 0, true, 0, is_critical, true);
+	Messenger::SendSpellNonMeleeDamageLog(m_caster, m_target, sp->Id, dmg_amount, (uint8) sp->School, 0, 0, true, 0, is_critical, true);
 
 	m_caster->HandleProc(aproc, m_target, sp, false, dmg_amount);
 	m_caster->m_procCounter = 0;

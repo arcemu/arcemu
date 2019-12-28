@@ -3973,7 +3973,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		if(realdamage > 0)  //FIX ME: add log for miss,block etc for ability and ranged
 		{
 			// here we send "dmg.resisted_damage" for "AbsorbedDamage", "0" for "ResistedDamage", and "false" for "PhysicalDamage" even though "School" is "SCHOOL_NORMAL"   o_O
-			SendSpellNonMeleeDamageLog(this, pVictim, ability->Id, realdamage, static_cast<uint8>(dmg.school_type), dmg.resisted_damage, 0, false, blocked_damage, ((hit_status & HITSTATUS_CRICTICAL) != 0), true);
+			Messenger::SendSpellNonMeleeDamageLog(this, pVictim, ability->Id, realdamage, static_cast<uint8>(dmg.school_type), dmg.resisted_damage, 0, false, blocked_damage, ((hit_status & HITSTATUS_CRICTICAL) != 0), true);
 		}
 		//FIX ME: add log for miss,block etc for ability and ranged
 		//example how it works
@@ -7592,7 +7592,7 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 			}
 			else
 			{
-				SendSpellNonMeleeDamageLog(this, splittarget, ds->m_spellId, splitdamage, static_cast<uint8>(school_type), 0, 0, true, 0, 0, true);
+				Messenger::SendSpellNonMeleeDamageLog(this, splittarget, ds->m_spellId, splitdamage, static_cast<uint8>(school_type), 0, 0, true, 0, 0, true);
 			}
 		}
 	}

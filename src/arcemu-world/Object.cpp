@@ -21,6 +21,8 @@
 #include "StdAfx.h"
 #include "Unit.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
+
 using namespace std;
 
 Object::Object() : m_position(0, 0, 0, 0), m_spawnLocation(0, 0, 0, 0)
@@ -1135,7 +1137,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Data Sending ProcHandling===================================
 //==========================================================================================
-	SendSpellNonMeleeDamageLog(this, pVictim, spellID, static_cast< int32 >(res), static_cast< uint8 >(spellInfo->School), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
+	Messenger::SendSpellNonMeleeDamageLog(this, pVictim, spellID, static_cast< int32 >(res), static_cast< uint8 >(spellInfo->School), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage(pVictim, static_cast< int32 >(res), 2, 0, spellID);
 
 	if(IsUnit())
@@ -1192,7 +1194,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 				uint32 damage2 = static_cast< uint32 >(res + abs_dmg);
 				uint32 absorbed = TO< Unit* >(this)->AbsorbDamage(spellInfo->School, &damage2);
 				DealDamage(TO< Unit* >(this), damage2, 2, 0, spellID);
-				SendSpellNonMeleeDamageLog(this, this, spellID, damage2, static_cast< uint8 >(spellInfo->School), absorbed, 0, false, 0, false, IsPlayer());
+				Messenger::SendSpellNonMeleeDamageLog(this, this, spellID, damage2, static_cast< uint8 >(spellInfo->School), absorbed, 0, false, 0, false, IsPlayer());
 			}
 		}
 	}
@@ -1201,41 +1203,6 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 //*****************************************************************************************
 //* SpellLog packets just to keep the code cleaner and better to read
 //*****************************************************************************************
-
-void Object::SendSpellNonMeleeDamageLog(Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToset)
-{
-	if(!Caster || !Target || !SpellID)
-		return;
-
-	uint32 Overkill = 0;
-
-	if(Damage > Target->GetUInt32Value(UNIT_FIELD_HEALTH))
-		Overkill = Damage - Target->GetUInt32Value(UNIT_FIELD_HEALTH);
-
-	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, 48);
-
-	data << Target->GetNewGUID();
-	data << Caster->GetNewGUID();
-	data << uint32(SpellID);                      // SpellID / AbilityID
-	data << uint32(Damage);                       // All Damage
-	data << uint32(Overkill);					// Overkill
-	data << uint8(g_spellSchoolConversionTable[School]);     // School
-	data << uint32(AbsorbedDamage);               // Absorbed Damage
-	data << uint32(ResistedDamage);               // Resisted Damage
-	data << uint8(PhysicalDamage);        // Physical Damage (true/false)
-	data << uint8(0);                     // unknown or it binds with Physical Damage
-	data << uint32(BlockedDamage);		       // Physical Damage (true/false)
-
-	// unknown const
-	if(CriticalHit)
-		data << uint8(7);
-	else
-		data << uint8(5);
-
-	data << uint32(0);
-
-	Caster->SendMessageToSet(&data, bToset);
-}
 
 void Object::SendAttackerStateUpdate(Object* Caster, Object* Target, dealdamage* Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState)
 {
