@@ -712,8 +712,6 @@ class SERVER_DECL Object : public EventableObject
 		virtual void _SetUpdateBits(UpdateMask* updateMask, Player* target) const;
 		//! Mark values that player should get when he/she/it sees object for first time.
 		virtual void _SetCreateBits(UpdateMask* updateMask, Player* target) const;
-		//! Create updates that player will see
-		void _BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2, Player* target);
 
 		//! WoWGuid class
 		WoWGuid m_wowGuid;

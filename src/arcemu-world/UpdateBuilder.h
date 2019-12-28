@@ -32,6 +32,8 @@ public:
     static void _BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask, Object *object, Player* target );
 
     static uint32 BuildCreateUpdateBlockForPlayer( ByteBuffer* data, Object *object, Player* target );
+
+    static void _BuildMovementUpdate( ByteBuffer* data, uint16 flags, uint32 flags2, Object *object, Player* target );
 };
 
 #endif
