@@ -71,6 +71,7 @@ SET(sources
 	Map.cpp 
 	MapScriptInterface.cpp 
 	MapMgr.cpp 
+	Messenger.cpp
 	MiscHandler.cpp 
 	MovementHandler.cpp 
 	NPCHandler.cpp 
@@ -219,6 +220,7 @@ SET( headers
 	MapMgr.h
 	MapScriptInterface.h
 	Master.h
+	Messenger.h
 	MiscHandler.h
 	NameTables.h
 	NPCHandler.h

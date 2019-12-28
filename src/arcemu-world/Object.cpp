@@ -1202,25 +1202,6 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 //* SpellLog packets just to keep the code cleaner and better to read
 //*****************************************************************************************
 
-void Object::SendSpellLog(Object* Caster, Object* Target, uint32 Ability, uint8 SpellLogType)
-{
-	if(Caster == NULL || Target == NULL || Ability == 0)
-		return;
-
-
-	WorldPacket data(SMSG_SPELLLOGMISS, 26);
-
-	data << uint32(Ability);					// spellid
-	data << Caster->GetGUID();					// caster / player
-	data << uint8(1);							// unknown but I think they are const
-	data << uint32(1);						// unknown but I think they are const
-	data << Target->GetGUID();					// target
-	data << uint8(SpellLogType);				// spelllogtype
-
-	Caster->SendMessageToSet(&data, true);
-}
-
-
 void Object::SendSpellNonMeleeDamageLog(Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToset)
 {
 	if(!Caster || !Target || !SpellID)

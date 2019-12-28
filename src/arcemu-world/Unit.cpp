@@ -25,6 +25,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 
 static float AttackToRageConversionTable[PLAYER_LEVEL_CAP + 1] =
@@ -3976,12 +3977,12 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		}
 		//FIX ME: add log for miss,block etc for ability and ranged
 		//example how it works
-		//SendSpellLog(this,pVictim,ability->Id,SPELL_LOG_MISS);
+		//Messenger::SendSpellLog(this,pVictim,ability->Id,SPELL_LOG_MISS);
 	}
 
 	if(ability && realdamage == 0)
 	{
-		SendSpellLog(this, pVictim, ability->Id, SPELL_LOG_RESIST);
+		Messenger::SendSpellLog(this, pVictim, ability->Id, SPELL_LOG_RESIST);
 	}
 //==========================================================================================
 //==============================Damage Dealing==============================================
