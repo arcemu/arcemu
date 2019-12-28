@@ -139,7 +139,6 @@ class Transporter : public GameObject
 		WaypointIterator mNextWaypoint;
 
 		void OnPushToWorld();
-		uint32  BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target);
 
 		/// Build the NPCs only
 		uint32 BuildCreateNPCUpdateBlockForPlayer(ByteBuffer* data, Player* target);

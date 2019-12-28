@@ -24,6 +24,7 @@
 
 #include "StdAfx.h"
 #include "CrashHandler.h"
+#include "UpdateBuilder.h"
 
 Arcemu::Utility::TLSObject<MapMgr*> t_currentMapContext;
 
@@ -308,7 +309,7 @@ void MapMgr::PushObject(Object* obj)
 	{
 		LOG_DETAIL("Creating player " I64FMT " for himself.", obj->GetGUID());
 		ByteBuffer pbuf(10000);
-		count = plObj->BuildCreateUpdateBlockForPlayer(&pbuf, plObj);
+		count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&pbuf, plObj, plObj);
 		plObj->PushCreationData(&pbuf, count);
 	}
 
@@ -395,7 +396,7 @@ void MapMgr::PushObject(Object* obj)
 
 			for(set<Object*>::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
 			{
-				count = (*itr)->BuildCreateUpdateBlockForPlayer(buf, plObj);
+				count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(buf, (*itr), plObj);
 				globalcount += count;
 			}
 			//VLack: It seems if we use the same buffer then it is a BAD idea to try and push created data one by one, add them at once!
@@ -849,7 +850,7 @@ void MapMgr::UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell, ByteBuf
 					if(plObj2->CanSee(obj) && !plObj2->IsVisible(obj->GetGUID()))
 					{
 						CHECK_BUF;
-						count = obj->BuildCreateUpdateBlockForPlayer(*buf, plObj2);
+						count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(*buf, obj, plObj2);
 						plObj2->PushCreationData(*buf, count);
 						plObj2->AddVisibleObject(obj->GetGUID());
 						(*buf)->clear();
@@ -861,7 +862,7 @@ void MapMgr::UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell, ByteBuf
 					if(plObj->CanSee(curObj) && !plObj->IsVisible(curObj->GetGUID()))
 					{
 						CHECK_BUF;
-						count = curObj->BuildCreateUpdateBlockForPlayer(*buf, plObj);
+						count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(*buf, curObj, plObj);
 						plObj->PushCreationData(*buf, count);
 						plObj->AddVisibleObject(curObj->GetGUID());
 						(*buf)->clear();
@@ -884,7 +885,7 @@ void MapMgr::UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell, ByteBuf
 					else if(cansee && !isvisible)
 					{
 						CHECK_BUF;
-						count = obj->BuildCreateUpdateBlockForPlayer(*buf, plObj2);
+						count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(*buf, obj, plObj2);
 						plObj2->PushCreationData(*buf, count);
 						plObj2->AddVisibleObject(obj->GetGUID());
 						(*buf)->clear();
@@ -903,7 +904,7 @@ void MapMgr::UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell, ByteBuf
 					else if(cansee && !isvisible)
 					{
 						CHECK_BUF;
-						count = curObj->BuildCreateUpdateBlockForPlayer(*buf, plObj);
+						count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(*buf, curObj, plObj);
 						plObj->PushCreationData(*buf, count);
 						plObj->AddVisibleObject(curObj->GetGUID());
 						(*buf)->clear();
@@ -1218,7 +1219,7 @@ void MapMgr::ChangeFarsightLocation(Player* plr, DynamicObject* farsight)
 						if(!plr->IsVisible(obj->GetGUID()) && plr->CanSee(obj) && farsight->GetDistance2dSq(obj) <= m_UpdateDistance)
 						{
 							ByteBuffer buf;
-							count = obj->BuildCreateUpdateBlockForPlayer(&buf, plr);
+							count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, obj, plr);
 							plr->PushCreationData(&buf, count);
 							plr->m_visibleFarsightObjects.insert(obj);
 						}

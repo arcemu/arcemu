@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 Container::Container(uint32 high, uint32 low) : Item()
 {
@@ -168,7 +169,7 @@ bool Container::AddItem(int16 slot, Item* item)
 		item->PushToWorld(m_owner->GetMapMgr());
 
 		ByteBuffer buf(3000);
-		uint32 count = item->BuildCreateUpdateBlockForPlayer(&buf, m_owner);
+		uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, item, m_owner);
 		m_owner->PushCreationData(&buf, count);
 	}
 #ifdef ENABLE_ACHIEVEMENTS
@@ -310,7 +311,7 @@ bool Container::AddItemToFreeSlot(Item* pItem, uint32* r_slot)
 			{
 				pItem->PushToWorld(m_owner->GetMapMgr());
 				ByteBuffer buf(2500);
-				uint32 count = pItem->BuildCreateUpdateBlockForPlayer(&buf, m_owner);
+				uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, pItem, m_owner);
 				m_owner->PushCreationData(&buf, count);
 			}
 			if(r_slot)

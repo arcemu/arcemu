@@ -1410,7 +1410,6 @@ class SERVER_DECL Player : public Unit
 
 		// Talents
 		// These functions build a specific type of A9 packet
-		uint32  BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target);
 		void DestroyForPlayer(Player* target) const;
 		void SetTalentHearthOfWildPCT(int value) {hearth_of_wild_pct = value;}
 		void EventTalentHearthOfWildChange(bool apply);

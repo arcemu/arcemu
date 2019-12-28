@@ -105,13 +105,6 @@ void Object::_Create(uint32 mapid, float x, float y, float z, float ang)
 	m_lastMapUpdatePosition.ChangeCoords(x, y, z, ang);
 }
 
-uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
-{
-    uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer( data, this, target );
-    return count;
-}
-
-
 //That is dirty fix it actually creates update of 1 field with
 //the given value ignoring existing changes in fields and so on
 //useful if we want update this field for certain players

@@ -270,8 +270,6 @@ class SERVER_DECL Object : public EventableObject
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
 
-		//! This includes any nested objects we have, inventory for example.
-		virtual uint32  BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target);
 		uint32  BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, Player* target);
 		uint32  BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, UpdateMask* mask);
 		uint32  BuildOutOfRangeUpdateBlock(ByteBuffer* buf);

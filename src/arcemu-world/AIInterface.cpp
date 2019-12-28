@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "UpdateBuilder.h"
 
 #ifndef UNIX
 #include <cmath>
@@ -2117,7 +2118,7 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 
 			//Create on client
 			ByteBuffer buf(3000);
-			uint32 count = pWayPoint->BuildCreateUpdateBlockForPlayer(&buf, pPlayer);
+			uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, pWayPoint, pPlayer);
 			pPlayer->PushCreationData(&buf, count);
 
 			//root the object

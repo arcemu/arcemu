@@ -28,6 +28,7 @@
 #include "Container.h"
 #include "ItemPrototype.h"
 #include "Player.h"
+#include "UpdateBuilder.h"
 //
 //-------------------------------------------------------------------//
 ItemInterface::ItemInterface(Player* pPlayer) :
@@ -65,7 +66,7 @@ uint32 ItemInterface::m_CreateForPlayer(ByteBuffer* data)
 		{
 			if(m_pItems[i]->IsContainer())
 			{
-				count += TO< Container* >(m_pItems[i])->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
+				count += UpdateBuilder::BuildCreateUpdateBlockForPlayer(data, TO< Container* >(m_pItems[i]), m_pOwner);
 
 				for(uint32 e = 0; e < m_pItems[i]->GetProto()->ContainerSlots; e++)
 				{
@@ -74,18 +75,18 @@ uint32 ItemInterface::m_CreateForPlayer(ByteBuffer* data)
 					{
 						if(pItem->IsContainer())
 						{
-							count += TO< Container* >(pItem)->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
+							count += UpdateBuilder::BuildCreateUpdateBlockForPlayer(data, TO< Container* >(pItem), m_pOwner);
 						}
 						else
 						{
-							count += pItem->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
+							count += UpdateBuilder::BuildCreateUpdateBlockForPlayer(data, pItem, m_pOwner);
 						}
 					}
 				}
 			}
 			else
 			{
-				count += m_pItems[i]->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
+				count += UpdateBuilder::BuildCreateUpdateBlockForPlayer(data, m_pItems[i], m_pOwner);
 			}
 		}
 	}
@@ -265,7 +266,7 @@ AddItemResult ItemInterface::m_AddItem(Item* item, int8 ContainerSlot, int16 slo
 			{
 				item->PushToWorld(m_pOwner->GetMapMgr());
 				ByteBuffer buf(2500);
-				uint32 count = item->BuildCreateUpdateBlockForPlayer(&buf, m_pOwner);
+				uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, item, m_pOwner);
 				m_pOwner->PushCreationData(&buf, count);
 			}
 			m_pOwner->SetInventorySlot(slot, item->GetGUID());
