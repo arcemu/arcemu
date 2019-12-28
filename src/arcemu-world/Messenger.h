@@ -26,8 +26,13 @@ class Object;
 class Messenger
 {
 public:
+	/// Log miss, block, etc for spell based attacks in the client
 	static void SendSpellLog( Object* Caster, Object* Target, uint32 Ability, uint8 SpellLogType );
+
+	/// Log spell damage in the client
 	static void SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToSet );
+
+	/// Log melee damage in the client
 	static void SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage* Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState );
 
 	/// Plays a sound effect to the players around the object
