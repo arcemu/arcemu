@@ -272,8 +272,6 @@ class SERVER_DECL Object : public EventableObject
 
 		virtual void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 
-		void BuildHeartBeatMsg(WorldPacket* data) const;
-
 		bool SetPosition(float newX, float newY, float newZ, float newOrientation, bool allowPorting = false);
 		bool SetPosition(const LocationVector & v, bool allowPorting = false);
 

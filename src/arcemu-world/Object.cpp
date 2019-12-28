@@ -107,19 +107,6 @@ void Object::_Create(uint32 mapid, float x, float y, float z, float ang)
 
 uint32 TimeStamp();
 
-void Object::BuildHeartBeatMsg(WorldPacket* data) const
-{
-	data->Initialize(MSG_MOVE_HEARTBEAT);
-
-	*data << GetGUID();
-
-	*data << uint32(0); // flags
-//	*data << uint32(0); // mysterious value #1
-	*data << getMSTime();
-	*data << m_position;
-	*data << m_position.o;
-}
-
 bool Object::SetPosition(const LocationVector & v, bool allowPorting /* = false */)
 {
 	bool updateMap = false, result = true;
