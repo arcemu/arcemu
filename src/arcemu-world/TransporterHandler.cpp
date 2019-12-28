@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 Mutex m_transportGuidGen;
 uint32 m_transportGuidMax = 50;
@@ -349,17 +350,17 @@ void Transporter::UpdatePosition()
 				case 3015:
 				case 7087:
 					{
-						PlaySoundToSet(5154);		// ShipDocked LightHouseFogHorn.wav
+						Messenger::PlaySoundToSet(this, 5154);		// ShipDocked LightHouseFogHorn.wav
 					}
 					break;
 				case 3031:
 					{
-						PlaySoundToSet(11804);		// ZeppelinDocked	ZeppelinHorn.wav
+						Messenger::PlaySoundToSet(this, 11804);		// ZeppelinDocked	ZeppelinHorn.wav
 					}
 					break;
 				default :
 					{
-						PlaySoundToSet(5495);		// BoatDockingWarning	BoatDockedWarning.wav
+						Messenger::PlaySoundToSet(this, 5495);		// BoatDockingWarning	BoatDockedWarning.wav
 					}
 					break;
 			}

@@ -141,3 +141,12 @@ void Messenger::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdam
 
 	Caster->SendMessageToSet(&data, Caster->IsPlayer());
 }
+
+void Messenger::PlaySoundToSet( Object* object, uint32 sound_entry)
+{
+	WorldPacket data(SMSG_PLAY_SOUND, 4);
+	data << sound_entry;
+
+	object->SendMessageToSet(&data, true);
+}
+

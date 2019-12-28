@@ -1366,10 +1366,7 @@ void Object::SetZoneId(uint32 newZone)
 
 void Object::PlaySoundToSet(uint32 sound_entry)
 {
-	WorldPacket data(SMSG_PLAY_SOUND, 4);
-	data << sound_entry;
-
-	SendMessageToSet(&data, true);
+	Messenger::PlaySoundToSet(this, sound_entry);
 }
 
 void Object::_SetExtension(const string & name, void* ptr)

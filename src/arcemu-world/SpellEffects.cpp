@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 {
@@ -5084,7 +5085,7 @@ void Spell::SpellEffectPlayMusic(uint32 i)
 		return;
 	}
 
-	m_caster->PlaySoundToSet(soundid);
+	Messenger::PlaySoundToSet(m_caster, soundid);
 }
 
 void Spell::SpellEffectForgetSpecialization(uint32 i)

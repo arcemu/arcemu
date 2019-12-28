@@ -21,6 +21,7 @@
 
 #include "StdAfx.h"
 #include "LUAEngine.h"
+#include "Messenger.h"
 
 class LuaGameObject
 {
@@ -273,7 +274,7 @@ class LuaGameObject
 		{
 			if(!ptr) return 0;
 			int soundid = luaL_checkint(L, 1);
-			ptr->PlaySoundToSet(soundid);
+			Messenger::PlaySoundToSet(ptr, soundid);
 			return 0;
 		}
 

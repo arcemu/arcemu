@@ -23,6 +23,7 @@
 //
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 bool ChatHandler::HandleDebugInFrontCommand(const char* args, WorldSession* m_session)
 {
@@ -1165,7 +1166,7 @@ bool ChatHandler::HandleDebugPlaySoundCommand(const char *args, WorldSession *se
 		return true;
 	}
 
-	player->PlaySoundToSet( sound );
+	Messenger::PlaySoundToSet( player, sound );
 
 	return true;
 }
