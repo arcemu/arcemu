@@ -265,6 +265,7 @@ class SERVER_DECL Object : public EventableObject
 		virtual bool IsTotem() { return false; }
 		virtual bool IsSummon() { return false; }
 		virtual bool IsVehicle(){ return false; }
+		virtual bool IsTransporter(){ return false; }
 		bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }

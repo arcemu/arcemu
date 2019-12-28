@@ -120,7 +120,7 @@ class Transporter : public GameObject
 	public:
 		Transporter(uint64 guid);
 		~Transporter();
-
+		bool IsTransporter(){ return true; }
 		bool CreateAsTransporter(uint32 EntryID, const char* Name, int32 Time);
 		void UpdatePosition();
 		void TransportPassengers(uint32 mapid, uint32 oldmap, float x, float y, float z);
@@ -140,6 +140,9 @@ class Transporter : public GameObject
 
 		void OnPushToWorld();
 		uint32  BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target);
+
+		/// Build the NPCs only
+		uint32 BuildCreateNPCUpdateBlockForPlayer(ByteBuffer* data, Player* target);
 		void DestroyTransportNPCs(Player* target);
 		void AddNPC(uint32 Entry, float offsetX, float offsetY, float offsetZ, float offsetO);
 		Creature* GetCreature(uint32 Guid);

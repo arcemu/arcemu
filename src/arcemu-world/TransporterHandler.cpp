@@ -544,8 +544,13 @@ Creature* Transporter::GetCreature(uint32 Guid)
 
 uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 {
-	uint32 cnt = Object::BuildCreateUpdateBlockForPlayer(data, target);
+	uint32 count = Object::BuildCreateUpdateBlockForPlayer(data,target);
+	return count;
+}
 
+uint32 Transporter::BuildCreateNPCUpdateBlockForPlayer(ByteBuffer* data, Player* target)
+{
+	uint32 cnt = 0;
 	// add all the npcs to the packet
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 		cnt += itr->second->BuildCreateUpdateBlockForPlayer(data, target);
