@@ -654,11 +654,6 @@ class SERVER_DECL Object : public EventableObject
 		virtual bool IsCriticalHealForSpell(Object* victim, SpellEntry* spell) { return false; }
 		virtual float GetCriticalHealBonusForSpell(Object* victim, SpellEntry* spell, float amount) { return 0; }
 
-		//*****************************************************************************************
-		//* SpellLog packets just to keep the code cleaner and better to read
-		//*****************************************************************************************
-		void SendAttackerStateUpdate(Object* Caster, Object* Target, dealdamage* Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState);
-
 		//object faction
 		void _setFaction();
 		uint32 _getFaction() {return m_faction->Faction;}

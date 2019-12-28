@@ -2319,7 +2319,7 @@ void Aura::EventPeriodicHeal(uint32 amount)
 			sdmg.resisted_damage = 0;
 			sdmg.school_type = 0;
 			u_caster->DealDamage(u_caster, add, 0, 0, 0);
-			u_caster->SendAttackerStateUpdate(u_caster, u_caster, &sdmg, add, 0, 0, 0, ATTACK);
+			Messenger::SendAttackerStateUpdate(u_caster, u_caster, &sdmg, add, 0, 0, 0, ATTACK);
 		}
 
 		std::vector<Unit*> target_threat;

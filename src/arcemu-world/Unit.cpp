@@ -3966,7 +3966,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		if(realdamage < 0)
 			realdamage = 0;
 
-		SendAttackerStateUpdate(this, pVictim, &dmg, realdamage, abs, blocked_damage, hit_status, vstate);
+		Messenger::SendAttackerStateUpdate(this, pVictim, &dmg, realdamage, abs, blocked_damage, hit_status, vstate);
 	}
 	else
 	{
@@ -7588,7 +7588,7 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 				sdmg.full_damage = splitdamage;
 				sdmg.resisted_damage = 0;
 				sdmg.school_type = school_type;
-				SendAttackerStateUpdate(this, splittarget, &sdmg, splitdamage, 0, 0, 0, ATTACK);
+				Messenger::SendAttackerStateUpdate(this, splittarget, &sdmg, splitdamage, 0, 0, 0, ATTACK);
 			}
 			else
 			{
