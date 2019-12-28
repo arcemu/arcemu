@@ -270,8 +270,6 @@ class SERVER_DECL Object : public EventableObject
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
 
-		//uint32  BuildOutOfRangeUpdateBlock(ByteBuffer* buf);
-
 		virtual void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 
 		void BuildHeartBeatMsg(WorldPacket* data) const;
