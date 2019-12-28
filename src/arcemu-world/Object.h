@@ -714,7 +714,6 @@ class SERVER_DECL Object : public EventableObject
 		virtual void _SetCreateBits(UpdateMask* updateMask, Player* target) const;
 		//! Create updates that player will see
 		void _BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2, Player* target);
-		void _BuildValuesUpdate(ByteBuffer* data, UpdateMask* updateMask, Player* target);
 
 		//! WoWGuid class
 		WoWGuid m_wowGuid;

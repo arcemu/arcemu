@@ -180,7 +180,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer* data, Player* target)
 			ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
 			*data << m_wowGuid;
 
-			_BuildValuesUpdate(data, &updateMask, target);
+			UpdateBuilder::_BuildValuesUpdate(data, &updateMask, this, target);
 			return 1;
 		}
 	}
@@ -197,7 +197,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer* buf, UpdateMask* mask
 	ARCEMU_ASSERT(m_wowGuid.GetNewGuidLen() > 0);
 	*buf << m_wowGuid;
 
-	_BuildValuesUpdate(buf, mask, 0);
+	UpdateBuilder::_BuildValuesUpdate(buf, mask, this, 0);
 
 	// 1 update.
 	return 1;
@@ -459,15 +459,6 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags, uint32 flags2,
 	}
 }
 
-
-//=======================================================================================
-//  Creates an update block with the values of this object as
-//  determined by the updateMask.
-//=======================================================================================
-void Object::_BuildValuesUpdate(ByteBuffer* data, UpdateMask* updateMask, Player* target)
-{
-    UpdateBuilder::_BuildValuesUpdate( data, updateMask, this, target );
-}
 
 void Object::BuildHeartBeatMsg(WorldPacket* data) const
 {
