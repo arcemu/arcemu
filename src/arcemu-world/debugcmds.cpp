@@ -1170,3 +1170,27 @@ bool ChatHandler::HandleDebugPlaySoundCommand(const char *args, WorldSession *se
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugPlaySpellVisualCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+
+	MapMgr* mapMgr = player->GetMapMgr();
+	Unit* selectedUnit = mapMgr->GetUnit( player->GetSelection() );
+	if( selectedUnit == NULL )
+	{
+		RedSystemMessage( session, "You need to select a unit." );
+		return true;
+	}
+
+	uint32 spellVisual = atol( args );
+	if( spellVisual == 0 )
+	{
+		RedSystemMessage( session, "You need to specify a spell visual id. Example: 150 or 179" );
+		return true;
+	}
+
+	Messenger::SendPlaySpellVisualToSet( selectedUnit, spellVisual );
+
+	return true;
+}

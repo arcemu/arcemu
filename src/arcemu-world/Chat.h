@@ -298,6 +298,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleInitWorldStatesCommand( const char *args, WorldSession *session );
 		bool HandleClearWorldStatesCommand( const char *args, WorldSession *session );
 		bool HandleDebugPlaySoundCommand( const char *args, WorldSession *session );
+		bool HandleDebugPlaySpellVisualCommand( const char *args, WorldSession *session );
 
 		// WayPoint Commands
 		bool HandleWPAddCommand(const char* args, WorldSession* m_session);

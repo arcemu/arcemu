@@ -319,6 +319,7 @@ void CommandTableStorage::Init()
 		{ "initworldstates",     'd', &ChatHandler::HandleInitWorldStatesCommand,  "(re)initializes the worldstates.",                                                                                  NULL, 0, 0, 0 },
 		{ "clearworldstates",    'd', &ChatHandler::HandleClearWorldStatesCommand, "Clears the worldstates",                                                                                            NULL, 0, 0, 0 },
 		{ "playsound", 'd', &ChatHandler::HandleDebugPlaySoundCommand, "Plays sound to the player's set",												NULL, 0, 0, 0 },
+		{ "playspellvisual", 'd', &ChatHandler::HandleDebugPlaySpellVisualCommand, "Makes the selected unit play a spell visual",									NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);
