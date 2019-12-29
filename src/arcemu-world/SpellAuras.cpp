@@ -2658,6 +2658,7 @@ void Aura::SpellAuraModDamageTaken(bool apply)
 
 void Aura::SpellAuraDamageShield(bool apply)
 {
+	/// Example: 23266 - Fiery aura in WOTLK
 	if(apply)
 	{
 		SetPositive();

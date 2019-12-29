@@ -152,6 +152,17 @@ void Messenger::SendEnvironmentalDamageLog(Unit *unit, uint8 type, uint32 damage
 	unit->SendMessageToSet( &data, true, false );
 }
 
+void Messenger::SendDamageShieldLog(Unit *unit, Unit *attacker, const DamageProc &ds)
+{
+	WorldPacket data( SMSG_SPELLDAMAGESHIELD, 24 );
+	data << uint64( unit->GetGUID() );
+	data << uint64( attacker->GetGUID() );
+	data << uint32( ds.m_spellId );
+	data << uint32( ds.m_damage );
+	data << ( 1 << ds.m_school );
+	unit->SendMessageToSet( &data, true );
+}
+
 void Messenger::PlaySoundToSet( Object* object, uint32 sound_entry)
 {
 	WorldPacket data(SMSG_PLAY_SOUND, 4);

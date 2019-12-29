@@ -38,6 +38,9 @@ public:
 	/// Log environmental damage in the client (e.g.: fall, fire, lava daamage)
 	static void SendEnvironmentalDamageLog( Unit* unit, uint8 type, uint32 damage );
 
+	/// Log damageshield damage in the client (e.g.: Fiery aura damages on damage)
+	static void SendDamageShieldLog( Unit* unit, Unit* attacker, const DamageProc &ds );
+
 	/// Plays a sound effect to the players around the object
 	static void PlaySoundToSet( Object* object, uint32 sound_entry );
 
