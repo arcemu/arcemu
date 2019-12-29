@@ -166,3 +166,30 @@ void Messenger::SendDestroyObjectToSet( Object* object )
 	object->SendMessageToSet(&data, false);
 }
 
+void Messenger::SendGameObjectCustomAnim( GameObject *go, uint32 anim, Player *player )
+{
+	WorldPacket  data(12);
+	data.Initialize(SMSG_GAMEOBJECT_CUSTOM_ANIM);
+	data << uint64( go->GetGUID() );
+	data << uint32(anim); // value < 4
+	player->GetSession()->SendPacket(&data);
+}
+
+void Messenger::SendGameObjectDespawnAnim( GameObject *go )
+{
+	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
+	data << go->GetGUID();
+	go->SendMessageToSet(&data, true);
+}
+
+void Messenger::SendBuildingDamageToSet( GameObject *go, uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID )
+{
+	WorldPacket data( SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 29 );
+
+	data << WoWGuid( go->GetNewGUID() );
+	data << WoWGuid( AttackerGUID );
+	data << WoWGuid( ControllerGUID );
+	data << uint32( damage );
+	data << uint32( SpellID );
+	go->SendMessageToSet( &data, false, false );
+}

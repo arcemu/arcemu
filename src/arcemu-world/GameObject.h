@@ -413,26 +413,7 @@ class SERVER_DECL GameObject : public Object
 		uint32 _fields[GAMEOBJECT_END];
 		uint32 usage_remaining; //used for mining to mark times it can be mined
 
-		uint32 m_overrides; //See enum GAMEOBJECT_OVERRIDES!
-
-
-		///////////////////////////////////////////////////////////////////////////////////////////////////////
-		//void SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID,  uint32 SpellID )
-		//  Notifies the surrounding clients about the GameObject taking damage
-		//
-		//Parameters
-		//  uint32 damage          -  The hit points that the GO will lose
-		//  uint64 AttackerGUID    -  GUID of the caster of the damaging spell
-		//  uint64 ControllerGUID  -  GUID of the controller of the caster of the damaging spell
-		//  uint32 SpellID         -  ID of the damaging spell
-		//
-		//Return Value
-		//  None
-		//
-		//
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		void SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID );
-		
+		uint32 m_overrides; //See enum GAMEOBJECT_OVERRIDES!		
 		
 		uint32 hitpoints;
 		uint32 maxhitpoints;

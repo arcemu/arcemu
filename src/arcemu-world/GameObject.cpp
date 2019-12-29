@@ -19,6 +19,8 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
+
 GameObject::GameObject(uint64 guid)
 {
 	m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -597,11 +599,8 @@ void GameObject::EndFishing(Player* player, bool abort)
 
 void GameObject::FishHooked(Player* player)
 {
-	WorldPacket  data(12);
-	data.Initialize(SMSG_GAMEOBJECT_CUSTOM_ANIM);
-	data << GetGUID();
-	data << (uint32)(0); // value < 4
-	player->GetSession()->SendPacket(&data);
+	Messenger::SendGameObjectCustomAnim(this, 0, player);
+
 	//SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	//BuildFieldUpdatePacket(player, GAMEOBJECT_FLAGS, 32);
 	SetUInt32Value(GAMEOBJECT_FLAGS, 32);
@@ -748,9 +747,7 @@ void GameObject::OnRemoveInRangeObject(Object* pObj)
 //! Remove gameobject from world, using their despawn animation.
 void GameObject::RemoveFromWorld(bool free_guid)
 {
-	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
-	data << GetGUID();
-	SendMessageToSet(&data, true);
+	Messenger::SendGameObjectDespawnAnim(this);
 
 	sEventMgr.RemoveEvents( this );
 	Object::RemoveFromWorld(free_guid);
@@ -876,18 +873,7 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 	
 	uint8 animprogress = static_cast< uint8 >( Arcemu::round( hitpoints/ float( maxhitpoints ) ) * 255 );
 	SetAnimProgress( animprogress );
-	SendDamagePacket( damage, AttackerGUID, ControllerGUID, SpellID );
-}
-
-void GameObject::SendDamagePacket( uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID ){
-	WorldPacket data( SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 29 );
-	
-	data << WoWGuid( GetNewGUID() );
-	data << WoWGuid( AttackerGUID );
-	data << WoWGuid( ControllerGUID );
-	data << uint32( damage );
-	data << uint32( SpellID );
-	SendMessageToSet( &data, false, false );
+	Messenger::SendBuildingDamageToSet( this, damage, AttackerGUID, ControllerGUID, SpellID );
 }
 
 void GameObject::Rebuild(){

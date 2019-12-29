@@ -43,6 +43,15 @@ public:
 
 	/// Destroys this Object for the players' clients that are nearby ( client removes object from the screen )
 	static void SendDestroyObjectToSet( Object* object );
+
+	/// Sends a gameobject animation to the player
+	static void SendGameObjectCustomAnim( GameObject* go, uint32 anim, Player* player );
+
+	/// Sends the gameobject despawn animation. Removes gameobject from client screen.
+	static void SendGameObjectDespawnAnim( GameObject *go );
+
+	/// Destructible building damage. Notifies the surrounding clients about the GameObject taking damage.
+	static void SendBuildingDamageToSet( GameObject* go, uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID );
 };
 
 #endif
