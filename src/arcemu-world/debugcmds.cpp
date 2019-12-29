@@ -72,7 +72,7 @@ bool ChatHandler::HandleShowReactionCommand(const char* args, WorldSession* m_se
 
 	uint32 Reaction  = atoi(pReaction);
 
-	obj->SendAIReaction(Reaction);
+	Messenger::SendAIReaction(obj,Reaction);
 
 	std::stringstream sstext;
 	sstext << "Sent Reaction of " << Reaction << " to " << obj->GetUIdFromGUID() << '\0';

@@ -150,3 +150,19 @@ void Messenger::PlaySoundToSet( Object* object, uint32 sound_entry)
 	object->SendMessageToSet(&data, true);
 }
 
+void Messenger::SendAIReaction( Object* object, uint32 reaction)
+{
+	WorldPacket data(SMSG_AI_REACTION, 12);
+	data << uint64(object->GetGUID());
+	data << uint32(reaction);
+	object->SendMessageToSet(&data, false);
+}
+
+void Messenger::SendDestroyObjectToSet( Object* object )
+{
+	WorldPacket data(SMSG_DESTROY_OBJECT, 9);
+	data << uint64(object->GetGUID());
+	data << uint8(0);
+	object->SendMessageToSet(&data, false);
+}
+

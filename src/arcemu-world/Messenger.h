@@ -37,6 +37,12 @@ public:
 
 	/// Plays a sound effect to the players around the object
 	static void PlaySoundToSet( Object* object, uint32 sound_entry );
+
+	/// Send AI reaction to client ("aggro sound" like growling)
+	static void SendAIReaction( Object* object, uint32 reaction = 2 );
+
+	/// Destroys this Object for the players' clients that are nearby ( client removes object from the screen )
+	static void SendDestroyObjectToSet( Object* object );
 };
 
 #endif

@@ -1607,22 +1607,6 @@ void Object::SetMapCell(MapCell* cell)
 	}
 }
 
-void Object::SendAIReaction(uint32 reaction)
-{
-	WorldPacket data(SMSG_AI_REACTION, 12);
-	data << uint64(GetGUID());
-	data << uint32(reaction);
-	SendMessageToSet(&data, false);
-}
-
-void Object::SendDestroyObject()
-{
-	WorldPacket data(SMSG_DESTROY_OBJECT, 9);
-	data << uint64(GetGUID());
-	data << uint8(0);
-	SendMessageToSet(&data, false);
-}
-
 bool Object::GetPoint(float angle, float rad, float & outx, float & outy, float & outz, bool sloppypath)
 {
 	if(!IsInWorld())

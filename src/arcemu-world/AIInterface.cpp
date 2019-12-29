@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 #ifndef UNIX
 #include <cmath>
@@ -1236,7 +1237,7 @@ Unit* AIInterface::FindTarget()
 			m_Unit->m_runSpeed = m_Unit->m_base_runSpeed * 2.0f;
 			AttackReaction(target, 1, 0);
 
-			m_Unit->SendAIReaction();
+			Messenger::SendAIReaction(m_Unit);
 
 			return target;
 		}
@@ -1345,7 +1346,7 @@ Unit* AIInterface::FindTarget()
 
 		AttackReaction(target, 1, 0);
 
-		m_Unit->SendAIReaction();
+		Messenger::SendAIReaction(m_Unit);
 
 		if(target->GetCreatedByGUID() != 0)
 		{

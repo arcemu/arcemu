@@ -19,6 +19,7 @@
  */
 
 #include "../../StdAfx.h"
+#include "Messenger.h"
 
 Summon::Summon(uint64 GUID) : Creature(GUID)
 {
@@ -97,8 +98,7 @@ void Summon::OnPreRemoveFromWorld()
 	summonslot = -1;
 	owner = NULL;
 
-	SendDestroyObject();
-
+	Messenger::SendDestroyObjectToSet(this);
 }
 
 Object* Summon::GetPlayerOwner()

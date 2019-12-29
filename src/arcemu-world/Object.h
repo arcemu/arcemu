@@ -592,36 +592,6 @@ class SERVER_DECL Object : public EventableObject
 		void SendMessageToSet(StackBufferBase* data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>(data->GetSize()), data->GetBufferPointer(), self); }
 		virtual void OutPacketToSet(uint16 Opcode, uint16 Len, const void* Data, bool self);
 
-		/////////////////////////////////////////////////////////////////////////
-		//void SendAIReaction( uint32 reaction = 2 )
-		//  Notifies the player's clients about the AI reaction of this object
-		//  ( NPC growl for example "aggro sound" )
-		//
-		//Parameter(s)
-		//  uint32 reaction  -  Reaction type
-		//
-		//Return Value
-		//  None
-		//
-		//
-		/////////////////////////////////////////////////////////////////////////
-		void SendAIReaction(uint32 reaction = 2);
-
-		/////////////////////////////////////////////////////////////////////////
-		//void SendDestroyObject()
-		//  Destroys this Object for the players' clients that are nearby
-		//  ( removes object from the scene )
-		//
-		//Parameter(s)
-		//  None
-		//
-		//Return Value
-		//  None
-		//
-		//
-		/////////////////////////////////////////////////////////////////////////
-		void SendDestroyObject();
-
 		//! Fill values with data from a space separated string of uint32s.
 		void LoadValues(const char* data);
 

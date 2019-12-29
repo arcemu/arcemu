@@ -2381,7 +2381,7 @@ class LuaUnit
 
 		static int SendAIReaction(lua_State* L, Unit* ptr)
 		{
-			ptr->SendAIReaction();
+			Messenger::SendAIReaction(ptr);
 			return 0;
 		}
 
