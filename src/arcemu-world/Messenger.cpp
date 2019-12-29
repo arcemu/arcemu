@@ -253,3 +253,38 @@ void Messenger::SendTriggerCinematic( Player *player, uint32 cinematicId )
 	data << uint32( cinematicId );
 	player->GetSession()->SendPacket( &data );
 }
+
+void Messenger::SendStopAttackToSet( Unit *attacker, Unit *victim )
+{
+	WorldPacket data( SMSG_ATTACKSTOP, 24 );
+	data << attacker->GetNewGUID();
+	data << victim->GetNewGUID();
+	data << uint32( 0 );
+	attacker->SendMessageToSet( &data, true );
+}
+
+void Messenger::SendStopAttackToSet( Unit *attacker, uint64 victim )
+{
+	WorldPacket data( SMSG_ATTACKSTOP, 24 );
+	data << attacker->GetNewGUID();
+	FastGUIDPack( data, victim );
+	data << uint32( 0 );
+	attacker->SendMessageToSet( &data, attacker->IsPlayer() );
+}
+
+void Messenger::SendStopAttackToPlayer( Player *player, Unit *victim )
+{
+	WorldPacket data( SMSG_ATTACKSTOP, 24 );
+	data << victim->GetNewGUID();
+	data << uint8( 0 );
+	data << uint32( 0 );
+	player->GetSession()->SendPacket( &data );
+}
+
+void Messenger::SendStartAttackToSet(Unit *attacker, Unit *victim)
+{
+	WorldPacket data( SMSG_ATTACKSTART, 16 );
+	data << attacker->GetGUID();
+	data << victim->GetGUID();
+	attacker->SendMessageToSet( &data, true );
+}

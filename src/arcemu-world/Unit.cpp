@@ -4165,20 +4165,13 @@ void Unit::stopAttack(Unit* pVictim)
 	if(!pVictim)
 		return;
 
-	WorldPacket data(SMSG_ATTACKSTOP, 24);
 	if(IsPlayer())
 	{
-		data << pVictim->GetNewGUID();
-		data << uint8(0);
-		data << uint32(0);
-		TO< Player* >(this)->GetSession()->SendPacket(&data);
-		data.clear();
+		Messenger::SendStopAttackToPlayer( TO< Player* >( this ), pVictim );
 	}
 
-	data << GetNewGUID();
-	data << pVictim->GetNewGUID();
-	data << uint32(0);
-	SendMessageToSet(&data, true);
+	Messenger::SendStopAttackToSet( this, pVictim );
+
 	// stop swinging, reset pvp timeout
 
 	if(pVictim->IsPlayer())
@@ -4204,21 +4197,13 @@ void Unit::stopAttack(Unit* pVictim)
 
 void Unit::stopAttack(uint64 victimGuid)
 {
-	WorldPacket data(20);
-	data.Initialize(SMSG_ATTACKSTOP);
-	data << GetNewGUID();
-	FastGUIDPack(data, victimGuid);
-	data << uint32(0);
-	SendMessageToSet(&data, IsPlayer());
+	Messenger::SendStopAttackToSet( this, victimGuid );
 }
 
 void Unit::startAttack(Unit* pVictim)
 {
 	// Send out ATTACKSTART
-	WorldPacket data(SMSG_ATTACKSTART, 16);
-	data << GetGUID();
-	data << pVictim->GetGUID();
-	SendMessageToSet(&data, true);
+	Messenger::SendStartAttackToSet( this, pVictim );
 	LOG_DEBUG("WORLD: Sent SMSG_ATTACKSTART");
 
 	// FLAGS changed so other players see attack animation

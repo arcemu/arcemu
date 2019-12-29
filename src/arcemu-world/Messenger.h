@@ -70,6 +70,18 @@ public:
 
 	/// Tells the client to play a cinematic
 	static void SendTriggerCinematic( Player* player, uint32 cinematicId );
+
+	/// Tells the client to stop the attack animation.
+	static void SendStopAttackToSet( Unit* attacker, Unit* victim );
+
+	/// Tells the client to stop the attack animation.
+	static void SendStopAttackToSet( Unit* attacker, uint64 victim );
+
+	/// Tells the client to stop the attack animation.
+	static void SendStopAttackToPlayer( Player* player, Unit* victim );
+
+	/// Tells the client to start the attack animation.
+	static void SendStartAttackToSet( Unit* attacker, Unit* victim );
 };
 
 #endif
