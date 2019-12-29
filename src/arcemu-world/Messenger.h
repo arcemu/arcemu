@@ -52,6 +52,9 @@ public:
 
 	/// Destructible building damage. Notifies the surrounding clients about the GameObject taking damage.
 	static void SendBuildingDamageToSet( GameObject* go, uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID );
+
+	/// Shows the loading screen when switching maps for transports
+	static void SendTransferPendingTransport( Player* player, uint32 oldMap, uint32 newMap, uint32 transportEntry );
 };
 
 #endif

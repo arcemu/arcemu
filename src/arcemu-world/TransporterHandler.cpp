@@ -391,9 +391,6 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 		PassengerIterator itr = mPassengers.begin();
 		PassengerIterator it2;
 
-		WorldPacket Pending(SMSG_TRANSFER_PENDING, 12);
-		Pending << mapid << GetEntry() << oldmap;
-
 		WorldPacket NewWorld;
 		LocationVector v;
 
@@ -430,7 +427,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 				continue;
 			}
 
-			plr->GetSession()->SendPacket(&Pending);
+			Messenger::SendTransferPendingTransport( plr, oldmap, mapid, GetEntry() );
 			plr->_Relocate(mapid, v, false, true, 0);
 
 			// Lucky bitch. Do it like on official.

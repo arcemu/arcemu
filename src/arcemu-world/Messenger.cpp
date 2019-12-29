@@ -193,3 +193,12 @@ void Messenger::SendBuildingDamageToSet( GameObject *go, uint32 damage, uint64 A
 	data << uint32( SpellID );
 	go->SendMessageToSet( &data, false, false );
 }
+
+void Messenger::SendTransferPendingTransport( Player* player, uint32 oldMap, uint32 newMap, uint32 transportEntry )
+{
+	WorldPacket data( SMSG_TRANSFER_PENDING, 12 );
+	data << uint32( newMap );
+	data << uint32( transportEntry );
+	data << uint32( oldMap );
+	player->GetSession()->SendPacket( &data );
+}
