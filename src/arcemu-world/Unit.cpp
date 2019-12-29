@@ -4160,7 +4160,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 	}
 }
 
-void Unit::smsg_AttackStop(Unit* pVictim)
+void Unit::stopAttack(Unit* pVictim)
 {
 	if(!pVictim)
 		return;
@@ -4202,7 +4202,7 @@ void Unit::smsg_AttackStop(Unit* pVictim)
 	}
 }
 
-void Unit::smsg_AttackStop(uint64 victimGuid)
+void Unit::stopAttack(uint64 victimGuid)
 {
 	WorldPacket data(20);
 	data.Initialize(SMSG_ATTACKSTOP);
@@ -4212,13 +4212,13 @@ void Unit::smsg_AttackStop(uint64 victimGuid)
 	SendMessageToSet(&data, IsPlayer());
 }
 
-void Unit::smsg_AttackStart(Unit* pVictim)
+void Unit::startAttack(Unit* pVictim)
 {
 	// Send out ATTACKSTART
 	WorldPacket data(SMSG_ATTACKSTART, 16);
 	data << GetGUID();
 	data << pVictim->GetGUID();
-	SendMessageToSet(&data, false);
+	SendMessageToSet(&data, true);
 	LOG_DEBUG("WORLD: Sent SMSG_ATTACKSTART");
 
 	// FLAGS changed so other players see attack animation

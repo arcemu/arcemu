@@ -216,7 +216,7 @@ bool DeathGrip(uint32 i, Spell* s)
 		unitTarget->SendMessageToSet(&data, true);
 		unitTarget->SetPosition(posX, posY, posZ, alpha, true);
 		unitTarget->addStateFlag(UF_ATTACKING);
-		unitTarget->smsg_AttackStart(unitTarget);
+		unitTarget->startAttack(unitTarget);
 		unitTarget->setAttackTimer(time, false);
 		unitTarget->setAttackTimer(time, true);
 		unitTarget->GetAIInterface()->taunt(s->u_caster, true);

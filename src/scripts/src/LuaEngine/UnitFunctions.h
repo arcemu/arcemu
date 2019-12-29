@@ -5940,7 +5940,7 @@ class LuaUnit
 		static int StopPlayerAttack(lua_State* L, Unit* ptr)
 		{
 			TEST_PLAYER();
-			TO_PLAYER(ptr)->smsg_AttackStop(TO_PLAYER(ptr)->GetSelection());
+			TO_PLAYER(ptr)->stopAttack(TO_PLAYER(ptr)->GetSelection());
 			return 0;
 		}
 

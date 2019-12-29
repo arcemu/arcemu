@@ -7726,7 +7726,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 		if(pUnit && DuelingWith != pUnit)
 		{
 			EventAttackStop();
-			smsg_AttackStop(pUnit);
+			stopAttack(pUnit);
 		}
 
 		if(m_currentSpell)
@@ -8186,8 +8186,8 @@ void Player::EndDuel(uint8 WinCondition)
 	m_session->OutPacket(SMSG_CANCEL_COMBAT);
 	DuelingWith->m_session->OutPacket(SMSG_CANCEL_COMBAT);
 
-	smsg_AttackStop(DuelingWith);
-	DuelingWith->smsg_AttackStop(this);
+	stopAttack(DuelingWith);
+	DuelingWith->stopAttack(this);
 
 	DuelingWith->m_duelCountdownTimer = 0;
 	m_duelCountdownTimer = 0;
@@ -12936,7 +12936,7 @@ void Player::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 		}
 	}
 
-	smsg_AttackStop(pAttacker);
+	stopAttack(pAttacker);
 	EventAttackStop();
 
 	CALL_INSTANCE_SCRIPT_EVENT(m_mapMgr, OnPlayerDeath)(this, pAttacker);
@@ -12970,7 +12970,7 @@ void Player::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 	CombatStatus.Vanished();
 
 	CALL_SCRIPT_EVENT(pAttacker, OnTargetDied)(this);
-	pAttacker->smsg_AttackStop(this);
+	pAttacker->stopAttack(this);
 
 	/* Tell Unit that it's target has Died */
 	pAttacker->addStateFlag(UF_TARGET_DIED);

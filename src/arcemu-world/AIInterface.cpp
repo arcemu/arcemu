@@ -4019,7 +4019,7 @@ void AIInterface::EventEnterCombat(Unit* pUnit, uint32 misc1)
 		pGroup->Unlock();
 	}
 	//Zack : Put mob into combat animation. Take out weapons and start to look serious :P
-	m_Unit->smsg_AttackStart(pUnit);
+	m_Unit->startAttack(pUnit);
 }
 
 void AIInterface::EventLeaveCombat(Unit* pUnit, uint32 misc1)
@@ -4157,7 +4157,7 @@ void AIInterface::EventLeaveCombat(Unit* pUnit, uint32 misc1)
 		//m_Unit->SetMount(TO< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
 	}
 	//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
-	m_Unit->smsg_AttackStop(pUnit);
+	m_Unit->stopAttack(pUnit);
 }
 
 void AIInterface::EventDamageTaken(Unit* pUnit, uint32 misc1)
