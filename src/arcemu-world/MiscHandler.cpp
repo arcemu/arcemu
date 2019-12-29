@@ -1674,13 +1674,8 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_CAMERA://eye of azora
 			{
-				/*WorldPacket pkt(SMSG_TRIGGER_CINEMATIC,4);
-				pkt << (uint32)1;//i ve found only on such item,id =1
-				SendPacket(&pkt);*/
-
-				if(goinfo->Unknown1)
+				if(goinfo->sound1 != 0)
 				{
-					uint32 cinematicid = goinfo->sound1;
 					Messenger::SendTriggerCinematic( plyr, goinfo->sound1 );
 				}
 			}
