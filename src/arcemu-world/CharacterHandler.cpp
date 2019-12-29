@@ -932,7 +932,7 @@ void WorldSession::FullLogin(Player* plr)
 	{
 		uint32 introid = plr->info->introid;
 
-		OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &introid);
+		Messenger::SendTriggerCinematic( plr, introid );
 
 		if(sWorld.m_AdditionalFun)    //cebernic: tells people who 's newbie :D
 		{

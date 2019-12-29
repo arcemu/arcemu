@@ -245,3 +245,11 @@ void Messenger::SendTeleportAck( Player *player, const LocationVector &location 
 	data << uint8( 0 );
 	player->GetSession()->SendPacket( &data );
 }
+
+void Messenger::SendTriggerCinematic( Player *player, uint32 cinematicId )
+{
+	//player->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematicId );
+	WorldPacket data( SMSG_TRIGGER_CINEMATIC, 4 );
+	data << uint32( cinematicId );
+	player->GetSession()->SendPacket( &data );
+}

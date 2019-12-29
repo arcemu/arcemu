@@ -67,6 +67,9 @@ public:
 
 	/// Tells the client to move the player somewhere within the current map
 	static void SendTeleportAck( Player *player, const LocationVector &location );
+
+	/// Tells the client to play a cinematic
+	static void SendTriggerCinematic( Player* player, uint32 cinematicId );
 };
 
 #endif
