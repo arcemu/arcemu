@@ -5729,13 +5729,6 @@ void Unit::CastSpellAoF(float x, float y, float z, SpellEntry* Sp, bool triggere
 	newSpell->prepare(&targets);
 }
 
-void Unit::PlaySpellVisual(uint64 target, uint32 spellVisual)
-{
-	WorldPacket data(SMSG_PLAY_SPELL_VISUAL, 12);
-	data << target << spellVisual;
-	SendMessageToSet(&data, true);
-}
-
 void Unit::Root()
 {
 	m_special_state |= UNIT_STATE_ROOT;
@@ -5747,10 +5740,7 @@ void Unit::Root()
 
 	m_rooted = 1;
 
-	WorldPacket data( SMSG_FORCE_MOVE_ROOT, 12 );
-	data << GetNewGUID();
-	data << uint32( 1 );
-	SendMessageToSet( &data, true, false );
+	Messenger::SendRootToSet( this );
 }
 
 void Unit::Unroot()
@@ -5762,10 +5752,7 @@ void Unit::Unroot()
 
 	m_rooted = 0;
 
-	WorldPacket data( SMSG_FORCE_MOVE_UNROOT, 12 );
-	data << GetNewGUID();
-	data << uint32( 5 );
-	SendMessageToSet( &data, true, false );
+	Messenger::SendUnRootToSet( this );
 }
 
 void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 & guid, uint32 skip)
@@ -8301,15 +8288,4 @@ Unit* Unit::GetVehicleBase(){
 		return this;
 
 	return NULL;
-}
-
-void Unit::SendEnvironmentalDamageLog( uint64 guid, uint8 type, uint32 damage ){
-	WorldPacket data( SMSG_ENVIRONMENTALDAMAGELOG, 20 );
-	
-	data << uint64( guid );
-	data << uint8( type );
-	data << uint32( damage );
-	data << uint64( 0 );
-
-	SendMessageToSet( &data, true, false );
 }

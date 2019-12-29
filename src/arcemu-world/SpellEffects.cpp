@@ -1170,7 +1170,7 @@ void Spell::SpellEffectEnvironmentalDamage(uint32 i)
 	}
 	//this is GO, not unit
 	m_caster->SpellNonMeleeDamageLog(playerTarget, GetProto()->Id, damage, pSpellId == 0);
-	playerTarget->SendEnvironmentalDamageLog( playerTarget->GetGUID(), DAMAGE_FIRE, damage );
+	Messenger::SendEnvironmentalDamageLog( playerTarget, DAMAGE_FIRE, damage );
 }
 
 void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain

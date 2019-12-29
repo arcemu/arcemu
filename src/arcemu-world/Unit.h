@@ -1574,7 +1574,6 @@ class SERVER_DECL Unit : public Object
 		// Escort Quests
 
 		void MoveToWaypoint(uint32 wp_id);
-		void PlaySpellVisual(uint64 target, uint32 spellVisual);
 
 		void RemoveStealth()
 		{
@@ -1991,8 +1990,6 @@ class SERVER_DECL Unit : public Object
 		bool m_noFallDamage;
 		float z_axisposition;
 		int32 m_safeFall;
-		
-		void SendEnvironmentalDamageLog( uint64 guid, uint8 type, uint32 damage );
 };
 
 

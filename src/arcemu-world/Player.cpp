@@ -938,7 +938,7 @@ void Player::Update(uint32 p_time)
 			{
 				uint32 damage = m_uint32Values[UNIT_FIELD_MAXHEALTH] / 10;
 
-				SendEnvironmentalDamageLog(GetGUID(), uint8(DAMAGE_DROWNING), damage);
+				Messenger::SendEnvironmentalDamageLog(this, uint8(DAMAGE_DROWNING), damage);
 				DealDamage(this, damage, 0, 0, 0);
 				m_UnderwaterLastDmg = mstime + 1000;
 			}
@@ -968,7 +968,7 @@ void Player::Update(uint32 p_time)
 		{
 			uint32 damage = m_uint32Values[UNIT_FIELD_MAXHEALTH] / 5;
 
-			SendEnvironmentalDamageLog(GetGUID(), uint8(DAMAGE_LAVA), damage);
+			Messenger::SendEnvironmentalDamageLog(this, uint8(DAMAGE_LAVA), damage);
 			DealDamage(this, damage, 0, 0, 0);
 			m_UnderwaterLastDmg = mstime + 1000;
 		}

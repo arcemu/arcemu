@@ -35,6 +35,9 @@ public:
 	/// Log melee damage in the client
 	static void SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage* Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState );
 
+	/// Log environmental damage in the client (e.g.: fall, fire, lava daamage)
+	static void SendEnvironmentalDamageLog( Unit* unit, uint8 type, uint32 damage );
+
 	/// Plays a sound effect to the players around the object
 	static void PlaySoundToSet( Object* object, uint32 sound_entry );
 
@@ -82,6 +85,15 @@ public:
 
 	/// Tells the client to start the attack animation.
 	static void SendStartAttackToSet( Unit* attacker, Unit* victim );
+
+	/// Root the unit. It will not be able to move.
+	static void SendRootToSet( Unit* unit );
+
+	/// Unroot the unit. It will be able to move again.
+	static void SendUnRootToSet( Unit* unit );
+
+	/// Unused in Arcemu
+	static void SendPlaySpellVisualToSet( Unit* target, uint32 spellVisual );
 };
 
 #endif

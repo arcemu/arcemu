@@ -606,7 +606,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 				}
 #endif
 
-				mover->SendEnvironmentalDamageLog(mover->GetGUID(), DAMAGE_FALL, health_loss);
+				Messenger::SendEnvironmentalDamageLog(mover, DAMAGE_FALL, health_loss);
 				mover->DealDamage(mover, health_loss, 0, 0, 0);
 
 				//_player->RemoveStealth(); // cebernic : why again? lost stealth by AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN already.

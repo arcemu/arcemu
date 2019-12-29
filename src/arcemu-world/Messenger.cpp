@@ -142,6 +142,16 @@ void Messenger::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdam
 	Caster->SendMessageToSet(&data, Caster->IsPlayer());
 }
 
+void Messenger::SendEnvironmentalDamageLog(Unit *unit, uint8 type, uint32 damage)
+{
+	WorldPacket data( SMSG_ENVIRONMENTALDAMAGELOG, 20 );
+	data << uint64( unit->GetGUID() );
+	data << uint8( type );
+	data << uint32( damage );
+	data << uint64( 0 );
+	unit->SendMessageToSet( &data, true, false );
+}
+
 void Messenger::PlaySoundToSet( Object* object, uint32 sound_entry)
 {
 	WorldPacket data(SMSG_PLAY_SOUND, 4);
@@ -287,4 +297,28 @@ void Messenger::SendStartAttackToSet(Unit *attacker, Unit *victim)
 	data << attacker->GetGUID();
 	data << victim->GetGUID();
 	attacker->SendMessageToSet( &data, true );
+}
+
+void Messenger::SendRootToSet( Unit *unit )
+{
+	WorldPacket data( SMSG_FORCE_MOVE_ROOT, 12 );
+	data << unit->GetNewGUID();
+	data << uint32( 1 );
+	unit->SendMessageToSet( &data, true, false );
+}
+
+void Messenger::SendUnRootToSet( Unit *unit )
+{
+	WorldPacket data( SMSG_FORCE_MOVE_UNROOT, 12 );
+	data << unit->GetNewGUID();
+	data << uint32( 5 );
+	unit->SendMessageToSet( &data, true, false );
+}
+
+void Messenger::SendPlaySpellVisualToSet( Unit *target, uint32 spellVisual )
+{
+	WorldPacket data( SMSG_PLAY_SPELL_VISUAL, 12 );
+	data << uint64( target->GetGUID() );
+	data << uint32( spellVisual );
+	target->SendMessageToSet( &data, true );
 }
