@@ -2591,7 +2591,6 @@ void Unit::HandleProcDmgShield(uint32 flag, Unit* attacker)
 		return;
 	m_damgeShieldsInUse = true;
 	//charges are already removed in handleproc
-	WorldPacket data(24);
 	std::list<DamageProc>::iterator i;
 	std::list<DamageProc>::iterator i2;
 	for(i = m_damageShields.begin(); i != m_damageShields.end();)    // Deal Damage to Attacker
