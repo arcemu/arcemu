@@ -4343,7 +4343,6 @@ void Unit::AddAura(Aura* aur)
 			//uint32 flag3 = aur->GetSpellProto()->Flags3;
 
 			AuraCheckResponse acr;
-			WorldPacket data(21);
 			bool deleteAur = false;
 
 			//check if we already have this aura by this caster -> update duration
