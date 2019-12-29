@@ -55,6 +55,18 @@ public:
 
 	/// Shows the loading screen when switching maps for transports
 	static void SendTransferPendingTransport( Player* player, uint32 oldMap, uint32 newMap, uint32 transportEntry );
+
+	/// Shows the loading screen when switching maps
+	static void SendTransferPending( Player *player, uint32 mapId );
+
+	/// Finishes the loading on the loading screen
+	static void SendNewWorld( Player* player, uint32 mapId, const LocationVector &location );
+
+	/// Aborts the loading screen, and displays a message as to why
+	static void SendTransferAborted( Player* player, uint32 mapId, uint32 cause );
+
+	/// Tells the client to move the player somewhere within the current map
+	static void SendTeleportAck( Player *player, const LocationVector &location );
 };
 
 #endif

@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_INDOOR_CHECK_INTERVAL 1000
@@ -7045,14 +7046,9 @@ void Player::RemovePlayerPet(uint32 pet_number)
 void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending, bool force_new_world, uint32 instance_id)
 {
 	//this func must only be called when switching between maps!
-	WorldPacket data(41);
 	if(sendpending && mapid != m_mapId && force_new_world)
 	{
-		data.SetOpcode(SMSG_TRANSFER_PENDING);
-
-		data << mapid;
-
-		m_session->SendPacket(&data);
+		Messenger::SendTransferPending( this, mapid );
 	}
 
 	//Dismount before teleport and before being removed from world,
@@ -7064,13 +7060,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 		uint32 status = sInstanceMgr.PreTeleport(mapid, this, instance_id);
 		if(status != INSTANCE_OK)
 		{
-			data.Initialize(SMSG_TRANSFER_ABORTED);
-
-			data << uint32(mapid);
-			data << uint32(status);
-
-			m_session->SendPacket(&data);
-
+			Messenger::SendTransferAborted( this, mapid, status );
 			return;
 		}
 
@@ -7082,13 +7072,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 			RemoveFromWorld();
 		}
 
-		data.Initialize(SMSG_NEW_WORLD);
-
-		data << uint32(mapid);
-		data << v;
-		data << float(v.o);
-
-		m_session->SendPacket(&data);
+		Messenger::SendNewWorld( this, mapid, v );
 
 		SetMapId(mapid);
 
@@ -8474,13 +8458,8 @@ void Player::SafeTeleport(MapMgr* mgr, const LocationVector & vec)
 
 	m_mapId = mgr->GetMapId();
 	m_instanceId = mgr->GetInstanceID();
-	WorldPacket data(SMSG_TRANSFER_PENDING, 20);
-	data << mgr->GetMapId();
-	GetSession()->SendPacket(&data);
-
-	data.Initialize(SMSG_NEW_WORLD);
-	data << mgr->GetMapId() << vec << vec.o;
-	GetSession()->SendPacket(&data);
+	Messenger::SendTransferPending( this, mgr->GetMapId() );
+	Messenger::SendNewWorld( this, mgr->GetMapId(), vec );
 
 	SetPlayerStatus(TRANSFER_PENDING);
 	m_sentTeleportPosition = vec;
@@ -12358,20 +12337,7 @@ void Player::SendTeleportAckMsg(const LocationVector & v)
 	///////////////////////////////////////
 	//Update player on the client with TELEPORT_ACK
 	SetPlayerStatus(TRANSFER_PENDING);
-
-	WorldPacket data(MSG_MOVE_TELEPORT_ACK, 80);
-
-	data << GetNewGUID();
-	data << uint32(2);   // flags
-	data << getMSTime();
-	data << uint16(0);
-	data << float(0);
-	data << v;
-	data << v.o;
-	data << uint16(2);
-	data << uint8(0);
-
-	m_session->SendPacket(&data);
+	Messenger::SendTeleportAck( this, v );
 }
 
 void Player::OutPacket(uint16 opcode, uint16 len, const void* data)

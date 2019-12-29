@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 #include "git_version.h"
 
 #define BUGTRACKER "https://github.com/arcemu/arcemu/issues"
@@ -910,15 +911,8 @@ void WorldSession::FullLogin(Player* plr)
 			{
 				plr->SetMapId(pTrans->GetMapId());
 
-				StackWorldPacket<20> dataw(SMSG_NEW_WORLD);
-
-				dataw << pTrans->GetMapId();
-				dataw << c_tposx;
-				dataw << c_tposy;
-				dataw << c_tposz;
-				dataw << plr->GetOrientation();
-
-				SendPacket(&dataw);
+				LocationVector location( c_tposx, c_tposy, c_tposz, plr->GetOrientation() );
+				Messenger::SendNewWorld( plr, pTrans->GetMapId(), location );
 
 				// shit is sent in worldport ack.
 				enter_world = false;

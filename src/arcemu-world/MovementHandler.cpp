@@ -19,6 +19,8 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
+
 #define SWIMMING_TOLERANCE_LEVEL -0.08f
 #define MOVEMENT_PACKET_TIME_DELAY 500
 
@@ -89,15 +91,7 @@ void WorldSession::HandleMoveWorldportAckOpcode(WorldPacket & recv_data)
 		_player->SetMapId(pTrans->GetMapId());
 		_player->SetPosition(c_tposx, c_tposy, c_tposz, _player->GetOrientation());
 
-		WorldPacket dataw(SMSG_NEW_WORLD, 20);
-
-		dataw << pTrans->GetMapId();
-		dataw << c_tposx;
-		dataw << c_tposy;
-		dataw << c_tposz;
-		dataw << _player->GetOrientation();
-
-		SendPacket(&dataw);
+		Messenger::SendNewWorld( _player, _player->GetMapId(), _player->GetPosition() );
 	}
 	else
 	{

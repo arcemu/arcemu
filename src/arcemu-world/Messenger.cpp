@@ -202,3 +202,46 @@ void Messenger::SendTransferPendingTransport( Player* player, uint32 oldMap, uin
 	data << uint32( oldMap );
 	player->GetSession()->SendPacket( &data );
 }
+
+void Messenger::SendTransferPending( Player *player, uint32 mapId )
+{
+	WorldPacket data( SMSG_TRANSFER_PENDING, 20 );
+	data << uint32( mapId );
+	player->GetSession()->SendPacket( &data );
+}
+
+void Messenger::SendNewWorld( Player *player, uint32 mapId, const LocationVector &location )
+{
+	WorldPacket data( SMSG_NEW_WORLD, 20 );
+	data << uint32( mapId );
+	data << float( location.x );
+	data << float( location.y );
+	data << float( location.z );
+	data << float( location.o );
+	player->GetSession()->SendPacket( &data );
+}
+
+void Messenger::SendTransferAborted( Player *player, uint32 mapId, uint32 cause )
+{
+	WorldPacket data( SMSG_TRANSFER_ABORTED, 41 );
+	data << uint32( mapId );
+	data << uint32( cause );
+	player->GetSession()->SendPacket( &data );
+}
+
+void Messenger::SendTeleportAck( Player *player, const LocationVector &location )
+{
+	WorldPacket data( MSG_MOVE_TELEPORT_ACK, 80 );
+	data << player->GetNewGUID();
+	data << uint32( 2 );   // flags
+	data << uint32( getMSTime() );
+	data << uint16( 0 );
+	data << float( 0 );
+	data << float( location.x );
+	data << float( location.y );
+	data << float( location.z );
+	data << float( location.o );
+	data << uint16( 2 );
+	data << uint8( 0 );
+	player->GetSession()->SendPacket( &data );
+}
