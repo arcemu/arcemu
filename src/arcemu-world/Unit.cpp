@@ -7649,15 +7649,7 @@ void Unit::SetPower(uint32 type, int32 value)
 void Unit::SendPowerUpdate(bool self)
 {
 	uint32 amount = GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType()); //save the amount, so we send the same to the player and everyone else
-
-	WorldPacket data(SMSG_POWER_UPDATE, 14);
-	FastGUIDPack(data, GetGUID());
-	data << (uint8)GetPowerType();
-	data << amount;
-//	This was added in revision 1726.  Is it necessary?  To me, it seems to just be sending the packet twice.
-//	If it is needed for something, put it back in I guess.
-//	CopyAndSendDelayedPacket(&data);
-	SendMessageToSet(&data, self);
+	Messenger::SendPowerUpdate( this, amount, self );
 
 	//VLack: On 3.1.3, create and send a field update packet to everyone else, as this is the only way to update their GUI with the power values.
 	WorldPacket* pkt = UpdateBuilder::BuildFieldUpdatePacket(this, UNIT_FIELD_POWER1 + GetPowerType(), amount);
@@ -7669,11 +7661,9 @@ void Unit::UpdatePowerAmm()
 {
 	if(!IsPlayer())
 		return;
-	WorldPacket data(SMSG_POWER_UPDATE, 14);
-	FastGUIDPack(data, GetGUID());
-	data << uint8(GetPowerType());
-	data << GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType());
-	SendMessageToSet(&data, true);
+
+	uint32 amount = GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
+	Messenger::SendPowerUpdate( this, amount, true );
 }
 
 void Unit::SetDualWield(bool enabled)

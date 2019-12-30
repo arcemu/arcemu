@@ -100,6 +100,9 @@ public:
 
 	/// Shows emote
 	static void SendEmoteMessageToSet( Unit* target, uint32 emote );
+
+	/// Power update (mana,rage,etc bar)
+	static void SendPowerUpdate( Unit* unit, uint32 amount, bool self );
 };
 
 #endif

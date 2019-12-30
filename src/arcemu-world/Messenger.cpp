@@ -341,3 +341,12 @@ void Messenger::SendEmoteMessageToSet(Unit *target, uint32 emote)
 	data << target->GetGUID();
 	target->SendMessageToSet( &data, true );
 }
+
+void Messenger::SendPowerUpdate( Unit *unit, uint32 amount, bool self )
+{
+	WorldPacket data( SMSG_POWER_UPDATE, 14 );
+	FastGUIDPack( data, unit->GetGUID() );
+	data << uint8( unit->GetPowerType() );
+	data << uint32( amount );
+	unit->SendMessageToSet( &data, self );
+}
