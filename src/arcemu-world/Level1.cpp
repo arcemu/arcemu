@@ -800,7 +800,14 @@ bool ChatHandler::HandleEmoteCommand(const char* args, WorldSession* m_session)
 {
 	uint32 emote = atoi((char*)args);
 	Unit* target = this->getSelectedCreature(m_session);
-	if(!target) return false;
+	if(!target)
+	{
+		RedSystemMessage(m_session, "You need a target");
+		return false;
+	}
+
+	SystemMessageToPlr(m_session->GetPlayer(), "Setting emote state %u on target", emote);
+
 	if(target) target->SetEmoteState(emote);
 
 	return true;

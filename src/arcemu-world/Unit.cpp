@@ -5229,10 +5229,7 @@ void Unit::Emote(EmoteType emote)
 	if(emote == 0)
 		return;
 
-	WorldPacket data(SMSG_EMOTE, 12);
-	data << uint32(emote);
-	data << this->GetGUID();
-	SendMessageToSet(&data, true);
+	Messenger::SendEmoteMessageToSet( this, emote );
 }
 
 void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char* msg)

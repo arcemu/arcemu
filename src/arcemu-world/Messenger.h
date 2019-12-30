@@ -97,6 +97,9 @@ public:
 
 	/// Unused in Arcemu
 	static void SendPlaySpellVisualToSet( Unit* target, uint32 spellVisual );
+
+	/// Shows emote
+	static void SendEmoteMessageToSet( Unit* target, uint32 emote );
 };
 
 #endif

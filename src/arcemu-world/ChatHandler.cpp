@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 extern std::string LogFileName;
 extern bool bLogChat;
@@ -640,8 +641,6 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 	emoteentry* em = dbcEmoteEntry.LookupEntryForced(text_emote);
 	if(em)
 	{
-		WorldPacket data(SMSG_EMOTE, 28 + namelen);
-
 		sHookInterface.OnEmote(_player, (EmoteType)em->textid, pUnit);
 		if(pUnit)
 			CALL_SCRIPT_EVENT(pUnit, OnEmote)(_player, (EmoteType)em->textid);
@@ -658,11 +657,9 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 				break;
 		}
 
-		data << (uint32)em->textid;
-		data << (uint64)GetPlayer()->GetGUID();
-		GetPlayer()->SendMessageToSet(&data, true); //If player receives his own emote, his animation stops.
+		Messenger::SendEmoteMessageToSet( GetPlayer(), em->textid );
 
-		data.Initialize(SMSG_TEXT_EMOTE);
+		WorldPacket data(SMSG_TEXT_EMOTE);
 		data << (uint64)GetPlayer()->GetGUID();
 		data << (uint32)text_emote;
 		data << unk;

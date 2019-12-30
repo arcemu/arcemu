@@ -1194,3 +1194,29 @@ bool ChatHandler::HandleDebugPlaySpellVisualCommand( const char *args, WorldSess
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugShowEmoteCommand(const char *args, WorldSession *session)
+{
+	Player *player = session->GetPlayer();
+
+	MapMgr* mapMgr = player->GetMapMgr();
+	Unit* selectedUnit = mapMgr->GetUnit( player->GetSelection() );
+	if( selectedUnit == NULL )
+	{
+		RedSystemMessage( session, "You need to select a unit." );
+		return true;
+	}
+
+	uint32 emote = atol( args );
+	if( emote == 0 )
+	{
+		RedSystemMessage( session, "You need to specify an emote id." );
+		return true;
+	}
+
+	SystemMessageToPlr( player, "Showing emote %u", emote );
+
+	Messenger::SendEmoteMessageToSet( selectedUnit, emote );
+
+	return true;
+}

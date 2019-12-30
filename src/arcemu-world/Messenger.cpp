@@ -333,3 +333,11 @@ void Messenger::SendPlaySpellVisualToSet( Unit *target, uint32 spellVisual )
 	data << uint32( spellVisual );
 	target->SendMessageToSet( &data, true );
 }
+
+void Messenger::SendEmoteMessageToSet(Unit *target, uint32 emote)
+{
+	WorldPacket data( SMSG_EMOTE, 12 );
+	data << uint32( emote );
+	data << target->GetGUID();
+	target->SendMessageToSet( &data, true );
+}
