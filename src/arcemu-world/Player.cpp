@@ -6986,6 +6986,11 @@ void Player::LooseRage(int32 decayValue)
 	//Rage is lost at a rate of 3 rage every 3 seconds.
 	//The Anger Management talent changes this to 2 rage every 3 seconds.
 	uint32 cur = GetPower(POWER_TYPE_RAGE);
+
+	// Already 0, nothing left to lose
+	if( cur == 0 )
+		return;
+
 	uint32 newrage = ((int)cur <= decayValue) ? 0 : cur - decayValue;
 	if(newrage > 1000)
 		newrage = 1000;
