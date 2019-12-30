@@ -938,7 +938,6 @@ class SERVER_DECL Player : public Unit
 
 		void OutPacket(uint16 opcode, uint16 len, const void* data);
 		void SendPacket(WorldPacket* packet);
-		void SendMessageToSet(WorldPacket* data, bool self, bool myteam_only = false);
 		void OutPacketToSet(uint16 Opcode, uint16 Len, const void* Data, bool self);
 
 		void AddToWorld();

@@ -22,6 +22,7 @@
 #include "Unit.h"
 #include "UpdateBuilder.h"
 #include "Messenger.h"
+#include "MessageRouter.h"
 
 using namespace std;
 
@@ -1476,16 +1477,8 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void* Data, bool se
 
 void Object::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 {
-	if(! IsInWorld())
-		return;
-
-	uint32 myphase = GetPhase();
-	for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
-	{
-		Object* o = *itr;
-		if((o->GetPhase() & myphase) != 0)
-			o->SendPacket(data);
-	}
+	MessageRouter router( this, bToSelf, myteam_only );
+	router.sendMessageToPlayersAround( data );
 }
 
 void Object::RemoveInRangeObject(Object* pObj)

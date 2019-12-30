@@ -588,7 +588,7 @@ class SERVER_DECL Object : public EventableObject
 		////////////////////////////////////////////////////////////////////////
 		virtual void SendPacket(WorldPacket* packet) {};
 
-		virtual void SendMessageToSet(WorldPacket* data, bool self, bool myteam_only = false);
+		void SendMessageToSet(WorldPacket* data, bool self, bool myteam_only = false);
 		void SendMessageToSet(StackBufferBase* data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>(data->GetSize()), data->GetBufferPointer(), self); }
 		virtual void OutPacketToSet(uint16 Opcode, uint16 Len, const void* Data, bool self);
 
