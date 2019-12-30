@@ -7650,11 +7650,6 @@ void Unit::SendPowerUpdate(bool self)
 {
 	uint32 amount = GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType()); //save the amount, so we send the same to the player and everyone else
 	Messenger::SendPowerUpdate( this, amount, self );
-
-	//VLack: On 3.1.3, create and send a field update packet to everyone else, as this is the only way to update their GUI with the power values.
-	WorldPacket* pkt = UpdateBuilder::BuildFieldUpdatePacket(this, UNIT_FIELD_POWER1 + GetPowerType(), amount);
-	SendMessageToSet(pkt, false);
-	delete pkt;
 }
 
 void Unit::UpdatePowerAmm()
