@@ -103,6 +103,12 @@ public:
 
 	/// Power update (mana,rage,etc bar)
 	static void SendPowerUpdate( Unit* unit, uint32 amount, bool self );
+
+	/// Send all auras to the client
+	static uint32 SendFullAuraUpdate( Unit* unit );
+
+	/// Send an update about just one aura to the client
+	static void SendAuraUpdate( Unit* unit, uint32 AuraSlot, bool remove );
 };
 
 #endif

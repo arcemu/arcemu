@@ -350,3 +350,105 @@ void Messenger::SendPowerUpdate( Unit *unit, uint32 amount, bool self )
 	data << uint32( amount );
 	unit->SendMessageToSet( &data, self );
 }
+
+uint32 Messenger::SendFullAuraUpdate(Unit *unit)
+{
+	WorldPacket data(SMSG_AURA_UPDATE_ALL, 200);
+
+	data << WoWGuid(unit->GetNewGUID());
+
+	uint32 Updates = 0;
+
+	for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i)
+	{
+		Aura* aur = unit->m_auras[ i ];
+
+		if(aur != NULL)
+		{
+			uint8 Flags = uint8(aur->GetAuraFlags());
+
+			Flags = (AFLAG_EFFECT_1 | AFLAG_EFFECT_2 | AFLAG_EFFECT_3);
+
+			if(aur->IsPositive())
+				Flags |= AFLAG_CANCELLABLE;
+			else
+				Flags |= AFLAG_NEGATIVE;
+
+			if(aur->GetDuration() != 0)
+				Flags |= AFLAG_DURATION;
+
+			data << uint8(aur->m_visualSlot);
+			data << uint32(aur->GetSpellId());
+			data << uint8(Flags);
+			data << uint8(unit->getLevel());
+			data << uint8(unit->m_auraStackCount[ aur->m_visualSlot ]);
+
+			if((Flags & AFLAG_NOT_CASTER) == 0)
+				data << WoWGuid(aur->GetCasterGUID());
+
+			if(Flags & AFLAG_DURATION)
+			{
+				data << uint32(aur->GetDuration());
+				data << uint32(aur->GetTimeLeft());
+			}
+
+			++Updates;
+		}
+	}
+	unit->SendMessageToSet(&data, true);
+
+	return Updates;
+}
+
+void Messenger::SendAuraUpdate( Unit *unit, uint32 AuraSlot, bool remove )
+{
+	Aura* aur = unit->m_auras[ AuraSlot ];
+
+	ARCEMU_ASSERT(aur != NULL);
+
+	WorldPacket data(SMSG_AURA_UPDATE, 30);
+
+	if(remove)
+	{
+		data << WoWGuid(unit->GetGUID());
+		data << uint8(aur->m_visualSlot);
+		data << uint32(0);
+	}
+	else
+	{
+		uint8 flags = (AFLAG_EFFECT_1 | AFLAG_EFFECT_2 | AFLAG_EFFECT_3);
+
+		if(aur->IsPositive())
+			flags |= AFLAG_CANCELLABLE;
+		else
+			flags |= AFLAG_NEGATIVE;
+
+		if(aur->GetDuration() != 0)
+			flags |= AFLAG_DURATION;
+
+		data << WoWGuid(unit->GetGUID());
+		data << uint8(aur->m_visualSlot);
+
+		data << uint32(aur->GetSpellId());
+		data << uint8(flags);
+
+		Unit* caster = aur->GetUnitCaster();
+		if(caster != NULL)
+			data << uint8(caster->getLevel());
+		else
+			data << uint8(sWorld.m_levelCap);
+
+		data << uint8(unit->m_auraStackCount[ aur->m_visualSlot ]);
+
+		if((flags & AFLAG_NOT_CASTER) == 0)
+			data << WoWGuid(aur->GetCasterGUID());
+
+		if(flags & AFLAG_DURATION)
+		{
+			data << uint32(aur->GetDuration());
+			data << uint32(aur->GetTimeLeft());
+		}
+	}
+
+	unit->SendMessageToSet( &data, true );
+}

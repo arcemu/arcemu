@@ -6095,105 +6095,13 @@ bool Unit::IsPoisoned()
 
 void Unit::SendFullAuraUpdate()
 {
-
-	WorldPacket data(SMSG_AURA_UPDATE_ALL, 200);
-
-	data << WoWGuid(GetNewGUID());
-
-	uint32 Updates = 0;
-
-	for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i)
-	{
-		Aura* aur = m_auras[ i ];
-
-		if(aur != NULL)
-		{
-			uint8 Flags = uint8(aur->GetAuraFlags());
-
-			Flags = (AFLAG_EFFECT_1 | AFLAG_EFFECT_2 | AFLAG_EFFECT_3);
-
-			if(aur->IsPositive())
-				Flags |= AFLAG_CANCELLABLE;
-			else
-				Flags |= AFLAG_NEGATIVE;
-
-			if(aur->GetDuration() != 0)
-				Flags |= AFLAG_DURATION;
-
-			data << uint8(aur->m_visualSlot);
-			data << uint32(aur->GetSpellId());
-			data << uint8(Flags);
-			data << uint8(getLevel());
-			data << uint8(m_auraStackCount[ aur->m_visualSlot ]);
-
-			if((Flags & AFLAG_NOT_CASTER) == 0)
-				data << WoWGuid(aur->GetCasterGUID());
-
-			if(Flags & AFLAG_DURATION)
-			{
-				data << uint32(aur->GetDuration());
-				data << uint32(aur->GetTimeLeft());
-			}
-
-			++Updates;
-		}
-	}
-	SendMessageToSet(&data, true);
-
-	LOG_DEBUG("Full Aura Update: GUID: " I64FMT " - Updates: %u", GetGUID(), Updates);
+	uint32 updates = Messenger::SendFullAuraUpdate( this );
+	LOG_DEBUG("Full Aura Update: GUID: " I64FMT " - Updates: %u", GetGUID(), updates);
 }
 
 void Unit::SendAuraUpdate(uint32 AuraSlot, bool remove)
 {
-	Aura* aur = m_auras[ AuraSlot ];
-
-	ARCEMU_ASSERT(aur != NULL);
-
-	WorldPacket data(SMSG_AURA_UPDATE, 30);
-
-	if(remove)
-	{
-		data << WoWGuid(GetGUID());
-		data << uint8(aur->m_visualSlot);
-		data << uint32(0);
-	}
-	else
-	{
-		uint8 flags = (AFLAG_EFFECT_1 | AFLAG_EFFECT_2 | AFLAG_EFFECT_3);
-
-		if(aur->IsPositive())
-			flags |= AFLAG_CANCELLABLE;
-		else
-			flags |= AFLAG_NEGATIVE;
-
-		if(aur->GetDuration() != 0)
-			flags |= AFLAG_DURATION;
-
-		data << WoWGuid(GetGUID());
-		data << uint8(aur->m_visualSlot);
-
-		data << uint32(aur->GetSpellId());
-		data << uint8(flags);
-
-		Unit* caster = aur->GetUnitCaster();
-		if(caster != NULL)
-			data << uint8(caster->getLevel());
-		else
-			data << uint8(sWorld.m_levelCap);
-
-		data << uint8(m_auraStackCount[ aur->m_visualSlot ]);
-
-		if((flags & AFLAG_NOT_CASTER) == 0)
-			data << WoWGuid(aur->GetCasterGUID());
-
-		if(flags & AFLAG_DURATION)
-		{
-			data << uint32(aur->GetDuration());
-			data << uint32(aur->GetTimeLeft());
-		}
-	}
-
-	SendMessageToSet(&data, true);
+	Messenger::SendAuraUpdate( this, AuraSlot, remove );
 }
 
 uint32 Unit::ModVisualAuraStackCount(Aura* aur, int32 count)
