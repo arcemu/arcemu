@@ -936,7 +936,6 @@ class SERVER_DECL Player : public Unit
 
 		void SendInitialWorldstates();
 
-		void OutPacket(uint16 opcode, uint16 len, const void* data);
 		void SendPacket(WorldPacket* packet);
 
 		void AddToWorld();

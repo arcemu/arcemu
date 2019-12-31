@@ -553,27 +553,6 @@ class SERVER_DECL Object : public EventableObject
 
 		std::set<Object*> & GetInRangeObjects() { return m_objectsInRange; }
 
-
-
-		///////////////////////////////////////////////////////////////////////////
-		//void OutPacket( uint16 opcode, uint16 len, const void *data )
-		// Sends a packet to the Player
-		//
-		//
-		// Parameters
-		//  uint16 opcode      -   opcode of the packet
-		//  uint16 len         -   length/size of the packet
-		//  const void *data   -   the data that needs to be sent
-		//
-		//
-		// Return value
-		//  none
-		//
-		//////////////////////////////////////////////////////////////////////////
-		virtual void OutPacket(uint16 opcode, uint16 len, const void* data) {};
-
-
-
 		/////////////////////////////////////////////////////////////////////////
 		//void SendPacket( WorldPacket *packet )
 		// Sends a packet to the Player

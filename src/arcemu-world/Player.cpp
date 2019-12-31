@@ -12345,12 +12345,6 @@ void Player::SendTeleportAckMsg(const LocationVector & v)
 	Messenger::SendTeleportAck( this, v );
 }
 
-void Player::OutPacket(uint16 opcode, uint16 len, const void* data)
-{
-	ARCEMU_ASSERT(m_session != NULL);
-	m_session->OutPacket(opcode, len, data);
-}
-
 void Player::SendPacket(WorldPacket* packet)
 {
 	ARCEMU_ASSERT(m_session != NULL);
