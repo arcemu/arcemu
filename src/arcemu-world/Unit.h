@@ -1702,8 +1702,6 @@ class SERVER_DECL Unit : public Object
 		void DispelAll(bool positive);
 
 		void SendPowerUpdate(bool self);
-		void SendPeriodicAuraLog(const WoWGuid & CasterGUID, const WoWGuid & casterGUID, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical);
-		void SendPeriodicHealAuraLog(const WoWGuid & CasterGUID, const WoWGuid & TargetGUID, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical);
 
 		void EventModelChange();
 		ARCEMU_INLINE float GetModelHalfSize() { return m_modelhalfsize * GetScale(); }

@@ -1891,7 +1891,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 				res = static_cast< float >(dmg.full_damage - dmg.resisted_damage);
 		}
 
-		m_target->SendPeriodicAuraLog(m_casterGuid, m_target->GetNewGUID(), GetSpellProto()->Id, school, static_cast< int32 >(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE, is_critical);
+		Messenger::SendPeriodicAuraLog(m_casterGuid, m_target, GetSpellProto()->Id, school, static_cast< int32 >(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE, is_critical );
 	}
 
 	// grep: this is hack.. some auras seem to delete this shit.
@@ -2298,7 +2298,7 @@ void Aura::EventPeriodicHeal(uint32 amount)
 	else
 		m_target->ModHealth(add);
 
-	m_target->SendPeriodicHealAuraLog(m_casterGuid, m_target->GetNewGUID(), GetSpellId(), add, over_heal, is_critical);
+	Messenger::SendPeriodicHealAuraLog(m_casterGuid, m_target, GetSpellId(), add, over_heal, is_critical );
 
 	m_target->RemoveAurasByHeal();
 
@@ -2922,7 +2922,7 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 	else
 		m_target->SetHealth(m_target->GetMaxHealth());
 
-	m_target->SendPeriodicAuraLog(m_casterGuid, m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL, false);
+	Messenger::SendPeriodicAuraLog(m_casterGuid, m_target,  m_spellProto->Id, m_spellProto->School, add, 0, 0, FLAG_PERIODIC_HEAL, false );
 
 	if(GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 	{
@@ -4366,8 +4366,8 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	else
 		m_caster->SetHealth(mh);
 
-	m_target->SendPeriodicHealAuraLog(m_caster->GetNewGUID(), m_caster->GetNewGUID(), sp->Id, heal_amount, 0, false);
-	m_target->SendPeriodicAuraLog(m_target->GetNewGUID(), m_target->GetNewGUID(), sp->Id, sp->School, heal_amount, 0, 0, FLAG_PERIODIC_LEECH, is_critical);
+	Messenger::SendPeriodicHealAuraLog(m_caster->GetNewGUID(), m_caster, sp->Id, heal_amount, 0, false );
+	Messenger::SendPeriodicAuraLog( m_target->GetNewGUID(), m_target,  sp->Id, sp->School, heal_amount, 0, 0, FLAG_PERIODIC_LEECH, is_critical );
 
 	//deal damage before we add healing bonus to damage
 	m_caster->DealDamage(m_target, dmg_amount, 0, 0, sp->Id, true);
@@ -4821,7 +4821,7 @@ void Aura::EventPeriodicHealthFunnel(uint32 amount)
 		else
 			m_caster->SetHealth(mh);
 
-		m_target->SendPeriodicAuraLog(m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH, false);
+		Messenger::SendPeriodicAuraLog( m_target->GetNewGUID(), m_target, m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH, false );
 
 		m_caster->RemoveAurasByHeal();
 	}
@@ -5555,7 +5555,7 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 	else
 	{
 		if(!(m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_ARMOR))
-			m_target->SendPeriodicHealAuraLog(m_casterGuid, m_target->GetNewGUID(), GetSpellId(), amount, 0, false);
+			Messenger::SendPeriodicHealAuraLog(m_casterGuid, m_target, GetSpellId(), amount, 0, false);
 	}
 
 	m_target->RemoveAurasByHeal();
@@ -7048,7 +7048,8 @@ void Aura::EventPeriodicBurn(uint32 amount, uint32 misc)
 		uint32 Amount = (uint32)min(amount, m_target->GetPower(misc));
 		uint32 newHealth = m_target->GetPower(misc) - Amount ;
 
-		m_target->SendPeriodicAuraLog(m_target->GetNewGUID(), m_target->GetNewGUID(), m_spellProto->Id, m_spellProto->School, newHealth, 0, 0, FLAG_PERIODIC_DAMAGE, false);
+		Messenger::SendPeriodicAuraLog( m_target->GetNewGUID(), m_target, m_spellProto->Id, m_spellProto->School, newHealth, 0, 0, FLAG_PERIODIC_DAMAGE, false );
+
 		m_caster->DealDamage(m_target, Amount, 0, 0, GetSpellProto()->Id);
 	}
 }

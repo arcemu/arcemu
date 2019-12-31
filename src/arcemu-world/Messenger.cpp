@@ -468,3 +468,39 @@ void Messenger::SendDisableFlightMessage(Unit *unit)
 	data << uint32(5);
 	unit->SendMessageToSet(&data, true);
 }
+
+void Messenger::SendPeriodicAuraLog(const WoWGuid &CasterGUID, Unit *target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical)
+{
+	WorldPacket data(SMSG_PERIODICAURALOG, 47);
+
+	data << target->GetNewGUID();		   // target guid
+	data << CasterGUID;		   // caster guid
+	data << uint32(SpellID);						// spellid
+	data << uint32(1);					    // unknown? need research?
+	data << uint32(Flags | 0x1);			// aura school
+	data << uint32(Amount);						   // amount of done to target / heal / damage
+	data << uint32(0);				   // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
+	data << uint32(g_spellSchoolConversionTable[School]);
+	data << uint32(abs_dmg);
+	data << uint32(resisted_damage);
+	data << uint8(is_critical);
+
+	target->SendMessageToSet(&data, true);
+}
+
+void Messenger::SendPeriodicHealAuraLog(const WoWGuid &CasterGUID, Unit *target, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical)
+{
+	WorldPacket data(SMSG_PERIODICAURALOG, 41);
+
+	data << target->GetNewGUID();
+	data << CasterGUID;
+	data << SpellID;
+	data << uint32(1);
+	data << uint32(FLAG_PERIODIC_HEAL);
+	data << uint32(healed);
+	data << uint32(over_healed);
+	data << uint32(0);		// I don't know what it is. maybe something related to absorbed heal?
+	data << uint8(is_critical);
+
+	target->SendMessageToSet(&data, true);
+}

@@ -115,6 +115,10 @@ public:
 
 	/// Disables flight in the client
 	static void SendDisableFlightMessage( Unit* unit );
+
+	static void SendPeriodicAuraLog( const WoWGuid & CasterGUID, Unit* target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical );
+
+	static void SendPeriodicHealAuraLog( const WoWGuid & CasterGUID, Unit* target, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical );
 };
 
 #endif
