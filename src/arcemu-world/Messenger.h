@@ -128,6 +128,9 @@ public:
 
 	/// Sends a message that sets the facing of the Unit in the client
 	static void SendSetFacing( Unit* unit, float orientation );
+
+	/// Sends a chat message to the Unit's set. Used for making NPCs say things
+	static void SendChatMessageAlt( Unit* unit, uint8 emote, uint32 lang, const string& name, const string& message );
 };
 
 #endif
