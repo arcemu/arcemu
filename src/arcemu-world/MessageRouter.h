@@ -34,7 +34,7 @@ public:
 	MessageRouter( Object* object, bool sendToObject, bool sendToSameTeamOnly );
 
 	/// Send the message to the players around the object
-	void sendMessageToPlayersAround( WorldPacket* packet );
+	void sendMessageToPlayersInRange( WorldPacket* packet );
 
 	void setObject( Object* object ){ this->object = object; }
 	void setSendToObject( bool b ){ sendToObject = b; }

@@ -35,7 +35,7 @@ MessageRouter::MessageRouter( Object *object, bool sendToObject, bool sendToSame
 	this->sendToSameTeamOnly = sendToSameTeamOnly;
 }
 
-void MessageRouter::sendMessageToPlayersAround( WorldPacket* packet )
+void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet )
 {
 	if( ! object->IsInWorld() )
 		return;
