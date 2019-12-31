@@ -391,7 +391,6 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 		PassengerIterator itr = mPassengers.begin();
 		PassengerIterator it2;
 
-		WorldPacket NewWorld;
 		LocationVector v;
 
 		for(; itr != mPassengers.end();)
