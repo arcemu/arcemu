@@ -1461,20 +1461,6 @@ void Object::AddInRangeObject(Object* pObj)
 	m_objectsInRange.insert(pObj);
 }
 
-void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void* Data, bool self)
-{
-	if(!IsInWorld())
-		return;
-
-	// We are on Object level, which means we can't send it to ourselves so we only send to Players inrange
-	for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
-	{
-		Object* o = *itr;
-
-		o->OutPacket(Opcode, Len, Data);
-	}
-}
-
 void Object::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 {
 	MessageRouter router( this, bToSelf, myteam_only );

@@ -12357,32 +12357,6 @@ void Player::SendPacket(WorldPacket* packet)
 	m_session->SendPacket(packet);
 }
 
-void Player::OutPacketToSet(uint16 Opcode, uint16 Len, const void* Data, bool self)
-{
-	if(!IsInWorld())
-		return;
-
-	bool gm = m_isGmInvisible;
-
-	if(self)
-		OutPacket(Opcode, Len, Data);
-
-	for(std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
-	{
-		Player* p = TO< Player* >(*itr);
-
-		if(gm)
-		{
-			if(p->GetSession()->GetPermissionCount() > 0)
-				p->OutPacket(Opcode, Len, Data);
-		}
-		else
-		{
-			p->OutPacket(Opcode, Len, Data);
-		}
-	}
-}
-
 uint32 Player::CheckDamageLimits(uint32 dmg, uint32 spellid)
 {
 	if((spellid != 0) && (sWorld.m_limits.spellDamageCap > 0))
