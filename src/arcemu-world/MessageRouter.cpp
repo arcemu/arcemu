@@ -42,91 +42,58 @@ void MessageRouter::sendMessageToPlayersAround( WorldPacket* packet )
 
 	if( ! object->IsPlayer() )
 	{
-
-		uint32 myphase = object->GetPhase();
 		for(std::set< Object* >::iterator itr = object->GetInRangePlayerSetBegin(); itr != object->GetInRangePlayerSetEnd(); ++itr)
 		{
-			Object* o = *itr;
-			if((o->GetPhase() & myphase) != 0)
-				o->SendPacket(packet);
-		}
+			Player* p = TO< Player* >( *itr );
+			WorldSession *session = p->GetSession();
 
-		return;
+			if( session == NULL )
+				continue;
+
+			if((p->GetPhase() & object->GetPhase()) == 0)
+				continue;
+
+			session->SendPacket(packet);
+		}
 	}
 	else
 	{
 		Player *player = TO< Player* >( object );
-		bool gminvis = false;
 
 		if( sendToObject )
 		{
 			player->SendPacket(packet);
 		}
 
-		gminvis = player->m_isGmInvisible;
-		uint32 myphase = player->GetPhase();
-
-		if(sendToSameTeamOnly)
+		for( std::set< Object* >::iterator itr = player->GetInRangePlayerSetBegin(); itr != player->GetInRangePlayerSetEnd(); ++itr )
 		{
-			uint32 myteam = player->GetTeam();
+			Player* p = TO< Player* >( *itr );
+			WorldSession *session = p->GetSession();
 
-			if( packet->GetOpcode() != SMSG_MESSAGECHAT)
+			if( session == NULL )
+				continue;
+
+			if( sendToSameTeamOnly && ( p->GetTeam() != player->GetTeam() ) )
+				continue;
+
+			if( ( p->GetPhase() & player->GetPhase() ) == 0 )
+				continue;
+
+			if( packet->GetOpcode() == SMSG_MESSAGECHAT )
 			{
-				for(std::set< Object* >::iterator itr = player->GetInRangePlayerSetBegin(); itr != player->GetInRangePlayerSetEnd(); ++itr)
-				{
-					Player* p = TO< Player* >(*itr);
-
-					if( gminvis && ( ( p->GetSession() == NULL ) || ( p->GetSession()->GetPermissionCount() <= 0 ) ) )
-						continue;
-
-					if( p->GetTeam() == myteam
-						&& (p->GetPhase() & myphase) != 0
-						&& p->IsVisible( player->GetGUID() ) )
-						p->SendPacket(packet);
-				}
+				if( p->Social_IsIgnoring( player->GetLowGUID() ) )
+					continue;
 			}
 			else
 			{
-				for(std::set< Object* >::iterator itr = player->GetInRangePlayerSetBegin(); itr != player->GetInRangePlayerSetEnd(); ++itr)
-				{
-					Player* p = TO< Player* >(*itr);
+				if( player->m_isGmInvisible && ( p->GetSession()->GetPermissionCount() <= 0 ) )
+					continue;
 
-					if(p->GetSession()
-						&& p->GetTeam() == myteam
-						&& !p->Social_IsIgnoring(player->GetLowGUID())
-						&& (p->GetPhase() & myphase) != 0 )
-						p->SendPacket(packet);
-				}
+				if( ! p->IsVisible( player->GetGUID() ) )
+					continue;
 			}
-		}
-		else
-		{
-			if( packet->GetOpcode() != SMSG_MESSAGECHAT)
-			{
-				for(std::set< Object* >::iterator itr = player->GetInRangePlayerSetBegin(); itr != player->GetInRangePlayerSetEnd(); ++itr)
-				{
-					Player* p = TO< Player* >(*itr);
 
-					if( gminvis && ( ( p->GetSession() == NULL ) || ( p->GetSession()->GetPermissionCount() <= 0 ) ) )
-						continue;
-
-					if( (p->GetPhase() & myphase) != 0
-						&& p->IsVisible( player->GetGUID() ) )
-						p->SendPacket(packet);
-				}
-			}
-			else
-			{
-				for(std::set< Object* >::iterator itr = player->GetInRangePlayerSetBegin(); itr != player->GetInRangePlayerSetEnd(); ++itr)
-				{
-					Player* p = TO< Player* >(*itr);
-
-					if(p->GetSession()
-						&& !p->Social_IsIgnoring(player->GetLowGUID())
-						&& (p->GetPhase() & myphase) != 0 )
-						p->SendPacket(packet);
-				}
-			}
+			session->SendPacket( packet );
 		}
 	}
 }
