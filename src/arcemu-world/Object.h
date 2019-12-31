@@ -553,20 +553,6 @@ class SERVER_DECL Object : public EventableObject
 
 		std::set<Object*> & GetInRangeObjects() { return m_objectsInRange; }
 
-		/////////////////////////////////////////////////////////////////////////
-		//void SendPacket( WorldPacket *packet )
-		// Sends a packet to the Player
-		//
-		// Parameters
-		//  WorldPAcket *packet      -     the packet that needs to be sent
-		//
-		//
-		// Return value
-		//  none
-		//
-		////////////////////////////////////////////////////////////////////////
-		virtual void SendPacket(WorldPacket* packet) {};
-
 		void SendMessageToSet(WorldPacket* data, bool self, bool myteam_only = false);
 
 		//! Fill values with data from a space separated string of uint32s.
