@@ -6355,22 +6355,7 @@ void Unit::EventCastSpell(Unit* Target, SpellEntry* Sp)
 void Unit::SetFacing(float newo)
 {
 	SetOrientation(newo);
-
-	//generate smsg_monster_move
-	WorldPacket data(SMSG_MONSTER_MOVE, 100);
-
-	data << GetNewGUID();
-	data << uint8(0); //vehicle seat index
-	data << GetPositionX() << GetPositionY() << GetPositionZ();
-	data << getMSTime();
-	data << uint8(4); //set orientation
-	data << newo;
-	data << uint32(0x1000); //move flags: run
-	data << uint32(0); //movetime
-	data << uint32(1); //1 point
-	data << GetPositionX() << GetPositionY() << GetPositionZ();
-
-	SendMessageToSet(&data, true);
+	Messenger::SendSetFacing( this, newo );
 }
 
 float Unit::get_chance_to_daze(Unit* target)

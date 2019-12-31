@@ -558,3 +558,30 @@ void Messenger::SendHopOffVehicle( Unit *unit, Unit *vehicleowner, LocationVecto
 
 	unit->SendMessageToSet(&data, true);
 }
+
+void Messenger::SendSetFacing( Unit *unit, float orientation )
+{
+	WorldPacket data(SMSG_MONSTER_MOVE, 100);
+
+	data << unit->GetNewGUID();
+
+	if( unit->IsPlayer() )
+		data << uint8( 1 );
+	else
+		data << uint8( 0 );
+
+	data << float( unit->GetPositionX() );
+	data << float( unit->GetPositionY() );
+	data << float( unit->GetPositionZ() );
+	data << getMSTime();
+	data << uint8(4);
+	data << float( orientation );
+	data << uint32(0x1000); //move flags: run
+	data << uint32(0); //movetime
+	data << uint32(1); //1 point
+	data << float( unit->GetPositionX() );
+	data << float( unit->GetPositionY() );
+	data << float( unit->GetPositionZ() );
+
+	unit->SendMessageToSet(&data, true);
+}

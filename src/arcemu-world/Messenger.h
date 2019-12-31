@@ -125,6 +125,9 @@ public:
 
 	/// Hop off vehicle animation
 	static void SendHopOffVehicle( Unit* unit, Unit *vehicleowner, LocationVector &landposition );
+
+	/// Sends a message that sets the facing of the Unit in the client
+	static void SendSetFacing( Unit* unit, float orientation );
 };
 
 #endif
