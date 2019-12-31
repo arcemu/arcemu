@@ -109,6 +109,12 @@ public:
 
 	/// Send an update about just one aura to the client
 	static void SendAuraUpdate( Unit* unit, uint32 AuraSlot, bool remove );
+
+	/// Enables flight in the client
+	static void SendEnableFlightMessage( Unit* unit );
+
+	/// Disables flight in the client
+	static void SendDisableFlightMessage( Unit* unit );
 };
 
 #endif

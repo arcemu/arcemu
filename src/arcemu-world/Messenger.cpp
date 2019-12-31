@@ -452,3 +452,19 @@ void Messenger::SendAuraUpdate( Unit *unit, uint32 AuraSlot, bool remove )
 
 	unit->SendMessageToSet( &data, true );
 }
+
+void Messenger::SendEnableFlightMessage(Unit *unit)
+{
+	WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
+	data << unit->GetNewGUID();
+	data << uint32(2);
+	unit->SendMessageToSet(&data, true);
+}
+
+void Messenger::SendDisableFlightMessage(Unit *unit)
+{
+	WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
+	data << unit->GetNewGUID();
+	data << uint32(5);
+	unit->SendMessageToSet(&data, true);
+}

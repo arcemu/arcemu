@@ -6146,10 +6146,7 @@ void Unit::EnableFlight()
 {
 	z_axisposition = 0.0f;
 
-	WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
-	data << GetNewGUID();
-	data << uint32(2);
-	SendMessageToSet(&data, true);
+	Messenger::SendEnableFlightMessage( this );
 
 	if(IsPlayer())
 	{
@@ -6161,10 +6158,7 @@ void Unit::DisableFlight()
 {
 	z_axisposition = 0.0f;
 
-	WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
-	data << GetNewGUID();
-	data << uint32(5);
-	SendMessageToSet(&data, true);
+	Messenger::SendDisableFlightMessage( this );
 
 	if(IsPlayer())
 	{
