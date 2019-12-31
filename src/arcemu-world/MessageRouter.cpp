@@ -24,18 +24,14 @@
 
 MessageRouter::MessageRouter()
 {
-	sendToObject = true;
-	sendToSameTeamOnly = false;
 }
 
-MessageRouter::MessageRouter( Object *object, bool sendToObject, bool sendToSameTeamOnly )
+MessageRouter::MessageRouter( Object *object )
 {
 	this->object = object;
-	this->sendToObject = sendToObject;
-	this->sendToSameTeamOnly = sendToSameTeamOnly;
 }
 
-void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet )
+void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendToObject, bool sendToSameTeamOnly  )
 {
 	if( ! object->IsInWorld() )
 		return;

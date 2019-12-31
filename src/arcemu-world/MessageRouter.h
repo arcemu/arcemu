@@ -25,20 +25,16 @@
 class MessageRouter
 {
 private:
-	bool sendToObject;
-	bool sendToSameTeamOnly;
 	Object *object;
 
 public:
 	MessageRouter();
-	MessageRouter( Object* object, bool sendToObject, bool sendToSameTeamOnly );
+	MessageRouter( Object* object );
 
 	/// Send the message to the players around the object
-	void sendMessageToPlayersInRange( WorldPacket* packet );
+	void sendMessageToPlayersInRange( WorldPacket* packet, bool sendToObject, bool sendToSameTeamOnly = false );
 
 	void setObject( Object* object ){ this->object = object; }
-	void setSendToObject( bool b ){ sendToObject = b; }
-	void setSendToSameTeamOnly( bool b ){ sendToSameTeamOnly = b; }
 };
 
 #endif

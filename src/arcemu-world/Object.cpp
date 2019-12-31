@@ -1463,8 +1463,8 @@ void Object::AddInRangeObject(Object* pObj)
 
 void Object::SendMessageToSet(WorldPacket* data, bool bToSelf, bool myteam_only)
 {
-	MessageRouter router( this, bToSelf, myteam_only );
-	router.sendMessageToPlayersInRange( data );
+	MessageRouter router( this );
+	router.sendMessageToPlayersInRange( data, bToSelf, myteam_only );
 }
 
 void Object::RemoveInRangeObject(Object* pObj)
