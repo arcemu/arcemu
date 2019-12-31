@@ -8036,59 +8036,6 @@ void Unit::CastOnMeleeSpell(){
 	SetOnMeleeSpell(0);
 }
 
-void Unit::SendHopOnVehicle( Unit *vehicleowner, uint32 seat ){
-	WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 50);
-	data << GetNewGUID();
-	data << vehicleowner->GetNewGUID();
-	data << uint8( seat );
-
-	if( IsPlayer() )
-		data << uint8( 1 );
-	else
-		data << uint8( 0 );
-
-	data << float( GetPositionX() /* - vehicleowner->GetPositionX() */ );
-	data << float( GetPositionY() /* - vehicleowner->GetPositionY() */ );
-	data << float( GetPositionZ() /* - vehicleowner->GetPositionZ() */ );
-	data << getMSTime();
-	data << uint8( 4 ); // splinetype_facing_angle
-	data << float( 0.0f ); // facing angle
-	data << uint32( 0x00800000 ); // splineflag transport
-	data << uint32( 0 ); // movetime
-	data << uint32( 1 ); // wp count
-	data << float( 0.0f ); // x
-	data << float( 0.0f ); // y
-	data << float( 0.0f ); // z
-
-	SendMessageToSet( &data, true );
-}
-
-void Unit::SendHopOffVehicle( Unit *vehicleowner, LocationVector &landposition ){
-	WorldPacket data(SMSG_MONSTER_MOVE, 1+12+4+1+4+4+4+12+8 );
-	data << GetNewGUID();
-
-	if( IsPlayer() )
-		data << uint8( 1 );
-	else
-		data << uint8( 0 );
-
-	data << float( GetPositionX() );
-	data << float( GetPositionY() );
-	data << float( GetPositionZ() );
-	data << uint32( getMSTime() );
-	data << uint8( 4 /* SPLINETYPE_FACING_ANGLE */ );
-	data << float( GetOrientation() );                        // guess
-	data << uint32( 0x01000000 /* SPLINEFLAG_EXIT_VEHICLE */ );
-	data << uint32( 0 );                                      // Time in between points
-	data << uint32( 1 );                                      // 1 single waypoint
-	data << float( vehicleowner->GetPositionX() );
-	data << float( vehicleowner->GetPositionY() );
-	data << float( vehicleowner->GetPositionZ() );
-
-    SendMessageToSet(&data, true);
-}
-
-
 void Unit::EnterVehicle( uint64 guid, uint32 delay ){
 	if( delay != 0 ){
 		sEventMgr.AddEvent( this, &Unit::EnterVehicle, guid, uint32( 0 ), 0, delay, 1, 0 );

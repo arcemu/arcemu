@@ -119,6 +119,12 @@ public:
 	static void SendPeriodicAuraLog( const WoWGuid & CasterGUID, Unit* target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical );
 
 	static void SendPeriodicHealAuraLog( const WoWGuid & CasterGUID, Unit* target, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical );
+
+	/// Hop on vehicle animation
+	static void SendHopOnVehicle( Unit* unit, Unit* vehicleowner, uint32 seat );
+
+	/// Hop off vehicle animation
+	static void SendHopOffVehicle( Unit* unit, Unit *vehicleowner, LocationVector &landposition );
 };
 
 #endif

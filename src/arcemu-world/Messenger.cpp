@@ -504,3 +504,57 @@ void Messenger::SendPeriodicHealAuraLog(const WoWGuid &CasterGUID, Unit *target,
 
 	target->SendMessageToSet(&data, true);
 }
+
+void Messenger::SendHopOnVehicle( Unit *unit, Unit *vehicleowner, uint32 seat )
+{
+	WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 50);
+	data << unit->GetNewGUID();
+	data << vehicleowner->GetNewGUID();
+	data << uint8( seat );
+
+	if( unit->IsPlayer() )
+		data << uint8( 1 );
+	else
+		data << uint8( 0 );
+
+	data << float( unit->GetPositionX() /* - vehicleowner->GetPositionX() */ );
+	data << float( unit->GetPositionY() /* - vehicleowner->GetPositionY() */ );
+	data << float( unit->GetPositionZ() /* - vehicleowner->GetPositionZ() */ );
+	data << getMSTime();
+	data << uint8( 4 ); // splinetype_facing_angle
+	data << float( 0.0f ); // facing angle
+	data << uint32( 0x00800000 ); // splineflag transport
+	data << uint32( 0 ); // movetime
+	data << uint32( 1 ); // wp count
+	data << float( 0.0f ); // x
+	data << float( 0.0f ); // y
+	data << float( 0.0f ); // z
+
+	unit->SendMessageToSet( &data, true );
+}
+
+void Messenger::SendHopOffVehicle( Unit *unit, Unit *vehicleowner, LocationVector &landposition )
+{
+	WorldPacket data(SMSG_MONSTER_MOVE, 1+12+4+1+4+4+4+12+8 );
+	data << unit->GetNewGUID();
+
+	if( unit->IsPlayer() )
+		data << uint8( 1 );
+	else
+		data << uint8( 0 );
+
+	data << float( unit->GetPositionX() );
+	data << float( unit->GetPositionY() );
+	data << float( unit->GetPositionZ() );
+	data << uint32( getMSTime() );
+	data << uint8( 4 /* SPLINETYPE_FACING_ANGLE */ );
+	data << float( unit->GetOrientation() );                        // guess
+	data << uint32( 0x01000000 /* SPLINEFLAG_EXIT_VEHICLE */ );
+	data << uint32( 0 );                                      // Time in between points
+	data << uint32( 1 );                                      // 1 single waypoint
+	data << float( vehicleowner->GetPositionX() );
+	data << float( vehicleowner->GetPositionY() );
+	data << float( vehicleowner->GetPositionZ() );
+
+	unit->SendMessageToSet(&data, true);
+}

@@ -18,6 +18,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 Vehicle::Vehicle(){
 	owner = NULL;
@@ -133,7 +134,7 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 	
 	// root passenger
 	passenger->Root();
-	passenger->SendHopOnVehicle( owner, seatid );
+	Messenger::SendHopOnVehicle( passenger, owner, seatid );
 
 	LocationVector v( owner->GetPosition() );
 	v.x += seats[ seatid ]->GetSeatInfo()->attachmentOffsetX;
@@ -276,7 +277,7 @@ void Vehicle::EjectPassengerFromSeat( uint32 seatid ){
 	// despawn vehicle if it was spawned by spell?
 	LocationVector landposition( owner->GetPosition() );
 
-	passenger->SendHopOffVehicle( owner, landposition );
+	Messenger::SendHopOffVehicle( passenger, owner, landposition );
 	passenger->SetPosition( landposition );	
 	passenger->Unroot();
 	seats[ seatid ]->RemovePassenger();
