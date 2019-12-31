@@ -2515,6 +2515,42 @@ bool ChatHandler::HandleTriggerpassCheatCommand(const char* args, WorldSession* 
 	return true;
 }
 
+bool ChatHandler::HandleFlyingMountCheatCommand(const char *args, WorldSession *m_session)
+{
+	Player *player = getSelectedChar(m_session, true);
+
+	if( player == NULL )
+	{
+		RedSystemMessage(m_session, "You need to select a player");
+		return false;
+	}
+
+	WorldSession *session = player->GetSession();
+
+	if( session == NULL )
+	{
+		RedSystemMessage(m_session, "Selected player is offline");
+		return false;
+	}
+
+	if( ! player->FlyingMountCheat )
+	{
+		player->FlyingMountCheat = true;
+		BlueSystemMessage(m_session, "Flying mount cheat enabled for player %s", player->GetName());
+		BlueSystemMessage(session, "%s enabled flying mount cheat for you", m_session->GetPlayer()->GetName());
+	}
+	else
+	{
+		player->FlyingMountCheat = false;
+		BlueSystemMessage(m_session, "Flying mount cheat disabled for player %s", player->GetName());
+		BlueSystemMessage(session, "%s enabled flying mount cheat for you", m_session->GetPlayer()->GetName());
+	}
+
+	return true;
+}
+
+
+
 bool ChatHandler::HandleResetSkillsCommand(const char* args, WorldSession* m_session)
 {
 	skilllineentry* se;
