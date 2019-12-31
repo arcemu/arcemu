@@ -6146,20 +6146,13 @@ void Unit::EnableFlight()
 {
 	z_axisposition = 0.0f;
 
-	if(!IsPlayer() || TO_PLAYER(this)->m_changingMaps)
+	WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
+	data << GetNewGUID();
+	data << uint32(2);
+	SendMessageToSet(&data, true);
+
+	if(IsPlayer())
 	{
-		WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
-		data << GetNewGUID();
-		data << uint32(2);
-		SendMessageToSet(&data, true);
-	}
-	else
-	{
-		WorldPacket* data = new WorldPacket(SMSG_MOVE_SET_CAN_FLY, 13);
-		*data << GetNewGUID();
-		*data << uint32(2);
-		SendMessageToSet(data, false);
-		TO< Player* >(this)->delayedPackets.add(data);
 		TO< Player* >(this)->m_setflycheat = true;
 	}
 }
@@ -6168,20 +6161,13 @@ void Unit::DisableFlight()
 {
 	z_axisposition = 0.0f;
 
-	if(!IsPlayer() || TO_PLAYER(this)->m_changingMaps)
+	WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
+	data << GetNewGUID();
+	data << uint32(5);
+	SendMessageToSet(&data, true);
+
+	if(IsPlayer())
 	{
-		WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
-		data << GetNewGUID();
-		data << uint32(5);
-		SendMessageToSet(&data, true);
-	}
-	else
-	{
-		WorldPacket* data = new WorldPacket(SMSG_MOVE_UNSET_CAN_FLY, 13);
-		*data << GetNewGUID();
-		*data << uint32(5);
-		SendMessageToSet(data, false);
-		TO< Player* >(this)->delayedPackets.add(data);
 		TO< Player* >(this)->m_setflycheat = false;
 	}
 }
