@@ -133,10 +133,6 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 	
 	// root passenger
 	passenger->Root();
-
-	WorldPacket ack( 0x049D );
-	passenger->SendPacket( &ack );
-
 	passenger->SendHopOnVehicle( owner, seatid );
 
 	LocationVector v( owner->GetPosition() );
