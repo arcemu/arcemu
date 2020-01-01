@@ -663,3 +663,10 @@ void Messenger::SendSetSpeed( Object *object, uint8 type, float speed )
 	MessageRouter router( object );
 	router.sendMessageToPlayersInRange( &data, true );
 }
+
+void Messenger::SendEmptyPetSpellsToPlayer( Player *player )
+{
+	WorldPacket data( SMSG_PET_SPELLS, 8 );
+	data << uint64( 0 );
+	player->SendPacket( &data );
+}

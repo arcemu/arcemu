@@ -2062,14 +2062,10 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->GetAIInterface()->Init(m_target, AITYPE_AGRO, MOVEMENTTYPE_NONE);
 		m_target->SetCharmedByGUID(0);
 
-		if(caster->GetSession() != NULL)   // crashfix
-		{
-			caster->SetCharmedUnitGUID(0);
-			WorldPacket data(SMSG_PET_SPELLS, 8);
-			data << uint64(0);
-			caster->GetSession()->SendPacket(&data);
-			target->SetEnslaveSpell(0);
-		}
+		caster->SetCharmedUnitGUID(0);
+		target->SetEnslaveSpell(0);
+		if(caster->GetSession() != NULL)
+			Messenger::SendEmptyPetSpellsToPlayer( caster );
 	}
 }
 

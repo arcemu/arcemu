@@ -781,12 +781,7 @@ void Creature::EnslaveExpire()
 		caster->SetCharmedUnitGUID(0);
 		caster->SetSummonedUnitGUID(0);
 
-		WorldPacket data(SMSG_PET_SPELLS, 8);
-
-		data << uint64(0);
-		data << uint32(0);
-
-		caster->SendPacket(&data);
+		Messenger::SendEmptyPetSpellsToPlayer( caster );
 	}
 	SetCharmedByGUID(0);
 	SetSummonedByGUID(0);

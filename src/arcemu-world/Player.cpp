@@ -11926,10 +11926,7 @@ void Player::SendAvailSpells(SpellShapeshiftForm* ssf, bool active)
 	}
 	else
 	{
-		WorldPacket data(SMSG_PET_SPELLS, 10);
-		data << uint64(0);
-		data << uint32(0);
-		GetSession()->SendPacket(&data);
+		Messenger::SendEmptyPetSpellsToPlayer( this );
 	}
 }
 
@@ -13531,9 +13528,7 @@ bool Player::CanTrainAt(Trainer* trn)
 
 void Player::SendEmptyPetSpellList()
 {
-	WorldPacket data(SMSG_PET_SPELLS, 8);
-	data << uint64(0);
-	m_session->SendPacket(&data);
+	Messenger::SendEmptyPetSpellsToPlayer( this );
 }
 
 void Player::BuildPetSpellList(WorldPacket & data)

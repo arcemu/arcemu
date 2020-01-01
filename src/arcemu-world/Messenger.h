@@ -139,6 +139,8 @@ public:
 
 	/// Sets the speed of the object in the client
 	static void SendSetSpeed( Object* object, uint8 type, float speed );
+
+	static void SendEmptyPetSpellsToPlayer( Player* player );
 };
 
 #endif
