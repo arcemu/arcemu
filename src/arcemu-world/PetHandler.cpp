@@ -59,6 +59,23 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 						}
 					}
 					break;
+
+				case PET_ACTION_FOLLOW:
+				{
+					pCharm->GetAIInterface()->WipeTargetList();
+					pCharm->GetAIInterface()->WipeHateList();
+					pCharm->GetAIInterface()->SetUnitToFollow(_player);
+					pCharm->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, pCharm, 0);
+				}
+				break;
+
+				case PET_ACTION_STAY:
+				{
+					pCharm->GetAIInterface()->WipeTargetList();
+					pCharm->GetAIInterface()->WipeHateList();
+					pCharm->GetAIInterface()->ResetUnitToFollow();
+				}
+				break;
 			}
 		}
 		return;
