@@ -5244,7 +5244,7 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 	if(!ci)
 		return;
 
-	Messenger::SendChatMessageAlt( this, type, lang, string( ci->Name ), string( msg ) );
+	Messenger::SendChatMessageToSet( this, type, lang, string( ci->Name ), string( msg ) );
 }
 
 void Unit::WipeHateList()

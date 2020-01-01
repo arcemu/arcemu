@@ -587,7 +587,7 @@ void Messenger::SendSetFacing( Unit *unit, float orientation )
 	unit->SendMessageToSet(&data, true);
 }
 
-void Messenger::SendChatMessageAlt( Unit *unit, uint8 emote, uint32 lang, const string& name, const string& message )
+void Messenger::SendChatMessageToSet( Unit *unit, uint8 emote, uint32 lang, const string& name, const string& message )
 {
 	WorldPacket data(SMSG_MESSAGECHAT, 35 + name.length() + 1 + message.length() + 1);
 	data << uint8( emote );

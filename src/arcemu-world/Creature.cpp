@@ -2174,7 +2174,7 @@ void Creature::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 
 		return;
 	}
 
-	Messenger::SendChatMessageAlt( this, type, lang, string( GetCreatureInfo()->Name ), string( msg ) );
+	Messenger::SendChatMessageToSet( this, type, lang, string( GetCreatureInfo()->Name ), string( msg ) );
 }
 
 void Creature::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)

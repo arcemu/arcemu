@@ -130,7 +130,7 @@ public:
 	static void SendSetFacing( Unit* unit, float orientation );
 
 	/// Sends a chat message to the Unit's set. Used for making NPCs say things
-	static void SendChatMessageAlt( Unit* unit, uint8 emote, uint32 lang, const string& name, const string& message );
+	static void SendChatMessageToSet( Unit* unit, uint8 emote, uint32 lang, const string& name, const string& message );
 
 	/// Sets the speed of the object in the client
 	static void SendSetSpeed( Object* object, uint8 type, float speed );
