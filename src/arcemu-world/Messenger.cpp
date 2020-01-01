@@ -603,6 +603,22 @@ void Messenger::SendChatMessageToSet( Unit *unit, uint8 emote, uint32 lang, cons
 	unit->SendMessageToSet(&data, true);
 }
 
+void Messenger::SendChatMessageToPlayer(Unit *unit, Player *player, uint8 emote, uint32 lang, const string &name, const string &message)
+{
+	WorldPacket data(SMSG_MESSAGECHAT, 35 + name.length() + 1 + message.length() + 1);
+	data << uint8( emote );
+	data << uint32( lang );
+	data << unit->GetGUID();
+	data << uint32(0);			// new in 2.1.0
+	data << uint32(name.length() + 1);
+	data << name.c_str();
+	data << uint64(0);
+	data << uint32(message.length() + 1);
+	data << message.c_str();
+	data << uint8(0);
+	player->GetSession()->SendPacket( &data );
+}
+
 void Messenger::SendSetSpeed( Object *object, uint8 type, float speed )
 {
 	WorldPacket data( 50 );
