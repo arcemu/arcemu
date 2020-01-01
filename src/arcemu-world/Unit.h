@@ -1901,8 +1901,6 @@ class SERVER_DECL Unit : public Object
 
 		void AddGarbagePet(Pet* pet);
 
-		virtual void BuildPetSpellList(WorldPacket & data);
-
 	protected:
 		Unit();
 		void RemoveGarbage();

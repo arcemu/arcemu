@@ -7989,11 +7989,6 @@ void Unit::HandleKnockback(Object* caster, float horizontal, float vertical)
 }
 
 
-void Unit::BuildPetSpellList(WorldPacket & data)
-{
-	data << uint64(0);
-}
-
 void Unit::CastOnMeleeSpell(){
 	SpellEntry *spellInfo = dbcSpell.LookupEntry( GetOnMeleeSpell() );
 	Spell *spell = sSpellFactoryMgr.NewSpell( this, spellInfo, true, NULL );

@@ -153,6 +153,9 @@ public:
 
 	/// Sends the pet talents to the client
 	static void SendPetTalents( Player* player, uint32 pointsleft, const vector< pair< uint32, uint8 > > talents );
+
+	/// Sends the spellbar of this creature to the players
+	static void SendCreatureSpells( Player* player, Creature* creature );
 };
 
 #endif

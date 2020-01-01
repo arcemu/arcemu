@@ -766,3 +766,41 @@ void Messenger::SendPetTalents(Player *player, uint32 pointsleft, const vector<p
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendCreatureSpells(Player *player, Creature *creature)
+{
+	WorldPacket data( SMSG_PET_SPELLS, 100 );
+	data << uint64(creature->GetGUID());
+	data << uint16( creature->GetCreatureInfo()->Family );
+	data << uint32(0);
+
+	if( ! creature->IsVehicle() )
+		data << uint32(0);
+	else
+		data << uint32( 0x8000101 );
+
+	std::vector< uint32 >::iterator itr = creature->GetProto()->castable_spells.begin();
+
+	// Send the actionbar
+	for(uint32 i = 0; i < 10; ++i)
+	{
+		if(itr != creature->GetProto()->castable_spells.end())
+		{
+			uint32 spell = *itr;
+			data << uint32( Arcemu::Util::MAKE_UNIT_ACTION_BUTTON( spell, i + 8 ) );
+			++itr;
+		}
+		else
+		{
+			data << uint16( 0 );
+			data << uint8( 0 );
+			data << uint8( i + 8 );
+		}
+	}
+
+	data << uint8(0);
+	// cooldowns
+	data << uint8(0);
+
+	PlayerMessenger::sendMessage( player, data );
+}

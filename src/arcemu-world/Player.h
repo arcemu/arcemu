@@ -945,7 +945,6 @@ class SERVER_DECL Player : public Unit
 
 		void Update(uint32 time);
 		void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
-		void BuildPetSpellList(WorldPacket & data);
 		void SetAFKReason(std::string reason) { m_cache->SetStringValue(CACHE_AFK_DND_REASON, reason); };
 		const char* GetName() { return m_name.c_str(); }
 		std::string* GetNameString() { return &m_name; }

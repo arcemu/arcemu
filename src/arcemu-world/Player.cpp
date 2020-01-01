@@ -9929,9 +9929,10 @@ void Player::Possess(uint64 GUID, uint32 delay)
 
 	if(!(pTarget->IsPet() && TO< Pet* >(pTarget) == GetSummon()))
 	{
-		WorldPacket data(SMSG_PET_SPELLS, 4 * 4 + 20);
-		pTarget->BuildPetSpellList(data);
-		m_session->SendPacket(&data);
+		if( pTarget->IsCreature() )
+			Messenger::SendCreatureSpells( this, TO< Creature* >( pTarget ) );
+		else
+			Messenger::SendEmptyPetSpellsToPlayer(this);
 	}
 
 }
@@ -13529,11 +13530,6 @@ bool Player::CanTrainAt(Trainer* trn)
 void Player::SendEmptyPetSpellList()
 {
 	Messenger::SendEmptyPetSpellsToPlayer( this );
-}
-
-void Player::BuildPetSpellList(WorldPacket & data)
-{
-	data << uint64(0);
 }
 
 void Player::AddVehicleComponent( uint32 creature_entry, uint32 vehicleid ){

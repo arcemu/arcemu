@@ -596,8 +596,6 @@ class SERVER_DECL Creature : public Unit
 		void OnRemoveCorpse();
 		void OnRespawn(MapMgr* m);
 
-		void BuildPetSpellList(WorldPacket & data);
-
 	protected:
 		virtual void SafeDelete();//use DeleteMe() instead of SafeDelete() to avoid crashes like InWorld Creatures deleted.
 	public:
