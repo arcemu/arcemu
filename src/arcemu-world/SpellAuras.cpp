@@ -21,6 +21,7 @@
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
 #include "Messenger.h"
+#include "PlayerMessenger.h"
 
 pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 {
@@ -2032,25 +2033,24 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->GetAIInterface()->resetNextTarget();
 
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
+		target->SetEnslaveSpell(m_spellProto->Id);
 
-		if(caster->GetSession())   // crashfix
-		{
-			WorldPacket data(SMSG_PET_SPELLS, 500);
-			data << target->GetGUID();
-			data << uint16(0);
-			data << uint32(0x1000);
-			data << uint32(0x100);
-			data << uint32(PET_SPELL_ATTACK);
-			data << uint32(PET_SPELL_FOLLOW);
-			data << uint32(PET_SPELL_STAY);
-			for(int i = 0; i < 4; i++)
-				data << uint32(0);
-			data << uint32(PET_SPELL_AGRESSIVE);
-			data << uint32(PET_SPELL_DEFENSIVE);
-			data << uint32(PET_SPELL_PASSIVE);
-			caster->GetSession()->SendPacket(&data);
-			target->SetEnslaveSpell(m_spellProto->Id);
-		}
+		WorldPacket data(SMSG_PET_SPELLS, 500);
+		data << target->GetGUID();
+		data << uint16(0);
+		data << uint32(0x1000);
+		data << uint32(0x100);
+		data << uint32(PET_SPELL_ATTACK);
+		data << uint32(PET_SPELL_FOLLOW);
+		data << uint32(PET_SPELL_STAY);
+
+		for(int i = 0; i < 4; i++)
+			data << uint32(0);
+
+		data << uint32(PET_SPELL_AGRESSIVE);
+		data << uint32(PET_SPELL_DEFENSIVE);
+		data << uint32(PET_SPELL_PASSIVE);
+		PlayerMessenger::sendMessage( caster, data );
 	}
 	else
 	{
@@ -2064,8 +2064,7 @@ void Aura::SpellAuraModCharm(bool apply)
 
 		caster->SetCharmedUnitGUID(0);
 		target->SetEnslaveSpell(0);
-		if(caster->GetSession() != NULL)
-			Messenger::SendEmptyPetSpellsToPlayer( caster );
+		Messenger::SendEmptyPetSpellsToPlayer( caster );
 	}
 }
 

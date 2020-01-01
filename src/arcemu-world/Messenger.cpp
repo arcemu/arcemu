@@ -21,6 +21,7 @@
 #include "StdAfx.h"
 #include "Messenger.h"
 #include "MessageRouter.h"
+#include "PlayerMessenger.h"
 
 void Messenger::SendSpellLog(Object *Caster, Object *Target, uint32 Ability, uint8 SpellLogType)
 {
@@ -194,7 +195,7 @@ void Messenger::SendGameObjectCustomAnim( GameObject *go, uint32 anim, Player *p
 	data.Initialize(SMSG_GAMEOBJECT_CUSTOM_ANIM);
 	data << uint64( go->GetGUID() );
 	data << uint32(anim); // value < 4
-	player->GetSession()->SendPacket(&data);
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendGameObjectDespawnAnim( GameObject *go )
@@ -222,14 +223,14 @@ void Messenger::SendTransferPendingTransport( Player* player, uint32 oldMap, uin
 	data << uint32( newMap );
 	data << uint32( transportEntry );
 	data << uint32( oldMap );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendTransferPending( Player *player, uint32 mapId )
 {
 	WorldPacket data( SMSG_TRANSFER_PENDING, 20 );
 	data << uint32( mapId );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendNewWorld( Player *player, uint32 mapId, const LocationVector &location )
@@ -240,7 +241,7 @@ void Messenger::SendNewWorld( Player *player, uint32 mapId, const LocationVector
 	data << float( location.y );
 	data << float( location.z );
 	data << float( location.o );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendTransferAborted( Player *player, uint32 mapId, uint32 cause )
@@ -248,7 +249,7 @@ void Messenger::SendTransferAborted( Player *player, uint32 mapId, uint32 cause 
 	WorldPacket data( SMSG_TRANSFER_ABORTED, 41 );
 	data << uint32( mapId );
 	data << uint32( cause );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendTeleportAck( Player *player, const LocationVector &location )
@@ -265,7 +266,7 @@ void Messenger::SendTeleportAck( Player *player, const LocationVector &location 
 	data << float( location.o );
 	data << uint16( 2 );
 	data << uint8( 0 );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendTriggerCinematic( Player *player, uint32 cinematicId )
@@ -273,7 +274,7 @@ void Messenger::SendTriggerCinematic( Player *player, uint32 cinematicId )
 	//player->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematicId );
 	WorldPacket data( SMSG_TRIGGER_CINEMATIC, 4 );
 	data << uint32( cinematicId );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendStopAttackToSet( Unit *attacker, Unit *victim )
@@ -300,7 +301,7 @@ void Messenger::SendStopAttackToPlayer( Player *player, Unit *victim )
 	data << victim->GetNewGUID();
 	data << uint8( 0 );
 	data << uint32( 0 );
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendStartAttackToSet(Unit *attacker, Unit *victim)
@@ -616,7 +617,7 @@ void Messenger::SendChatMessageToPlayer(Unit *unit, Player *player, uint8 emote,
 	data << uint32(message.length() + 1);
 	data << message.c_str();
 	data << uint8(0);
-	player->GetSession()->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendSetSpeed( Object *object, uint8 type, float speed )
@@ -668,5 +669,5 @@ void Messenger::SendEmptyPetSpellsToPlayer( Player *player )
 {
 	WorldPacket data( SMSG_PET_SPELLS, 8 );
 	data << uint64( 0 );
-	player->SendPacket( &data );
+	PlayerMessenger::sendMessage( player, data );
 }

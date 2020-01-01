@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "MessageRouter.h"
+#include "PlayerMessenger.h"
 
 
 MessageRouter::MessageRouter()
@@ -41,15 +42,11 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 		for(std::set< Object* >::iterator itr = object->GetInRangePlayerSetBegin(); itr != object->GetInRangePlayerSetEnd(); ++itr)
 		{
 			Player* p = TO< Player* >( *itr );
-			WorldSession *session = p->GetSession();
-
-			if( session == NULL )
-				continue;
 
 			if((p->GetPhase() & object->GetPhase()) == 0)
 				continue;
 
-			session->SendPacket(packet);
+			PlayerMessenger::sendMessage( p, *packet );
 		}
 	}
 	else
@@ -58,7 +55,7 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 
 		if( sendToObject )
 		{
-			player->SendPacket(packet);
+			PlayerMessenger::sendMessage( player, *packet );
 		}
 
 		for( std::set< Object* >::iterator itr = player->GetInRangePlayerSetBegin(); itr != player->GetInRangePlayerSetEnd(); ++itr )
@@ -82,14 +79,14 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 			}
 			else
 			{
-				if( player->m_isGmInvisible && ( p->GetSession()->GetPermissionCount() <= 0 ) )
+				if( player->m_isGmInvisible && ( session->GetPermissionCount() <= 0 ) )
 					continue;
 
 				if( ! p->IsVisible( player->GetGUID() ) )
 					continue;
 			}
 
-			session->SendPacket( packet );
+			PlayerMessenger::sendMessage( p, *packet );
 		}
 	}
 }
