@@ -383,13 +383,8 @@ void Pet::SendTalentsToOwner()
 	if(m_Owner == NULL)
 		return;
 
-	WorldPacket data(SMSG_TALENTS_INFO, 50);
-	data << uint8(1);				// Pet talent packet identificator
-	data << uint32(GetTPs());		// Unspent talent points
+	std::vector< std::pair< uint32, uint8 > > talents;
 
-	uint8 count = 0;
-	size_t pos = data.wpos();
-	data << uint8(0);				// Amount of known talents (will be filled later)
 
 	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntryForced(GetCreatureInfo()->Family);
 	if(!cfe || static_cast<int32>(cfe->talenttree) < 0)
@@ -418,21 +413,17 @@ void Pet::SendTalentsToOwner()
 			for(uint8 j = 0; j < 5; j++)
 				if(te->RankID[ j ] > 0 && HasSpell(te->RankID[ j ]))
 				{
-					// if we have the spell, include it in packet
-					data << te->TalentID;	// Talent ID
-					data << j;				// Rank
-					++count;
+					std::pair< uint32, uint8 > talent;
+					talent.first = te->TalentID; // Talent Id
+					talent.second = j; // Rank
+					talents.push_back( talent );
 				}
 		}
 		// tab loaded, we can exit
 		break;
 	}
-	// fill count of talents
-	data.put< uint8 >(pos, count);
 
-	// send the packet to owner
-	if(m_Owner->GetSession() != NULL)
-		m_Owner->GetSession()->SendPacket(&data);
+	Messenger::SendPetTalents( m_Owner, GetTPs(), talents );
 }
 
 void Pet::SendCastFailed(uint32 spellid, uint8 fail)

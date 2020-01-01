@@ -749,3 +749,20 @@ void Messenger::SendPetSpells( Player *player, Pet *pet )
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendPetTalents(Player *player, uint32 pointsleft, const vector<pair<uint32, uint8> > talents)
+{
+	WorldPacket data( SMSG_TALENTS_INFO, 50 );
+	data << uint8( 1 );				// Pet talent packet identificator
+	data << uint32( pointsleft );		// Unspent talent points
+	data << uint8( talents.size() );
+
+	for( vector< pair< uint32, uint8 > >::const_iterator itr = talents.begin(); itr != talents.end(); ++itr )
+	{
+		const std::pair< uint32, uint8 > &pair = *itr;
+		data << uint32( pair.first ); // Talent Id
+		data << uint8( pair.second ); // Rank
+	}
+
+	PlayerMessenger::sendMessage( player, data );
+}
