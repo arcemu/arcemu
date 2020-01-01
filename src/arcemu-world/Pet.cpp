@@ -370,58 +370,6 @@ void Pet::Update(uint32 time)
 	}
 }
 
-void Pet::BuildPetSpellList(WorldPacket & data)
-{
-
-	data << uint64(GetGUID());
-
-	if(myFamily != NULL)
-		data << uint16(myFamily->ID);
-	else
-		data << uint16(0);
-
-	data << uint32(0);
-	data << uint8(GetPetState());	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
-	data << uint8(GetPetAction());	// 0x0 = stay, 0x1 = follow, 0x2 = attack
-	data << uint16(0);				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
-
-	// Send the actionbar
-	for(uint8 i = 0; i < 10; i++)
-	{
-		if(ActionBar[i] & 0x4000000)		// Commands
-			data << uint32(ActionBar[ i ]);
-		else
-		{
-			if(ActionBar[i])
-			{
-				data << uint16(ActionBar[ i ]);
-				data << GetSpellState(ActionBar[ i ]);
-			}
-			else
-			{
-				data << uint16(0);
-				data << uint8(0);
-				data << uint8(i + 5);
-			}
-		}
-	}
-
-	// we don't send spells for the water elemental so it doesn't show up in the spellbook
-	if(m_ExpireTime == 0)
-	{
-		// Send the rest of the spells.
-		data << uint8(mSpells.size());
-		for(PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr)
-		{
-			data << uint16(itr->first->Id);
-			data << uint16(itr->second);
-		}
-	}
-
-	data << uint8(0);
-
-}
-
 void Pet::SendSpellsToOwner()
 {
 	if(m_Owner == NULL)

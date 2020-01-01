@@ -149,7 +149,6 @@ class SERVER_DECL Pet : public Creature
 		void SendSpellsToOwner();
 		void SendCastFailed(uint32 spellid, uint8 fail);
 		void SendActionFeedback(PetActionFeedback value);
-		void BuildPetSpellList(WorldPacket & data);
 
 		ARCEMU_INLINE void SetPetAction(uint32 act) { m_Action = act; }
 		ARCEMU_INLINE uint32 GetPetAction(void) { return m_Action; }
