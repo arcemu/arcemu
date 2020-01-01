@@ -613,6 +613,10 @@ void WorldSession::HandlePetLearnTalent(WorldPacket & recvPacket)
 			return;
 	}
 
+	// Check if we already have this spell
+	if( pPet->HasSpell( te->RankID[ talentcol ] ) )
+		return;
+
 	// check if we have enough spent points
 	if(pPet->GetSpentTPs() < (te->Row * 3))
 		return;
