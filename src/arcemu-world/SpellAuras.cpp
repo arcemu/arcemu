@@ -2032,6 +2032,9 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->GetAIInterface()->WipeTargetList();
 		m_target->GetAIInterface()->resetNextTarget();
 
+		m_target->GetAIInterface()->SetUnitToFollow(caster);
+		m_target->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, m_target, 0);
+
 		target->SetEnslaveCount(target->GetEnslaveCount() + 1);
 		target->SetEnslaveSpell(m_spellProto->Id);
 
