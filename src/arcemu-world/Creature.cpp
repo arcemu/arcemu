@@ -2174,22 +2174,7 @@ void Creature::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 
 		return;
 	}
 
-	const char* name = GetCreatureInfo()->Name;
-	size_t CreatureNameLength = strlen((char*)name) + 1;
-	size_t MessageLength = strlen((char*)msg) + 1;
-
-	WorldPacket data(SMSG_MESSAGECHAT, 35 + CreatureNameLength + MessageLength);
-	data << type;
-	data << lang;
-	data << GetGUID();
-	data << uint32(0);			// new in 2.1.0
-	data << uint32(CreatureNameLength);
-	data << name;
-	data << uint64(0);
-	data << uint32(MessageLength);
-	data << msg;
-	data << uint8(0x00);
-	SendMessageToSet(&data, true);
+	Messenger::SendChatMessageAlt( this, type, lang, string( GetCreatureInfo()->Name ), string( msg ) );
 }
 
 void Creature::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)
