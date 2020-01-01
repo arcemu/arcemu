@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 #define WATER_ELEMENTAL		510
 #define WATER_ELEMENTAL_NEW 37994
@@ -498,21 +499,18 @@ void Pet::SendTalentsToOwner()
 
 void Pet::SendCastFailed(uint32 spellid, uint8 fail)
 {
-	if(m_Owner == NULL || m_Owner->GetSession() == NULL)
+	if(m_Owner == NULL)
 		return;
 
-	WorldPacket data(SMSG_PET_CAST_FAILED, 6);
-	data << uint8(0);
-	data << uint32(spellid);
-	data << uint8(fail);
-	m_Owner->GetSession()->SendPacket(&data);
+	Messenger::SendPetCastFailed( m_Owner, spellid, fail );
 }
 
 void Pet::SendActionFeedback(PetActionFeedback value)
 {
-	if(m_Owner == NULL || m_Owner->GetSession() == NULL)
+	if(m_Owner == NULL)
 		return;
-	m_Owner->GetSession()->OutPacket(SMSG_PET_ACTION_FEEDBACK, 1, &value);
+
+	Messenger::SendPetActionFeedback( m_Owner, value );
 }
 
 void Pet::InitializeSpells()

@@ -141,6 +141,12 @@ public:
 	static void SendSetSpeed( Object* object, uint8 type, float speed );
 
 	static void SendEmptyPetSpellsToPlayer( Player* player );
+
+	/// Tells the client a pet spell cast has failed
+	static void SendPetCastFailed( Player* player, uint32 spellid, uint8 fail );
+
+	/// Tells the client if the pet cannot do something
+	static void SendPetActionFeedback( Player* player, PetActionFeedback feedback );
 };
 
 #endif

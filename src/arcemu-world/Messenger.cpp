@@ -671,3 +671,19 @@ void Messenger::SendEmptyPetSpellsToPlayer( Player *player )
 	data << uint64( 0 );
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendPetCastFailed( Player *player, uint32 spellid, uint8 fail )
+{
+	WorldPacket data( SMSG_PET_CAST_FAILED, 6 );
+	data << uint8( 0 );
+	data << uint32( spellid );
+	data << uint8( fail );
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendPetActionFeedback(Player *player, PetActionFeedback feedback)
+{
+	WorldPacket data( SMSG_PET_ACTION_FEEDBACK, 4 );
+	data << uint32( feedback );
+	PlayerMessenger::sendMessage( player, data );
+}
