@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "Messenger.h"
+#include "MessageRouter.h"
 
 void Messenger::SendSpellLog(Object *Caster, Object *Target, uint32 Ability, uint8 SpellLogType)
 {
@@ -600,4 +601,49 @@ void Messenger::SendChatMessageAlt( Unit *unit, uint8 emote, uint32 lang, const 
 	data << message.c_str();
 	data << uint8(0);
 	unit->SendMessageToSet(&data, true);
+}
+
+void Messenger::SendSetSpeed( Object *object, uint8 type, float speed )
+{
+	WorldPacket data( 50 );
+
+	data << object->GetNewGUID();
+	data << uint32( 0 );
+
+	if( type == RUN )
+		data << uint8( 0 );
+
+	data << float( speed );
+
+	switch( type ){
+		case WALK:{
+			data.SetOpcode( SMSG_FORCE_WALK_SPEED_CHANGE );
+			break;}
+
+		case RUN:{
+			data.SetOpcode(SMSG_FORCE_RUN_SPEED_CHANGE);
+			break;}
+
+		case RUNBACK:{
+			data.SetOpcode(SMSG_FORCE_RUN_BACK_SPEED_CHANGE);
+			break;}
+
+		case SWIM:{
+			data.SetOpcode(SMSG_FORCE_SWIM_SPEED_CHANGE);
+			break;}
+
+		case SWIMBACK:{
+			data.SetOpcode(SMSG_FORCE_SWIM_BACK_SPEED_CHANGE);
+			break;}
+
+		case FLY:{
+			data.SetOpcode(SMSG_FORCE_FLIGHT_SPEED_CHANGE);
+			break;}
+
+		default:
+			return;
+	}
+
+	MessageRouter router( object );
+	router.sendMessageToPlayersInRange( &data, true );
 }
