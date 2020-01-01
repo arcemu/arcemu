@@ -116,8 +116,10 @@ public:
 	/// Disables flight in the client
 	static void SendDisableFlightMessage( Unit* unit );
 
+	/// Sends aura log entry to the client ( abc suffers N school damage from xyz's spell )
 	static void SendPeriodicAuraLog( const WoWGuid & CasterGUID, Unit* target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, bool is_critical );
 
+	/// Sends a heal aura log entry to the client ( abc gains N heealth from xyz's spell )
 	static void SendPeriodicHealAuraLog( const WoWGuid & CasterGUID, Unit* target, uint32 SpellID, uint32 healed, uint32 over_healed, bool is_critical );
 
 	/// Hop on vehicle animation
