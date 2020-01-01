@@ -427,17 +427,7 @@ void Pet::SendSpellsToOwner()
 	if(m_Owner == NULL)
 		return;
 
-	uint16 packetsize;
-	if(m_ExpireTime == 0)
-		packetsize = static_cast< uint16 >(mSpells.size() * 4 + 59);
-	else
-		packetsize = 62;
-
-	WorldPacket data(SMSG_PET_SPELLS, packetsize);
-
-	BuildPetSpellList(data);
-
-	m_Owner->SendPacket(&data);
+	Messenger::SendPetSpells( m_Owner, this );
 }
 
 void Pet::SendTalentsToOwner()

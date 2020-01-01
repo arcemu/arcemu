@@ -260,6 +260,9 @@ class SERVER_DECL Pet : public Creature
 
 		Object* GetPlayerOwner();
 
+		uint32 getActionBarEntry( uint32 i ){ return ActionBar[ i ]; }
+		uint32 getExpireTime(){ return m_ExpireTime; }
+
 	protected:
 		Player* m_Owner;
 		PetSpellMap mSpells;

@@ -147,6 +147,9 @@ public:
 
 	/// Tells the client if the pet cannot do something
 	static void SendPetActionFeedback( Player* player, PetActionFeedback feedback );
+
+	/// Send the pet spellbar to the player
+	static void SendPetSpells( Player* player, Pet* pet );
 };
 
 #endif

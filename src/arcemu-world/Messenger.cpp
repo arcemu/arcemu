@@ -687,3 +687,65 @@ void Messenger::SendPetActionFeedback(Player *player, PetActionFeedback feedback
 	data << uint32( feedback );
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendPetSpells( Player *player, Pet *pet )
+{
+	PetSpellMap* spells = pet->GetSpells();
+	uint32 packetsize;
+
+	if( pet->getExpireTime() == 0 )
+		packetsize = spells->size() * 4 + 59;
+	else
+		packetsize = 62;
+
+	WorldPacket data( SMSG_PET_SPELLS, packetsize );
+	data << uint64( pet->GetGUID() );
+
+	if(pet->myFamily != NULL)
+		data << uint16( pet->myFamily->ID);
+	else
+		data << uint16(0);
+
+	data << uint32(0);
+	data << uint8(pet->GetPetState());	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
+	data << uint8(pet->GetPetAction());	// 0x0 = stay, 0x1 = follow, 0x2 = attack
+	data << uint16(0);				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
+
+	// Send the actionbar
+	for(uint8 i = 0; i < 10; i++)
+	{
+		uint32 action = pet->getActionBarEntry( i );
+		if(action & 0x4000000)		// Commands
+			data << uint32(action);
+		else
+		{
+			if(action != 0)
+			{
+				data << uint16(action);
+				data << pet->GetSpellState(action);
+			}
+			else
+			{
+				data << uint16(0);
+				data << uint8(0);
+				data << uint8(i + 5);
+			}
+		}
+	}
+
+	// we don't send spells for the water elemental so it doesn't show up in the spellbook
+	if(pet->getExpireTime() == 0)
+	{
+		// Send the rest of the spells.
+		data << uint8(spells->size());
+		for(PetSpellMap::iterator itr = spells->begin(); itr != spells->end(); ++itr)
+		{
+			data << uint16(itr->first->Id);
+			data << uint16(itr->second);
+		}
+	}
+
+	data << uint8(0);
+
+	PlayerMessenger::sendMessage( player, data );
+}
