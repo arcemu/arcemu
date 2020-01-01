@@ -2177,14 +2177,6 @@ void Creature::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 
 	Messenger::SendChatMessageToSet( this, type, lang, string( GetCreatureInfo()->Name ), string( msg ) );
 }
 
-void Creature::SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr)
-{
-	if( plr == NULL)
-		return;
-
-	Messenger::SendChatMessageToPlayer( this, plr, type, lang, string( GetCreatureInfo()->Name ), string( msg ) );
-}
-
 void Creature::HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event)
 {
 	NpcMonsterSay* ms = creature_info->MonsterSay[Event];

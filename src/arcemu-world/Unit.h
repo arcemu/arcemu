@@ -1476,7 +1476,6 @@ class SERVER_DECL Unit : public Object
 		}
 
 		virtual void SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 delay = 0) = 0;
-		virtual void SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr) = 0;
 		void SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char* msg);
 		void RegisterPeriodicChatMessage(uint32 delay, uint32 msgid, std::string message, bool sendnotify);
 

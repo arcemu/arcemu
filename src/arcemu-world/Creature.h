@@ -586,7 +586,6 @@ class SERVER_DECL Creature : public Unit
 		uint32 GetOldEmote() { return m_oldEmote; }
 
 		void SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 delay = 0);
-		void SendChatMessageToPlayer(uint8 type, uint32 lang, const char* msg, Player* plr);
 
 		// Serialization
 		void SaveToDB();

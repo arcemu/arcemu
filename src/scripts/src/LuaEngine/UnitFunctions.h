@@ -20,6 +20,8 @@
 #ifndef UNITFUNCTIONS_H
 #define UNITFUNCTIONS_H
 
+#include "CreatureCommands.h"
+
 class LuaUnit
 {
 	public:
@@ -2662,7 +2664,17 @@ class LuaUnit
 			Player* plr = CHECK_PLAYER(L, 4);
 			if(!plr || !msg || !ptr)
 				return 0;
-			ptr->SendChatMessageToPlayer(type, lang, msg, plr);
+
+			if( ! ptr->IsCreature() )
+				return 0;
+			Creature *creature = TO< Creature* >( ptr );
+
+			CreatureSendChatMessageToPlayerCommand command( creature, plr );
+			command.setEmote( type );
+			command.setLanguage( lang );
+			command.setMessage( msg );
+			command.execute();
+
 			return 0;
 		}
 

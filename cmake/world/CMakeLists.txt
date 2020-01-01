@@ -30,6 +30,7 @@ SET(sources
 	Container.cpp 
 	Corpse.cpp 
 	Creature.cpp 
+	CreatureCommands.cpp
 	Entities/Summons/Summon.cpp
 	Entities/Summons/CompanionSummon.cpp
 	Entities/Summons/GuardianSummon.cpp
@@ -186,6 +187,7 @@ SET( headers
 	Container.h
 	Corpse.h
 	Creature.h
+	CreatureCommands.h
 	DatabaseCleaner.h
 	DayWatcherThread.h
 	DBC/DBCStores.h
