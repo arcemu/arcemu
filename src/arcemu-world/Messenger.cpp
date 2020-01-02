@@ -991,3 +991,30 @@ void Messenger::SendSetPlayerSpeeds(Player *player, uint8 type, float speed, uin
 	MessageRouter router( player );
 	router.sendMessageToPlayersInRange( &data, true );
 }
+
+void Messenger::SendPreResurrect( Player *player )
+{
+	WorldPacket data( SMSG_PRE_RESURRECT, 8 );
+	FastGUIDPack( data, player->GetGUID() );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendDeathReleaseLocation( Player *player, uint32 mapid, const LocationVector &location )
+{
+	WorldPacket data( SMSG_DEATH_RELEASE_LOC, 16 );
+	data << uint32( mapid );
+	data << float( location.x );
+	data << float( location.y );
+	data << float( location.z );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendCorpseReclaimDelay( Player *player, uint32 delay )
+{
+	WorldPacket data( SMSG_CORPSE_RECLAIM_DELAY, 4 );
+	data << uint32( CORPSE_RECLAIM_TIME_MS );
+
+	PlayerMessenger::sendMessage( player, data );
+}

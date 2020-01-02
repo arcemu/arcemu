@@ -186,6 +186,15 @@ public:
 
 	/// Set player speeds in the client
 	static void SendSetPlayerSpeeds( Player* player, uint8 type, float speed, uint32 changeCount );
+
+	/// Sent before repopping at a graveyard
+	static void SendPreResurrect( Player* player );
+
+	/// Sent after repopping, so probably spirit healer location
+	static void SendDeathReleaseLocation( Player* player, uint32 mapid, const LocationVector &location );
+
+	/// Tells the client how long the player has to wait until resurrection
+	static void SendCorpseReclaimDelay( Player* player, uint32 delay );
 };
 
 #endif

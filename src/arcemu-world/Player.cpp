@@ -4371,9 +4371,7 @@ void Player::SetSpeeds( uint8 type, float speed )
 
 void Player::BuildPlayerRepop()
 {
-	WorldPacket data(SMSG_PRE_RESURRECT, 8);
-	FastGUIDPack(data, GetGUID());		 // caster guid
-	GetSession()->SendPacket(&data);
+	Messenger::SendPreResurrect( this );
 
 	// Cleanup first
 	uint32 AuraIds[] = {20584, 9036, 8326, 0};
@@ -4500,18 +4498,8 @@ void Player::RepopRequestedPlayer()
 				myCorpse->ResetDeathClock();
 		}
 
-		/* Send Spirit Healer Location */
-		WorldPacket data(SMSG_DEATH_RELEASE_LOC, 16);
-
-		data << m_mapId;
-		data << m_position;
-
-		m_session->SendPacket(&data);
-
-		/* Corpse reclaim delay */
-		WorldPacket data2(SMSG_CORPSE_RECLAIM_DELAY, 4);
-		data2 << uint32(CORPSE_RECLAIM_TIME_MS);
-		m_session->SendPacket(&data2);
+		Messenger::SendDeathReleaseLocation( this, m_mapId, m_position );
+		Messenger::SendCorpseReclaimDelay( this, CORPSE_RECLAIM_TIME_MS );
 	}
 
 }
