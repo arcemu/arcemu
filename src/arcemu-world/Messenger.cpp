@@ -823,3 +823,13 @@ void Messenger::SendEnchantmentLog(Player *player, uint32 itemId, uint32 enchant
 	data << uint8(0);
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendEnchantTimeUpdate( Player *player, uint64 itemGUID, uint32 slot, uint32 duration )
+{
+	WorldPacket* data = new WorldPacket( SMSG_ITEM_ENCHANT_TIME_UPDATE, 24 );
+	*data << itemGUID;
+	*data << slot;
+	*data << duration;
+	*data << player->GetGUID();
+	PlayerMessenger::sendDelayedMessage( player, data );
+}

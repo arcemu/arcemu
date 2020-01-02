@@ -160,6 +160,9 @@ public:
 	static void SendItemDurationUpdate( Player* player, uint64 guid, uint32 remainingTime );
 
 	static void SendEnchantmentLog( Player* player, uint32 itemId, uint32 enchantmentId );
+
+	/// Sends the time left for expiring enchants
+	static void SendEnchantTimeUpdate( Player* player, uint64 itemGUID, uint32 slot, uint32 duration );
 };
 
 #endif

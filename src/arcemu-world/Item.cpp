@@ -964,27 +964,7 @@ void Item::ModifyEnchantmentTime(uint32 Slot, uint32 Duration)
 
 void Item::SendEnchantTimeUpdate(uint32 Slot, uint32 Duration)
 {
-	/*
-	{SERVER} Packet: (0x01EB) SMSG_ITEM_ENCHANT_TIME_UPDATE Size = 24
-	|------------------------------------------------|----------------|
-	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-	|------------------------------------------------|----------------|
-	|69 32 F0 35 00 00 00 40 01 00 00 00 08 07 00 00 |i2.5...@........|
-	|51 46 35 00 00 00 00 00						 |QF5.....		|
-	-------------------------------------------------------------------
-
-	uint64 item_guid
-	uint32 slot
-	uint32 time_in_seconds
-	uint64 player_guid
-	*/
-
-	WorldPacket* data = new WorldPacket(SMSG_ITEM_ENCHANT_TIME_UPDATE, 24);
-	*data << GetGUID();
-	*data << Slot;
-	*data << Duration;
-	*data << m_owner->GetGUID();
-	m_owner->delayedPackets.add(data);
+	Messenger::SendEnchantTimeUpdate( m_owner, GetGUID(), Slot, Duration );
 }
 
 void Item::RemoveAllEnchantments(bool OnlyTemporary)
