@@ -1035,3 +1035,12 @@ void Messenger::SendSupersedeSpell(Player *player, uint32 oldspell, uint32 newsp
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendClearSpellCooldown( Player *player, uint32 spell )
+{
+	WorldPacket data( SMSG_CLEAR_COOLDOWN, 12 );
+	data << uint32( spell );
+	data << uint64( player->GetGUID() );
+
+	PlayerMessenger::sendMessage( player, data );
+}

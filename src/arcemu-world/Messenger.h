@@ -201,6 +201,9 @@ public:
 
 	/// Overwrites a spell in the spellbook
 	static void SendSupersedeSpell( Player* player, uint32 oldspell, uint32 newspell );
+
+	/// Clears the cooldown on the spell in the client
+	static void SendClearSpellCooldown( Player* player, uint32 spell );
 };
 
 #endif

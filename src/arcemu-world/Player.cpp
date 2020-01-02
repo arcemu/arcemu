@@ -7152,11 +7152,6 @@ void Player::_Kick()
 
 void Player::ClearCooldownForSpell(uint32 spell_id)
 {
-	WorldPacket data(12);
-	data.SetOpcode(SMSG_CLEAR_COOLDOWN);
-	data << spell_id << GetGUID();
-	GetSession()->SendPacket(&data);
-
 	// remove cooldown data from Server side lists
 	uint32 i;
 	PlayerCooldownMap::iterator itr, itr2;
@@ -7175,6 +7170,8 @@ void Player::ClearCooldownForSpell(uint32 spell_id)
 			}
 		}
 	}
+
+	Messenger::SendClearSpellCooldown( this, spell_id );
 }
 
 void Player::ClearCooldownsOnLine(uint32 skill_line, uint32 called_from)
