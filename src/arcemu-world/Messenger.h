@@ -157,6 +157,7 @@ public:
 	/// Sends the spellbar of this creature to the players
 	static void SendCreatureSpells( Player* player, Creature* creature );
 
+	/// Updates the item's remaining duration time in the client
 	static void SendItemDurationUpdate( Player* player, uint64 guid, uint32 remainingTime );
 
 	/// Sends a log entry for the client about the player enchanting an item
