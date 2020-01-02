@@ -171,6 +171,9 @@ public:
 
 	/// Sent when the player enters or exits a vehicle (value is 1 on enter, 0 on exit)
 	static void SendClientControlUpdate( Player* player, const WoWGuid& guid, uint8 value );
+
+	/// Sends an inventory change error message to the client
+	static void SendInventoryChangeError( Player* player, uint64 sourceItem, uint64 destinationItem, uint8 error, uint32 requiredLevel );
 };
 
 #endif

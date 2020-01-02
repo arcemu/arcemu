@@ -29,6 +29,7 @@
 #include "ItemPrototype.h"
 #include "Player.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 //
 //-------------------------------------------------------------------//
 ItemInterface::ItemInterface(Player* pPlayer) :
@@ -2827,31 +2828,25 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 //-------------------------------------------------------------------//
 void ItemInterface::BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint8 Error)
 {
-	WorldPacket data(SMSG_INVENTORY_CHANGE_FAILURE, 22);
-
-	data << uint8(Error);
+	uint64 srcGUID = 0;
+	uint64 dstGUID = 0;
+	uint32 requiredLevel = 0;
 
 	if(SrcItem != NULL)
-		data << uint64(SrcItem->GetGUID());
-	else
-		data << uint64(0);
+		srcGUID = SrcItem->GetGUID();
 
 	if(DstItem != NULL)
-		data << uint64(DstItem->GetGUID());
-	else
-		data << uint64(0);
-
-	data << uint8(0);
+		dstGUID = DstItem->GetGUID();
 
 	if( ( Error == INV_ERR_YOU_MUST_REACH_LEVEL_N ) || ( Error == INV_ERR_PURCHASE_LEVEL_TOO_LOW ) )
 	{
 		if(SrcItem)
 		{
-			data << uint32(SrcItem->GetProto()->RequiredLevel);
+			requiredLevel = SrcItem->GetProto()->RequiredLevel;
 		}
 	}
 
-	m_pOwner->SendPacket(&data);
+	Messenger::SendInventoryChangeError( m_pOwner, srcGUID, dstGUID, Error, requiredLevel );
 }
 
 void ItemInterface::EmptyBuyBack()

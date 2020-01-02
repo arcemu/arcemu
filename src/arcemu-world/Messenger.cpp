@@ -846,3 +846,19 @@ void Messenger::SendClientControlUpdate( Player *player, const WoWGuid &guid, ui
 	data << uint8( value );
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendInventoryChangeError(Player *player, uint64 sourceItem, uint64 destinationItem, uint8 error, uint32 requiredLevel)
+{
+	WorldPacket data( SMSG_INVENTORY_CHANGE_FAILURE, 22 );
+	data << uint8( error );
+	data << uint64( sourceItem );
+	data << uint64( destinationItem );
+	data << uint8( 0 );
+
+	if( ( sourceItem != 0 ) && ( requiredLevel != 0 ) )
+	{
+		data << uint32( requiredLevel );
+	}
+
+	PlayerMessenger::sendMessage( player, data );
+}
