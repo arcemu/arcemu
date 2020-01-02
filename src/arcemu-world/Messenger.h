@@ -54,7 +54,7 @@ public:
 	static void SendGameObjectCustomAnim( GameObject* go, uint32 anim, Player* player );
 
 	/// Sends the gameobject despawn animation. Removes gameobject from client screen.
-	static void SendGameObjectDespawnAnim( GameObject *go );
+	static void SendGameObjectDespawnAnim( Object *object );
 
 	/// Destructible building damage. Notifies the surrounding clients about the GameObject taking damage.
 	static void SendBuildingDamageToSet( GameObject* go, uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID );

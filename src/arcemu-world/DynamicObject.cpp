@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 DynamicObject::DynamicObject(uint32 high, uint32 low)
 {
@@ -218,10 +219,7 @@ void DynamicObject::Remove()
 			target->RemoveAura(m_spellProto->Id);
 	}
 
-	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
-
-	data << GetGUID();
-	SendMessageToSet(&data, false);
+	Messenger::SendGameObjectDespawnAnim( this );
 
 	if(IsInWorld())
 		RemoveFromWorld(true);

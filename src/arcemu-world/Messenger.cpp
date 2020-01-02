@@ -198,11 +198,13 @@ void Messenger::SendGameObjectCustomAnim( GameObject *go, uint32 anim, Player *p
 	PlayerMessenger::sendMessage( player, data );
 }
 
-void Messenger::SendGameObjectDespawnAnim( GameObject *go )
+void Messenger::SendGameObjectDespawnAnim( Object* object )
 {
 	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
-	data << go->GetGUID();
-	go->SendMessageToSet(&data, true);
+	data << uint64( object->GetGUID() );
+
+	MessageRouter router( object );
+	router.sendMessageToPlayersInRange( &data, false );
 }
 
 void Messenger::SendBuildingDamageToSet( GameObject *go, uint32 damage, uint64 AttackerGUID, uint64 ControllerGUID, uint32 SpellID )
