@@ -920,3 +920,74 @@ void Messenger::SendSetMovement( Player *player, uint8 type, uint32 flags )
 	MessageRouter router( player );
 	router.sendMessageToPlayersInRange( &data, true );
 }
+
+void Messenger::SendSetPlayerSpeeds(Player *player, uint8 type, float speed, uint32 changeCount)
+{
+	uint32 opcode = 0;
+
+	switch( type )
+	{
+		case WALK:{
+			opcode = SMSG_FORCE_WALK_SPEED_CHANGE;
+			break; }
+
+		case RUN:
+			{
+				opcode = SMSG_FORCE_RUN_SPEED_CHANGE;
+			}
+			break;
+		case RUNBACK:
+			{
+				opcode = SMSG_FORCE_RUN_BACK_SPEED_CHANGE;
+			}
+			break;
+		case SWIM:
+			{
+				opcode = SMSG_FORCE_SWIM_SPEED_CHANGE;
+			}
+			break;
+		case SWIMBACK:
+			{
+				opcode = SMSG_FORCE_SWIM_BACK_SPEED_CHANGE;
+			}
+			break;
+		case FLY:
+			{
+				opcode = SMSG_FORCE_FLIGHT_SPEED_CHANGE;
+			}
+			break;
+	}
+
+	if( opcode == 0 )
+		return;
+
+	WorldPacket data( opcode, 50 );
+
+	data << player->GetNewGUID();
+
+	if( type != SWIMBACK )
+	{
+		data << uint32( changeCount );
+		if(type == RUN)
+			data << uint8( 1 );
+
+		data << float( speed );
+	}
+	else
+	{
+		const LocationVector &position = player->GetPosition();
+
+		data << uint32( 0 );
+		data << uint8( 0 );
+		data << uint32( getMSTime() );
+		data << float( position.x );
+		data << float( position.y );
+		data << float( position.z );
+		data << float( position.o );
+		data << uint32( 0 );
+		data << float( speed );
+	}
+
+	MessageRouter router( player );
+	router.sendMessageToPlayersInRange( &data, true );
+}

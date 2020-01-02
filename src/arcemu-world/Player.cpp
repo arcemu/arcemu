@@ -4310,35 +4310,10 @@ void Player::SetMovement(uint8 pType, uint32 flag)
 
 void Player::SetSpeeds( uint8 type, float speed )
 {
-	WorldPacket data(50);
-
-	if(type != SWIMBACK)
-	{
-		data << GetNewGUID();
-		data << m_speedChangeCounter++;
-		if(type == RUN)
-			data << uint8(1);
-
-		data << float( speed );
-	}
-	else
-	{
-		data << GetNewGUID();
-		data << uint32(0);
-		data << uint8(0);
-		data << uint32(getMSTime());
-		data << GetPosition();
-		data << float( m_position.o );
-		data << uint32(0);
-		data << float( speed );
-	}
-
-	switch(type)
+	switch( type )
 	{
 		case WALK:{
-			data.SetOpcode( SMSG_FORCE_WALK_SPEED_CHANGE );
 			m_walkSpeed = speed;
-
 			break; }
 
 		case RUN:
@@ -4346,7 +4321,6 @@ void Player::SetSpeeds( uint8 type, float speed )
 				if(speed == m_lastRunSpeed)
 					return;
 
-				data.SetOpcode(SMSG_FORCE_RUN_SPEED_CHANGE);
 				m_runSpeed = speed;
 				m_lastRunSpeed = speed;
 			}
@@ -4356,7 +4330,6 @@ void Player::SetSpeeds( uint8 type, float speed )
 				if(speed == m_lastRunBackSpeed)
 					return;
 
-				data.SetOpcode(SMSG_FORCE_RUN_BACK_SPEED_CHANGE);
 				m_backWalkSpeed = speed;
 				m_lastRunBackSpeed = speed;
 			}
@@ -4366,7 +4339,6 @@ void Player::SetSpeeds( uint8 type, float speed )
 				if(speed == m_lastSwimSpeed)
 					return;
 
-				data.SetOpcode(SMSG_FORCE_SWIM_SPEED_CHANGE);
 				m_swimSpeed = speed;
 				m_lastSwimSpeed = speed;
 			}
@@ -4376,7 +4348,6 @@ void Player::SetSpeeds( uint8 type, float speed )
 				if(speed == m_lastBackSwimSpeed)
 					break;
 
-				data.SetOpcode(SMSG_FORCE_SWIM_BACK_SPEED_CHANGE);
 				m_backSwimSpeed = speed;
 				m_lastBackSwimSpeed = speed;
 			}
@@ -4386,7 +4357,6 @@ void Player::SetSpeeds( uint8 type, float speed )
 				if(speed == m_lastFlySpeed)
 					return;
 
-				data.SetOpcode(SMSG_FORCE_FLIGHT_SPEED_CHANGE);
 				m_flySpeed = speed;
 				m_lastFlySpeed = speed;
 			}
@@ -4395,7 +4365,8 @@ void Player::SetSpeeds( uint8 type, float speed )
 			return;
 	}
 
-	SendMessageToSet(&data , true);
+	Messenger::SendSetPlayerSpeeds( this, type, speed, m_speedChangeCounter );
+	m_speedChangeCounter++;
 }
 
 void Player::BuildPlayerRepop()
