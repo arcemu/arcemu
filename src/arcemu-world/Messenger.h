@@ -163,6 +163,12 @@ public:
 
 	/// Sends the time left for expiring enchants
 	static void SendEnchantTimeUpdate( Player* player, uint64 itemGUID, uint32 slot, uint32 duration );
+
+	/// Sent when the player enters a vehicle
+	static void SendVehicleControl( Player* player );
+
+	/// Sent when the player enters or exits a vehicle (value is 1 on enter, 0 on exit)
+	static void SendClientControlUpdate( Player* player, const WoWGuid& guid, uint8 value );
 };
 
 #endif

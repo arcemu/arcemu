@@ -833,3 +833,17 @@ void Messenger::SendEnchantTimeUpdate( Player *player, uint64 itemGUID, uint32 s
 	*data << player->GetGUID();
 	PlayerMessenger::sendDelayedMessage( player, data );
 }
+
+void Messenger::SendVehicleControl( Player *player )
+{
+	WorldPacket data( SMSG_CONTROL_VEHICLE, 0 );
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendClientControlUpdate( Player *player, const WoWGuid &guid, uint8 value )
+{
+	WorldPacket data( SMSG_CLIENT_CONTROL_UPDATE, 16 );
+	data << guid;
+	data << uint8( value );
+	PlayerMessenger::sendMessage( player, data );
+}

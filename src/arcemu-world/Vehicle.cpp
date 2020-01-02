@@ -152,16 +152,13 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 	if( passenger->IsPlayer() ){
 		Player* player = TO< Player* >( passenger );
 
-		WorldPacket ack( SMSG_CONTROL_VEHICLE, 0);
-		player->SendPacket( &ack );
+		Messenger::SendVehicleControl( player );
 
 		player->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE );
 		player->SetFarsightTarget( owner->GetGUID() );
 
 		if( seats[ seatid ]->Controller() ){
-			ack.Initialize( SMSG_CLIENT_CONTROL_UPDATE );
-			ack << owner->GetNewGUID() << uint8(1);
-			player->SendPacket(&ack);
+			Messenger::SendClientControlUpdate( player, owner->GetNewGUID(), 1 );
 
 			player->SetCharmedUnitGUID( owner->GetGUID() );
 			owner->SetCharmedByGUID( player->GetGUID() );
@@ -255,12 +252,8 @@ void Vehicle::EjectPassengerFromSeat( uint32 seatid ){
 
 			owner->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE | UNIT_FLAG_PVP_ATTACKABLE );
 
-			Player* player = TO< Player* >( passenger );
-
-			WorldPacket ack( SMSG_CLIENT_CONTROL_UPDATE, 16 );
-			ack << owner->GetNewGUID();
-			ack << uint8( 0 );
-			player->SendPacket(&ack);
+			Player* player = TO< Player* >( passenger );			
+			Messenger::SendClientControlUpdate( player, owner->GetNewGUID(), 0 );
 
 			// send null spells if needed
 			player->SendEmptyPetSpellList();
