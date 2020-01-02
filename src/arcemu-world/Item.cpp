@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 Item::Item()//this is called when constructing as container
 {
@@ -645,13 +646,7 @@ int32 Item::AddEnchantment(EnchantEntry* Enchantment, uint32 Duration, bool Perm
 
 	if(apply)
 	{
-		WorldPacket EnchantLog(SMSG_ENCHANTMENTLOG, 25);
-		EnchantLog << m_owner->GetGUID();
-		EnchantLog << m_owner->GetGUID();
-		EnchantLog << GetEntry();
-		EnchantLog << Enchantment->Id;
-		EnchantLog << uint8(0);
-		m_owner->SendPacket(&EnchantLog);
+		Messenger::SendEnchantmentLog( m_owner, GetEntry(), Enchantment->Id );
 
 		if(m_owner->GetTradeTarget())
 		{
@@ -1235,24 +1230,7 @@ void Item::EventRemoveItem()
 
 void Item::SendDurationUpdate()
 {
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  As of 3.1.3 the server sends this to set the actual durationtime ( the time the item exists for)
-	//  of the item
-	//
-	//  {SERVER} Packet: (0x01EA) SMSG_ITEM_TIME_UPDATE PacketSize = 12 TimeStamp = 37339296
-	//  05 76 83 E7 01 00 00 42 10 0E 00 00
-	//
-	//  Structure:
-	//
-	//  uint64 GUID                      - the identifier of the item (not the itemid)
-	//  uint32 remainingtime             - remaining duration
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	WorldPacket durationupdate(SMSG_ITEM_TIME_UPDATE, 12);
-	durationupdate << uint64(GetGUID());
-	durationupdate << uint32(GetItemExpireTime() - UNIXTIME);
-	m_owner->SendPacket(&durationupdate);
-
+	Messenger::SendItemDurationUpdate( m_owner, GetGUID(), GetItemExpireTime() - UNIXTIME );
 }
 
 

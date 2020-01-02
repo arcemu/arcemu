@@ -156,6 +156,10 @@ public:
 
 	/// Sends the spellbar of this creature to the players
 	static void SendCreatureSpells( Player* player, Creature* creature );
+
+	static void SendItemDurationUpdate( Player* player, uint64 guid, uint32 remainingTime );
+
+	static void SendEnchantmentLog( Player* player, uint32 itemId, uint32 enchantmentId );
 };
 
 #endif

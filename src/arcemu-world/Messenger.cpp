@@ -804,3 +804,22 @@ void Messenger::SendCreatureSpells(Player *player, Creature *creature)
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendItemDurationUpdate( Player *player, uint64 guid, uint32 remainingTime )
+{
+	WorldPacket data( SMSG_ITEM_TIME_UPDATE, 12 );
+	data << uint64( guid );
+	data << uint32( remainingTime );
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendEnchantmentLog(Player *player, uint32 itemId, uint32 enchantmentId)
+{
+	WorldPacket data( SMSG_ENCHANTMENTLOG, 25 );
+	data << uint64( player->GetGUID() );
+	data << uint64( player->GetGUID() );
+	data << uint32( itemId );
+	data << uint32( enchantmentId );
+	data << uint8(0);
+	PlayerMessenger::sendMessage( player, data );
+}
