@@ -3870,7 +3870,7 @@ void ItemInterface::HandleItemDurations()
 				realitem = item1;
 		}
 
-		if(realitem != NULL)
+		if(realitem != NULL && realitem->GetItemExpireTime() > 0)
 			sEventMgr.AddEvent(realitem, &Item::SendDurationUpdate, EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN, 0, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
