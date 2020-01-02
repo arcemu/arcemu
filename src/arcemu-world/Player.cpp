@@ -6223,13 +6223,11 @@ bool Player::removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpel
 
 	if(SupercededSpell)
 	{
-		WorldPacket data(SMSG_SUPERCEDED_SPELL, 8);
-		data << SpellID << SupercededSpellID;
-		m_session->SendPacket(&data);
+		Messenger::SendSupersedeSpell( this, SpellID, SupercededSpellID );
 	}
 	else
 	{
-		m_session->OutPacket(SMSG_REMOVED_SPELL, 4, &SpellID);
+		Messenger::SendRemoveSpell( this, SpellID );
 	}
 
 	return true;

@@ -195,6 +195,12 @@ public:
 
 	/// Tells the client how long the player has to wait until resurrection
 	static void SendCorpseReclaimDelay( Player* player, uint32 delay );
+
+	/// Removes a spell from the spellbook
+	static void SendRemoveSpell( Player* player, uint32 spell );
+
+	/// Overwrites a spell in the spellbook
+	static void SendSupersedeSpell( Player* player, uint32 oldspell, uint32 newspell );
 };
 
 #endif

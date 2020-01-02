@@ -1018,3 +1018,20 @@ void Messenger::SendCorpseReclaimDelay( Player *player, uint32 delay )
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendRemoveSpell(Player *player, uint32 spell)
+{
+	WorldPacket data( SMSG_REMOVED_SPELL, 4 );
+	data << uint32( spell );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendSupersedeSpell(Player *player, uint32 oldspell, uint32 newspell)
+{
+	WorldPacket data( SMSG_SUPERCEDED_SPELL, 8 );
+	data << uint32( oldspell );
+	data << uint32( newspell );
+
+	PlayerMessenger::sendMessage( player, data );
+}
