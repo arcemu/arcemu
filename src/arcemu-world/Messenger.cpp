@@ -879,3 +879,44 @@ void Messenger::SendTimeSyncRequest( Player *player )
 	*data << uint32( 0 );
 	PlayerMessenger::sendDelayedMessage( player, data );
 }
+
+void Messenger::SendSetMovement( Player *player, uint8 type, uint32 flags )
+{
+	uint32 opcode = 0;
+
+	switch( type )
+	{
+		case MOVE_ROOT:
+			{
+				opcode = SMSG_FORCE_MOVE_ROOT;
+			}
+			break;
+		case MOVE_UNROOT:
+			{
+				opcode = SMSG_FORCE_MOVE_UNROOT;
+			}
+			break;
+		case MOVE_WATER_WALK:
+			{
+				opcode = SMSG_MOVE_WATER_WALK;
+			}
+			break;
+		case MOVE_LAND_WALK:
+			{
+				opcode = SMSG_MOVE_LAND_WALK;
+			}
+			break;
+		default:
+			break;
+	}
+
+	if( opcode == 0 )
+		return;
+
+	WorldPacket data( opcode, 13 );
+	data << player->GetNewGUID();
+	data << uint32( flags );
+
+	MessageRouter router( player );
+	router.sendMessageToPlayersInRange( &data, true );
+}

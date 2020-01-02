@@ -178,6 +178,8 @@ public:
 	static void SendLearnedSpell( Player* player, uint32 spell );
 
 	static void SendTimeSyncRequest( Player* player );
+
+	static void SendSetMovement( Player* player, uint8 type, uint32 flags );
 };
 
 #endif
