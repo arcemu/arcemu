@@ -880,7 +880,7 @@ void Messenger::SendTimeSyncRequest( Player *player )
 	PlayerMessenger::sendDelayedMessage( player, data );
 }
 
-void Messenger::SendSetMovement( Player *player, uint8 type, uint32 flags )
+void Messenger::SendSetPlayerMovementType( Player *player, uint8 type, uint32 flags )
 {
 	uint32 opcode = 0;
 

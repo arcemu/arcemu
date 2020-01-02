@@ -4305,7 +4305,7 @@ void Player::SetMovement(uint8 pType, uint32 flag)
 			break;
 	}
 
-	Messenger::SendSetMovement( this, pType, flag );
+	Messenger::SendSetPlayerMovementType( this, pType, flag );
 }
 
 void Player::SetSpeeds( uint8 type, float speed )

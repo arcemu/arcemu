@@ -179,7 +179,7 @@ public:
 
 	static void SendTimeSyncRequest( Player* player );
 
-	static void SendSetMovement( Player* player, uint8 type, uint32 flags );
+	static void SendSetPlayerMovementType( Player* player, uint8 type, uint32 flags );
 
 	/// Set player speeds in the client
 	static void SendSetPlayerSpeeds( Player* player, uint8 type, float speed, uint32 changeCount );
