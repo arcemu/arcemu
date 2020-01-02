@@ -174,6 +174,8 @@ public:
 
 	/// Sends an inventory change error message to the client
 	static void SendInventoryChangeError( Player* player, uint64 sourceItem, uint64 destinationItem, uint8 error, uint32 requiredLevel );
+
+	static void SendLearnedSpell( Player* player, uint32 spell );
 };
 
 #endif

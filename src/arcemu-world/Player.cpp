@@ -2052,10 +2052,7 @@ void Player::addSpell(uint32 spell_id)
 	mSpells.insert(spell_id);
 	if(IsInWorld())
 	{
-		WorldPacket data(SMSG_LEARNED_SPELL, 6);
-		data << uint32(spell_id);
-		data << uint16(0);
-		m_session->SendPacket(&data);
+		Messenger::SendLearnedSpell( this, spell_id );
 	}
 
 	// Check if we're a deleted spell

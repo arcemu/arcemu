@@ -862,3 +862,11 @@ void Messenger::SendInventoryChangeError(Player *player, uint64 sourceItem, uint
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendLearnedSpell(Player *player, uint32 spell)
+{
+	WorldPacket data( SMSG_LEARNED_SPELL, 6 );
+	data << uint32( spell );
+	data << uint16( 0 );
+	PlayerMessenger::sendMessage( player, data );
+}
