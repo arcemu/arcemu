@@ -872,3 +872,10 @@ void Messenger::SendLearnedSpell(Player *player, uint32 spell)
 	data << uint16( 0 );
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendTimeSyncRequest( Player *player )
+{
+	WorldPacket* data = new WorldPacket( SMSG_TIME_SYNC_REQ, 4 );
+	*data << uint32( 0 );
+	PlayerMessenger::sendDelayedMessage( player, data );
+}

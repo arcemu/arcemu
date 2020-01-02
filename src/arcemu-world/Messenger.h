@@ -176,6 +176,8 @@ public:
 	static void SendInventoryChangeError( Player* player, uint64 sourceItem, uint64 destinationItem, uint8 error, uint32 requiredLevel );
 
 	static void SendLearnedSpell( Player* player, uint32 spell );
+
+	static void SendTimeSyncRequest( Player* player );
 };
 
 #endif

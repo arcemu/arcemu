@@ -3668,9 +3668,7 @@ void Player::OnPushToWorld()
 	AddItemsToWorld();
 
 	// delay the unlock movement packet
-	WorldPacket* data = new WorldPacket(SMSG_TIME_SYNC_REQ, 4);
-	*data << uint32(0);
-	delayedPackets.add(data);
+	Messenger::SendTimeSyncRequest( this );
 
 	// Update PVP Situation
 	LoginPvPSetup();
