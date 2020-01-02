@@ -816,11 +816,10 @@ void Messenger::SendItemDurationUpdate( Player *player, uint64 guid, uint32 rema
 void Messenger::SendEnchantmentLog(Player *player, uint32 itemId, uint32 enchantmentId)
 {
 	WorldPacket data( SMSG_ENCHANTMENTLOG, 25 );
-	data << uint64( player->GetGUID() );
-	data << uint64( player->GetGUID() );
+	data << player->GetNewGUID();  // Item owner
+	data << player->GetNewGUID(); // caster
 	data << uint32( itemId );
 	data << uint32( enchantmentId );
-	data << uint8(0);
 	PlayerMessenger::sendMessage( player, data );
 }
 
