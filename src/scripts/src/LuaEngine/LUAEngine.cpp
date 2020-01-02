@@ -156,7 +156,7 @@ void LuaEngine::ScriptLoadDir(char* Dirname, LUALoadScripts* pak)
 	Log.Notice("LuaEngine", "Scanning Directory %s", Dirname);
 	while(filecount--)
 	{
-		char dottedrelpath[200];
+		char dottedrelpath[1024];
 		sprintf(dottedrelpath, "%s/%s", Dirname, list[filecount]->d_name);
 		if(stat(dottedrelpath, &attributes) == -1)
 		{

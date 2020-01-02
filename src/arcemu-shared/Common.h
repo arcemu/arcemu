@@ -416,7 +416,7 @@ Scripting system exports/imports
 
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
-#define I64FMT "%016llX"
+#define I64FMT "%016lX"
 #define I64FMTD "%llu"
 #define SI64FMTD "%lld"
 

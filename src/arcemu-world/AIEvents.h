@@ -40,7 +40,7 @@ enum AiEvents
     NUM_AI_EVENTS,
 };
 
-extern pAIEvent AIEventHandlers[NUM_AI_EVENTS];
+extern pAIEvent AIEventHandlers[];
 
 
 

@@ -124,7 +124,6 @@ class DoctorTheolenKrastinovAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -248,7 +247,6 @@ class InstructorMaliciaAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -364,7 +362,6 @@ class TheRavenianAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -487,7 +484,6 @@ class LadyIlluciaBarovAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -618,7 +614,6 @@ class RasForstwhisperAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -726,7 +721,6 @@ class JandiceBarovAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -836,7 +830,6 @@ class KormokAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -952,10 +945,8 @@ class VectusAI : public CreatureAIScript
 
 					if(m_spellcheck[i])
 					{
-						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -1066,7 +1057,6 @@ class LordAlexeiBarovAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -1184,7 +1174,6 @@ class LorekeeperPolkeltAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
@@ -1294,7 +1283,6 @@ class DarkmasterGandlingAI : public CreatureAIScript
 						target = _unit->GetAIInterface()->getNextTarget();
 						switch(spells[i].targettype)
 						{
-								target = _unit->GetAIInterface()->getNextTarget();
 							case TARGET_SELF:
 							case TARGET_VARIOUS:
 								_unit->CastSpell(_unit, spells[i].info, spells[i].instant);
