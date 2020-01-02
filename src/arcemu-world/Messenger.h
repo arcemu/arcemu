@@ -175,10 +175,13 @@ public:
 	/// Sends an inventory change error message to the client
 	static void SendInventoryChangeError( Player* player, uint64 sourceItem, uint64 destinationItem, uint8 error, uint32 requiredLevel );
 
+	/// Tells the client that the player has learned a new spell?
 	static void SendLearnedSpell( Player* player, uint32 spell );
 
+	/// According to comments it tells the client the player can now move.
 	static void SendTimeSyncRequest( Player* player );
 
+	/// Sets the player movement type in the client
 	static void SendSetPlayerMovementType( Player* player, uint8 type, uint32 flags );
 
 	/// Set player speeds in the client
