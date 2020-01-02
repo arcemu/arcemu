@@ -27,6 +27,9 @@ class PlayerMessenger
 public:
 	/// Send a message to the player. Checks if player has a session.
 	static void sendMessage( Player* player, WorldPacket& message );
+
+	/// Send a delayed message to the player (they are sent after updates)
+	static void sendDelayedMessage( Player* player, WorldPacket* message );
 };
 
 #endif

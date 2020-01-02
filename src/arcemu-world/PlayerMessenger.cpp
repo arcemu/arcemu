@@ -28,3 +28,12 @@ void PlayerMessenger::sendMessage( Player *player, WorldPacket& message )
 		return;
 	session->SendPacket( &message );
 }
+
+void PlayerMessenger::sendDelayedMessage(Player *player, WorldPacket *message)
+{
+	WorldSession *session = player->GetSession();
+	if( session == NULL )
+		return;
+
+	player->delayedPackets.add( message );
+}
