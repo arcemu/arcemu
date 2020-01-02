@@ -999,15 +999,14 @@ void WorldSession::FullLogin(Player* plr)
 
 
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s", MSG_COLOR_WHITE, BUILD_TAG, CONFIG, ARCH);
+	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s (%s@%s)", MSG_COLOR_WHITE, BUILD_BRANCH, CONFIG, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
 #else
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s", MSG_COLOR_WHITE, BUILD_TAG, PLATFORM_TEXT, ARCH);
+	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s (%s@%s)", MSG_COLOR_WHITE, BUILD_BRANCH, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
 #endif
 
 	// Revision
-	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
-	// Bugs
-	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
+	_player->BroadcastMessage("Commit hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
+	_player->BroadcastMessage("Commit time: %s%s", MSG_COLOR_CYAN, COMMIT_TIME);
 	// Shows Online players, and connection peak
 	_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
 	                          MSG_COLOR_SEXGREEN, sWorld.GetSessionCount(), MSG_COLOR_SEXBLUE, sWorld.PeakSessionCount, MSG_COLOR_SEXBLUE, sWorld.mAcceptedConnections);

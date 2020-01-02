@@ -260,9 +260,9 @@ void StatDumper::DumpStats()
 	{
 		// Dump server information.
 #ifdef WIN32
-		fprintf(f, "    <platform>ArcEmu %s %s/%s-Win-%s (www.ArcEmu.org)</platform>\n", BUILD_TAG, BUILD_HASH_STR, CONFIG, ARCH);
+		fprintf(f, "    <platform>ArcEmu %s %s/%s-Win-%s (www.arcemu.org) (%s@%s)</platform>\n", BUILD_BRANCH, BUILD_HASH_STR, CONFIG, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
 #else
-		fprintf(f, "    <platform>ArcEmu %s %s/%s-%s (www.ArcEmu.org)</platform>\n", BUILD_TAG, BUILD_HASH_STR, PLATFORM_TEXT, ARCH);
+		fprintf(f, "    <platform>ArcEmu %s %s/%s-%s (www.arcemu.org) (%s@%s)</platform>\n", BUILD_BRANCH, BUILD_HASH_STR, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
 #endif
 
 		char uptime[80];

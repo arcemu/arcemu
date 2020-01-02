@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-#define BANNER "ArcEmu %s %s/%s-%s-%s :: World Server"
+#define BANNER "ArcEmu %s %s/%s-%s-%s (%s@%s):: World Server"
 
 #ifndef WIN32
 #include <sched.h>
@@ -161,8 +161,8 @@ bool Master::Run(int argc, char** argv)
 
 	sLog.Init(0, WORLD_LOG);
 	
-	sLog.outBasic(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
-	sLog.outErrorSilent(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH); // Echo off.
+	sLog.outBasic(BANNER, BUILD_BRANCH, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
+	sLog.outErrorSilent(BANNER, BUILD_BRANCH, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR); // Echo off.
 
 	if(do_version)
 	{
@@ -241,7 +241,7 @@ bool Master::Run(int argc, char** argv)
 	{
 		char cmd[1024];
 		char banner[1024];
-		snprintf(banner, 1024, BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+		snprintf(banner, 1024, BANNER, BUILD_BRANCH, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
 		snprintf(cmd, 1024, "./arcemu-crashreport -r %d -d \'%s\'", BUILD_REVISION, banner);
 		system(cmd);
 	}

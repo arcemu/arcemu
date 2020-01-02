@@ -25,7 +25,7 @@
 #endif
 #include "../arcemu-shared/arcemu_getopt.h"
 
-#define BANNER "ArcEmu %s %s/%s-%s (%s) :: Logon Server"
+#define BANNER "ArcEmu %s %s/%s-%s (%s) (%s@%s):: Logon Server"
 
 #ifndef WIN32
 #include <sched.h>
@@ -320,8 +320,8 @@ void LogonServer::Run(int argc, char** argv)
 
 	sLog.Init(0, LOGON_LOG);
 	
-	sLog.outBasic(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
-	sLog.outErrorSilent(BANNER, BUILD_TAG, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH); // Echo off.
+	sLog.outBasic(BANNER, BUILD_BRANCH, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
+	sLog.outErrorSilent(BANNER, BUILD_BRANCH, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR); // Echo off.
 
 	if(do_version)
 	{
