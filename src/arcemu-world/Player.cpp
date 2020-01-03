@@ -12616,19 +12616,8 @@ void Player::HandleKnockback(Object* caster, float horizontal, float vertical)
 	float angle = calcRadAngle(caster->GetPositionX(), caster->GetPositionY(), GetPositionX(), GetPositionY());
 	if(caster == this)
 		angle = GetOrientation() + M_PI;
-	float sin = sinf(angle);
-	float cos = cosf(angle);
 
-	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-
-	data << GetNewGUID();
-	data << uint32(getMSTime());
-	data << float(cos);
-	data << float(sin);
-	data << float(horizontal);
-	data << float(-vertical);
-
-	GetSession()->SendPacket(&data);
+	Messenger::SendMoveKnockback( this, angle, horizontal, vertical );
 
 	blinked = true;
 	SpeedCheatDelay(10000);

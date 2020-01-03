@@ -2360,13 +2360,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		if(playerTarget == NULL)  //let client handle this for players
 			return;
 
-		WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-		data << playerTarget->GetNewGUID();
-		data << getMSTime();
-		data << cosf(playerTarget->GetOrientation()) << sinf(playerTarget->GetOrientation());
-		data << radius;
-		data << float(-10.0f);
-		playerTarget->GetSession()->SendPacket(&data);
+		Messenger::SendMoveKnockback( playerTarget, radius, 10.0f, false );
 	}
 }
 

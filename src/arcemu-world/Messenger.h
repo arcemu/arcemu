@@ -233,6 +233,12 @@ public:
 
 	/// Sends a Message Of The Day type message to the client
 	static void SendMOTD( Player* player, uint32 value, const char* text );
+
+	/// Tells the client to make the player leap
+	static void SendMoveKnockback( Player* player, float horizontal, float vertical, bool flip = false );
+
+	/// Tells the client to make the player leap
+	static void SendMoveKnockback( Player* player, float angle, float horizontal, float vertical );
 };
 
 #endif

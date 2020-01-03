@@ -630,7 +630,7 @@ bool ChatHandler::HandleLeapCommand(const char* args, WorldSession* m_session)
 
 	float horizontal;
 	float vertical;
-	uint32 direction;
+	uint32 direction = 0;
 
 	int read = sscanf( args, "%f %f %u", &horizontal, &vertical, &direction );
 	if( read < 2 || read > 3 )
@@ -638,23 +638,11 @@ bool ChatHandler::HandleLeapCommand(const char* args, WorldSession* m_session)
 		return false;
 	}
 
-	float orientation = player->GetOrientation();
-
-	// Flip direction
+	bool flip = false;
 	if( direction == -1 )
-	{
-		orientation = fmod( orientation + M_PI_FLOAT, 2 * M_PI_FLOAT );
-	}
+		flip = true;
 
-
-	WorldPacket data( SMSG_MOVE_KNOCK_BACK, 50 );
-	data << player->GetNewGUID();
-	data << uint32( getMSTime() );
-	data << float( cosf( orientation ) );
-	data << float( sinf( orientation ) );
-	data << float( horizontal );
-	data << float( -vertical );
-	PlayerMessenger::sendMessage( player, data );
+	Messenger::SendMoveKnockback( player, horizontal, vertical, flip );
 
 	return true;
 }

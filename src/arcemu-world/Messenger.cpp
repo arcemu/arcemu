@@ -1148,3 +1148,37 @@ void Messenger::SendMOTD( Player *player, uint32 value, const char *text )
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendMoveKnockback( Player *player, float horizontal, float vertical, bool flip )
+{
+	float orientation = player->GetOrientation();
+
+	// Flip direction
+	if( flip )
+	{
+		orientation = fmod( orientation + M_PI_FLOAT, 2 * M_PI_FLOAT );
+	}
+
+	WorldPacket data( SMSG_MOVE_KNOCK_BACK, 50 );
+	data << player->GetNewGUID();
+	data << uint32( getMSTime() );
+	data << float( cosf( orientation ) );
+	data << float( sinf( orientation ) );
+	data << float( horizontal );
+	data << float( -vertical );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendMoveKnockback( Player *player, float angle, float horizontal, float vertical )
+{
+	WorldPacket data( SMSG_MOVE_KNOCK_BACK, 50 );
+	data << player->GetNewGUID();
+	data << uint32( getMSTime() );
+	data << float( cosf( angle ) );
+	data << float( sinf( angle ) );
+	data << float( horizontal );
+	data << float( -vertical );
+
+	PlayerMessenger::sendMessage( player, data );
+}
