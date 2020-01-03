@@ -2185,10 +2185,7 @@ void World::SendLocalizedWorldText(bool wide, const char* format, ...)  // May n
 
 			if(wide)
 			{
-				data.Initialize(SMSG_AREA_TRIGGER_MESSAGE);
-				data << uint32(0);
-				data << (char*)buffer;
-				data << uint8(0);
+				Messenger::SendAreaTriggerMessage( itr->second->GetPlayer(), buffer );
 			}
 			else
 			{
@@ -2201,8 +2198,8 @@ void World::SendLocalizedWorldText(bool wide, const char* format, ...)  // May n
 				data << uint32(textLen);
 				data << buffer;
 				data << uint8(0);
+				itr->second->SendPacket(&data);
 			}
-			itr->second->SendPacket(&data);
 		}
 	}
 	m_sessionlock.ReleaseReadLock();

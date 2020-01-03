@@ -239,6 +239,9 @@ public:
 
 	/// Tells the client to make the player leap
 	static void SendMoveKnockback( Player* player, float angle, float horizontal, float vertical );
+
+	/// Sends an areatrigger message to the player
+	static void SendAreaTriggerMessage( Player* player, const char* message );
 };
 
 #endif

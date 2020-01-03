@@ -1182,3 +1182,13 @@ void Messenger::SendMoveKnockback( Player *player, float angle, float horizontal
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendAreaTriggerMessage( Player *player, const char *message )
+{
+	WorldPacket data( SMSG_AREA_TRIGGER_MESSAGE, 4 + strlen( message ) + 1 + 1 );
+	data << uint32( 0 );
+	data << message;
+	data << uint8( 0 );
+
+	PlayerMessenger::sendMessage( player, data );
+}

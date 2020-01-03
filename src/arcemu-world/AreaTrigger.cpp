@@ -19,6 +19,8 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
+
 void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
@@ -165,14 +167,12 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 					{
 						const char* pReason = GetPlayer()->GetSession()->LocalizedWorldSrv(AreaTriggerFailureMessages[reason]);
 						char msg[200];
-						WorldPacket data(SMSG_AREA_TRIGGER_MESSAGE, 50);
-						data << uint32(0);
 
 						switch(reason)
 						{
 							case AREA_TRIGGER_FAILURE_LEVEL:
 								snprintf(msg, 200, pReason, pAreaTrigger->required_level);
-								data << msg;
+								Messenger::SendAreaTriggerMessage( GetPlayer(), msg );
 								break;
 							case AREA_TRIGGER_FAILURE_NO_ATTUNE_I:
 								{
@@ -183,7 +183,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 									else
 										snprintf(msg, 200, "%s", GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
-									data << msg;
+									Messenger::SendAreaTriggerMessage( GetPlayer(), msg );
 								}
 								break;
 							case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
@@ -201,7 +201,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 									else
 										snprintf(msg, 200, "You must have finished the quest '%s' to pass through here.", "UNKNOWN" );
 
-									data << msg;
+									Messenger::SendAreaTriggerMessage( GetPlayer(), msg );
 								}
 								break;
 							case AREA_TRIGGER_FAILURE_NO_KEY:
@@ -213,23 +213,21 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 									else
 										snprintf(msg, 200, "You must have the item, UNKNOWN to pass through here.");
 
-									data << msg;
+									Messenger::SendAreaTriggerMessage( GetPlayer(), msg );
 								}
 								break;
 							case AREA_TRIGGER_FAILURE_LEVEL_HEROIC:
 								{
 									MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 									snprintf(msg, 200, pReason, pMi->minlevel_heroic);
-									data << msg;
+									Messenger::SendAreaTriggerMessage( GetPlayer(), msg );
 								}
 								break;
 							default:
-								data << pReason;
+								Messenger::SendAreaTriggerMessage( GetPlayer(), pReason );
 								break;
 						}
 
-						data << uint8(0);
-						SendPacket(&data);
 						return;
 					}
 				}

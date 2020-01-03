@@ -9694,9 +9694,7 @@ void Player::SendAreaTriggerMessage(const char* message, ...)
 	vsnprintf(msg, 500, message, ap);
 	va_end(ap);
 
-	WorldPacket data(SMSG_AREA_TRIGGER_MESSAGE, 6 + strlen(msg));
-	data << (uint32)0 << msg << (uint8)0x00;
-	m_session->SendPacket(&data);
+	Messenger::SendAreaTriggerMessage( this, msg );
 }
 
 void Player::removeSoulStone()
