@@ -1220,3 +1220,19 @@ bool ChatHandler::HandleDebugShowEmoteCommand(const char *args, WorldSession *se
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugSendMOTDCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint32 value;
+	char text[ 500 ];
+	if( sscanf( args, "%u %s", &value, text ) != 2 )
+	{
+		RedSystemMessage( session, "Usage: sendmotd <value> <text>" );
+		return true;
+	}
+
+	Messenger::SendMOTD( player, value, text );
+
+	return true;
+}

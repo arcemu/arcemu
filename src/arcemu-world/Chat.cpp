@@ -321,6 +321,7 @@ void CommandTableStorage::Init()
 		{ "playsound", 'd', &ChatHandler::HandleDebugPlaySoundCommand, "Plays sound to the player's set",												NULL, 0, 0, 0 },
 		{ "playspellvisual", 'd', &ChatHandler::HandleDebugPlaySpellVisualCommand, "Makes the selected unit play a spell visual",									NULL, 0, 0, 0 },
 		{ "showemote", 'd', &ChatHandler::HandleDebugShowEmoteCommand, "Makes the selected unit show an emote. Using the emote message.",								NULL, 0, 0, 0 },
+		{ "sendmotd", 'd', &ChatHandler::HandleDebugSendMOTDCommand, "Sends an MOTD message to the player.",												NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);
