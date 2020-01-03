@@ -1833,7 +1833,6 @@ class SERVER_DECL Player : public Unit
 		//Use this method carefully..
 		void SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 instanceId);
 
-		void SendAchievmentStatus(uint32 criteriaid, uint32 new_value, uint32 at_stamp);
 		void SendTriggerMovie(uint32 movieID);
 
 		// DualWield2H (ex: Titan's grip)
