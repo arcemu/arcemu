@@ -2201,7 +2201,6 @@ class SERVER_DECL Player : public Unit
 		static void InitVisibleUpdateBits();
 		static UpdateMask m_visibleUpdateMask;
 
-		void CopyAndSendDelayedPacket(WorldPacket* data);
 		void PartLFGChannel();
 		SpeedCheatDetector*	SDetector;
 	protected:

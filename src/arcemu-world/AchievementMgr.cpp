@@ -20,6 +20,7 @@
 
 
 #include "StdAfx.h"
+#include "PlayerMessenger.h"
 #ifdef ENABLE_ACHIEVEMENTS
 /**
 	Takes achievementlink c-string and returns the ID value from it.
@@ -537,7 +538,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 	data << uint32(0);  // timer 1
 	data << uint32(0);  // timer 2
 	if(!GetPlayer()->IsInWorld())   //VLack: maybe we should NOT send these delayed, for 3.1.1, but seems logical
-		GetPlayer()->CopyAndSendDelayedPacket(&data);
+		PlayerMessenger::sendDelayedMessage( GetPlayer(), data );
 	else
 		GetPlayer()->GetSession()->SendPacket(&data);
 }

@@ -30,6 +30,9 @@ public:
 
 	/// Send a delayed message to the player (they are sent after updates). Takes responsibility and packet is deleted by the underlying code.
 	static void sendDelayedMessage( Player* player, WorldPacket* message );
+
+	/// Makes a copy of the message and then sends a delayed message to the player (sent after the updates)
+	static void sendDelayedMessage( Player* player, WorldPacket& message );
 };
 
 #endif

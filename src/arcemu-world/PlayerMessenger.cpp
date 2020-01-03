@@ -37,3 +37,9 @@ void PlayerMessenger::sendDelayedMessage(Player *player, WorldPacket *message)
 
 	player->delayedPackets.add( message );
 }
+
+void PlayerMessenger::sendDelayedMessage(Player *player, WorldPacket &message)
+{
+	WorldPacket* data = new WorldPacket( message );
+	sendDelayedMessage( player, data );
+}

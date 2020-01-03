@@ -10475,12 +10475,6 @@ PlayerInfo::~PlayerInfo()
 		m_Group->RemovePlayer(this);
 }
 
-void Player::CopyAndSendDelayedPacket(WorldPacket* data)
-{
-	WorldPacket* data2 = new WorldPacket(*data);
-	delayedPackets.add(data2);
-}
-
 void Player::PartLFGChannel()
 {
 	Channel* pChannel = channelmgr.GetChannel("LookingForGroup", this);

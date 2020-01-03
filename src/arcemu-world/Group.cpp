@@ -20,6 +20,7 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "PlayerMessenger.h"
 
 Group::Group(bool Assign)
 {
@@ -316,7 +317,7 @@ void Group::Update()
 				data << uint8(0);   // 3.3 - unk
 
 				if(!(*itr1)->m_loggedInPlayer->IsInWorld())
-					(*itr1)->m_loggedInPlayer->CopyAndSendDelayedPacket(&data);
+					PlayerMessenger::sendDelayedMessage( (*itr1)->m_loggedInPlayer, data );
 				else
 					(*itr1)->m_loggedInPlayer->GetSession()->SendPacket(&data);
 			}
