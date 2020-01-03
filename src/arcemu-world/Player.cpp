@@ -7907,10 +7907,7 @@ void Player::RequestDuel(Player* pTarget)
 
 	pGameObj->PushToWorld(m_mapMgr);
 
-	WorldPacket data(SMSG_DUEL_REQUESTED, 16);
-	data << pGameObj->GetGUID();
-	data << GetGUID();
-	pTarget->GetSession()->SendPacket(&data);
+	Messenger::SendDuelRequest( pTarget, GetGUID(), pGameObj->GetGUID() );
 }
 
 void Player::DuelCountdown()
@@ -8054,14 +8051,10 @@ void Player::EndDuel(uint8 WinCondition)
 	DuelingWith->m_duelState = DUEL_STATE_FINISHED;
 
 	//Announce Winner
-	WorldPacket data(SMSG_DUEL_WINNER, 500);
-	data << uint8(WinCondition);
-	data << GetName() << DuelingWith->GetName();
-	SendMessageToSet(&data, true);
+	Messenger::SendDuelWinner( this, DuelingWith->GetName(), WinCondition );
 
-	data.Initialize(SMSG_DUEL_COMPLETE);
-	data << uint8(1);
-	SendMessageToSet(&data, true);
+	// Complete the duel
+	Messenger::SendDuelComplete( this, true );
 
 	//Send hook OnDuelFinished
 

@@ -204,6 +204,12 @@ public:
 
 	/// Clears the cooldown on the spell in the client
 	static void SendClearSpellCooldown( Player* player, uint32 spell );
+
+	static void SendDuelRequest( Player* challengedPlayer, uint64 challengerGUID, uint64 flagGUID );
+
+	static void SendDuelWinner( Player* winner, const char* loserName, uint8 condition );
+
+	static void SendDuelComplete( Player* winner, bool broadcast );
 };
 
 #endif

@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 void WorldSession::HandleDuelAccepted(WorldPacket & recv_data)
 {
@@ -63,11 +64,8 @@ void WorldSession::HandleDuelCancelled(WorldPacket & recv_data)
 		return;
 	}
 
-	WorldPacket data(SMSG_DUEL_COMPLETE, 1);
-	data << uint8(1);
-
-	SendPacket(&data);
-	_player->DuelingWith->m_session->SendPacket(&data);
+	Messenger::SendDuelComplete( _player, false );
+	Messenger::SendDuelComplete( _player->DuelingWith, false );
 
 	GameObject* arbiter = _player->GetMapMgr() ? _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(_player->GetDuelArbiter())) : NULL;
 	if(arbiter != NULL)

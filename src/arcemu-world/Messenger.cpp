@@ -1044,3 +1044,39 @@ void Messenger::SendClearSpellCooldown( Player *player, uint32 spell )
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendDuelRequest( Player *challengedPlayer, uint64 challengerGUID, uint64 flagGUID )
+{
+	WorldPacket data( SMSG_DUEL_REQUESTED, 16 );
+	data << uint64( flagGUID );
+	data << uint64( challengerGUID );
+
+	PlayerMessenger::sendMessage( challengedPlayer, data );
+}
+
+void Messenger::SendDuelWinner( Player *winner, const char *loserName, uint8 condition )
+{
+	WorldPacket data( SMSG_DUEL_WINNER, 500 );
+	data << uint8( condition );
+	data << winner->GetName();
+	data << loserName;
+
+	MessageRouter router( winner );
+	router.sendMessageToPlayersInRange( &data, true );
+}
+
+void Messenger::SendDuelComplete( Player *winner, bool broadcast )
+{
+	WorldPacket data( SMSG_DUEL_COMPLETE, 1 );
+	data << uint8( 1 );
+
+	if( broadcast )
+	{
+		MessageRouter router( winner );
+		router.sendMessageToPlayersInRange( &data, true );
+	}
+	else
+	{
+		PlayerMessenger::sendMessage( winner, data );
+	}
+}
