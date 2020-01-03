@@ -781,7 +781,8 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket & recv_data)
 		if(!(_player->m_CurrentCharm == guid) &&
 		        !(_player->GetGUID() == guid))
 		{
-			if( _player->GetCurrentVehicle()->GetOwner()->GetGUID() != guid )
+			Vehicle* vehicle = _player->GetCurrentVehicle();
+			if( ( vehicle == NULL ) || ( vehicle->GetOwner()->GetGUID() != guid ) )
 				return;
 		}
 
