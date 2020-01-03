@@ -8922,9 +8922,8 @@ void Player::CompleteLoading()
 			Corpse* myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
 			if(myCorpse != NULL)
 				myCorpse->ResetDeathClock();
-			WorldPacket SendCounter(SMSG_CORPSE_RECLAIM_DELAY, 4);
-			SendCounter << (uint32)(CORPSE_RECLAIM_TIME_MS);
-			GetSession()->SendPacket(&SendCounter);
+
+			Messenger::SendCorpseReclaimDelay( this, CORPSE_RECLAIM_TIME_MS );
 		}
 		//RepopRequestedPlayer();
 		//sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
