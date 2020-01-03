@@ -11497,11 +11497,6 @@ void Player::RemoveTempEnchantsOnArena()
 	}
 }
 
-void Player::PlaySound(uint32 sound_id)
-{
-	Messenger::PlaySoundToPlayer( this, sound_id );
-}
-
 //really need to work on the speed of this. This will be called on a lot of events
 /*void Player::Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue)
 {

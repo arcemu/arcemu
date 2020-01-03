@@ -2369,8 +2369,6 @@ class SERVER_DECL Player : public Unit
 		uint32 m_tradeSequence;
 		bool m_changingMaps;
 
-		void PlaySound(uint32 sound_id);
-
 		/************************************************************************/
 		/* SOCIAL                                                               */
 		/************************************************************************/
