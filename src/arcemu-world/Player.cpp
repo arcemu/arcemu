@@ -9854,9 +9854,7 @@ void Player::Possess(uint64 GUID, uint32 delay)
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 
 	/* send "switch mover" packet */
-	WorldPacket data1(SMSG_CLIENT_CONTROL_UPDATE, 10);
-	data1 << pTarget->GetNewGUID() << uint8(1);
-	m_session->SendPacket(&data1);
+	Messenger::SendClientControlUpdate( this, pTarget->GetNewGUID(), 1 );
 
 	/* update target faction set */
 	pTarget->UpdateOppFactionSet();
@@ -9904,9 +9902,7 @@ void Player::UnPossess()
 	pTarget->UpdateOppFactionSet();
 
 	/* send "switch mover" packet */
-	WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE, 10);
-	data << pTarget->GetNewGUID() << uint8(0);
-	m_session->SendPacket(&data);
+	Messenger::SendClientControlUpdate( this, pTarget->GetNewGUID(), 0 );
 
 	if(!(pTarget->IsPet() && TO< Pet* >(pTarget) == GetSummon()))
 		SendEmptyPetSpellList();
