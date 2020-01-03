@@ -10481,13 +10481,6 @@ void Player::CopyAndSendDelayedPacket(WorldPacket* data)
 	delayedPackets.add(data2);
 }
 
-void Player::SendMeetingStoneQueue(uint32 DungeonId, uint8 Status)
-{
-	WorldPacket data(SMSG_MEETINGSTONE_SETQUEUE, 5);
-	data << DungeonId << Status;
-	m_session->SendPacket(&data);
-}
-
 void Player::PartLFGChannel()
 {
 	Channel* pChannel = channelmgr.GetChannel("LookingForGroup", this);

@@ -1129,3 +1129,12 @@ void Messenger::SendTriggerMovie(Player *player, uint32 movie)
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendMeetingStoneSetQueue(Player *player, uint32 dungeon, uint8 status)
+{
+	WorldPacket data( SMSG_MEETINGSTONE_SETQUEUE, 5 );
+	data << uint32( dungeon );
+	data << uint32( status );
+
+	PlayerMessenger::sendMessage( player, data );
+}

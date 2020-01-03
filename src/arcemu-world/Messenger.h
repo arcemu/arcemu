@@ -228,6 +228,8 @@ public:
 
 	/// Tells the client to show a movie
 	static void SendTriggerMovie( Player* player, uint32 movie );
+
+	static void SendMeetingStoneSetQueue( Player *player, uint32 dungeon, uint8 status );
 };
 
 #endif

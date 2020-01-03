@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 uint32 LfgDungeonTypes[MAX_DUNGEONS];
 initialiseSingleton(LfgMgr);
@@ -111,7 +112,7 @@ void LfgMgr::RemovePlayerFromLfgQueues(Player* pl)
 				m_lookingForGroup[pl->LfgDungeonId[i]].remove(pl);
 
 			if(pl->m_Autojoin)
-				pl->SendMeetingStoneQueue(pl->LfgDungeonId[i], 0);
+				Messenger::SendMeetingStoneSetQueue( pl, pl->LfgDungeonId[i], 0);
 
 			pl->LfgDungeonId[i] = 0;
 			pl->LfgType[i] = 0;
@@ -143,7 +144,7 @@ void LfgMgr::RemovePlayerFromLfgQueue(Player* plr, uint32 LfgDungeonId)
 	m_lock.Release();
 
 	if(plr->m_Autojoin)
-		plr->SendMeetingStoneQueue(LfgDungeonId, 0);
+		Messenger::SendMeetingStoneSetQueue( plr, LfgDungeonId, 0);
 }
 
 void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
@@ -239,7 +240,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 		for(i = 0; i < 5 && possibleMembers.size() > 0; ++i)
 		{
 			pGroup->AddMember(possibleMembers.front()->getPlayerInfo());
-			possibleMembers.front()->SendMeetingStoneQueue(LfgDungeonId, 0);
+			Messenger::SendMeetingStoneSetQueue( possibleMembers.front(), LfgDungeonId, 0);
 			m_lookingForGroup[LfgDungeonId].remove(possibleMembers.front());
 			possibleMembers.pop_front();
 		}

@@ -905,7 +905,7 @@ class SERVER_DECL Player : public Unit
 		//! Okay to remove from world
 		bool ok_to_remove;
 		void OnLogin();//custom stuff on player login.
-		void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
+
 		void SendDungeonDifficulty();
 		void SendRaidDifficulty();
 		void SendInstanceDifficulty(uint32 difficulty);

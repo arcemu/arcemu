@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 void WorldSession::HandleSetLookingForGroupComment(WorldPacket & recvPacket)
 {
@@ -56,7 +57,7 @@ void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 	{
 		if(_player->LfgDungeonId[i] != 0)
 		{
-			_player->SendMeetingStoneQueue(_player->LfgDungeonId[i], 1);
+			Messenger::SendMeetingStoneSetQueue( _player, _player->LfgDungeonId[i], 1 );
 			sLfgMgr.UpdateLfgQueue(_player->LfgDungeonId[i]);
 		}
 	}
@@ -74,7 +75,7 @@ void WorldSession::HandleDisableAutoJoin(WorldPacket & recvPacket)
 		if(_player->LfgDungeonId[i] != 0)
 		{
 			if(LfgDungeonTypes[_player->LfgDungeonId[i]] == LFG_INSTANCE || LfgDungeonTypes[_player->LfgDungeonId[i]] == LFG_HEROIC_DUNGEON)
-				_player->SendMeetingStoneQueue(_player->LfgDungeonId[i], 0);
+				Messenger::SendMeetingStoneSetQueue( _player, _player->LfgDungeonId[i], 0);
 		}
 	}
 }
@@ -143,7 +144,7 @@ void WorldSession::HandleSetLookingForGroup(WorldPacket & recvPacket)
 		{
 			sLfgMgr.UpdateLfgQueue(LfgDungeonId);
 			if(_player->m_Autojoin)
-				_player->SendMeetingStoneQueue(LfgDungeonId, 1);
+				Messenger::SendMeetingStoneSetQueue( _player, LfgDungeonId, 1);
 		}
 	}
 	else
@@ -192,7 +193,7 @@ void WorldSession::HandleMeetingStoneInfo(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	_player->SendMeetingStoneQueue(0, 6); //values drawn from packet logs, don't appear to change
+	Messenger::SendMeetingStoneSetQueue( _player, 0, 6); //values drawn from packet logs, don't appear to change
 }
 
 void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
