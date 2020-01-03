@@ -205,10 +205,13 @@ public:
 	/// Clears the cooldown on the spell in the client
 	static void SendClearSpellCooldown( Player* player, uint32 spell );
 
+	/// Pops up the duel request dialog in the client
 	static void SendDuelRequest( Player* challengedPlayer, uint64 challengerGUID, uint64 flagGUID );
 
+	/// Announces the duel winner
 	static void SendDuelWinner( Player* winner, const char* loserName, uint8 condition );
 
+	/// Completes the duel
 	static void SendDuelComplete( Player* winner, bool broadcast );
 };
 
