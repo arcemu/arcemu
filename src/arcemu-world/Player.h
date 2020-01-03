@@ -2115,8 +2115,6 @@ class SERVER_DECL Player : public Unit
 		void NullComboPoints() { if(!m_retainComboPoints) { m_comboTarget = 0; m_comboPoints = 0; m_spellcomboPoints = 0; } UpdateComboPoints(); }
 		uint32 m_speedChangeCounter;
 
-		void SendAreaTriggerMessage(const char* message, ...);
-
 		// Trade Target
 		//Player *getTradeTarget() {return mTradeTarget;};
 

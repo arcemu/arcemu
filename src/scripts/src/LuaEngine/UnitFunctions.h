@@ -1778,7 +1778,7 @@ class LuaUnit
 			TEST_PLAYER()
 			const char* msg = luaL_checkstring(L, 1);
 			if(!msg) return 0;
-			TO_PLAYER(ptr)->SendAreaTriggerMessage(msg);
+			Messenger::SendAreaTriggerMessage( TO_PLAYER(ptr), msg );
 			return 0;
 		}
 

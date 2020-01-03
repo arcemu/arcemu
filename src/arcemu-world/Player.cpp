@@ -9686,17 +9686,6 @@ void Player::UpdateComboPoints()
 	m_session->OutPacket(SMSG_UPDATE_COMBO_POINTS, c, buffer);
 }
 
-void Player::SendAreaTriggerMessage(const char* message, ...)
-{
-	va_list ap;
-	va_start(ap, message);
-	char msg[500];
-	vsnprintf(msg, 500, message, ap);
-	va_end(ap);
-
-	Messenger::SendAreaTriggerMessage( this, msg );
-}
-
 void Player::removeSoulStone()
 {
 	if(!this->SoulStone) return;
