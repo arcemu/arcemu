@@ -1192,3 +1192,20 @@ void Messenger::SendAreaTriggerMessage( Player *player, const char *message )
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendUpdateComboPoints( Player *player, uint64 target, uint8 points )
+{
+	WorldPacket data( SMSG_UPDATE_COMBO_POINTS );
+
+	if( target != 0 )
+	{
+		FastGUIDPack( data, target );
+		data << uint8( points );
+	}
+	else
+	{
+		data << uint16( 0 );
+	}
+
+	PlayerMessenger::sendMessage( player, data );
+}

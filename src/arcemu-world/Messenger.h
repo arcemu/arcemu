@@ -242,6 +242,9 @@ public:
 
 	/// Sends an areatrigger message to the player
 	static void SendAreaTriggerMessage( Player* player, const char* message );
+
+	/// Sends a combopoints update to the client
+	static void SendUpdateComboPoints( Player* player, uint64 target, uint8 points );
 };
 
 #endif

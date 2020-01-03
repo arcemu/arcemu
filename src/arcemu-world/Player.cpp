@@ -9672,18 +9672,16 @@ void Player::UpdateComboPoints()
 		Unit* target = (m_mapMgr != NULL) ? m_mapMgr->GetUnit(m_comboTarget) : NULL;
 		if(!target || target->IsDead() || GetSelection() != m_comboTarget)
 		{
-			buffer[0] = buffer[1] = 0;
+			Messenger::SendUpdateComboPoints( this, 0, 0 );
 		}
 		else
 		{
-			c = static_cast<uint16>(FastGUIDPack(m_comboTarget, buffer, 0));
-			buffer[c++] = m_comboPoints;
+			Messenger::SendUpdateComboPoints( this, m_comboTarget, m_comboPoints );
 		}
 	}
 	else
-		buffer[0] = buffer[1] = 0;
+		Messenger::SendUpdateComboPoints( this, 0, 0 );
 
-	m_session->OutPacket(SMSG_UPDATE_COMBO_POINTS, c, buffer);
 }
 
 void Player::removeSoulStone()
