@@ -225,6 +225,9 @@ public:
 
 	/// Pops up the summon request dialog in the client
 	static void SendSummonRequest( Player* player, uint64 summonerGUID, uint32 zoneId, uint32 time );
+
+	/// Tells the client to show a movie
+	static void SendTriggerMovie( Player* player, uint32 movie );
 };
 
 #endif

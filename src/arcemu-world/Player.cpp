@@ -11558,12 +11558,6 @@ void Player::SetKnownTitle(RankTitles title, bool set)
 	Messenger::SendTitleEarned( this, title, set ? 1 : 0 );
 }
 
-void Player::SendTriggerMovie(uint32 movieID)
-{
-	if(m_session)
-		m_session->OutPacket(SMSG_TRIGGER_MOVIE, 4, &movieID);
-}
-
 uint32 Player::GetInitialFactionId()
 {
 

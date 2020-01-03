@@ -1120,3 +1120,12 @@ void Messenger::SendSummonRequest( Player *player, uint64 summonerGUID, uint32 z
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendTriggerMovie(Player *player, uint32 movie)
+{
+	/// Example movie: 2 - World of Warcraft cinematic intro
+	WorldPacket data( SMSG_TRIGGER_MOVIE, 4 );
+	data << uint32( movie );
+
+	PlayerMessenger::sendMessage( player, data );
+}

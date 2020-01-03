@@ -23,6 +23,7 @@
 //
 
 #include "StdAfx.h"
+#include "Messenger.h"
 #include <git_version.h>
 
 bool ChatHandler::ShowHelpForCommand(WorldSession* m_session, ChatCommand* table, const char* cmd)
@@ -480,8 +481,7 @@ bool ChatHandler::HandlePlayMovie(const char* args, WorldSession* m_session)
 		return false;
 
 	uint32 movie = atol(args);
-
-	plr->SendTriggerMovie(movie);
+	Messenger::SendTriggerMovie( plr, movie );
 
 	SystemMessage(m_session, "Movie started.");
 	return true;
