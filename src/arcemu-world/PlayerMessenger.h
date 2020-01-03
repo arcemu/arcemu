@@ -28,7 +28,7 @@ public:
 	/// Send a message to the player. Checks if player has a session.
 	static void sendMessage( Player* player, WorldPacket& message );
 
-	/// Send a delayed message to the player (they are sent after updates)
+	/// Send a delayed message to the player (they are sent after updates). Takes responsibility and packet is deleted by the underlying code.
 	static void sendDelayedMessage( Player* player, WorldPacket* message );
 };
 
