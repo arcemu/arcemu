@@ -24,6 +24,7 @@
 
 #include "StdAfx.h"
 #include "Messenger.h"
+#include "PlayerMessenger.h"
 
 bool ChatHandler::HandleDebugInFrontCommand(const char* args, WorldSession* m_session)
 {
@@ -623,25 +624,38 @@ bool ChatHandler::HandleAggroRangeCommand(const char* args, WorldSession* m_sess
 	return true;
 }
 
-bool ChatHandler::HandleKnockBackCommand(const char* args, WorldSession* m_session)
+bool ChatHandler::HandleLeapCommand(const char* args, WorldSession* m_session)
 {
-	float f = args ? (float)atof(args) : 0.0f;
-	if(f == 0.0f)
-		f = 5.0f;
+	Player *player = m_session->GetPlayer();
 
-	float dx = sinf(m_session->GetPlayer()->GetOrientation());
-	float dy = cosf(m_session->GetPlayer()->GetOrientation());
+	float horizontal;
+	float vertical;
+	uint32 direction;
 
-	float z = f * 0.66f;
+	int read = sscanf( args, "%f %f %u", &horizontal, &vertical, &direction );
+	if( read < 2 || read > 3 )
+	{
+		return false;
+	}
 
-	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-	data << m_session->GetPlayer()->GetNewGUID();
-	data << getMSTime();
-	data << dy;
-	data << dx;
-	data << f;
-	data << z;
-	m_session->SendPacket(&data);
+	float orientation = player->GetOrientation();
+
+	// Flip direction
+	if( direction == -1 )
+	{
+		orientation = fmod( orientation + M_PI_FLOAT, 2 * M_PI_FLOAT );
+	}
+
+
+	WorldPacket data( SMSG_MOVE_KNOCK_BACK, 50 );
+	data << player->GetNewGUID();
+	data << uint32( getMSTime() );
+	data << float( cosf( orientation ) );
+	data << float( sinf( orientation ) );
+	data << float( horizontal );
+	data << float( -vertical );
+	PlayerMessenger::sendMessage( player, data );
+
 	return true;
 }
 

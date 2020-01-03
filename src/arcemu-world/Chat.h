@@ -279,7 +279,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleDebugRoot(const char* args, WorldSession* m_session);
 		bool HandleDebugWaterWalk(const char* args, WorldSession* m_session);
 		bool HandleAggroRangeCommand(const char* args, WorldSession* m_session);
-		bool HandleKnockBackCommand(const char* args, WorldSession* m_session);
+		bool HandleLeapCommand(const char* args, WorldSession* m_session);
 		bool HandleFadeCommand(const char* args, WorldSession* m_session);
 		bool HandleThreatModCommand(const char* args, WorldSession* m_session);
 		bool HandleCalcThreatCommand(const char* args, WorldSession* m_session);
