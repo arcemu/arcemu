@@ -44,6 +44,9 @@ public:
 	/// Plays a sound effect to the players around the object
 	static void PlaySoundToSet( Object* object, uint32 sound_entry );
 
+	/// Plays a sound effect to the player
+	static void PlaySoundToPlayer( Player* player, uint32 soundId );
+
 	/// Send AI reaction to client ("aggro sound" like growling)
 	static void SendAIReaction( Object* object, uint32 reaction = 2 );
 
@@ -213,6 +216,15 @@ public:
 
 	/// Completes the duel
 	static void SendDuelComplete( Player* winner, bool broadcast );
+
+	/// Tells the client the player has earned a title
+	static void SendTitleEarned( Player* player, uint32 title, uint32 set );
+
+	/// Tells the client that the player has explored a new area, and earned XP for it
+	static void SendExploreXP( Player* player, uint32 area, uint32 xp );
+
+	/// Pops up the summon request dialog in the client
+	static void SendSummonRequest( Player* player, uint64 summonerGUID, uint32 zoneId, uint32 time );
 };
 
 #endif

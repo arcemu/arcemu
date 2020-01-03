@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 #include <CrashHandler.h>
 
 initialiseSingleton(World);
@@ -621,9 +622,6 @@ void World::SendGlobalMessage(WorldPacket* packet, WorldSession* self)
 void World::PlaySoundToAll(uint32 soundid)
 {
 
-	WorldPacket data(SMSG_PLAY_SOUND, 4);
-	data << uint32(soundid);
-
 	m_sessionlock.AcquireWriteLock();
 
 	for(SessionMap::iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
@@ -631,7 +629,7 @@ void World::PlaySoundToAll(uint32 soundid)
 		WorldSession* s = itr->second;
 
 		if((s->GetPlayer() != NULL) && s->GetPlayer()->IsInWorld())
-			s->SendPacket(&data);
+			Messenger::PlaySoundToPlayer( s->GetPlayer(), soundid );
 	}
 
 	m_sessionlock.ReleaseWriteLock();

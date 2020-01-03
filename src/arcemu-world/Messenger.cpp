@@ -167,10 +167,19 @@ void Messenger::SendDamageShieldLog(Unit *unit, Unit *attacker, const DamageProc
 
 void Messenger::PlaySoundToSet( Object* object, uint32 sound_entry)
 {
-	WorldPacket data(SMSG_PLAY_SOUND, 4);
-	data << sound_entry;
+	WorldPacket data( SMSG_PLAY_SOUND, 4 );
+	data << uint32( sound_entry );
 
-	object->SendMessageToSet(&data, true);
+	MessageRouter router( object );
+	router.sendMessageToPlayersInRange( &data, true );
+}
+
+void Messenger::PlaySoundToPlayer( Player *player, uint32 soundId )
+{
+	WorldPacket data( SMSG_PLAY_SOUND, 4 );
+	data << uint32( soundId );
+
+	PlayerMessenger::sendMessage( player, data );
 }
 
 void Messenger::SendAIReaction( Object* object, uint32 reaction)
@@ -352,7 +361,9 @@ void Messenger::SendPowerUpdate( Unit *unit, uint32 amount, bool self )
 	FastGUIDPack( data, unit->GetGUID() );
 	data << uint8( unit->GetPowerType() );
 	data << uint32( amount );
-	unit->SendMessageToSet( &data, self );
+
+	MessageRouter router( unit );
+	router.sendMessageToPlayersInRange( &data, self );
 }
 
 uint32 Messenger::SendFullAuraUpdate(Unit *unit)
@@ -1079,4 +1090,33 @@ void Messenger::SendDuelComplete( Player *winner, bool broadcast )
 	{
 		PlayerMessenger::sendMessage( winner, data );
 	}
+}
+
+void Messenger::SendTitleEarned( Player *player, uint32 title, uint32 set )
+{
+	// Example title: 123 - Crusader
+	WorldPacket data( SMSG_TITLE_EARNED, 8 );
+	data << uint32( title );
+	data << uint32( set );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendExploreXP( Player *player, uint32 area, uint32 xp )
+{
+	WorldPacket data( SMSG_EXPLORATION_EXPERIENCE, 8 );
+	data << uint32( area );
+	data << uint32( xp );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendSummonRequest( Player *player, uint64 summonerGUID, uint32 zoneId, uint32 time )
+{
+	WorldPacket data( SMSG_SUMMON_REQUEST, 16 );
+	data << uint64( summonerGUID );
+	data << uint32( zoneId );
+	data << uint32( time );
+
+	PlayerMessenger::sendMessage( player, data );
 }

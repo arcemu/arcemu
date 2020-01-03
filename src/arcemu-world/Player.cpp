@@ -9916,9 +9916,7 @@ void Player::SummonRequest(uint32 Requestor, uint32 ZoneID, uint32 MapID, uint32
 	m_summoner = Requestor;
 	m_summonMapId = MapID;
 
-	WorldPacket data(SMSG_SUMMON_REQUEST, 16);
-	data << uint64(Requestor) << ZoneID << uint32(120000);		// 2 minutes
-	m_session->SendPacket(&data);
+	Messenger::SendSummonRequest( this, Requestor, ZoneID, 120 * 1000 );
 }
 
 void Player::RemoveFromBattlegroundQueue()
@@ -11501,9 +11499,7 @@ void Player::RemoveTempEnchantsOnArena()
 
 void Player::PlaySound(uint32 sound_id)
 {
-	WorldPacket data(SMSG_PLAY_SOUND, 4);
-	data << sound_id;
-	GetSession()->SendPacket(&data);
+	Messenger::PlaySoundToPlayer( this, sound_id );
 }
 
 //really need to work on the speed of this. This will be called on a lot of events
@@ -11679,11 +11675,7 @@ void Player::SendAllAchievementEarned()
 
 void Player::UpdatePowerAmm()
 {
-	WorldPacket data(SMSG_POWER_UPDATE, 5);
-	FastGUIDPack(data, GetGUID());
-	data << uint8(GetPowerType());
-	data << GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType());
-	SendMessageToSet(&data, true);
+	Messenger::SendPowerUpdate( this, GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType()), true );
 }
 // Initialize Glyphs or update them after level change
 void Player::UpdateGlyphs()
@@ -11739,9 +11731,7 @@ void Player::SetKnownTitle(RankTitles title, bool set)
 	else
 		SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES + ((title >> 6) << 1), current & ~uint64(1) << (title % 64));
 
-	WorldPacket data(SMSG_TITLE_EARNED, 8);
-	data << uint32(title) << uint32(set ? 1 : 0);
-	m_session->SendPacket(&data);
+	Messenger::SendTitleEarned( this, title, set ? 1 : 0 );
 }
 
 void Player::SendTriggerMovie(uint32 movieID)
@@ -11969,11 +11959,7 @@ void Player::RemoveSanctuaryFlag()
 
 void Player::SendExploreXP(uint32 areaid, uint32 xp)
 {
-
-	WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
-	data << uint32(areaid);
-	data << uint32(xp);
-	m_session->SendPacket(&data);
+	Messenger::SendExploreXP( this, areaid, xp );
 }
 
 void Player::HandleSpellLoot(uint32 itemid)
