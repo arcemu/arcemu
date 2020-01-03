@@ -1015,7 +1015,7 @@ void WorldSession::FullLogin(Player* plr)
 	_player->BroadcastMessage("Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
 
 	// server Message Of The Day
-	SendMOTD();
+	Messenger::SendMOTD( _player, 4, sWorld.GetMotd() );
 
 	//Set current RestState
 	if(plr->m_isResting)

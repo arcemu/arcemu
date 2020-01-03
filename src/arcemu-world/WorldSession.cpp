@@ -1696,17 +1696,6 @@ void WorldSession::HandleLearnMultipleTalentsOpcode(WorldPacket & recvPacket)
 	}
 }
 
-void WorldSession::SendMOTD()
-{
-
-	WorldPacket data(SMSG_MOTD, 100);
-
-	data << uint32(4);
-	data << sWorld.GetMotd();
-
-	SendPacket(&data);
-}
-
 void WorldSession::HandleEquipmentSetUse(WorldPacket & data)
 {
 	CHECK_INWORLD_RETURN LOG_DEBUG("Received CMSG_EQUIPMENT_SET_USE");

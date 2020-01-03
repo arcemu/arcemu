@@ -230,6 +230,9 @@ public:
 	static void SendTriggerMovie( Player* player, uint32 movie );
 
 	static void SendMeetingStoneSetQueue( Player *player, uint32 dungeon, uint8 status );
+
+	/// Sends a Message Of The Day type message to the client
+	static void SendMOTD( Player* player, uint32 value, const char* text );
 };
 
 #endif

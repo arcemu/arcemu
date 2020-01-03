@@ -8334,16 +8334,12 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	// Lookup map info
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_01 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01) && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
-		WorldPacket msg(SMSG_MOTD, 50); // Need to be replaced with correct one !
-		msg << uint32(3) << "You must have The Burning Crusade Expansion to access this content." << uint8(0);
-		m_session->SendPacket(&msg);
+		Messenger::SendMOTD( this, 3, "You must have The Burning Crusade Expansion to access this content." );
 		return false;
 	}
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_02 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
-		WorldPacket msg(SMSG_MOTD, 50); // Need to be replaced with correct one !
-		msg << uint32(3) << "You must have Wrath of the Lich King Expansion to access this content." << uint8(0);
-		m_session->SendPacket(&msg);
+		Messenger::SendMOTD( this, 3, "You must have Wrath of the Lich King Expansion to access this content." );
 		return false;
 	}
 

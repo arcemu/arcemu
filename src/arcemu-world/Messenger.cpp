@@ -1138,3 +1138,13 @@ void Messenger::SendMeetingStoneSetQueue(Player *player, uint32 dungeon, uint8 s
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendMOTD( Player *player, uint32 value, const char *text )
+{
+	WorldPacket data( SMSG_MOTD, 100 );
+
+	data << uint32( value );
+	data << text;
+
+	PlayerMessenger::sendMessage( player, data );
+}
