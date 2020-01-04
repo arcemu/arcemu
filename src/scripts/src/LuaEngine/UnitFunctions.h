@@ -21,6 +21,7 @@
 #define UNITFUNCTIONS_H
 
 #include "CreatureCommands.h"
+#include "PlayerCommands.h"
 
 class LuaUnit
 {
@@ -4378,7 +4379,10 @@ class LuaUnit
 			else if(actionid == 6) plr->GetSession()->SendAuctionList(crc);
 			else if(actionid == 7) plr->GetSession()->SendTabardHelp(crc);
 			else if(actionid == 8) plr->GetSession()->SendSpiritHealerRequest(crc);
-			else if(actionid == 9) plr->SendTalentResetConfirm();
+			else if(actionid == 9){
+				SendTalentResetConfirmDialogCommand command( plr );
+				command.execute();
+			}
 			else if(actionid == 10) plr->SendPetUntrainConfirm();
 			return 0;
 		}

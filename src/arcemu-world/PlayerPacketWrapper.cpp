@@ -21,11 +21,6 @@
 #include "UpdateBuilder.h"
 #include "Messenger.h"
 
-void Player::SendTalentResetConfirm()
-{
-	Messenger::SendTalentResetConfirm( this, CalcTalentResetCost(GetTalentResetTimes()));
-}
-
 void Player::SendPetUntrainConfirm()
 {
 	Pet* pPet = GetSummon();

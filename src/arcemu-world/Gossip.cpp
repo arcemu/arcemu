@@ -18,6 +18,8 @@
  */
 
 #include "StdAfx.h"
+#include "PlayerCommands.h"
+
 using namespace Arcemu;
 
 Gossip::Item::Item(size_t itemid, uint8 icon)
@@ -754,9 +756,11 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, 
 		case 2:
 			Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_TALENTRESET, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::CLASSTRAINER_TALENTCONFIRM), 3);
 			break;
-		case 3:
+		case 3:{
 			Gossip::Menu::Complete(Plr);
-			Plr->SendTalentResetConfirm();
+			SendTalentResetConfirmDialogCommand command( Plr );
+			command.execute();
+			}
 			break;
 		case 4:
 			purchaseconfirm = "Are you sure you would like to purchase your second talent specialization?";

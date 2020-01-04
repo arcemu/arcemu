@@ -83,6 +83,7 @@ SET(sources
 	Pet.cpp 
 	PetHandler.cpp 
 	Player.cpp 
+	PlayerCommands.cpp
 	PlayerMessenger.cpp
 	PlayerPacketWrapper.cpp 
 	QueryHandler.cpp 
@@ -237,6 +238,7 @@ SET( headers
 	Pet.h
 	Player.h
 	PlayerCache.h
+	PlayerCommands.h
 	PlayerMessenger.h
 	Entities/Summons/PossessedSummon.h
 	Priest.h
