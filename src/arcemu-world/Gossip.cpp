@@ -640,9 +640,9 @@ void Arcemu::Gossip::PetTrainer::OnHello(Object* pObject, Player* Plr)
 		Text = Gossip::DEFAULT_TXTINDEX;
 
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language);
-	menu.AddItem(Gossip::ICON_TRAINER, Plr->GetSession()->LocalizedWorldSrv(Gossip::BEASTTRAINING), 1);
+
 	if(Plr->getClass() == ::HUNTER && Plr->GetSummon() != NULL)
-		menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET), 2);
+		menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET), 1);
 	sQuestMgr.FillQuestMenu(petrain, Plr, menu);
 
 	menu.StackSend<256>(Plr);
@@ -651,15 +651,16 @@ void Arcemu::Gossip::PetTrainer::OnHello(Object* pObject, Player* Plr)
 void Arcemu::Gossip::PetTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
 {
 	if(1 == Id)
-		Plr->GetSession()->SendTrainerList(TO_CREATURE(pObject));
-	else if(2 == Id)
-		Gossip::Menu::SendQuickMenu(pObject->GetGUID(), TXTID_PETUNTRAIN, Plr, 3, Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET));
-	else
 	{
-		Gossip::Menu::Complete(Plr);
-		Plr->SendPetUntrainConfirm();
+		Pet* pet = TO_PLAYER(Plr)->GetSummon();
+		if(pet != NULL)
+		{
+			pet->WipeTalents();
+			pet->SetTPs(pet->GetTPsForLevel(pet->getLevel()));
+			pet->SendTalentsToOwner();
+		}
+		Gossip::Menu::Complete( Plr );
 	}
-
 }
 
 /*
