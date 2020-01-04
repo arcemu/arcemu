@@ -4383,7 +4383,7 @@ class LuaUnit
 				SendTalentResetConfirmDialogCommand command( plr );
 				command.execute();
 			}
-			else if(actionid == 10) plr->SendPetUntrainConfirm();
+			else if(actionid == 10){}
 			return 0;
 		}
 

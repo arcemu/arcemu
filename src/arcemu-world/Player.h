@@ -1516,7 +1516,6 @@ class SERVER_DECL Player : public Unit
 		void SetHealthFromSpell(uint32 value) { m_healthfromspell = value;}
 		void SetManaFromSpell(uint32 value) { m_manafromspell = value;}
 		uint32 CalcTalentResetCost(uint32 resetnum);
-		void SendPetUntrainConfirm();
 		uint32 GetTalentResetTimes() { return m_talentresettimes; }
 		void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
 		void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }

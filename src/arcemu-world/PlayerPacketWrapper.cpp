@@ -21,16 +21,6 @@
 #include "UpdateBuilder.h"
 #include "Messenger.h"
 
-void Player::SendPetUntrainConfirm()
-{
-	Pet* pPet = GetSummon();
-
-	if(pPet == NULL)
-		return;
-
-	Messenger::SendPetUntrainConfirm( this, pPet->GetGUID(), pPet->GetUntrainCost() );
-}
-
 void Player::SendWorldStateUpdate(uint32 WorldState, uint32 Value)
 {
 	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);

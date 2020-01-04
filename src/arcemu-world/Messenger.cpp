@@ -1223,12 +1223,3 @@ void Messenger::SendTalentResetConfirm( Player *player, uint32 cost )
 	PlayerMessenger::sendMessage( player, data );
 }
 
-void Messenger::SendPetUntrainConfirm(Player *player, uint64 petGUID, uint32 cost)
-{
-	WorldPacket data( SMSG_PET_UNLEARN_CONFIRM, 12 );
-
-	data << uint64( petGUID );
-	data << uint32( cost );
-
-	PlayerMessenger::sendMessage( player, data );
-}
