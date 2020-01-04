@@ -28,12 +28,7 @@ void Player::SendPetUntrainConfirm()
 	if(pPet == NULL)
 		return;
 
-	WorldPacket data(SMSG_PET_UNLEARN_CONFIRM, 12);
-
-	data << uint64(pPet->GetGUID());
-	data << uint32(pPet->GetUntrainCost());
-
-	m_session->SendPacket(&data);
+	Messenger::SendPetUntrainConfirm( this, pPet->GetGUID(), pPet->GetUntrainCost() );
 }
 
 void Player::SendWorldStateUpdate(uint32 WorldState, uint32 Value)

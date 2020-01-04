@@ -248,6 +248,9 @@ public:
 
 	/// Tells the client to show the talent reset confirmation dialog
 	static void SendTalentResetConfirm( Player *player, uint32 cost );
+
+	/// Tells the client to show the pet untrain confirm dialog
+	static void SendPetUntrainConfirm( Player* player, uint64 petGUID, uint32 cost );
 };
 
 #endif
