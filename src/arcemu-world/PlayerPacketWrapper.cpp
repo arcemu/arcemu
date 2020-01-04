@@ -594,14 +594,8 @@ void Player::SendInitialLogonPackets()
 	m_lastRunSpeed = 0;
 	UpdateSpeed();
 
-	WorldPacket ArenaSettings(SMSG_UPDATE_WORLD_STATE, 16);
-
-	ArenaSettings << uint32(0xC77);
-	ArenaSettings << uint32(sWorld.Arena_Progress);
-	ArenaSettings << uint32(0xF3D);
-	ArenaSettings << uint32(sWorld.Arena_Season);
-
-	m_session->SendPacket(&ArenaSettings);
+	Messenger::SendWorldStateUpdate( this, 0xF3D, sWorld.Arena_Season );
+	Messenger::SendWorldStateUpdate( this, 0xC77, sWorld.Arena_Progress );
 
 	LOG_DETAIL("WORLD: Sent initial logon packets for %s.", GetName());
 }
