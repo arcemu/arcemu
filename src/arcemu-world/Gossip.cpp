@@ -652,13 +652,9 @@ void Arcemu::Gossip::PetTrainer::OnSelectOption(Object* pObject, Player* Plr, ui
 {
 	if(1 == Id)
 	{
-		Pet* pet = TO_PLAYER(Plr)->GetSummon();
-		if(pet != NULL)
-		{
-			pet->WipeTalents();
-			pet->SetTPs(pet->GetTPsForLevel(pet->getLevel()));
-			pet->SendTalentsToOwner();
-		}
+		ResetPetTalentsCommand command( Plr );
+		command.execute();
+
 		Gossip::Menu::Complete( Plr );
 	}
 }

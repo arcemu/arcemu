@@ -5575,13 +5575,8 @@ class LuaUnit
 		static int ResetPetTalents(lua_State* L, Unit* ptr)
 		{
 			TEST_PLAYER()
-			Pet* pet = TO_PLAYER(ptr)->GetSummon();
-			if(pet != NULL)
-			{
-				pet->WipeTalents();
-				pet->SetTPs(pet->GetTPsForLevel(pet->getLevel()));
-				pet->SendTalentsToOwner();
-			}
+			ResetPetTalentsCommand command( TO< Player* >( ptr ) );
+			command.execute();
 			return 0;
 		}
 

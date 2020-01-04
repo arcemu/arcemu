@@ -33,4 +33,17 @@ public:
 	void execute();
 };
 
+
+/// Resets the player's active pet's talents.
+class ResetPetTalentsCommand
+{
+private:
+	Player* player;
+
+public:
+	ResetPetTalentsCommand( Player* player ){ this->player = player; }
+
+	void execute();
+};
+
 #endif

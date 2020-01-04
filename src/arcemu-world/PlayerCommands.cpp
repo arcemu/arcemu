@@ -32,3 +32,14 @@ void SendTalentResetConfirmDialogCommand::execute()
 	uint32 cost = player->CalcTalentResetCost( player->GetTalentResetTimes() );
 	Messenger::SendTalentResetConfirm( player, cost );
 }
+
+void ResetPetTalentsCommand::execute()
+{
+	Pet* pet = player->GetSummon();
+	if( pet != NULL )
+	{
+		pet->WipeTalents();
+		pet->SetTPs( pet->GetTPsForLevel( pet->getLevel() ) );
+		pet->SendTalentsToOwner();
+	}
+}
