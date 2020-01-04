@@ -1233,3 +1233,34 @@ void Messenger::SendWorldStateUpdate( Player *player, uint32 worldstate, uint32 
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendLoginSetTimeSpeed(Player *player, uint32 gametime, float speed)
+{
+	WorldPacket data( SMSG_LOGIN_SETTIMESPEED, 12 ) ;
+	data << uint32( gametime );
+	data << float( speed );
+	data << uint32( 0 );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendBindPointUpdate( Player *player, const LocationVector &location, uint32 map, uint32 zone )
+{
+	WorldPacket data( SMSG_BINDPOINTUPDATE, 20 );
+	data << float( location.x );
+	data << float( location.y );
+	data << float( location.z );
+	data << uint32( map );
+	data << uint32( zone );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
+void Messenger::SendPlayerBound( Player *player, uint64 GUID, uint32 zone )
+{
+	WorldPacket data( SMSG_PLAYERBOUND, 12 );
+	data << uint64( GUID );
+	data << uint32( zone );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

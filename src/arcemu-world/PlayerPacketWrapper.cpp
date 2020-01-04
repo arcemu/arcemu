@@ -21,6 +21,8 @@
 #include "UpdateBuilder.h"
 #include "Messenger.h"
 
+#define ARCEMU_NORMAL_GAMESPEED 0.0166666669777748f
+
 void Player::Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name)
 {
 	size_t namelen = 0;
@@ -548,21 +550,14 @@ void Player::SendInitialLogonPackets()
 	// Initial Packets... they seem to be re-sent on port.
 	//m_session->OutPacket(SMSG_SET_REST_START_OBSOLETE, 4, &m_timeLogoff); // Seem to be unused by client
 
-	StackWorldPacket<32> data(SMSG_BINDPOINTUPDATE);
-
-	data << float(m_bind_pos_x);
-	data << float(m_bind_pos_y);
-	data << float(m_bind_pos_z);
-	data << uint32(m_bind_mapid);
-	data << uint32(m_bind_zoneid);
-
-	m_session->SendPacket(&data);
+	Messenger::SendBindPointUpdate( this, LocationVector( m_bind_pos_x, m_bind_pos_y, m_bind_pos_z ), m_bind_mapid, m_bind_zoneid );
 
 	//Proficiencies
 	SendSetProficiency(4, armor_proficiency);
 	SendSetProficiency(2, weapon_proficiency);
 
 	//Tutorial Flags
+	WorldPacket data( 32 );
 	data.Initialize(SMSG_TUTORIAL_FLAGS);
 
 	for(int i = 0; i < 8; i++)
@@ -581,14 +576,7 @@ void Player::SendInitialLogonPackets()
 	smsg_InitialFactions();
 
 
-
-	data.Initialize(SMSG_LOGIN_SETTIMESPEED);
-
-	data << uint32( Arcemu::Util::MAKE_GAME_TIME() );
-	data << float(0.0166666669777748f);    // Normal Game Speed
-	data << uint32(0);   // 3.1.2
-
-	m_session->SendPacket(&data);
+	Messenger::SendLoginSetTimeSpeed( this, Arcemu::Util::MAKE_GAME_TIME(), ARCEMU_NORMAL_GAMESPEED );
 
 	// cebernic for speedhack bug
 	m_lastRunSpeed = 0;

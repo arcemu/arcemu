@@ -1429,13 +1429,9 @@ void Spell::SpellEffectBind(uint32 i)
 
 	playerTarget->SetBindPoint(playerTarget->GetPositionX(), playerTarget->GetPositionY(), playerTarget->GetPositionZ(), mapid, areaid);
 
-	data.Initialize(SMSG_BINDPOINTUPDATE);
-	data << playerTarget->GetBindPositionX() << playerTarget->GetBindPositionY() << playerTarget->GetBindPositionZ() << playerTarget->GetBindMapId() << playerTarget->GetBindZoneId();
-	playerTarget->GetSession()->SendPacket(&data);
-
-	data.Initialize(SMSG_PLAYERBOUND);
-	data << m_caster->GetGUID() << playerTarget->GetBindZoneId();
-	playerTarget->GetSession()->SendPacket(&data);
+	LocationVector bindLocation( playerTarget->GetPositionX(), playerTarget->GetPositionY(), playerTarget->GetPositionZ() );
+	Messenger::SendBindPointUpdate( playerTarget, bindLocation, mapid, areaid );
+	Messenger::SendPlayerBound( playerTarget, m_caster->GetGUID(), playerTarget->GetZoneId() );
 }
 
 void Spell::SpellEffectQuestComplete(uint32 i) // Quest Complete

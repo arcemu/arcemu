@@ -251,6 +251,15 @@ public:
 
 	/// Tells the client to update a worldstate value (alliance/horde controlled towers in hellfire for example).
 	static void SendWorldStateUpdate( Player* player, uint32 worldstate, uint32 value );
+
+	/// Tells the client about game time and game speed
+	static void SendLoginSetTimeSpeed( Player* player, uint32 gametime, float speed );
+
+	/// Tells the client where the player's heartstone is bound
+	static void SendBindPointUpdate( Player* player, const LocationVector &location, uint32 map, uint32 zone );
+
+	/// Tells the client where the player's heartstone is bound
+	static void SendPlayerBound( Player* player, uint64 GUID, uint32 zone );
 };
 
 #endif
