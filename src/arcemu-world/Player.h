@@ -2170,7 +2170,6 @@ class SERVER_DECL Player : public Unit
 		/************************************************************************/
 		void SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4);
 		void SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type);
-		void SendWorldStateUpdate(uint32 WorldState, uint32 Value);
 		void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 		void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);
 		void SendSpellCooldownEvent(uint32 SpellId);

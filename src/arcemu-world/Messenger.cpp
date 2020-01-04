@@ -1223,3 +1223,13 @@ void Messenger::SendTalentResetConfirm( Player *player, uint32 cost )
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendWorldStateUpdate( Player *player, uint32 worldstate, uint32 value )
+{
+	WorldPacket data( SMSG_UPDATE_WORLD_STATE, 8 );
+
+	data << uint32( worldstate );
+	data << uint32( value );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

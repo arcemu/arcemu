@@ -248,6 +248,9 @@ public:
 
 	/// Tells the client to show the talent reset confirmation dialog
 	static void SendTalentResetConfirm( Player *player, uint32 cost );
+
+	/// Tells the client to update a worldstate value (alliance/horde controlled towers in hellfire for example).
+	static void SendWorldStateUpdate( Player* player, uint32 worldstate, uint32 value );
 };
 
 #endif

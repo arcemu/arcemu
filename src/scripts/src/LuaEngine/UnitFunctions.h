@@ -6270,7 +6270,7 @@ class LuaUnit
 			uint32 field = luaL_checkint( L, 1 );
 			uint32 value = luaL_checkint( L, 2 );
 
-			static_cast< Player* >( ptr )->SendWorldStateUpdate( field, value );
+			Messenger::SendWorldStateUpdate( static_cast< Player* >( ptr ), field, value );
 
 			return 0;
 		}

@@ -21,6 +21,7 @@
 
 #include "StdAfx.h"
 #include "EyeOfTheStorm.h"
+#include "Messenger.h"
 
 
 static float EOTSBuffCoordinates[4][4] =
@@ -677,7 +678,7 @@ void EyeOfTheStorm::UpdateCPs()
 				if(disp->find(plr) == disp->end())
 				{
 					disp->insert(plr);
-					plr->SendWorldStateUpdate(WORLDSTATE_EOTS_DISPLAYON, 1);
+					Messenger::SendWorldStateUpdate( plr, WORLDSTATE_EOTS_DISPLAYON, 1 );
 				}
 			}
 		}
@@ -784,10 +785,10 @@ void EyeOfTheStorm::UpdateCPs()
 			if(plr->GetDistance2dSq(go) > EOTS_CAPTURE_DISTANCE)
 			{
 				disp->erase(eitr2);
-				plr->SendWorldStateUpdate(WORLDSTATE_EOTS_DISPLAYON, 0);			// hide the cp bar
+				Messenger::SendWorldStateUpdate( plr, WORLDSTATE_EOTS_DISPLAYON, 0);			// hide the cp bar
 			}
 			else
-				plr->SendWorldStateUpdate(WORLDSTATE_EOTS_DISPLAYVALUE, m_CPStatus[i]);
+				Messenger::SendWorldStateUpdate( plr, WORLDSTATE_EOTS_DISPLAYVALUE, m_CPStatus[i]);
 		}
 	}
 

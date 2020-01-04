@@ -1116,7 +1116,7 @@ bool ChatHandler::HandleUpdateWorldStateCommand( const char *args, WorldSession 
 		return true;
 	}
 
-	session->GetPlayer()->SendWorldStateUpdate( field, state );
+	Messenger::SendWorldStateUpdate( session->GetPlayer(), field, state );
 
 	return true;
 }

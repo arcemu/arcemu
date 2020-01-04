@@ -21,17 +21,6 @@
 #include "UpdateBuilder.h"
 #include "Messenger.h"
 
-void Player::SendWorldStateUpdate(uint32 WorldState, uint32 Value)
-{
-	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
-
-	data << uint32(WorldState);
-	data << uint32(Value);
-
-	m_session->SendPacket(&data);
-}
-
-
 void Player::Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name)
 {
 	size_t namelen = 0;
