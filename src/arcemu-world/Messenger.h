@@ -245,6 +245,9 @@ public:
 
 	/// Sends a combopoints update to the client
 	static void SendUpdateComboPoints( Player* player, uint64 target, uint8 points );
+
+	/// Tells the client to show the talent reset confirmation dialog
+	static void SendTalentResetConfirm( Player *player, uint32 cost );
 };
 
 #endif

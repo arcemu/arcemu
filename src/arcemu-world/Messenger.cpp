@@ -1213,3 +1213,12 @@ void Messenger::SendUpdateComboPoints( Player *player, uint64 target, uint8 poin
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::SendTalentResetConfirm( Player *player, uint32 cost )
+{
+	WorldPacket data( MSG_TALENT_WIPE_CONFIRM, 12 );
+	data << uint64( player->GetGUID() );
+	data << uint32( cost );
+
+	PlayerMessenger::sendMessage( player, data );
+}

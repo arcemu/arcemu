@@ -19,15 +19,11 @@
 
 #include "StdAfx.h"
 #include "UpdateBuilder.h"
+#include "Messenger.h"
 
 void Player::SendTalentResetConfirm()
 {
-	WorldPacket data(MSG_TALENT_WIPE_CONFIRM, 12);
-
-	data << uint64(GetGUID());
-	data << uint32(CalcTalentResetCost(GetTalentResetTimes()));
-
-	m_session->SendPacket(&data);
+	Messenger::SendTalentResetConfirm( this, CalcTalentResetCost(GetTalentResetTimes()));
 }
 
 void Player::SendPetUntrainConfirm()
