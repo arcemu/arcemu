@@ -14,22 +14,25 @@ before_script:
   - cd ../../../
 
 script:
-   - docker images
-   - echo "$DOCKER_PASS" | docker login -u arcemu --password-stdin
-   - docker tag arcemu_build arcemu/arcemu_build:latest
-   - docker push arcemu/arcemu_build
-   - docker logout
-#  - mkdir bin
-#  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
-#  - ls -la ./bin
-#  - mkdir docker_build
-#  - cp -r extras/docker/arcemu_logon docker_build/
-#  - cp -r extras/docker/arcemu_world docker_build/
-#  - find ./docker_build
-#  - cp bin/logon docker_build/arcemu_logon/srv/arcemu_logon/
-#  - cp bin/world docker_build/arcemu_world/srv/arcemu_world/
-#  - cp -r bin/modules docker_build/arcemu_world/srv/arcemu_world/
-#  - cd docker_build/arcemu_logon
-#  - docker build --no-cache -t arcemu_logon .
-#  - cd ../arcemu_world
-#  - docker build --no-cache -t arcemu_world .
+# Build the damn thing
+  - mkdir bin
+  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
+  - ls -la ./bin
+# Build the docker images
+  - mkdir docker_build
+  - cp -r extras/docker/arcemu_logon docker_build/
+  - cp -r extras/docker/arcemu_world docker_build/
+  - find ./docker_build
+  - cp bin/logon docker_build/arcemu_logon/srv/arcemu_logon/
+  - cp bin/world docker_build/arcemu_world/srv/arcemu_world/
+  - cp -r bin/modules docker_build/arcemu_world/srv/arcemu_world/
+  - cd docker_build/arcemu_logon
+  - docker build --no-cache -t arcemu_logon .
+  - cd ../arcemu_world
+  - docker build --no-cache -t arcemu_world .
+  - docker images
+# Finally push it all to Docker Hub
+  - echo "$DOCKER_PASS" | docker login -u arcemu --password-stdin
+  - docker tag arcemu_build arcemu/arcemu_build:latest
+  - docker push arcemu/arcemu_build
+  - docker logout
