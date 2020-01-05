@@ -15,12 +15,7 @@ before_script:
 
 script:
   - mkdir bin
-# Debugging
-  - mkdir bin/modules
-  - touch bin/logon
-  - touch bin/world
-  - touch bin/modules/something.so
-#  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
+  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
   - ls -la ./bin
   - mkdir docker_build
   - cp -r extras/docker/arcemu_logon docker_build/
@@ -29,7 +24,7 @@ script:
   - cp bin/logon docker_build/arcemu_logon/srv/arcemu_logon/
   - cp bin/world docker_build/arcemu_world/srv/arcemu_world/
   - cp -r bin/modules docker_build/arcemu_world/srv/arcemu_world/
-#  - cd docker_build/arcemu_logon
-#  - docker build --no-cache -t arcemu_logon .
-#  - cd ../arcemu_world
-#  - docker build --no-cache -t arcemu_world .
+  - cd docker_build/arcemu_logon
+  - docker build --no-cache -t arcemu_logon .
+  - cd ../arcemu_world
+  - docker build --no-cache -t arcemu_world .
