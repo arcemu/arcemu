@@ -1264,3 +1264,26 @@ void Messenger::SendPlayerBound( Player *player, uint64 GUID, uint32 zone )
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendGossipPOI( Player *player, float x, float y, uint32 icon, uint32 flags, uint32 dataField, const char *name )
+{
+	size_t namelen = 0;
+
+	if( name != NULL )
+		namelen = strlen( name );
+
+	WorldPacket data( SMSG_GOSSIP_POI, 21 + namelen );
+
+	data << uint32( flags );
+	data << float( x );
+	data << float( y );
+	data << uint32( icon );
+	data << uint32( dataField );
+
+	if( namelen == 0 )
+		data << uint8( 0 );
+	else
+		data << name;
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

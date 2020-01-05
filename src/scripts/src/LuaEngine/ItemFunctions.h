@@ -22,6 +22,7 @@
 
 #include "StdAfx.h"
 #include "ItemFunctions.h"
+#include "Messenger.h"
 
 namespace luaItem
 {
@@ -100,7 +101,7 @@ namespace luaItem
 		int data = luaL_checkint(L, 6);
 		const char* name = luaL_checkstring(L, 7);
 
-		plr->Gossip_SendPOI(x, y, icon, flags, data, name);
+		Messenger::SendGossipPOI( plr, x, y, icon, flags, data, name);
 		return 1;
 	}
 	

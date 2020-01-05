@@ -111,7 +111,7 @@ class LuaUnit
 			int data = luaL_checkint(L, 5);
 			const char * name = luaL_checkstring(L, 6);
 			
-			plr->Gossip_SendPOI(x, y, icon, flags, data, name);
+			Messenger::SendGossipPOI( plr, x, y, icon, flags, data, name);
 
 			return 0;
 		}

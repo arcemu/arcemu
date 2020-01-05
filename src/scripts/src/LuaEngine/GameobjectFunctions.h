@@ -106,7 +106,7 @@ class LuaGameObject
 			if(!plr)
 				return 0;
 
-			plr->Gossip_SendPOI(x, y, icon, flags, data, name);
+			Messenger::SendGossipPOI( plr, x, y, icon, flags, data, name);
 			return 0;
 		}
 

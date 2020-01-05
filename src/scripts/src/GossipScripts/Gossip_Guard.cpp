@@ -18,6 +18,7 @@
  */
 
 #include "Setup.h"
+#include "Messenger.h"
 
 /************************************************************************/
 /* GENERAL GUARD SCRIPT                                                 */
@@ -90,69 +91,69 @@ class StormwindGuard : public GossipScript
 
 				case 1:     // Auction House
 					SendQuickMenu(3834);
-					Plr->Gossip_SendPOI(-8811.46f, 667.46f, 7, 6, 0, "Stormwind Auction House");
+					Messenger::SendGossipPOI( Plr, -8811.46f, 667.46f, 7, 6, 0, "Stormwind Auction House");
 					break;
 
 				case 2:     // Bank of Stormwind
 					SendQuickMenu(764);
-					Plr->Gossip_SendPOI(-8916.87f, 622.87f, 7, 6, 0, "Stormwind Bank");
+					Messenger::SendGossipPOI( Plr, -8916.87f, 622.87f, 7, 6, 0, "Stormwind Bank");
 					break;
 
 				case 3:     // Stormwind Harbor
 					SendQuickMenu(13439);
-					Plr->Gossip_SendPOI(-8634.77f, 949.64f, 7, 6, 0, "Stormwind Harbor");
+					Messenger::SendGossipPOI( Plr, -8634.77f, 949.64f, 7, 6, 0, "Stormwind Harbor");
 					break;
 
 				case 4:     // Deeprun Tram
 					SendQuickMenu(3813);
-					Plr->Gossip_SendPOI(-8378.88f, 554.23f, 7, 6, 0, "The Deeprun Tram");
+					Messenger::SendGossipPOI( Plr, -8378.88f, 554.23f, 7, 6, 0, "The Deeprun Tram");
 					break;
 
 				case 5:     // The Inn
 					SendQuickMenu(3860);
-					Plr->Gossip_SendPOI(-8869.0f, 675.4f, 7, 6, 0, "The Gilded Rose");
+					Messenger::SendGossipPOI( Plr, -8869.0f, 675.4f, 7, 6, 0, "The Gilded Rose");
 					break;
 
 				case 6:     // Gryphon Master
 					SendQuickMenu(879);
-					Plr->Gossip_SendPOI(-8837.0f, 493.5f, 7, 6, 0, "Stormwind Gryphon Master");
+					Messenger::SendGossipPOI( Plr, -8837.0f, 493.5f, 7, 6, 0, "Stormwind Gryphon Master");
 					break;
 
 				case 7:     // Guild Master
 					SendQuickMenu(882);
-					Plr->Gossip_SendPOI(-8894.0f, 611.2f, 7, 6, 0, "Stormwind Vistor`s Center");
+					Messenger::SendGossipPOI( Plr, -8894.0f, 611.2f, 7, 6, 0, "Stormwind Vistor`s Center");
 					break;
 
 				case 8:     // Mailbox
 					SendQuickMenu(3861);
-					Plr->Gossip_SendPOI(-8876.48f, 649.18f, 7, 6, 0, "Stormwind Mailbox");
+					Messenger::SendGossipPOI( Plr, -8876.48f, 649.18f, 7, 6, 0, "Stormwind Mailbox");
 					break;
 
 				case 9:     // Stable Master
 					SendQuickMenu(5984);
-					Plr->Gossip_SendPOI(-8433.0f, 554.7f, 7, 6, 0, "Jenova Stoneshield");
+					Messenger::SendGossipPOI( Plr, -8433.0f, 554.7f, 7, 6, 0, "Jenova Stoneshield");
 					break;
 
 				case 10:     // Weapons Master
 					SendQuickMenu(4516);
-					Plr->Gossip_SendPOI(-8797.0f, 612.8f, 7, 6, 0, "Woo Ping");
+					Messenger::SendGossipPOI( Plr, -8797.0f, 612.8f, 7, 6, 0, "Woo Ping");
 					break;
 
 				case 11:    // Officers' Lounge
 					SendQuickMenu(7047);
-					Plr->Gossip_SendPOI(-8759.92f, 399.69f, 7, 6, 0, "Champions` Hall");
+					Messenger::SendGossipPOI( Plr, -8759.92f, 399.69f, 7, 6, 0, "Champions` Hall");
 					break;
 
 				case 12:    // Battlemaster
 					{
 						SendQuickMenu(10218);
-						Plr->Gossip_SendPOI(-8393.62f, 274.21f, 7, 6, 0, "Battlemasters Stormwind");
+						Messenger::SendGossipPOI( Plr, -8393.62f, 274.21f, 7, 6, 0, "Battlemasters Stormwind");
 					}
 					break;
 
 				case 13:     // Barber
 					SendQuickMenu(13882);
-					Plr->Gossip_SendPOI(-8743.15f, 660.36f, 7, 6, 0, "Stormwind Barber");
+					Messenger::SendGossipPOI( Plr, -8743.15f, 660.36f, 7, 6, 0, "Stormwind Barber");
 					break;
 
 				case 14:    // Class Trainers
@@ -197,154 +198,154 @@ class StormwindGuard : public GossipScript
 
 				case 16: //Druid
 					{
-						Plr->Gossip_SendPOI(-8751.0f, 1124.5f, 7, 6, 0, "The Park");
+						Messenger::SendGossipPOI( Plr, -8751.0f, 1124.5f, 7, 6, 0, "The Park");
 						SendQuickMenu(902);
 					}
 					break;
 
 				case 17: //Hunter
 					{
-						Plr->Gossip_SendPOI(-8413.0f, 541.5f, 7, 6, 0, "Hunter Lodge");
+						Messenger::SendGossipPOI( Plr, -8413.0f, 541.5f, 7, 6, 0, "Hunter Lodge");
 						SendQuickMenu(905);
 					}
 					break;
 
 				case 18: //Mage
 					{
-						Plr->Gossip_SendPOI(-9012.0f, 867.6f, 7, 6, 0, "Wizard`s Sanctum");
+						Messenger::SendGossipPOI( Plr, -9012.0f, 867.6f, 7, 6, 0, "Wizard`s Sanctum");
 						SendQuickMenu(899);
 					}
 					break;
 
 				case 19: //Paladin
 					{
-						Plr->Gossip_SendPOI(-8577.0f, 881.7f, 7, 6, 0, "Cathedral Of Light");
+						Messenger::SendGossipPOI( Plr, -8577.0f, 881.7f, 7, 6, 0, "Cathedral Of Light");
 						SendQuickMenu(904);
 					}
 					break;
 
 				case 20: //Priest
 					{
-						Plr->Gossip_SendPOI(-8512.0f, 862.4f, 7, 6, 0, "Cathedral Of Light");
+						Messenger::SendGossipPOI( Plr, -8512.0f, 862.4f, 7, 6, 0, "Cathedral Of Light");
 						SendQuickMenu(903);
 					}
 					break;
 
 				case 21: //Rogue
 					{
-						Plr->Gossip_SendPOI(-8753.0f, 367.8f, 7, 6, 0, "Stormwind - Rogue House");
+						Messenger::SendGossipPOI( Plr, -8753.0f, 367.8f, 7, 6, 0, "Stormwind - Rogue House");
 						SendQuickMenu(900);
 					}
 					break;
 
 				case 22: //Shaman
 					{
-						Plr->Gossip_SendPOI(-9031.54f, 549.87f, 7, 6, 0, "Farseer Umbrua");
+						Messenger::SendGossipPOI( Plr, -9031.54f, 549.87f, 7, 6, 0, "Farseer Umbrua");
 						SendQuickMenu(10106);
 					}
 					break;
 
 				case 23: //Warlock
 					{
-						Plr->Gossip_SendPOI(-8948.91f, 998.35f, 7, 6, 0, "The Slaughtered Lamb");
+						Messenger::SendGossipPOI( Plr, -8948.91f, 998.35f, 7, 6, 0, "The Slaughtered Lamb");
 						SendQuickMenu(906);
 					}
 					break;
 
 				case 24: //Warrior
 					{
-						Plr->Gossip_SendPOI(-8714.14f, 334.96f, 7, 6, 0, "Stormwind Barracks");
+						Messenger::SendGossipPOI( Plr, -8714.14f, 334.96f, 7, 6, 0, "Stormwind Barracks");
 						SendQuickMenu(901);
 					}
 					break;
 
 				case 25: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-8988.0f, 759.60f, 7, 6, 0, "Alchemy Needs");
+						Messenger::SendGossipPOI( Plr, -8988.0f, 759.60f, 7, 6, 0, "Alchemy Needs");
 						SendQuickMenu(919);
 					}
 					break;
 
 				case 26: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-8424.0f, 616.9f, 7, 6, 0, "Therum Deepforge");
+						Messenger::SendGossipPOI( Plr, -8424.0f, 616.9f, 7, 6, 0, "Therum Deepforge");
 						SendQuickMenu(920);
 					}
 					break;
 
 				case 27: //Cooking
 					{
-						Plr->Gossip_SendPOI(-8611.0f, 364.6f, 7, 6, 0, "Pig and Whistle Tavern");
+						Messenger::SendGossipPOI( Plr, -8611.0f, 364.6f, 7, 6, 0, "Pig and Whistle Tavern");
 						SendQuickMenu(921);
 					}
 					break;
 
 				case 28: //Enchanting
 					{
-						Plr->Gossip_SendPOI(-8858.0f, 803.7f, 7, 6, 0, "Lucan Cordell");
+						Messenger::SendGossipPOI( Plr, -8858.0f, 803.7f, 7, 6, 0, "Lucan Cordell");
 						SendQuickMenu(941);
 					}
 					break;
 
 				case 29: //Engineering
 					{
-						Plr->Gossip_SendPOI(-8347.0f, 644.1f, 7, 6, 0, "Lilliam Sparkspindle");
+						Messenger::SendGossipPOI( Plr, -8347.0f, 644.1f, 7, 6, 0, "Lilliam Sparkspindle");
 						SendQuickMenu(922);
 					}
 					break;
 
 				case 30: //First Aid
 					{
-						Plr->Gossip_SendPOI(-8513.0f, 801.8f, 7, 6, 0, "Shaina Fuller");
+						Messenger::SendGossipPOI( Plr, -8513.0f, 801.8f, 7, 6, 0, "Shaina Fuller");
 						SendQuickMenu(923);
 					}
 					break;
 
 				case 31: //Fishing
 					{
-						Plr->Gossip_SendPOI(-8803.0f, 767.5f, 7, 6, 0, "Arnold Leland");
+						Messenger::SendGossipPOI( Plr, -8803.0f, 767.5f, 7, 6, 0, "Arnold Leland");
 						SendQuickMenu(940);
 					}
 					break;
 
 				case 32: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-8967.0f, 779.5f, 7, 6, 0, "Alchemy Needs");
+						Messenger::SendGossipPOI( Plr, -8967.0f, 779.5f, 7, 6, 0, "Alchemy Needs");
 						SendQuickMenu(924);
 					}
 					break;
 
 				case 33: //Inscription
 					{
-						Plr->Gossip_SendPOI(-8853.33f, 857.66f, 7, 6, 0, "Stormwind Inscription");
+						Messenger::SendGossipPOI( Plr, -8853.33f, 857.66f, 7, 6, 0, "Stormwind Inscription");
 						SendQuickMenu(13881);
 					}
 					break;
 
 				case 34: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-8726.0f, 477.4f, 7, 6, 0, "The Protective Hide");
+						Messenger::SendGossipPOI( Plr, -8726.0f, 477.4f, 7, 6, 0, "The Protective Hide");
 						SendQuickMenu(925);
 					}
 					break;
 
 				case 35: //Mining
 					{
-						Plr->Gossip_SendPOI(-8434.0f, 692.8f, 7, 6, 0, "Gelman Stonehand");
+						Messenger::SendGossipPOI( Plr, -8434.0f, 692.8f, 7, 6, 0, "Gelman Stonehand");
 						SendQuickMenu(927);
 					}
 					break;
 
 				case 36: //Skinning
 					{
-						Plr->Gossip_SendPOI(-8716.0f, 469.4f, 7, 6, 0, "The Protective Hide");
+						Messenger::SendGossipPOI( Plr, -8716.0f, 469.4f, 7, 6, 0, "The Protective Hide");
 						SendQuickMenu(928);
 					}
 					break;
 
 				case 37: //Tailoring
 					{
-						Plr->Gossip_SendPOI(-8938.0f, 800.7f, 7, 6, 0, "Duncan`s Textiles");
+						Messenger::SendGossipPOI( Plr, -8938.0f, 800.7f, 7, 6, 0, "Duncan`s Textiles");
 						SendQuickMenu(929);
 					}
 					break;
@@ -391,48 +392,48 @@ class DarnassusGuard : public GossipScript
 
 				case 1:     // Auction House
 					SendQuickMenu(3833);
-					Plr->Gossip_SendPOI(9861.23f, 2334.55f, 7, 6, 0, "Darnassus Auction House");
+					Messenger::SendGossipPOI( Plr, 9861.23f, 2334.55f, 7, 6, 0, "Darnassus Auction House");
 					break;
 
 				case 2:		// The Bank
 					SendQuickMenu(3017);
-					Plr->Gossip_SendPOI(9938.45f, 2512.35f, 7, 6, 0, "Darnassus Bank");
+					Messenger::SendGossipPOI( Plr, 9938.45f, 2512.35f, 7, 6, 0, "Darnassus Bank");
 					break;
 
 				case 3:		// Hippogryph Master
 					SendQuickMenu(3018);
-					Plr->Gossip_SendPOI(9945.65f, 2618.94f, 7, 6, 0, "Rut'theran Village");
+					Messenger::SendGossipPOI( Plr, 9945.65f, 2618.94f, 7, 6, 0, "Rut'theran Village");
 					break;
 
 				case 4:		// Guild Master
 					SendQuickMenu(3019);
-					Plr->Gossip_SendPOI(10076.40f, 2199.59f, 7, 6, 0, "Darnassus Guild Master");
+					Messenger::SendGossipPOI( Plr, 10076.40f, 2199.59f, 7, 6, 0, "Darnassus Guild Master");
 					break;
 
 				case 5:		// The Inn
 					SendQuickMenu(3020);
-					Plr->Gossip_SendPOI(10133.29f, 2222.52f, 7, 6, 0, "Darnassus Inn");
+					Messenger::SendGossipPOI( Plr, 10133.29f, 2222.52f, 7, 6, 0, "Darnassus Inn");
 					break;
 
 				case 6:		// Mailbox
 					SendQuickMenu(3021);
-					Plr->Gossip_SendPOI(9942.17f, 2495.48f, 7, 6, 0, "Darnassus Mailbox");
+					Messenger::SendGossipPOI( Plr, 9942.17f, 2495.48f, 7, 6, 0, "Darnassus Mailbox");
 					break;
 
 				case 7:		// Stable Master
 					SendQuickMenu(5980);
-					Plr->Gossip_SendPOI(10167.20f, 2522.66f, 7, 6, 0, "Alassin");
+					Messenger::SendGossipPOI( Plr, 10167.20f, 2522.66f, 7, 6, 0, "Alassin");
 					break;
 
 				case 8:		// Weapons Trainer
 					SendQuickMenu(4517);
-					Plr->Gossip_SendPOI(9907.11f, 2329.70f, 7, 6, 0, "Ilyenia Moonfire");
+					Messenger::SendGossipPOI( Plr, 9907.11f, 2329.70f, 7, 6, 0, "Ilyenia Moonfire");
 					break;
 
 				case 9:    // Battlemaster
 					{
 						SendQuickMenu(7519);
-						Plr->Gossip_SendPOI(9981.9f, 2325.9f, 7, 6, 0, "Battlemasters Darnassus");
+						Messenger::SendGossipPOI( Plr, 9981.9f, 2325.9f, 7, 6, 0, "Battlemasters Darnassus");
 					}
 					break;
 
@@ -467,111 +468,111 @@ class DarnassusGuard : public GossipScript
 
 				case 12:	// Druid
 					{
-						Plr->Gossip_SendPOI(10186, 2570.46f, 7, 6, 0, "Darnassus Druid Trainer");
+						Messenger::SendGossipPOI( Plr, 10186, 2570.46f, 7, 6, 0, "Darnassus Druid Trainer");
 						SendQuickMenu(3024);
 					}
 					break;
 
 				case 13:	// Hunter
 					{
-						Plr->Gossip_SendPOI(10177.29f, 2511.10f, 7, 6, 0, "Darnassus Hunter Trainer");
+						Messenger::SendGossipPOI( Plr, 10177.29f, 2511.10f, 7, 6, 0, "Darnassus Hunter Trainer");
 						SendQuickMenu(3023);
 					}
 					break;
 
 				case 14:	// Priest
 					{
-						Plr->Gossip_SendPOI(9659.12f, 2524.88f, 7, 6, 0, "Temple of the Moon");
+						Messenger::SendGossipPOI( Plr, 9659.12f, 2524.88f, 7, 6, 0, "Temple of the Moon");
 						SendQuickMenu(3025);
 					}
 					break;
 
 				case 15:	// Rogue
 					{
-						Plr->Gossip_SendPOI(10122, 2599.12f, 7, 6, 0, "Darnassus Rogue Trainer");
+						Messenger::SendGossipPOI( Plr, 10122, 2599.12f, 7, 6, 0, "Darnassus Rogue Trainer");
 						SendQuickMenu(3026);
 					}
 					break;
 
 				case 16:	// Warrior
 					{
-						Plr->Gossip_SendPOI(9951.91f, 2280.38f, 7, 6, 0, "Warrior's Terrace");
+						Messenger::SendGossipPOI( Plr, 9951.91f, 2280.38f, 7, 6, 0, "Warrior's Terrace");
 						SendQuickMenu(3033);
 					}
 					break;
 
 				case 17: //Alchemy
 					{
-						Plr->Gossip_SendPOI(10075.90f, 2356.76f, 7, 6, 0, "Darnassus Alchemy Trainer");
+						Messenger::SendGossipPOI( Plr, 10075.90f, 2356.76f, 7, 6, 0, "Darnassus Alchemy Trainer");
 						SendQuickMenu(3035);
 					}
 					break;
 
 				case 18: //Cooking
 					{
-						Plr->Gossip_SendPOI(10088.59f, 2419.21f, 7, 6, 0, "Darnassus Cooking Trainer");
+						Messenger::SendGossipPOI( Plr, 10088.59f, 2419.21f, 7, 6, 0, "Darnassus Cooking Trainer");
 						SendQuickMenu(3036);
 					}
 					break;
 
 				case 19: //Enchanting
 					{
-						Plr->Gossip_SendPOI(10146.09f, 2313.42f, 7, 6, 0, "Darnassus Enchanting Trainer");
+						Messenger::SendGossipPOI( Plr, 10146.09f, 2313.42f, 7, 6, 0, "Darnassus Enchanting Trainer");
 						SendQuickMenu(3337);
 					}
 					break;
 
 				case 20: //First Aid
 					{
-						Plr->Gossip_SendPOI(10150.09f, 2390.43f, 7, 6, 0, "Darnassus First Aid Trainer");
+						Messenger::SendGossipPOI( Plr, 10150.09f, 2390.43f, 7, 6, 0, "Darnassus First Aid Trainer");
 						SendQuickMenu(3037);
 					}
 					break;
 
 				case 21: //Fishing
 					{
-						Plr->Gossip_SendPOI(9836.20f, 2432.17f, 7, 6, 0, "Darnassus Fishing Trainer");
+						Messenger::SendGossipPOI( Plr, 9836.20f, 2432.17f, 7, 6, 0, "Darnassus Fishing Trainer");
 						SendQuickMenu(3038);
 					}
 					break;
 
 				case 22: //Herbalism
 					{
-						Plr->Gossip_SendPOI(9757.17f, 2430.16f, 7, 6, 0, "Darnassus Herbalism Trainer");
+						Messenger::SendGossipPOI( Plr, 9757.17f, 2430.16f, 7, 6, 0, "Darnassus Herbalism Trainer");
 						SendQuickMenu(3039);
 					}
 					break;
 				case 23: //Inscription
 					{
-						Plr->Gossip_SendPOI(10146.09f, 2313.42f, 7, 6, 0, "Darnassus Inscription Trainer");
+						Messenger::SendGossipPOI( Plr, 10146.09f, 2313.42f, 7, 6, 0, "Darnassus Inscription Trainer");
 						SendQuickMenu(13886);
 					}
 					break;
 
 				case 24: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(10086.59f, 2255.77f, 7, 6, 0, "Darnassus Leatherworking Trainer");
+						Messenger::SendGossipPOI( Plr, 10086.59f, 2255.77f, 7, 6, 0, "Darnassus Leatherworking Trainer");
 						SendQuickMenu(3040);
 					}
 					break;
 
 				case 25: //Skinning
 					{
-						Plr->Gossip_SendPOI(10081.40f, 2257.18f, 7, 6, 0, "Darnassus Skinning Trainer");
+						Messenger::SendGossipPOI( Plr, 10081.40f, 2257.18f, 7, 6, 0, "Darnassus Skinning Trainer");
 						SendQuickMenu(3042);
 					}
 					break;
 
 				case 26: //Tailoring
 					{
-						Plr->Gossip_SendPOI(10079.70f, 2268.19f, 7, 6, 0, "Darnassus Tailor");
+						Messenger::SendGossipPOI( Plr, 10079.70f, 2268.19f, 7, 6, 0, "Darnassus Tailor");
 						SendQuickMenu(3044);
 					}
 					break;
 
 				case 27: //Lexicon of Power
 					{
-						Plr->Gossip_SendPOI(10146.09f, 2313.42f, 7, 6, 0, "Darnassus Inscription Trainer");
+						Messenger::SendGossipPOI( Plr, 10146.09f, 2313.42f, 7, 6, 0, "Darnassus Inscription Trainer");
 						SendQuickMenu(14174);
 					}
 					break;
@@ -629,12 +630,12 @@ class GoldshireGuard : public GossipScript
 
 				case 4:     //Inn
 					SendQuickMenu(4263);
-					Plr->Gossip_SendPOI(-9459.34f, 42.08f, 99, 6, 0, "Lion's Pride Inn");
+					Messenger::SendGossipPOI( Plr, -9459.34f, 42.08f, 99, 6, 0, "Lion's Pride Inn");
 					break;
 
 				case 5:     //Stable Master
 					SendQuickMenu(5983);
-					Plr->Gossip_SendPOI(-9466.62f, 45.87f, 99, 6, 0, "Erma");
+					Messenger::SendGossipPOI( Plr, -9466.62f, 45.87f, 99, 6, 0, "Erma");
 					break;
 
 				case 6:     //Class Trainer
@@ -690,28 +691,28 @@ class GoldshireGuard : public GossipScript
 
 				case 10: //Mage
 					{
-						Plr->Gossip_SendPOI(-9471.12f, 33.44f, 7, 6, 0, "Zaldimar Wefhellt");
+						Messenger::SendGossipPOI( Plr, -9471.12f, 33.44f, 7, 6, 0, "Zaldimar Wefhellt");
 						SendQuickMenu(4268);
 					}
 					break;
 
 				case 11: //Paladin
 					{
-						Plr->Gossip_SendPOI(-9469, 108.05f, 7, 6, 0, "Brother Wilhelm");
+						Messenger::SendGossipPOI( Plr, -9469, 108.05f, 7, 6, 0, "Brother Wilhelm");
 						SendQuickMenu(4269);
 					}
 					break;
 
 				case 12: //Priest
 					{
-						Plr->Gossip_SendPOI(-9461.07f, 32.6f, 7, 6, 0, "Priestess Josetta");
+						Messenger::SendGossipPOI( Plr, -9461.07f, 32.6f, 7, 6, 0, "Priestess Josetta");
 						SendQuickMenu(4267);
 					}
 					break;
 
 				case 13: //Rogue
 					{
-						Plr->Gossip_SendPOI(-9465.13f, 13.29f, 7, 6, 0, "Keryn Sylvius");
+						Messenger::SendGossipPOI( Plr, -9465.13f, 13.29f, 7, 6, 0, "Keryn Sylvius");
 						SendQuickMenu(4270);
 					}
 					break;
@@ -724,35 +725,35 @@ class GoldshireGuard : public GossipScript
 
 				case 15: //Warlock
 					{
-						Plr->Gossip_SendPOI(-9473.21f, -4.08f, 7, 6, 0, "Maximillian Crowe");
+						Messenger::SendGossipPOI( Plr, -9473.21f, -4.08f, 7, 6, 0, "Maximillian Crowe");
 						SendQuickMenu(4272);
 					}
 					break;
 
 				case 16: //Warrior
 					{
-						Plr->Gossip_SendPOI(-9461.82f, 109.50f, 7, 6, 0, "Lyria Du Lac");
+						Messenger::SendGossipPOI( Plr, -9461.82f, 109.50f, 7, 6, 0, "Lyria Du Lac");
 						SendQuickMenu(4271);
 					}
 					break;
 
 				case 17: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-9057.04f, 153.63f, 7, 6, 0, "Alchemist Mallory");
+						Messenger::SendGossipPOI( Plr, -9057.04f, 153.63f, 7, 6, 0, "Alchemist Mallory");
 						SendQuickMenu(4274);
 					}
 					break;
 
 				case 18: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-9456.58f, 87.90f, 7, 6, 0, "Smith Argus");
+						Messenger::SendGossipPOI( Plr, -9456.58f, 87.90f, 7, 6, 0, "Smith Argus");
 						SendQuickMenu(4275);
 					}
 					break;
 
 				case 19: //Cooking
 					{
-						Plr->Gossip_SendPOI(-9467.54f, -3.16f, 7, 6, 0, "Tomas");
+						Messenger::SendGossipPOI( Plr, -9467.54f, -3.16f, 7, 6, 0, "Tomas");
 						SendQuickMenu(4276);
 					}
 					break;
@@ -771,35 +772,35 @@ class GoldshireGuard : public GossipScript
 
 				case 22: //First Aid
 					{
-						Plr->Gossip_SendPOI(-9456.82f, 30.49f, 7, 6, 0, "Michelle Belle");
+						Messenger::SendGossipPOI( Plr, -9456.82f, 30.49f, 7, 6, 0, "Michelle Belle");
 						SendQuickMenu(4279);
 					}
 					break;
 
 				case 23: //Fishing
 					{
-						Plr->Gossip_SendPOI(-9386.54f, -118.73f, 7, 6, 0, "Lee Brown");
+						Messenger::SendGossipPOI( Plr, -9386.54f, -118.73f, 7, 6, 0, "Lee Brown");
 						SendQuickMenu(4280);
 					}
 					break;
 
 				case 24: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-9060.70f, 149.23f, 7, 6, 0, "Herbalist Pomeroy");
+						Messenger::SendGossipPOI( Plr, -9060.70f, 149.23f, 7, 6, 0, "Herbalist Pomeroy");
 						SendQuickMenu(4281);
 					}
 					break;
 
 				case 25: //Inscription
 					{
-						Plr->Gossip_SendPOI(-8853.33f, 857.66f, 7, 6, 0, "Stormwind Inscription");
+						Messenger::SendGossipPOI( Plr, -8853.33f, 857.66f, 7, 6, 0, "Stormwind Inscription");
 						SendQuickMenu(13881);
 					}
 					break;
 
 				case 26: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-9376.12f, -75.23f, 7, 6, 0, "Adele Fielder");
+						Messenger::SendGossipPOI( Plr, -9376.12f, -75.23f, 7, 6, 0, "Adele Fielder");
 						SendQuickMenu(4282);
 					}
 					break;
@@ -812,14 +813,14 @@ class GoldshireGuard : public GossipScript
 
 				case 28: //Skinning
 					{
-						Plr->Gossip_SendPOI(-9536.91f, -1212.76f, 7, 6, 0, "Helene Peltskinner");
+						Messenger::SendGossipPOI( Plr, -9536.91f, -1212.76f, 7, 6, 0, "Helene Peltskinner");
 						SendQuickMenu(4284);
 					}
 					break;
 
 				case 29: //Tailoring
 					{
-						Plr->Gossip_SendPOI(-9376.12f, -75.23f, 7, 6, 0, "Eldrin");
+						Messenger::SendGossipPOI( Plr, -9376.12f, -75.23f, 7, 6, 0, "Eldrin");
 						SendQuickMenu(4285);
 					}
 					break;
@@ -866,53 +867,53 @@ class UndercityGuard : public GossipScript
 
 				case 1:     // The bank
 					SendQuickMenu(3514);
-					Plr->Gossip_SendPOI(1595.64f, 232.45f, 7, 6, 0, "Undercity Bank");
+					Messenger::SendGossipPOI( Plr, 1595.64f, 232.45f, 7, 6, 0, "Undercity Bank");
 					break;
 
 				case 2:     // The bat handler
 					SendQuickMenu(3515);
-					Plr->Gossip_SendPOI(1565.9f, 271.43f, 7, 6, 0, "Undercity Bat Handler");
+					Messenger::SendGossipPOI( Plr, 1565.9f, 271.43f, 7, 6, 0, "Undercity Bat Handler");
 					break;
 
 				case 3:     // The guild master
 					SendQuickMenu(3516);
-					Plr->Gossip_SendPOI(1594.17f, 205.57f, 7, 6, 0, "Undercity Guild Master");
+					Messenger::SendGossipPOI( Plr, 1594.17f, 205.57f, 7, 6, 0, "Undercity Guild Master");
 					break;
 
 				case 4:     // The inn
 					SendQuickMenu(3517);
-					Plr->Gossip_SendPOI(1639.43f, 220.99f, 7, 6, 0, "Undercity Inn");
+					Messenger::SendGossipPOI( Plr, 1639.43f, 220.99f, 7, 6, 0, "Undercity Inn");
 					break;
 
 				case 5:     // The mailbox
 					SendQuickMenu(3518);
-					Plr->Gossip_SendPOI(1632.68f, 219.4f, 7, 6, 0, "Undercity Mailbox");
+					Messenger::SendGossipPOI( Plr, 1632.68f, 219.4f, 7, 6, 0, "Undercity Mailbox");
 					break;
 
 				case 6:     // The auction house
 					SendQuickMenu(3520);
-					Plr->Gossip_SendPOI(1647.9f, 258.49f, 7, 6, 0, "Undercity Auction House");
+					Messenger::SendGossipPOI( Plr, 1647.9f, 258.49f, 7, 6, 0, "Undercity Auction House");
 					break;
 
 				case 7:     // The zeppelin master
 					SendQuickMenu(3519);
-					Plr->Gossip_SendPOI(2059, 274.86f, 7, 6, 0, "Undercity Zeppelin");
+					Messenger::SendGossipPOI( Plr, 2059, 274.86f, 7, 6, 0, "Undercity Zeppelin");
 					break;
 
 				case 8:     // The weapon master
 					SendQuickMenu(4521);
-					Plr->Gossip_SendPOI(1670.31f, 324.66f, 7, 6, 0, "Archibald");
+					Messenger::SendGossipPOI( Plr, 1670.31f, 324.66f, 7, 6, 0, "Archibald");
 					break;
 
 				case 9:     // The stable master
 					SendQuickMenu(5979);
-					Plr->Gossip_SendPOI(1634.18f, 226.76f, 7, 6, 0, "Anya Maulray");
+					Messenger::SendGossipPOI( Plr, 1634.18f, 226.76f, 7, 6, 0, "Anya Maulray");
 					break;
 
 				case 10:    // The battlemaster
 					{
 						SendQuickMenu(7527);
-						Plr->Gossip_SendPOI(1300.33f, 350.92f, 7, 6, 0, "Battlemasters Undercity");
+						Messenger::SendGossipPOI( Plr, 1300.33f, 350.92f, 7, 6, 0, "Battlemasters Undercity");
 					}
 					break;
 
@@ -954,132 +955,132 @@ class UndercityGuard : public GossipScript
 
 				case 13: //Mage
 					{
-						Plr->Gossip_SendPOI(1781, 53, 7, 6, 0, "Undercity Mage Trainers");
+						Messenger::SendGossipPOI( Plr, 1781, 53, 7, 6, 0, "Undercity Mage Trainers");
 						SendQuickMenu(3513);
 					}
 					break;
 
 				case 14: //Paladin
 					{
-						Plr->Gossip_SendPOI(1298.98f, 316.51f, 7, 6, 0, "Champion Cyssa Downrose");
+						Messenger::SendGossipPOI( Plr, 1298.98f, 316.51f, 7, 6, 0, "Champion Cyssa Downrose");
 						SendQuickMenu(3521);
 					}
 					break;
 
 				case 15: //Priest
 					{
-						Plr->Gossip_SendPOI(1758.33f, 401.5f, 7, 6, 0, "Undercity Priest Trainers");
+						Messenger::SendGossipPOI( Plr, 1758.33f, 401.5f, 7, 6, 0, "Undercity Priest Trainers");
 						SendQuickMenu(3521);
 					}
 					break;
 
 				case 16: //Rogue
 					{
-						Plr->Gossip_SendPOI(1418.56f, 65, 7, 6, 0, "Undercity Rogue Trainers");
+						Messenger::SendGossipPOI( Plr, 1418.56f, 65, 7, 6, 0, "Undercity Rogue Trainers");
 						SendQuickMenu(3526);
 					}
 					break;
 
 				case 17: //Warlock
 					{
-						Plr->Gossip_SendPOI(1780.92f, 53.16f, 7, 6, 0, "Undercity Warlock Trainers");
+						Messenger::SendGossipPOI( Plr, 1780.92f, 53.16f, 7, 6, 0, "Undercity Warlock Trainers");
 						SendQuickMenu(3526);
 					}
 					break;
 
 				case 18: //Warrior
 					{
-						Plr->Gossip_SendPOI(1775.59f, 418.19f, 7, 6, 0, "Undercity Warrior Trainers");
+						Messenger::SendGossipPOI( Plr, 1775.59f, 418.19f, 7, 6, 0, "Undercity Warrior Trainers");
 						SendQuickMenu(3527);
 					}
 					break;
 
 				case 19: //Alchemy
 					{
-						Plr->Gossip_SendPOI(1419.82f, 417.19f, 7, 6, 0, "The Apothecarium");
+						Messenger::SendGossipPOI( Plr, 1419.82f, 417.19f, 7, 6, 0, "The Apothecarium");
 						SendQuickMenu(3528);
 					}
 					break;
 
 				case 20: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(1696, 285, 7, 6, 0, "Undercity Blacksmithing Trainer");
+						Messenger::SendGossipPOI( Plr, 1696, 285, 7, 6, 0, "Undercity Blacksmithing Trainer");
 						SendQuickMenu(3529);
 					}
 					break;
 
 				case 21: //Cooking
 					{
-						Plr->Gossip_SendPOI(1596.34f, 274.68f, 7, 6, 0, "Undercity Cooking Trainer");
+						Messenger::SendGossipPOI( Plr, 1596.34f, 274.68f, 7, 6, 0, "Undercity Cooking Trainer");
 						SendQuickMenu(3530);
 					}
 					break;
 
 				case 22: //Enchanting
 					{
-						Plr->Gossip_SendPOI(1488.54f, 280.19f, 7, 6, 0, "Undercity Enchanting Trainer");
+						Messenger::SendGossipPOI( Plr, 1488.54f, 280.19f, 7, 6, 0, "Undercity Enchanting Trainer");
 						SendQuickMenu(3531);
 					}
 					break;
 
 				case 23: //Engineering
 					{
-						Plr->Gossip_SendPOI(1408.58f, 143.43f, 7, 6, 0, "Undercity Engineering Trainer");
+						Messenger::SendGossipPOI( Plr, 1408.58f, 143.43f, 7, 6, 0, "Undercity Engineering Trainer");
 						SendQuickMenu(3532);
 					}
 					break;
 
 				case 24: //First Aid
 					{
-						Plr->Gossip_SendPOI(1519.65f, 167.19f, 7, 6, 0, "Undercity First Aid Trainer");
+						Messenger::SendGossipPOI( Plr, 1519.65f, 167.19f, 7, 6, 0, "Undercity First Aid Trainer");
 						SendQuickMenu(3533);
 					}
 					break;
 
 				case 25: //Fishing
 					{
-						Plr->Gossip_SendPOI(1679.9f, 89, 7, 6, 0, "Undercity Fishing Trainer");
+						Messenger::SendGossipPOI( Plr, 1679.9f, 89, 7, 6, 0, "Undercity Fishing Trainer");
 						SendQuickMenu(3534);
 					}
 					break;
 
 				case 26: //Herbalism
 					{
-						Plr->Gossip_SendPOI(1558, 349.36f, 7, 6, 0, "Undercity Herbalism Trainer");
+						Messenger::SendGossipPOI( Plr, 1558, 349.36f, 7, 6, 0, "Undercity Herbalism Trainer");
 						SendQuickMenu(3535);
 					}
 					break;
 
 				case 27: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(1498.76f, 196.43f, 7, 6, 0, "Undercity Leatherworking Trainer");
+						Messenger::SendGossipPOI( Plr, 1498.76f, 196.43f, 7, 6, 0, "Undercity Leatherworking Trainer");
 						SendQuickMenu(3536);
 					}
 					break;
 
 				case 28: //Mining
 					{
-						Plr->Gossip_SendPOI(1642.88f, 335.58f, 7, 6, 0, "Undercity Mining Trainer");
+						Messenger::SendGossipPOI( Plr, 1642.88f, 335.58f, 7, 6, 0, "Undercity Mining Trainer");
 						SendQuickMenu(3537);
 					}
 					break;
 
 				case 29: //Skinning
 					{
-						Plr->Gossip_SendPOI(1498.6f, 196.46f, 7, 6, 0, "Undercity Skinning Trainer");
+						Messenger::SendGossipPOI( Plr, 1498.6f, 196.46f, 7, 6, 0, "Undercity Skinning Trainer");
 						SendQuickMenu(3538);
 					}
 					break;
 
 				case 30: //Tailoring
 					{
-						Plr->Gossip_SendPOI(1689.55f, 193, 7, 6, 0, "Undercity Tailoring Trainer");
+						Messenger::SendGossipPOI( Plr, 1689.55f, 193, 7, 6, 0, "Undercity Tailoring Trainer");
 						SendQuickMenu(3539);
 					}
 					break;
 				case 32:     // Locksmith
 					{
-						Plr->Gossip_SendPOI(1632.68f, 219.4f, 7, 99, 0, "Undercity Locksmith");
+						Messenger::SendGossipPOI( Plr, 1632.68f, 219.4f, 7, 99, 0, "Undercity Locksmith");
 						SendQuickMenu(14916);
 					}break;
 			}
@@ -1117,62 +1118,62 @@ class UndercityGuardOverseer : public Arcemu::Gossip::Script
 			case 1:     // The auction house
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14900, Plr);
-					Plr->Gossip_SendPOI(1647.9f, 258.49f, 7, 99, 0, "Undercity Auction House");
+					Messenger::SendGossipPOI( Plr, 1647.9f, 258.49f, 7, 99, 0, "Undercity Auction House");
 				}break;
 			case 2:     // The bank
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14901, Plr);
-					Plr->Gossip_SendPOI(1595.64f, 232.45f, 7, 99, 0, "Undercity Bank");
+					Messenger::SendGossipPOI( Plr, 1595.64f, 232.45f, 7, 99, 0, "Undercity Bank");
 				}break;
 			case 3:     // Barber
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14902, Plr);
-					Plr->Gossip_SendPOI(1576.20f, 193.14f, 7, 99, 0, "Undercity Barber");
+					Messenger::SendGossipPOI( Plr, 1576.20f, 193.14f, 7, 99, 0, "Undercity Barber");
 				}break;
 			case 4:     // The bat handler
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14903, Plr);
-					Plr->Gossip_SendPOI(1565.9f, 271.43f, 7, 99, 0, "Undercity Bat Handler");
+					Messenger::SendGossipPOI( Plr, 1565.9f, 271.43f, 7, 99, 0, "Undercity Bat Handler");
 				}break;
 			case 5:    // The battlemaster
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14904, Plr);
-					Plr->Gossip_SendPOI(1300.33f, 350.92f, 7, 99, 0, "Battlemasters Undercity");
+					Messenger::SendGossipPOI( Plr, 1300.33f, 350.92f, 7, 99, 0, "Battlemasters Undercity");
 				}break;
 			case 6:     // The guild master
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14911, Plr);
-					Plr->Gossip_SendPOI(1594.17f, 205.57f, 7, 99, 0, "Undercity Guild Master");
+					Messenger::SendGossipPOI( Plr, 1594.17f, 205.57f, 7, 99, 0, "Undercity Guild Master");
 				}break;
 			case 7:     // The inn
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14913, Plr);
-					Plr->Gossip_SendPOI(1639.43f, 220.99f, 7, 99, 0, "Undercity Inn");
+					Messenger::SendGossipPOI( Plr, 1639.43f, 220.99f, 7, 99, 0, "Undercity Inn");
 				}break;
 			case 8:     // Locksmith
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14916, Plr);
-					Plr->Gossip_SendPOI(1499.68f, 53.28f, 7, 99, 0, "Undercity Locksmith");
+					Messenger::SendGossipPOI( Plr, 1499.68f, 53.28f, 7, 99, 0, "Undercity Locksmith");
 				}break;
 			case 9:     // The mailbox
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14918, Plr);
-					Plr->Gossip_SendPOI(1632.68f, 219.4f, 7, 99, 0, "Undercity Mailbox");
+					Messenger::SendGossipPOI( Plr, 1632.68f, 219.4f, 7, 99, 0, "Undercity Mailbox");
 				}break;
 			case 10:     // The stable master
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14924, Plr);
-					Plr->Gossip_SendPOI(1634.18f, 226.76f, 7, 99, 0, "Anya Maulray");
+					Messenger::SendGossipPOI( Plr, 1634.18f, 226.76f, 7, 99, 0, "Anya Maulray");
 				}break;
 			case 11:     // The weapon master
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14928, Plr);
-					Plr->Gossip_SendPOI(1670.31f, 324.66f, 7, 99, 0, "Archibald");
+					Messenger::SendGossipPOI( Plr, 1670.31f, 324.66f, 7, 99, 0, "Archibald");
 				}break;
 			case 12:     // The zeppelin master
 				{
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14929, Plr);
-					Plr->Gossip_SendPOI(2059.0f, 274.86f, 7, 99, 0, "Undercity Zeppelin");
+					Messenger::SendGossipPOI( Plr, 2059.0f, 274.86f, 7, 99, 0, "Undercity Zeppelin");
 				}break;
 			case 13:    // A class trainer
 				{
@@ -1205,97 +1206,97 @@ class UndercityGuardOverseer : public Arcemu::Gossip::Script
 				}break;
 			case 15: //Mage
 				{
-					Plr->Gossip_SendPOI(1781.0f, 53.0f, 7, 99, 0, "Undercity Mage Trainers");
+					Messenger::SendGossipPOI( Plr, 1781.0f, 53.0f, 7, 99, 0, "Undercity Mage Trainers");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3513, Plr);
 				}break;
 			case 16: //Paladin
 				{
-					Plr->Gossip_SendPOI(1298.98f, 316.51f, 7, 99, 0, "Champion Cyssa Downrose");
+					Messenger::SendGossipPOI( Plr, 1298.98f, 316.51f, 7, 99, 0, "Champion Cyssa Downrose");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3521, Plr);
 				}break;
 			case 17: //Priest
 				{
-					Plr->Gossip_SendPOI(1758.33f, 401.5f, 7, 99, 0, "Undercity Priest Trainers");
+					Messenger::SendGossipPOI( Plr, 1758.33f, 401.5f, 7, 99, 0, "Undercity Priest Trainers");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3521, Plr);
 				}break;
 			case 18: //Rogue
 				{
-					Plr->Gossip_SendPOI(1418.56f, 65.0f, 7, 99, 0, "Undercity Rogue Trainers");
+					Messenger::SendGossipPOI( Plr, 1418.56f, 65.0f, 7, 99, 0, "Undercity Rogue Trainers");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3526, Plr);
 				}break;
 			case 19: //Warlock
 				{
-					Plr->Gossip_SendPOI(1780.92f, 53.16f, 7, 99, 0, "Undercity Warlock Trainers");
+					Messenger::SendGossipPOI( Plr, 1780.92f, 53.16f, 7, 99, 0, "Undercity Warlock Trainers");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3526, Plr);
 				}break;
 			case 20: //Warrior
 				{
-					Plr->Gossip_SendPOI(1775.59f, 418.19f, 7, 99, 0, "Undercity Warrior Trainers");
+					Messenger::SendGossipPOI( Plr, 1775.59f, 418.19f, 7, 99, 0, "Undercity Warrior Trainers");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3527, Plr);
 				}break;
 			case 21: //Alchemy
 				{
-					Plr->Gossip_SendPOI(1419.82f, 417.19f, 7, 99, 0, "The Apothecarium");
+					Messenger::SendGossipPOI( Plr, 1419.82f, 417.19f, 7, 99, 0, "The Apothecarium");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3528, Plr);
 				}break;
 			case 22: //Blacksmithing
 				{
-					Plr->Gossip_SendPOI(1696.0f, 285.0f, 7, 99, 0, "Undercity Blacksmithing Trainer");
+					Messenger::SendGossipPOI( Plr, 1696.0f, 285.0f, 7, 99, 0, "Undercity Blacksmithing Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3529, Plr);
 				}break;
 			case 23: //Cooking
 				{
-					Plr->Gossip_SendPOI(1596.34f, 274.68f, 7, 99, 0, "Undercity Cooking Trainer");
+					Messenger::SendGossipPOI( Plr, 1596.34f, 274.68f, 7, 99, 0, "Undercity Cooking Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3530, Plr);
 				}break;
 			case 24: //Enchanting
 				{
-					Plr->Gossip_SendPOI(1488.54f, 280.19f, 7, 99, 0, "Undercity Enchanting Trainer");
+					Messenger::SendGossipPOI( Plr, 1488.54f, 280.19f, 7, 99, 0, "Undercity Enchanting Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3531, Plr);
 				}break;
 			case 25: //Engineering
 				{
-					Plr->Gossip_SendPOI(1408.58f, 143.43f, 7, 99, 0, "Undercity Engineering Trainer");
+					Messenger::SendGossipPOI( Plr, 1408.58f, 143.43f, 7, 99, 0, "Undercity Engineering Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3532, Plr);
 				}break;
 			case 26: //First Aid
 				{
-					Plr->Gossip_SendPOI(1519.65f, 167.19f, 7, 99, 0, "Undercity First Aid Trainer");
+					Messenger::SendGossipPOI( Plr, 1519.65f, 167.19f, 7, 99, 0, "Undercity First Aid Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3533, Plr);
 				}break;
 			case 27: //Fishing
 				{
-					Plr->Gossip_SendPOI(1679.9f, 89.0f, 7, 99, 0, "Undercity Fishing Trainer");
+					Messenger::SendGossipPOI( Plr, 1679.9f, 89.0f, 7, 99, 0, "Undercity Fishing Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3534, Plr);
 				}break;
 			case 28: //Herbalism
 				{
-					Plr->Gossip_SendPOI(1558.0f, 349.36f, 7, 99, 0, "Undercity Herbalism Trainer");
+					Messenger::SendGossipPOI( Plr, 1558.0f, 349.36f, 7, 99, 0, "Undercity Herbalism Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3535, Plr);
 				}break;
 			case 29: //Inscription
 				{
-					Plr->Gossip_SendPOI(1558.0f, 349.36f, 7, 99, 0, "Undercity Inscription");
+					Messenger::SendGossipPOI( Plr, 1558.0f, 349.36f, 7, 99, 0, "Undercity Inscription");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14914, Plr);
 				}break;
 			case 30: //Leatherworking
 				{
-					Plr->Gossip_SendPOI(1498.76f, 196.43f, 7, 99, 0, "Undercity Leatherworking Trainer");
+					Messenger::SendGossipPOI( Plr, 1498.76f, 196.43f, 7, 99, 0, "Undercity Leatherworking Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3536, Plr);
 				}break;
 			case 31: //Mining
 				{
-					Plr->Gossip_SendPOI(1642.88f, 335.58f, 7, 99, 0, "Undercity Mining Trainer");
+					Messenger::SendGossipPOI( Plr, 1642.88f, 335.58f, 7, 99, 0, "Undercity Mining Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3537, Plr);
 				}break;
 			case 32: //Skinning
 				{
-					Plr->Gossip_SendPOI(1498.6f, 196.46f, 7, 99, 0, "Undercity Skinning Trainer");
+					Messenger::SendGossipPOI( Plr, 1498.6f, 196.46f, 7, 99, 0, "Undercity Skinning Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3538, Plr);
 				}break;
 			case 33: //Tailoring
 				{
-					Plr->Gossip_SendPOI(1689.55f, 193.0f, 7, 99, 0, "Undercity Tailoring Trainer");
+					Messenger::SendGossipPOI( Plr, 1689.55f, 193.0f, 7, 99, 0, "Undercity Tailoring Trainer");
 					Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 3539, Plr);
 				}break;
 			}
@@ -1347,12 +1348,12 @@ class TeldrassilGuard : public GossipScript
 					break;
 
 				case 4:		// The Inn
-					Plr->Gossip_SendPOI(9821.49f, 960.13f, 7, 6, 0, "Dolanaar Inn");
+					Messenger::SendGossipPOI( Plr, 9821.49f, 960.13f, 7, 6, 0, "Dolanaar Inn");
 					SendQuickMenu(4320);
 					break;
 
 				case 5:		// Stable Master
-					Plr->Gossip_SendPOI(9808.37f, 931.1f, 7, 6, 0, "Seriadne");
+					Messenger::SendGossipPOI( Plr, 9808.37f, 931.1f, 7, 6, 0, "Seriadne");
 					SendQuickMenu(5982);
 					break;
 
@@ -1391,63 +1392,63 @@ class TeldrassilGuard : public GossipScript
 
 				case 8: //Druid
 					{
-						Plr->Gossip_SendPOI(9741.58f, 963.7f, 7, 6, 0, "Kal");
+						Messenger::SendGossipPOI( Plr, 9741.58f, 963.7f, 7, 6, 0, "Kal");
 						SendQuickMenu(4323);
 					}
 					break;
 
 				case 9: // Hunter
 					{
-						Plr->Gossip_SendPOI(9815.12f, 926.28f, 7, 6, 0, "Dazalar");
+						Messenger::SendGossipPOI( Plr, 9815.12f, 926.28f, 7, 6, 0, "Dazalar");
 						SendQuickMenu(4324);
 					}
 					break;
 
 				case 10: // Priest
 					{
-						Plr->Gossip_SendPOI(9906.16f, 986.63f, 7, 6, 0, "Laurna Morninglight");
+						Messenger::SendGossipPOI( Plr, 9906.16f, 986.63f, 7, 6, 0, "Laurna Morninglight");
 						SendQuickMenu(4325);
 					}
 					break;
 
 				case 11: // Rogue
 					{
-						Plr->Gossip_SendPOI(9789, 942.86f, 7, 6, 0, "Jannok Breezesong");
+						Messenger::SendGossipPOI( Plr, 9789, 942.86f, 7, 6, 0, "Jannok Breezesong");
 						SendQuickMenu(4326);
 					}
 					break;
 
 				case 12: // Warrior
 					{
-						Plr->Gossip_SendPOI(9821.96f, 950.61f, 7, 6, 0, "Kyra Windblade");
+						Messenger::SendGossipPOI( Plr, 9821.96f, 950.61f, 7, 6, 0, "Kyra Windblade");
 						SendQuickMenu(4327);
 					}
 					break;
 
 				case 13: // Alchemy
 					{
-						Plr->Gossip_SendPOI(9767.59f, 878.81f, 7, 6, 0, "Cyndra Kindwhisper");
+						Messenger::SendGossipPOI( Plr, 9767.59f, 878.81f, 7, 6, 0, "Cyndra Kindwhisper");
 						SendQuickMenu(4329);
 					}
 					break;
 
 				case 14: // Cooking
 					{
-						Plr->Gossip_SendPOI(9751.19f, 906.13f, 7, 6, 0, "Zarrin");
+						Messenger::SendGossipPOI( Plr, 9751.19f, 906.13f, 7, 6, 0, "Zarrin");
 						SendQuickMenu(4330);
 					}
 					break;
 
 				case 15: // Enchanting
 					{
-						Plr->Gossip_SendPOI(10677.59f, 1946.56f, 7, 6, 0, "Alanna Raveneye");
+						Messenger::SendGossipPOI( Plr, 10677.59f, 1946.56f, 7, 6, 0, "Alanna Raveneye");
 						SendQuickMenu(4331);
 					}
 					break;
 
 				case 16: // First Aid
 					{
-						Plr->Gossip_SendPOI(9903.12f, 999, 7, 6, 0, "Byancie");
+						Messenger::SendGossipPOI( Plr, 9903.12f, 999, 7, 6, 0, "Byancie");
 						SendQuickMenu(4332);
 					}
 					break;
@@ -1460,28 +1461,28 @@ class TeldrassilGuard : public GossipScript
 
 				case 18: // Herbalism
 					{
-						Plr->Gossip_SendPOI(9773.78f, 875.88f, 7, 6, 0, "Malorne Bladeleaf");
+						Messenger::SendGossipPOI( Plr, 9773.78f, 875.88f, 7, 6, 0, "Malorne Bladeleaf");
 						SendQuickMenu(4334);
 					}
 					break;
 
 				case 19: // Inscription
 					{
-						Plr->Gossip_SendPOI(10146.09f, 2313.42f, 7, 6, 0, "Darnassus Inscription Trainer");
+						Messenger::SendGossipPOI( Plr, 10146.09f, 2313.42f, 7, 6, 0, "Darnassus Inscription Trainer");
 						SendQuickMenu(13886);
 					}
 					break;
 
 				case 20: // Leatherworking
 					{
-						Plr->Gossip_SendPOI(10152.59f, 1681.46f, 7, 6, 0, "Nadyia Maneweaver");
+						Messenger::SendGossipPOI( Plr, 10152.59f, 1681.46f, 7, 6, 0, "Nadyia Maneweaver");
 						SendQuickMenu(4335);
 					}
 					break;
 
 				case 21: // Skinning
 					{
-						Plr->Gossip_SendPOI(10135.59f, 1673.18f, 7, 6, 0, "Radnaal Maneweaver");
+						Messenger::SendGossipPOI( Plr, 10135.59f, 1673.18f, 7, 6, 0, "Radnaal Maneweaver");
 						SendQuickMenu(4336);
 					}
 					break;
@@ -1549,12 +1550,12 @@ class SilvermoonGuard : public GossipScript
 
 				case 3:     // Dragonhawk Master
 					SendQuickMenu(9323);
-					Plr->Gossip_SendPOI(9378.45f, -7163.94f, 7, 6, 0, "Silvermoon City, Flight Master");
+					Messenger::SendGossipPOI( Plr, 9378.45f, -7163.94f, 7, 6, 0, "Silvermoon City, Flight Master");
 					break;
 
 				case 4:     // Guild Master
 					SendQuickMenu(9324);
-					Plr->Gossip_SendPOI(9480.75f, -7345.587f, 7, 6, 0, "Silvermoon City, Guild Master");
+					Messenger::SendGossipPOI( Plr, 9480.75f, -7345.587f, 7, 6, 0, "Silvermoon City, Guild Master");
 					break;
 
 				case 5:     // The Inn
@@ -1566,22 +1567,22 @@ class SilvermoonGuard : public GossipScript
 
 				case 6:     // Mailbox
 					SendQuickMenu(9326);
-					Plr->Gossip_SendPOI(9743.078f, -7466.4f, 7, 6, 0, "Silvermoon City, Mailbox");
+					Messenger::SendGossipPOI( Plr, 9743.078f, -7466.4f, 7, 6, 0, "Silvermoon City, Mailbox");
 					break;
 
 				case 7:     // Stable Master
 					SendQuickMenu(9327);
-					Plr->Gossip_SendPOI(9904.95f, -7404.31f, 7, 6, 0, "Silvermoon City, Stable Master");
+					Messenger::SendGossipPOI( Plr, 9904.95f, -7404.31f, 7, 6, 0, "Silvermoon City, Stable Master");
 					break;
 
 				case 8:     // Weapon Master
 					SendQuickMenu(9328);
-					Plr->Gossip_SendPOI(9841.17f, -7505.13f, 7, 6, 0, "Silvermoon City, Weapon Master");
+					Messenger::SendGossipPOI( Plr, 9841.17f, -7505.13f, 7, 6, 0, "Silvermoon City, Weapon Master");
 					break;
 
 				case 9:     // Battlemasters
 					SendQuickMenu(9329);
-					Plr->Gossip_SendPOI(9850.74f, -7563.84f, 7, 6, 0, "Silvermoon City, Battlemasters");
+					Messenger::SendGossipPOI( Plr, 9850.74f, -7563.84f, 7, 6, 0, "Silvermoon City, Battlemasters");
 					break;
 
 				case 10:    // Class Trainers
@@ -1621,197 +1622,197 @@ class SilvermoonGuard : public GossipScript
 
 				case 12: //Mana Loom
 					{
-						Plr->Gossip_SendPOI(9751.013f, -7074.85f, 7, 6, 0, "Silvermoon City, Mana Loom");
+						Messenger::SendGossipPOI( Plr, 9751.013f, -7074.85f, 7, 6, 0, "Silvermoon City, Mana Loom");
 						SendQuickMenu(10502);
 					}
 					break;
 
 				case 13: //To the west - Auction House no. 1
 					{
-						Plr->Gossip_SendPOI(9649.429f, -7134.027f, 7, 6, 0, "Silvermoon City, Auction House");
+						Messenger::SendGossipPOI( Plr, 9649.429f, -7134.027f, 7, 6, 0, "Silvermoon City, Auction House");
 						SendQuickMenu(9318);
 					}
 					break;
 
 				case 14: //To the east - Auction House no. 2
 					{
-						Plr->Gossip_SendPOI(9682.864f, -7515.786f, 7, 6, 0, "Silvermoon City, Auction House");
+						Messenger::SendGossipPOI( Plr, 9682.864f, -7515.786f, 7, 6, 0, "Silvermoon City, Auction House");
 						SendQuickMenu(9319);
 					}
 					break;
 
 				case 15:     // The bank - The west.
 					SendQuickMenu(9321);
-					Plr->Gossip_SendPOI(9522.104f, -7208.878f, 7, 6, 0, "Silvermoon City, Bank");
+					Messenger::SendGossipPOI( Plr, 9522.104f, -7208.878f, 7, 6, 0, "Silvermoon City, Bank");
 					break;
 
 				case 16:     // The bank - The east.
 					SendQuickMenu(9322);
-					Plr->Gossip_SendPOI(9791.07f, -7488.041f, 7, 6, 0, "Silvermoon City, Bank");
+					Messenger::SendGossipPOI( Plr, 9791.07f, -7488.041f, 7, 6, 0, "Silvermoon City, Bank");
 					break;
 
 				case 17: //The Silvermoon City Inn
 					{
-						Plr->Gossip_SendPOI(9677.113f, -7367.575f, 7, 6, 0, "Silvermoon City, Inn");
+						Messenger::SendGossipPOI( Plr, 9677.113f, -7367.575f, 7, 6, 0, "Silvermoon City, Inn");
 						SendQuickMenu(9325);
 					}
 					break;
 
 				case 18: //The Wayfarer's Rest tavern
 					{
-						Plr->Gossip_SendPOI(9562.813f, -7218.63f, 7, 6, 0, "Silvermoon City, Inn");
+						Messenger::SendGossipPOI( Plr, 9562.813f, -7218.63f, 7, 6, 0, "Silvermoon City, Inn");
 						SendQuickMenu(9603);
 					}
 					break;
 
 				case 19: //Druid
 					{
-						Plr->Gossip_SendPOI(9700.55f, -7262.57f, 7, 6, 0, "Silvermoon City, Druid Trainer");
+						Messenger::SendGossipPOI( Plr, 9700.55f, -7262.57f, 7, 6, 0, "Silvermoon City, Druid Trainer");
 						SendQuickMenu(9330);
 					}
 					break;
 
 				case 20: //Hunter
 					{
-						Plr->Gossip_SendPOI(9930.568f, -7412.115f, 7, 6, 0, "Silvermoon City, Hunter Trainer");
+						Messenger::SendGossipPOI( Plr, 9930.568f, -7412.115f, 7, 6, 0, "Silvermoon City, Hunter Trainer");
 						SendQuickMenu(9332);
 					}
 					break;
 
 				case 21: //Mage
 					{
-						Plr->Gossip_SendPOI(9996.914f, -7104.803f, 7, 6, 0, "Silvermoon City, Mage Trainer");
+						Messenger::SendGossipPOI( Plr, 9996.914f, -7104.803f, 7, 6, 0, "Silvermoon City, Mage Trainer");
 						SendQuickMenu(9333);
 					}
 					break;
 
 				case 22: //Paladin
 					{
-						Plr->Gossip_SendPOI(9850.22f, -7516.93f, 7, 6, 0, "Silvermoon City, Paladin Trainer");
+						Messenger::SendGossipPOI( Plr, 9850.22f, -7516.93f, 7, 6, 0, "Silvermoon City, Paladin Trainer");
 						SendQuickMenu(9334);
 					}
 					break;
 
 				case 23: //Priest
 					{
-						Plr->Gossip_SendPOI(9935.37f, -7131.14f, 7, 6, 0, "Silvermoon City, Priest Trainer");
+						Messenger::SendGossipPOI( Plr, 9935.37f, -7131.14f, 7, 6, 0, "Silvermoon City, Priest Trainer");
 						SendQuickMenu(9335);
 					}
 					break;
 
 				case 24: //Rogue
 					{
-						Plr->Gossip_SendPOI(9739.88f, -7374.33f, 7, 6, 0, "Silvermoon City, Rogue Trainer");
+						Messenger::SendGossipPOI( Plr, 9739.88f, -7374.33f, 7, 6, 0, "Silvermoon City, Rogue Trainer");
 						SendQuickMenu(9336);
 					}
 					break;
 
 				case 25: //Warlock
 					{
-						Plr->Gossip_SendPOI(9803.052f, -7316.967f, 7, 6, 0, "Silvermoon City, Warlock Trainer");
+						Messenger::SendGossipPOI( Plr, 9803.052f, -7316.967f, 7, 6, 0, "Silvermoon City, Warlock Trainer");
 						SendQuickMenu(9337);
 					}
 					break;
 
 				case 26: //Alchemy
 					{
-						Plr->Gossip_SendPOI(10000.9f, -7216.63f, 7, 6, 0, "Silvermoon City, Alchemy");
+						Messenger::SendGossipPOI( Plr, 10000.9f, -7216.63f, 7, 6, 0, "Silvermoon City, Alchemy");
 						SendQuickMenu(9339);
 					}
 					break;
 
 				case 27: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(9841.43f, -7361.53f, 7, 6, 0, "Silvermoon City, Blacksmithing");
+						Messenger::SendGossipPOI( Plr, 9841.43f, -7361.53f, 7, 6, 0, "Silvermoon City, Blacksmithing");
 						SendQuickMenu(9340);
 					}
 					break;
 
 				case 28: //Cooking
 					{
-						Plr->Gossip_SendPOI(9577.26f, -7243.6f, 7, 6, 0, "Silvermoon City, Cooking");
+						Messenger::SendGossipPOI( Plr, 9577.26f, -7243.6f, 7, 6, 0, "Silvermoon City, Cooking");
 						SendQuickMenu(9624);
 					}
 					break;
 
 				case 29: //Enchanting
 					{
-						Plr->Gossip_SendPOI(9962.57f, -7246.18f, 7, 6, 0, "Silvermoon City, Enchanting");
+						Messenger::SendGossipPOI( Plr, 9962.57f, -7246.18f, 7, 6, 0, "Silvermoon City, Enchanting");
 						SendQuickMenu(9341);
 					}
 					break;
 
 				case 30: //Engineering
 					{
-						Plr->Gossip_SendPOI(9808.85f, -7287.31f, 7, 6, 0, "Silvermoon City, Engineering");
+						Messenger::SendGossipPOI( Plr, 9808.85f, -7287.31f, 7, 6, 0, "Silvermoon City, Engineering");
 						SendQuickMenu(9342);
 					}
 					break;
 
 				case 31: //First Aid
 					{
-						Plr->Gossip_SendPOI(9588.61f, -7337.526f, 7, 6, 0, "Silvermoon City, First Aid");
+						Messenger::SendGossipPOI( Plr, 9588.61f, -7337.526f, 7, 6, 0, "Silvermoon City, First Aid");
 						SendQuickMenu(9343);
 					}
 					break;
 
 				case 32: //Fishing
 					{
-						Plr->Gossip_SendPOI(9601.97f, -7332.34f, 7, 6, 0, "Silvermoon City, Fishing");
+						Messenger::SendGossipPOI( Plr, 9601.97f, -7332.34f, 7, 6, 0, "Silvermoon City, Fishing");
 						SendQuickMenu(9344);
 					}
 					break;
 
 				case 33: //Herbalism
 					{
-						Plr->Gossip_SendPOI(9996.96f, -7208.39f, 7, 6, 0, "Silvermoon City, Herbalism");
+						Messenger::SendGossipPOI( Plr, 9996.96f, -7208.39f, 7, 6, 0, "Silvermoon City, Herbalism");
 						SendQuickMenu(9345);
 					}
 					break;
 				case 34: //Inscription
 					{
-						Plr->Gossip_SendPOI(9957.12f, -7242.85f, 7, 6, 0, "Silvermoon City, Inscription");
+						Messenger::SendGossipPOI( Plr, 9957.12f, -7242.85f, 7, 6, 0, "Silvermoon City, Inscription");
 						SendQuickMenu(13893);
 					}
 					break;
 
 				case 35: //Jewelcrafting
 					{
-						Plr->Gossip_SendPOI(9552.8f, -7502.12f, 7, 6, 0, "Silvermoon City, Jewelcrafting");
+						Messenger::SendGossipPOI( Plr, 9552.8f, -7502.12f, 7, 6, 0, "Silvermoon City, Jewelcrafting");
 						SendQuickMenu(9346);
 					}
 					break;
 
 				case 36: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(9502.486f, -7425.51f, 7, 6, 0, "Silvermoon City, Leatherworking");
+						Messenger::SendGossipPOI( Plr, 9502.486f, -7425.51f, 7, 6, 0, "Silvermoon City, Leatherworking");
 						SendQuickMenu(9347);
 					}
 					break;
 
 				case 37: //Mining
 					{
-						Plr->Gossip_SendPOI(9813.73f, -7360.19f, 7, 6, 0, "Silvermoon City, Mining");
+						Messenger::SendGossipPOI( Plr, 9813.73f, -7360.19f, 7, 6, 0, "Silvermoon City, Mining");
 						SendQuickMenu(9348);
 					}
 					break;
 
 				case 38: //Skinning
 					{
-						Plr->Gossip_SendPOI(9513.37f, -7429.4f, 7, 6, 0, "Silvermoon City, Skinning");
+						Messenger::SendGossipPOI( Plr, 9513.37f, -7429.4f, 7, 6, 0, "Silvermoon City, Skinning");
 						SendQuickMenu(9349);
 					}
 					break;
 
 				case 39: //Tailoring
 					{
-						Plr->Gossip_SendPOI(9727.56f, -7086.65f, 7, 6, 0, "Silvermoon City, Tailoring");
+						Messenger::SendGossipPOI( Plr, 9727.56f, -7086.65f, 7, 6, 0, "Silvermoon City, Tailoring");
 						SendQuickMenu(9350);
 					}
 					break;
 				case 40: //Lexicon of Power
 					{
-						Plr->Gossip_SendPOI(9957.12f, -7242.85f, 7, 6, 0, "Silvermoon City, Inscription");
+						Messenger::SendGossipPOI( Plr, 9957.12f, -7242.85f, 7, 6, 0, "Silvermoon City, Inscription");
 						SendQuickMenu(14174);
 					}
 					break;
@@ -1857,46 +1858,46 @@ class ExodarGuard : public GossipScript
 
 				case 1:     // Auction House
 					SendQuickMenu(9528);
-					Plr->Gossip_SendPOI(-4013.82f, -11729.64f, 7, 6, 0, "Exodar, Auctioneer");
+					Messenger::SendGossipPOI( Plr, -4013.82f, -11729.64f, 7, 6, 0, "Exodar, Auctioneer");
 					break;
 
 				case 2:     // The Bank
 					SendQuickMenu(9529);
-					Plr->Gossip_SendPOI(-3923.89f, -11544.5f, 7, 6, 0, "Exodar, bank");
+					Messenger::SendGossipPOI( Plr, -3923.89f, -11544.5f, 7, 6, 0, "Exodar, bank");
 					break;
 
 				case 3:     // Hippogryph Master
 					SendQuickMenu(9530);
-					Plr->Gossip_SendPOI(-4058.45f, -11789.7f, 7, 6, 0, "Exodar, Hippogryph Master");
+					Messenger::SendGossipPOI( Plr, -4058.45f, -11789.7f, 7, 6, 0, "Exodar, Hippogryph Master");
 					break;
 
 				case 4:     // Guild Master
 					SendQuickMenu(9539);
-					Plr->Gossip_SendPOI(-4093.38f, -11630.39f, 7, 6, 0, "Exodar, Guild Master");
+					Messenger::SendGossipPOI( Plr, -4093.38f, -11630.39f, 7, 6, 0, "Exodar, Guild Master");
 					break;
 
 				case 5:     // The Inn
 					SendQuickMenu(9545);
-					Plr->Gossip_SendPOI(-3765.34f, -11695.8f, 7, 6, 0, "Exodar, Inn");
+					Messenger::SendGossipPOI( Plr, -3765.34f, -11695.8f, 7, 6, 0, "Exodar, Inn");
 					break;
 
 				case 6:     // Mailbox
 					SendQuickMenu(10254);
-					Plr->Gossip_SendPOI(-3913.75f, -11606.83f, 7, 6, 0, "Exodar, Mailbox");
+					Messenger::SendGossipPOI( Plr, -3913.75f, -11606.83f, 7, 6, 0, "Exodar, Mailbox");
 					break;
 
 				case 7:     // Stable Master
 					SendQuickMenu(9558);
-					Plr->Gossip_SendPOI(-3787.01f, -11702.7f, 7, 6, 0, "Exodar, Stable Master");
+					Messenger::SendGossipPOI( Plr, -3787.01f, -11702.7f, 7, 6, 0, "Exodar, Stable Master");
 					break;
 
 				case 8:     // Weapon Master
 					SendQuickMenu(9565);
-					Plr->Gossip_SendPOI(-4215.68f, -11628.9f, 7, 6, 0, "Exodar, Weapon Master");
+					Messenger::SendGossipPOI( Plr, -4215.68f, -11628.9f, 7, 6, 0, "Exodar, Weapon Master");
 					break;
 
 				case 9:     // Battlemasters
-					Plr->Gossip_SendPOI(-3999.82f, -11368.33f, 7, 6, 0, "Exodar, Battlemasters");
+					Messenger::SendGossipPOI( Plr, -3999.82f, -11368.33f, 7, 6, 0, "Exodar, Battlemasters");
 					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9531, Plr);
 					Menu->AddItem(0, "Arena Battlemaster"  , 12);
 					Menu->SendTo(Plr);
@@ -1943,161 +1944,161 @@ class ExodarGuard : public GossipScript
 
 				case 12://Arena Battlemaster Exodar
 					{
-						Plr->Gossip_SendPOI(-3725.25f, -11688.3f, 7, 6, 0, "Arena Battlemaster Exodar");
+						Messenger::SendGossipPOI( Plr, -3725.25f, -11688.3f, 7, 6, 0, "Arena Battlemaster Exodar");
 						SendQuickMenu(10223);
 					}
 					break;
 
 				case 13: //Druid
 					{
-						Plr->Gossip_SendPOI(-4274.81f, -11495.3f, 7, 6, 0, "Exodar, Druid Trainer");
+						Messenger::SendGossipPOI( Plr, -4274.81f, -11495.3f, 7, 6, 0, "Exodar, Druid Trainer");
 						SendQuickMenu(9534);
 					}
 					break;
 
 				case 14: //Hunter
 					{
-						Plr->Gossip_SendPOI(-4229.36f, -11563.36f, 7, 6, 0, "Exodar, Hunter Trainers");
+						Messenger::SendGossipPOI( Plr, -4229.36f, -11563.36f, 7, 6, 0, "Exodar, Hunter Trainers");
 						SendQuickMenu(9544);
 					}
 					break;
 
 				case 15: //Mage
 					{
-						Plr->Gossip_SendPOI(-4048.8f, -11559.02f, 7, 6, 0, "Exodar, Mage Trainers");
+						Messenger::SendGossipPOI( Plr, -4048.8f, -11559.02f, 7, 6, 0, "Exodar, Mage Trainers");
 						SendQuickMenu(9550);
 					}
 					break;
 
 				case 16: //Paladin
 					{
-						Plr->Gossip_SendPOI(-4176.57f, -11476.46f, 7, 6, 0, "Exodar, Paladin Trainers");
+						Messenger::SendGossipPOI( Plr, -4176.57f, -11476.46f, 7, 6, 0, "Exodar, Paladin Trainers");
 						SendQuickMenu(9553);
 					}
 					break;
 
 				case 17: //Priest
 					{
-						Plr->Gossip_SendPOI(-3972.38f, -11483.2f, 7, 6, 0, "Exodar, Priest Trainers");
+						Messenger::SendGossipPOI( Plr, -3972.38f, -11483.2f, 7, 6, 0, "Exodar, Priest Trainers");
 						SendQuickMenu(9554);
 					}
 					break;
 
 				case 18: //Shaman
 					{
-						Plr->Gossip_SendPOI(-3843.8f, -11390.75f, 7, 6, 0, "Exodar, Shaman Trainer");
+						Messenger::SendGossipPOI( Plr, -3843.8f, -11390.75f, 7, 6, 0, "Exodar, Shaman Trainer");
 						SendQuickMenu(9556);
 					}
 					break;
 
 				case 19: //Warrior
 					{
-						Plr->Gossip_SendPOI(-4191.11f, -11650.45f, 7, 6, 0, "Exodar, Warrior Trainers");
+						Messenger::SendGossipPOI( Plr, -4191.11f, -11650.45f, 7, 6, 0, "Exodar, Warrior Trainers");
 						SendQuickMenu(9562);
 					}
 					break;
 
 				case 20: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-4042.37f, -11366.3f, 7, 6, 0, "Exodar, Alchemist Trainers");
+						Messenger::SendGossipPOI( Plr, -4042.37f, -11366.3f, 7, 6, 0, "Exodar, Alchemist Trainers");
 						SendQuickMenu(9527);
 					}
 					break;
 
 				case 21: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-4232.4f, -11705.23f, 7, 6, 0, "Exodar, Blacksmithing Trainers");
+						Messenger::SendGossipPOI( Plr, -4232.4f, -11705.23f, 7, 6, 0, "Exodar, Blacksmithing Trainers");
 						SendQuickMenu(9532);
 					}
 					break;
 
 				case 22: //Enchanting
 					{
-						Plr->Gossip_SendPOI(-3889.3f, -11495, 7, 6, 0, "Exodar, Enchanters");
+						Messenger::SendGossipPOI( Plr, -3889.3f, -11495, 7, 6, 0, "Exodar, Enchanters");
 						SendQuickMenu(9535);
 					}
 					break;
 
 				case 23: //Engineering
 					{
-						Plr->Gossip_SendPOI(-4257.93f, -11636.53f, 7, 6, 0, "Exodar, Engineering");
+						Messenger::SendGossipPOI( Plr, -4257.93f, -11636.53f, 7, 6, 0, "Exodar, Engineering");
 						SendQuickMenu(9536);
 					}
 					break;
 
 				case 24: //First Aid
 					{
-						Plr->Gossip_SendPOI(-3766.05f, -11481.8f, 7, 6, 0, "Exodar, First Aid Trainer");
+						Messenger::SendGossipPOI( Plr, -3766.05f, -11481.8f, 7, 6, 0, "Exodar, First Aid Trainer");
 						SendQuickMenu(9537);
 					}
 					break;
 
 				case 25: //Fishing
 					{
-						Plr->Gossip_SendPOI(-3726.64f, -11384.43f, 7, 6, 0, "Exodar, Fishing Trainer");
+						Messenger::SendGossipPOI( Plr, -3726.64f, -11384.43f, 7, 6, 0, "Exodar, Fishing Trainer");
 						SendQuickMenu(9538);
 					}
 					break;
 
 				case 26: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-4052.5f, -11356.6f, 7, 6, 0, "Exodar, Herbalism Trainer");
+						Messenger::SendGossipPOI( Plr, -4052.5f, -11356.6f, 7, 6, 0, "Exodar, Herbalism Trainer");
 						SendQuickMenu(9543);
 					}
 					break;
 
 				case 27: //Inscription
 					{
-						Plr->Gossip_SendPOI(-3889.3f, -11495, 7, 6, 0, "Exodar, Inscription");
+						Messenger::SendGossipPOI( Plr, -3889.3f, -11495, 7, 6, 0, "Exodar, Inscription");
 						SendQuickMenu(13887);
 					}
 					break;
 
 				case 28: //Jewelcrafting
 					{
-						Plr->Gossip_SendPOI(-3786.27f, -11541.33f, 7, 6, 0, "Exodar, Jewelcrafters");
+						Messenger::SendGossipPOI( Plr, -3786.27f, -11541.33f, 7, 6, 0, "Exodar, Jewelcrafters");
 						SendQuickMenu(9547);
 					}
 					break;
 
 				case 29: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-4134.42f, -11772.93f, 7, 6, 0, "Exodar, Leatherworking");
+						Messenger::SendGossipPOI( Plr, -4134.42f, -11772.93f, 7, 6, 0, "Exodar, Leatherworking");
 						SendQuickMenu(9549);
 					}
 					break;
 
 				case 30: //Mining
 					{
-						Plr->Gossip_SendPOI(-4220.31f, -11694.29f, 7, 6, 0, "Exodar, Mining Trainers");
+						Messenger::SendGossipPOI( Plr, -4220.31f, -11694.29f, 7, 6, 0, "Exodar, Mining Trainers");
 						SendQuickMenu(9552);
 					}
 					break;
 
 				case 31: //Skinning
 					{
-						Plr->Gossip_SendPOI(-4134.97f, -11760.5f, 7, 6, 0, "Exodar, Skinning Trainer");
+						Messenger::SendGossipPOI( Plr, -4134.97f, -11760.5f, 7, 6, 0, "Exodar, Skinning Trainer");
 						SendQuickMenu(9557);
 					}
 					break;
 
 				case 32: //Tailoring
 					{
-						Plr->Gossip_SendPOI(-4095.78f, -11746.9f, 7, 6, 0, "Exodar, Tailors");
+						Messenger::SendGossipPOI( Plr, -4095.78f, -11746.9f, 7, 6, 0, "Exodar, Tailors");
 						SendQuickMenu(9350);
 					}
 					break;
 
 				case 33: //Cooking
 					{
-						Plr->Gossip_SendPOI(-3799.69f, -11650.51f, 7, 6, 0, "Exodar, Cook");
+						Messenger::SendGossipPOI( Plr, -3799.69f, -11650.51f, 7, 6, 0, "Exodar, Cook");
 						SendQuickMenu(9559);
 					}
 					break;
 
 				case 34: //Lexicon of Power
 					{
-						Plr->Gossip_SendPOI(-3889.3f, -11495, 7, 6, 0, "Exodar, Inscription");
+						Messenger::SendGossipPOI( Plr, -3889.3f, -11495, 7, 6, 0, "Exodar, Inscription");
 						SendQuickMenu(14174);
 					}
 					break;
@@ -2144,57 +2145,57 @@ class OrgrimmarGuard : public GossipScript
 
 				case 1:     // The bank
 					SendQuickMenu(2554);
-					Plr->Gossip_SendPOI(1631.51f, -4375.33f, 7, 6, 0, "Bank of Orgrimmar");
+					Messenger::SendGossipPOI( Plr, 1631.51f, -4375.33f, 7, 6, 0, "Bank of Orgrimmar");
 					break;
 
 				case 2:     // The wind rider master
 					SendQuickMenu(2555);
-					Plr->Gossip_SendPOI(1676.6f, -4332.72f, 7, 6, 0, "The Sky Tower");
+					Messenger::SendGossipPOI( Plr, 1676.6f, -4332.72f, 7, 6, 0, "The Sky Tower");
 					break;
 
 				case 3:     // The guild master
 					SendQuickMenu(2556);
-					Plr->Gossip_SendPOI(1576.93f, -4294.75f, 7, 6, 0, "Horde Embassy");
+					Messenger::SendGossipPOI( Plr, 1576.93f, -4294.75f, 7, 6, 0, "Horde Embassy");
 					break;
 
 				case 4:     // The inn
 					SendQuickMenu(2557);
-					Plr->Gossip_SendPOI(1644.51f, -4447.27f, 7, 6, 0, "Orgrimmar Inn");
+					Messenger::SendGossipPOI( Plr, 1644.51f, -4447.27f, 7, 6, 0, "Orgrimmar Inn");
 					break;
 
 				case 5:     // The mailbox
 					SendQuickMenu(2558);
-					Plr->Gossip_SendPOI(1622.53f, -4388.79f, 7, 6, 0, "Orgrimmar Mailbox");
+					Messenger::SendGossipPOI( Plr, 1622.53f, -4388.79f, 7, 6, 0, "Orgrimmar Mailbox");
 					break;
 
 				case 6:     // The auction house
 					SendQuickMenu(3075);
-					Plr->Gossip_SendPOI(1679.21f, -4450.1f, 7, 6, 0, "Orgrimmar Auction House");
+					Messenger::SendGossipPOI( Plr, 1679.21f, -4450.1f, 7, 6, 0, "Orgrimmar Auction House");
 					break;
 
 				case 7:     // The zeppelin master
 					SendQuickMenu(3173);
-					Plr->Gossip_SendPOI(1337.36f, -4632.7f, 7, 6, 0, "Orgrimmar Zeppelin Tower");
+					Messenger::SendGossipPOI( Plr, 1337.36f, -4632.7f, 7, 6, 0, "Orgrimmar Zeppelin Tower");
 					break;
 
 				case 8:     // The weapon master
 					SendQuickMenu(4519);
-					Plr->Gossip_SendPOI(2092.56f, -4823.95f, 7, 6, 0, "Sayoc & Hanashi");
+					Messenger::SendGossipPOI( Plr, 2092.56f, -4823.95f, 7, 6, 0, "Sayoc & Hanashi");
 					break;
 
 				case 9:     // The stable master
 					SendQuickMenu(5974);
-					Plr->Gossip_SendPOI(2133.12f, -4663.93f, 7, 6, 0, "Xon'cha");
+					Messenger::SendGossipPOI( Plr, 2133.12f, -4663.93f, 7, 6, 0, "Xon'cha");
 					break;
 
 				case 10:    // The officers' lounge
 					SendQuickMenu(7046);
-					Plr->Gossip_SendPOI(1633.56f, -4249.37f, 7, 6, 0, "Hall of Legends");
+					Messenger::SendGossipPOI( Plr, 1633.56f, -4249.37f, 7, 6, 0, "Hall of Legends");
 					break;
 
 				case 11:    // The battlemaster
 					SendQuickMenu(7521);
-					Plr->Gossip_SendPOI(1990.41f, -4794.15f, 7, 6, 0, "Battlemasters Orgrimmar");
+					Messenger::SendGossipPOI( Plr, 1990.41f, -4794.15f, 7, 6, 0, "Battlemasters Orgrimmar");
 					break;
 
 				case 12:    // A class trainer
@@ -2237,140 +2238,140 @@ class OrgrimmarGuard : public GossipScript
 
 				case 14: //Hunter
 					{
-						Plr->Gossip_SendPOI(2114.84f, -4625.31f, 7, 6, 0, "Orgrimmar Hunter's Hall");
+						Messenger::SendGossipPOI( Plr, 2114.84f, -4625.31f, 7, 6, 0, "Orgrimmar Hunter's Hall");
 						SendQuickMenu(2559);
 					}
 					break;
 
 				case 15: //Mage
 					{
-						Plr->Gossip_SendPOI(1451.26f, -4223.33f, 7, 6, 0, "Darkbriar Lodge");
+						Messenger::SendGossipPOI( Plr, 1451.26f, -4223.33f, 7, 6, 0, "Darkbriar Lodge");
 						SendQuickMenu(2560);
 					}
 					break;
 
 				case 16: //Priest
 					{
-						Plr->Gossip_SendPOI(1442.21f, -4183.24f, 7, 6, 0, "Spirit Lodge");
+						Messenger::SendGossipPOI( Plr, 1442.21f, -4183.24f, 7, 6, 0, "Spirit Lodge");
 						SendQuickMenu(2561);
 					}
 					break;
 
 				case 17: //Shaman
 					{
-						Plr->Gossip_SendPOI(1925.34f, -4181.89f, 7, 6, 0, "Thrall's Fortress");
+						Messenger::SendGossipPOI( Plr, 1925.34f, -4181.89f, 7, 6, 0, "Thrall's Fortress");
 						SendQuickMenu(2562);
 					}
 					break;
 
 				case 18: //Rogue
 					{
-						Plr->Gossip_SendPOI(1773.39f, -4278.97f, 7, 6, 0, "Shadowswift Brotherhood");
+						Messenger::SendGossipPOI( Plr, 1773.39f, -4278.97f, 7, 6, 0, "Shadowswift Brotherhood");
 						SendQuickMenu(2563);
 					}
 					break;
 
 				case 19: //Warlock
 					{
-						Plr->Gossip_SendPOI(1849.57f, -4359.68f, 7, 6, 0, "Darkfire Enclave");
+						Messenger::SendGossipPOI( Plr, 1849.57f, -4359.68f, 7, 6, 0, "Darkfire Enclave");
 						SendQuickMenu(2564);
 					}
 					break;
 
 				case 20: //Warrior
 					{
-						Plr->Gossip_SendPOI(1983.92f, -4794.2f, 7, 6, 0, "Hall of the Brave");
+						Messenger::SendGossipPOI( Plr, 1983.92f, -4794.2f, 7, 6, 0, "Hall of the Brave");
 						SendQuickMenu(2565);
 					}
 					break;
 
 				case 21: //Paladin
 					{
-						Plr->Gossip_SendPOI(1937.53f, -4141.0f, 7, 6, 0, "Thrall's Fortress");
+						Messenger::SendGossipPOI( Plr, 1937.53f, -4141.0f, 7, 6, 0, "Thrall's Fortress");
 						SendQuickMenu(2566);
 					}
 					break;
 
 				case 22: //Alchemy
 					{
-						Plr->Gossip_SendPOI(1955.17f, -4475.79f, 7, 6, 0, "Yelmak's Alchemy and Potions");
+						Messenger::SendGossipPOI( Plr, 1955.17f, -4475.79f, 7, 6, 0, "Yelmak's Alchemy and Potions");
 						SendQuickMenu(2497);
 					}
 					break;
 
 				case 23: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(2054.34f, -4831.85f, 7, 6, 0, "The Burning Anvil");
+						Messenger::SendGossipPOI( Plr, 2054.34f, -4831.85f, 7, 6, 0, "The Burning Anvil");
 						SendQuickMenu(2499);
 					}
 					break;
 
 				case 24: //Cooking
 					{
-						Plr->Gossip_SendPOI(1780.96f, -4481.31f, 7, 6, 0, "Borstan's Firepit");
+						Messenger::SendGossipPOI( Plr, 1780.96f, -4481.31f, 7, 6, 0, "Borstan's Firepit");
 						SendQuickMenu(2500);
 					}
 					break;
 
 				case 25: //Enchanting
 					{
-						Plr->Gossip_SendPOI(1917.5f, -4434.95f, 7, 6, 0, "Godan's Runeworks");
+						Messenger::SendGossipPOI( Plr, 1917.5f, -4434.95f, 7, 6, 0, "Godan's Runeworks");
 						SendQuickMenu(2501);
 					}
 					break;
 
 				case 26: //Engineering
 					{
-						Plr->Gossip_SendPOI(2038.45f, -4744.75f, 7, 6, 0, "Nogg's Machine Shop");
+						Messenger::SendGossipPOI( Plr, 2038.45f, -4744.75f, 7, 6, 0, "Nogg's Machine Shop");
 						SendQuickMenu(2653);
 					}
 					break;
 
 				case 27: //First Aid
 					{
-						Plr->Gossip_SendPOI(1485.21f, -4160.91f, 7, 6, 0, "Survival of the Fittest");
+						Messenger::SendGossipPOI( Plr, 1485.21f, -4160.91f, 7, 6, 0, "Survival of the Fittest");
 						SendQuickMenu(2502);
 					}
 					break;
 
 				case 28: //Fishing
 					{
-						Plr->Gossip_SendPOI(1994.15f, -4655.7f, 7, 6, 0, "Lumak's Fishing");
+						Messenger::SendGossipPOI( Plr, 1994.15f, -4655.7f, 7, 6, 0, "Lumak's Fishing");
 						SendQuickMenu(2503);
 					}
 					break;
 
 				case 29: //Herbalism
 					{
-						Plr->Gossip_SendPOI(1898.61f, -4454.93f, 7, 6, 0, "Jandi's Arboretum");
+						Messenger::SendGossipPOI( Plr, 1898.61f, -4454.93f, 7, 6, 0, "Jandi's Arboretum");
 						SendQuickMenu(2504);
 					}
 					break;
 
 				case 30: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(1852.82f, -4562.31f, 7, 6, 0, "Kodohide Leatherworkers");
+						Messenger::SendGossipPOI( Plr, 1852.82f, -4562.31f, 7, 6, 0, "Kodohide Leatherworkers");
 						SendQuickMenu(2513);
 					}
 					break;
 
 				case 31: //Mining
 					{
-						Plr->Gossip_SendPOI(2029.79f, -4704, 7, 6, 0, "Red Canyon Mining");
+						Messenger::SendGossipPOI( Plr, 2029.79f, -4704, 7, 6, 0, "Red Canyon Mining");
 						SendQuickMenu(2515);
 					}
 					break;
 
 				case 32: //Skinning
 					{
-						Plr->Gossip_SendPOI(1852.82f, -4562.31f, 7, 6, 0, "Kodohide Leatherworkers");
+						Messenger::SendGossipPOI( Plr, 1852.82f, -4562.31f, 7, 6, 0, "Kodohide Leatherworkers");
 						SendQuickMenu(2516);
 					}
 					break;
 
 				case 33: //Tailoring
 					{
-						Plr->Gossip_SendPOI(1802.66f, -4560.66f, 7, 6, 0, "Magar's Cloth Goods");
+						Messenger::SendGossipPOI( Plr, 1802.66f, -4560.66f, 7, 6, 0, "Magar's Cloth Goods");
 						SendQuickMenu(2518);
 					}
 					break;
@@ -2415,47 +2416,47 @@ class ThunderbluffGuard : public GossipScript
 
 				case 1:     // The bank
 					SendQuickMenu(1292);
-					Plr->Gossip_SendPOI(-1257.8f, 24.14f, 7, 6, 0, "Thunder Bluff Bank");
+					Messenger::SendGossipPOI( Plr, -1257.8f, 24.14f, 7, 6, 0, "Thunder Bluff Bank");
 					break;
 
 				case 2:     // The wind rider master
 					SendQuickMenu(1293);
-					Plr->Gossip_SendPOI(-1196.43f, 28.26f, 7, 6, 0, "Wind Rider Roost");
+					Messenger::SendGossipPOI( Plr, -1196.43f, 28.26f, 7, 6, 0, "Wind Rider Roost");
 					break;
 
 				case 3:     // The guild master
 					SendQuickMenu(1291);
-					Plr->Gossip_SendPOI(-1296.5f, 127.57f, 7, 6, 0, "Thunder Bluff Civic Information");
+					Messenger::SendGossipPOI( Plr, -1296.5f, 127.57f, 7, 6, 0, "Thunder Bluff Civic Information");
 					break;
 
 				case 4:     // The inn
 					SendQuickMenu(3153);
-					Plr->Gossip_SendPOI(-1296, 39.7f, 7, 6, 0, "Thunder Bluff Inn");
+					Messenger::SendGossipPOI( Plr, -1296, 39.7f, 7, 6, 0, "Thunder Bluff Inn");
 					break;
 
 				case 5:     // The mailbox
 					SendQuickMenu(3154);
-					Plr->Gossip_SendPOI(-1263.59f, 44.36f, 7, 6, 0, "Thunder Bluff Mailbox");
+					Messenger::SendGossipPOI( Plr, -1263.59f, 44.36f, 7, 6, 0, "Thunder Bluff Mailbox");
 					break;
 
 				case 6:     // The auction house
 					SendQuickMenu(3155);
-					Plr->Gossip_SendPOI(-1205.51f, 105.74f, 7, 6, 0, "Thunder Bluff Auction house");
+					Messenger::SendGossipPOI( Plr, -1205.51f, 105.74f, 7, 6, 0, "Thunder Bluff Auction house");
 					break;
 
 				case 7:     // The weapon master
 					SendQuickMenu(4520);
-					Plr->Gossip_SendPOI(-1282.31f, 89.56f, 7, 6, 0, "Ansekhwa");
+					Messenger::SendGossipPOI( Plr, -1282.31f, 89.56f, 7, 6, 0, "Ansekhwa");
 					break;
 
 				case 8:     // The stable master
 					SendQuickMenu(5977);
-					Plr->Gossip_SendPOI(-1270.19f, 48.84f, 7, 6, 0, "Bulrug");
+					Messenger::SendGossipPOI( Plr, -1270.19f, 48.84f, 7, 6, 0, "Bulrug");
 					break;
 
 				case 9:    // The battlemaster
 					SendQuickMenu(7527);
-					Plr->Gossip_SendPOI(-1391.22f, -81.33f, 7, 6, 0, "Battlemasters Thunder Bluff");
+					Messenger::SendGossipPOI( Plr, -1391.22f, -81.33f, 7, 6, 0, "Battlemasters Thunder Bluff");
 					break;
 
 				case 10:    // A class trainer
@@ -2495,119 +2496,119 @@ class ThunderbluffGuard : public GossipScript
 
 				case 12: //Druid
 					{
-						Plr->Gossip_SendPOI(-1054.47f, -285, 7, 6, 0, "Hall of Elders");
+						Messenger::SendGossipPOI( Plr, -1054.47f, -285, 7, 6, 0, "Hall of Elders");
 						SendQuickMenu(1294);
 					}
 					break;
 
 				case 13: //Hunter
 					{
-						Plr->Gossip_SendPOI(-1416.32f, -114.28f, 7, 6, 0, "Hunter's Hall");
+						Messenger::SendGossipPOI( Plr, -1416.32f, -114.28f, 7, 6, 0, "Hunter's Hall");
 						SendQuickMenu(1295);
 					}
 					break;
 
 				case 14: //Mage
 					{
-						Plr->Gossip_SendPOI(-1061.2f, 195.5f, 7, 6, 0, "Pools of Vision");
+						Messenger::SendGossipPOI( Plr, -1061.2f, 195.5f, 7, 6, 0, "Pools of Vision");
 						SendQuickMenu(1296);
 					}
 					break;
 
 				case 15: //Priest
 					{
-						Plr->Gossip_SendPOI(-1061.2f, 195.5f, 7, 6, 0, "Pools of Vision");
+						Messenger::SendGossipPOI( Plr, -1061.2f, 195.5f, 7, 6, 0, "Pools of Vision");
 						SendQuickMenu(1297);
 					}
 					break;
 
 				case 16: //Shaman
 					{
-						Plr->Gossip_SendPOI(-989.54f, 278.25f, 7, 6, 0, "Hall of Spirits");
+						Messenger::SendGossipPOI( Plr, -989.54f, 278.25f, 7, 6, 0, "Hall of Spirits");
 						SendQuickMenu(1298);
 					}
 					break;
 
 				case 17: //Warrior
 					{
-						Plr->Gossip_SendPOI(-1416.32f, -114.28f, 7, 6, 0, "Hunter's Hall");
+						Messenger::SendGossipPOI( Plr, -1416.32f, -114.28f, 7, 6, 0, "Hunter's Hall");
 						SendQuickMenu(1299);
 					}
 					break;
 
 				case 18: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-1085.56f, 27.29f, 7, 6, 0, "Bena's Alchemy");
+						Messenger::SendGossipPOI( Plr, -1085.56f, 27.29f, 7, 6, 0, "Bena's Alchemy");
 						SendQuickMenu(1332);
 					}
 					break;
 
 				case 19: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-1239.75f, 104.88f, 7, 6, 0, "Karn's Smithy");
+						Messenger::SendGossipPOI( Plr, -1239.75f, 104.88f, 7, 6, 0, "Karn's Smithy");
 						SendQuickMenu(1333);
 					}
 					break;
 
 				case 20: //Cooking
 					{
-						Plr->Gossip_SendPOI(-1214.5f, -21.23f, 7, 6, 0, "Aska's Kitchen");
+						Messenger::SendGossipPOI( Plr, -1214.5f, -21.23f, 7, 6, 0, "Aska's Kitchen");
 						SendQuickMenu(1334);
 					}
 					break;
 
 				case 21: //Enchanting
 					{
-						Plr->Gossip_SendPOI(-1112.65f, 48.26f, 7, 6, 0, "Dawnstrider Enchanters");
+						Messenger::SendGossipPOI( Plr, -1112.65f, 48.26f, 7, 6, 0, "Dawnstrider Enchanters");
 						SendQuickMenu(1335);
 					}
 					break;
 
 				case 22: //First Aid
 					{
-						Plr->Gossip_SendPOI(-996.58f, 200.5f, 7, 6, 0, "Spiritual Healing");
+						Messenger::SendGossipPOI( Plr, -996.58f, 200.5f, 7, 6, 0, "Spiritual Healing");
 						SendQuickMenu(1336);
 					}
 					break;
 
 				case 23: //Fishing
 					{
-						Plr->Gossip_SendPOI(-1169.35f, -68.87f, 7, 6, 0, "Mountaintop Bait & Tackle");
+						Messenger::SendGossipPOI( Plr, -1169.35f, -68.87f, 7, 6, 0, "Mountaintop Bait & Tackle");
 						SendQuickMenu(1337);
 					}
 					break;
 
 				case 24: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-1137.7f, -1.51f, 7, 6, 0, "Holistic Herbalism");
+						Messenger::SendGossipPOI( Plr, -1137.7f, -1.51f, 7, 6, 0, "Holistic Herbalism");
 						SendQuickMenu(1338);
 					}
 					break;
 
 				case 25: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-1156.22f, 66.86f, 7, 6, 0, "Thunder Bluff Armorers");
+						Messenger::SendGossipPOI( Plr, -1156.22f, 66.86f, 7, 6, 0, "Thunder Bluff Armorers");
 						SendQuickMenu(1339);
 					}
 					break;
 
 				case 26: //Mining
 					{
-						Plr->Gossip_SendPOI(-1249.17f, 155, 7, 6, 0, "Stonehoof Geology");
+						Messenger::SendGossipPOI( Plr, -1249.17f, 155, 7, 6, 0, "Stonehoof Geology");
 						SendQuickMenu(1340);
 					}
 					break;
 
 				case 27: //Skinning
 					{
-						Plr->Gossip_SendPOI(-1148.56f, 51.18f, 7, 6, 0, "Mooranta");
+						Messenger::SendGossipPOI( Plr, -1148.56f, 51.18f, 7, 6, 0, "Mooranta");
 						SendQuickMenu(1343);
 					}
 					break;
 
 				case 28: //Tailoring
 					{
-						Plr->Gossip_SendPOI(-1156.22f, 66.86f, 7, 6, 0, "Thunder Bluff Armorers");
+						Messenger::SendGossipPOI( Plr, -1156.22f, 66.86f, 7, 6, 0, "Thunder Bluff Armorers");
 						SendQuickMenu(1341);
 					}
 					break;
@@ -2655,12 +2656,12 @@ class BloodhoofGuard : public GossipScript
 
 				case 3:     // The inn
 					SendQuickMenu(4053);
-					Plr->Gossip_SendPOI(-2361.38f, -349.19f, 7, 6, 0, "Bloodhoof Village Inn");
+					Messenger::SendGossipPOI( Plr, -2361.38f, -349.19f, 7, 6, 0, "Bloodhoof Village Inn");
 					break;
 
 				case 4:     // The stable master
 					SendQuickMenu(5976);
-					Plr->Gossip_SendPOI(-2338.86f, -357.56f, 7, 6, 0, "Seikwa");
+					Messenger::SendGossipPOI( Plr, -2338.86f, -357.56f, 7, 6, 0, "Seikwa");
 					break;
 
 				case 5:     // A class trainer
@@ -2699,28 +2700,28 @@ class BloodhoofGuard : public GossipScript
 
 				case 7: //Druid
 					{
-						Plr->Gossip_SendPOI(-2312.15f, -443.69f, 7, 6, 0, "Gennia Runetotem");
+						Messenger::SendGossipPOI( Plr, -2312.15f, -443.69f, 7, 6, 0, "Gennia Runetotem");
 						SendQuickMenu(4054);
 					}
 					break;
 
 				case 8: //Hunter
 					{
-						Plr->Gossip_SendPOI(-2178.14f, -406.14f, 7, 6, 0, "Yaw Sharpmane");
+						Messenger::SendGossipPOI( Plr, -2178.14f, -406.14f, 7, 6, 0, "Yaw Sharpmane");
 						SendQuickMenu(4055);
 					}
 					break;
 
 				case 9: //Shaman
 					{
-						Plr->Gossip_SendPOI(-2301.5f, -439.87f, 7, 6, 0, "Narm Skychaser");
+						Messenger::SendGossipPOI( Plr, -2301.5f, -439.87f, 7, 6, 0, "Narm Skychaser");
 						SendQuickMenu(4056);
 					}
 					break;
 
 				case 10: //Warrior
 					{
-						Plr->Gossip_SendPOI(-2345.43f, -494.11f, 7, 6, 0, "Krang Stonehoof");
+						Messenger::SendGossipPOI( Plr, -2345.43f, -494.11f, 7, 6, 0, "Krang Stonehoof");
 						SendQuickMenu(4057);
 					}
 					break;
@@ -2739,7 +2740,7 @@ class BloodhoofGuard : public GossipScript
 
 				case 13: //Cooking
 					{
-						Plr->Gossip_SendPOI(-2263.34f, -287.91f, 7, 6, 0, "Pyall Silentstride");
+						Messenger::SendGossipPOI( Plr, -2263.34f, -287.91f, 7, 6, 0, "Pyall Silentstride");
 						SendQuickMenu(4060);
 					}
 					break;
@@ -2752,14 +2753,14 @@ class BloodhoofGuard : public GossipScript
 
 				case 15: //First Aid
 					{
-						Plr->Gossip_SendPOI(-2353.52f, -355.82f, 7, 6, 0, "Vira Younghoof");
+						Messenger::SendGossipPOI( Plr, -2353.52f, -355.82f, 7, 6, 0, "Vira Younghoof");
 						SendQuickMenu(4062);
 					}
 					break;
 
 				case 16: //Fishing
 					{
-						Plr->Gossip_SendPOI(-2349.21f, -241.37f, 7, 6, 0, "Uthan Stillwater");
+						Messenger::SendGossipPOI( Plr, -2349.21f, -241.37f, 7, 6, 0, "Uthan Stillwater");
 						SendQuickMenu(4063);
 					}
 					break;
@@ -2772,7 +2773,7 @@ class BloodhoofGuard : public GossipScript
 
 				case 18: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-2257.12f, -288.63f, 7, 6, 0, "Chaw Stronghide");
+						Messenger::SendGossipPOI( Plr, -2257.12f, -288.63f, 7, 6, 0, "Chaw Stronghide");
 						SendQuickMenu(4065);
 					}
 					break;
@@ -2785,7 +2786,7 @@ class BloodhoofGuard : public GossipScript
 
 				case 20: //Skinning
 					{
-						Plr->Gossip_SendPOI(-2252.94f, -291.32f, 7, 6, 0, "Yonn Deepcut");
+						Messenger::SendGossipPOI( Plr, -2252.94f, -291.32f, 7, 6, 0, "Yonn Deepcut");
 						SendQuickMenu(4067);
 					}
 					break;
@@ -2839,12 +2840,12 @@ class RazorHillGuard : public GossipScript
 
 				case 3:     // The inn
 					SendQuickMenu(4034);
-					Plr->Gossip_SendPOI(338.7f, -4688.87f, 7, 6, 0, "Razor Hill Inn");
+					Messenger::SendGossipPOI( Plr, 338.7f, -4688.87f, 7, 6, 0, "Razor Hill Inn");
 					break;
 
 				case 4:     // The stable master
 					SendQuickMenu(5973);
-					Plr->Gossip_SendPOI(330.31f, -4710.66f, 7, 6, 0, "Shoja'my");
+					Messenger::SendGossipPOI( Plr, 330.31f, -4710.66f, 7, 6, 0, "Shoja'my");
 					break;
 
 				case 5:     // A class trainer
@@ -2887,63 +2888,63 @@ class RazorHillGuard : public GossipScript
 
 				case 7: //Hunter
 					{
-						Plr->Gossip_SendPOI(276, -4706.72f, 7, 6, 0, "Thotar");
+						Messenger::SendGossipPOI( Plr, 276, -4706.72f, 7, 6, 0, "Thotar");
 						SendQuickMenu(4013);
 					}
 					break;
 
 				case 8: //Mage
 					{
-						Plr->Gossip_SendPOI(-839.33f, -4935.6f, 7, 6, 0, "Un'Thuwa");
+						Messenger::SendGossipPOI( Plr, -839.33f, -4935.6f, 7, 6, 0, "Un'Thuwa");
 						SendQuickMenu(4014);
 					}
 					break;
 
 				case 9: //Priest
 					{
-						Plr->Gossip_SendPOI(296.22f, -4828.1f, 7, 6, 0, "Tai'jin");
+						Messenger::SendGossipPOI( Plr, 296.22f, -4828.1f, 7, 6, 0, "Tai'jin");
 						SendQuickMenu(4015);
 					}
 					break;
 
 				case 10: //Rogue
 					{
-						Plr->Gossip_SendPOI(265.76f, -4709, 7, 6, 0, "Kaplak");
+						Messenger::SendGossipPOI( Plr, 265.76f, -4709, 7, 6, 0, "Kaplak");
 						SendQuickMenu(4016);
 					}
 					break;
 
 				case 11: //Shaman
 					{
-						Plr->Gossip_SendPOI(307.79f, -4836.97f, 7, 6, 0, "Swart");
+						Messenger::SendGossipPOI( Plr, 307.79f, -4836.97f, 7, 6, 0, "Swart");
 						SendQuickMenu(4017);
 					}
 					break;
 
 				case 12: //Warlock
 					{
-						Plr->Gossip_SendPOI(355.88f, -4836.45f, 7, 6, 0, "Dhugru Gorelust");
+						Messenger::SendGossipPOI( Plr, 355.88f, -4836.45f, 7, 6, 0, "Dhugru Gorelust");
 						SendQuickMenu(4018);
 					}
 					break;
 
 				case 13: //Warrior
 					{
-						Plr->Gossip_SendPOI(312.3f, -4824.66f, 7, 6, 0, "Tarshaw Jaggedscar");
+						Messenger::SendGossipPOI( Plr, 312.3f, -4824.66f, 7, 6, 0, "Tarshaw Jaggedscar");
 						SendQuickMenu(4019);
 					}
 					break;
 
 				case 14: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-800.25f, -4894.33f, 7, 6, 0, "Miao'zan");
+						Messenger::SendGossipPOI( Plr, -800.25f, -4894.33f, 7, 6, 0, "Miao'zan");
 						SendQuickMenu(4020);
 					}
 					break;
 
 				case 15: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(373.24f, -4716.45f, 7, 6, 0, "Dwukk");
+						Messenger::SendGossipPOI( Plr, 373.24f, -4716.45f, 7, 6, 0, "Dwukk");
 						SendQuickMenu(4021);
 					}
 					break;
@@ -2962,28 +2963,28 @@ class RazorHillGuard : public GossipScript
 
 				case 18: //Engineering
 					{
-						Plr->Gossip_SendPOI(368.95f, -4723.95f, 7, 6, 0, "Mukdrak");
+						Messenger::SendGossipPOI( Plr, 368.95f, -4723.95f, 7, 6, 0, "Mukdrak");
 						SendQuickMenu(4024);
 					}
 					break;
 
 				case 19: //First Aid
 					{
-						Plr->Gossip_SendPOI(327.17f, -4825.62f, 7, 6, 0, "Rawrk");
+						Messenger::SendGossipPOI( Plr, 327.17f, -4825.62f, 7, 6, 0, "Rawrk");
 						SendQuickMenu(4025);
 					}
 					break;
 
 				case 20: //Fishing
 					{
-						Plr->Gossip_SendPOI(-1065.48f, -4777.43f, 7, 6, 0, "Lau'Tiki");
+						Messenger::SendGossipPOI( Plr, -1065.48f, -4777.43f, 7, 6, 0, "Lau'Tiki");
 						SendQuickMenu(4026);
 					}
 					break;
 
 				case 21: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-836.25f, -4896.89f, 7, 6, 0, "Mishiki");
+						Messenger::SendGossipPOI( Plr, -836.25f, -4896.89f, 7, 6, 0, "Mishiki");
 						SendQuickMenu(4027);
 					}
 					break;
@@ -2996,14 +2997,14 @@ class RazorHillGuard : public GossipScript
 
 				case 23: //Mining
 					{
-						Plr->Gossip_SendPOI(366.94f, -4705, 7, 6, 0, "Krunn");
+						Messenger::SendGossipPOI( Plr, 366.94f, -4705, 7, 6, 0, "Krunn");
 						SendQuickMenu(4029);
 					}
 					break;
 
 				case 24: //Skinning
 					{
-						Plr->Gossip_SendPOI(-2252.94f, -291.32f, 7, 6, 0, "Yonn Deepcut");
+						Messenger::SendGossipPOI( Plr, -2252.94f, -291.32f, 7, 6, 0, "Yonn Deepcut");
 						SendQuickMenu(4030);
 					}
 					break;
@@ -3057,12 +3058,12 @@ class BrillGuard : public GossipScript
 
 				case 3:     // The inn
 					SendQuickMenu(4076);
-					Plr->Gossip_SendPOI(2246.68f, 241.89f, 7, 6, 0, "Gallows` End Tavern");
+					Messenger::SendGossipPOI( Plr, 2246.68f, 241.89f, 7, 6, 0, "Gallows` End Tavern");
 					break;
 
 				case 4:     // The stable master
 					SendQuickMenu(5978);
-					Plr->Gossip_SendPOI(2267.66f, 319.32f, 7, 6, 0, "Morganus");
+					Messenger::SendGossipPOI( Plr, 2267.66f, 319.32f, 7, 6, 0, "Morganus");
 					break;
 
 				case 5:     // A class trainer
@@ -3104,7 +3105,7 @@ class BrillGuard : public GossipScript
 
 				case 7: //Mage
 					{
-						Plr->Gossip_SendPOI(2259.18f, 240.93f, 7, 6, 0, "Cain Firesong");
+						Messenger::SendGossipPOI( Plr, 2259.18f, 240.93f, 7, 6, 0, "Cain Firesong");
 						SendQuickMenu(4077);
 					}
 					break;
@@ -3117,35 +3118,35 @@ class BrillGuard : public GossipScript
 
 				case 9: //Priest
 					{
-						Plr->Gossip_SendPOI(2259.18f, 240.93f, 7, 6, 0, "Dark Cleric Beryl");
+						Messenger::SendGossipPOI( Plr, 2259.18f, 240.93f, 7, 6, 0, "Dark Cleric Beryl");
 						SendQuickMenu(4078);
 					}
 					break;
 
 				case 10: //Rogue
 					{
-						Plr->Gossip_SendPOI(2259.18f, 240.93f, 7, 6, 0, "Marion Call");
+						Messenger::SendGossipPOI( Plr, 2259.18f, 240.93f, 7, 6, 0, "Marion Call");
 						SendQuickMenu(4079);
 					}
 					break;
 
 				case 11: //Warlock
 					{
-						Plr->Gossip_SendPOI(2259.18f, 240.93f, 7, 6, 0, "Rupert Boch");
+						Messenger::SendGossipPOI( Plr, 2259.18f, 240.93f, 7, 6, 0, "Rupert Boch");
 						SendQuickMenu(4080);
 					}
 					break;
 
 				case 12: //Warrior
 					{
-						Plr->Gossip_SendPOI(2256.48f, 240.32f, 7, 6, 0, "Austil de Mon");
+						Messenger::SendGossipPOI( Plr, 2256.48f, 240.32f, 7, 6, 0, "Austil de Mon");
 						SendQuickMenu(4081);
 					}
 					break;
 
 				case 13: //Alchemy
 					{
-						Plr->Gossip_SendPOI(2263.25f, 344.23f, 7, 6, 0, "Carolai Anise");
+						Messenger::SendGossipPOI( Plr, 2263.25f, 344.23f, 7, 6, 0, "Carolai Anise");
 						SendQuickMenu(4082);
 					}
 					break;
@@ -3164,7 +3165,7 @@ class BrillGuard : public GossipScript
 
 				case 16: //Enchanting
 					{
-						Plr->Gossip_SendPOI(2250.35f, 249.12f, 7, 6, 0, "Vance Undergloom");
+						Messenger::SendGossipPOI( Plr, 2250.35f, 249.12f, 7, 6, 0, "Vance Undergloom");
 						SendQuickMenu(4085);
 					}
 					break;
@@ -3177,28 +3178,28 @@ class BrillGuard : public GossipScript
 
 				case 18: //First Aid
 					{
-						Plr->Gossip_SendPOI(2246.68f, 241.89f, 7, 6, 0, "Nurse Neela");
+						Messenger::SendGossipPOI( Plr, 2246.68f, 241.89f, 7, 6, 0, "Nurse Neela");
 						SendQuickMenu(4087);
 					}
 					break;
 
 				case 19: //Fishing
 					{
-						Plr->Gossip_SendPOI(2292.37f, -10.72f, 7, 6, 0, "Clyde Kellen");
+						Messenger::SendGossipPOI( Plr, 2292.37f, -10.72f, 7, 6, 0, "Clyde Kellen");
 						SendQuickMenu(4088);
 					}
 					break;
 
 				case 20: //Herbalism
 					{
-						Plr->Gossip_SendPOI(2268.21f, 331.69f, 7, 6, 0, "Faruza");
+						Messenger::SendGossipPOI( Plr, 2268.21f, 331.69f, 7, 6, 0, "Faruza");
 						SendQuickMenu(4089);
 					}
 					break;
 
 				case 21: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(2027, 78.72f, 7, 6, 0, "Shelene Rhobart");
+						Messenger::SendGossipPOI( Plr, 2027, 78.72f, 7, 6, 0, "Shelene Rhobart");
 						SendQuickMenu(4090);
 					}
 					break;
@@ -3211,14 +3212,14 @@ class BrillGuard : public GossipScript
 
 				case 23: //Skinning
 					{
-						Plr->Gossip_SendPOI(2027, 78.72f, 7, 6, 0, "Rand Rhobart");
+						Messenger::SendGossipPOI( Plr, 2027, 78.72f, 7, 6, 0, "Rand Rhobart");
 						SendQuickMenu(4092);
 					}
 					break;
 
 				case 24: //Tailoring
 					{
-						Plr->Gossip_SendPOI(2160.45f, 659.93f, 7, 6, 0, "Bowen Brisboise");
+						Messenger::SendGossipPOI( Plr, 2160.45f, 659.93f, 7, 6, 0, "Bowen Brisboise");
 						SendQuickMenu(4093);
 					}
 					break;
@@ -3266,57 +3267,57 @@ class IronforgeGuard : public GossipScript
 
 				case 1:     // Auction House
 					SendQuickMenu(3014);
-					Plr->Gossip_SendPOI(-4957.39f, -911.6f, 7, 6, 0, "Ironforge Auction House");
+					Messenger::SendGossipPOI( Plr, -4957.39f, -911.6f, 7, 6, 0, "Ironforge Auction House");
 					break;
 
 				case 2:     // Bank of Ironforge
 					SendQuickMenu(2761);
-					Plr->Gossip_SendPOI(-4891.91f, -991.47f, 7, 6, 0, "The Vault");
+					Messenger::SendGossipPOI( Plr, -4891.91f, -991.47f, 7, 6, 0, "The Vault");
 					break;
 
 				case 3:     // Deeprun Tram
 					SendQuickMenu(3814);
-					Plr->Gossip_SendPOI(-4835.27f, -1294.69f, 7, 6, 0, "Deeprun Tram");
+					Messenger::SendGossipPOI( Plr, -4835.27f, -1294.69f, 7, 6, 0, "Deeprun Tram");
 					break;
 
 				case 4:     // Gryphon Master
 					SendQuickMenu(2762);
-					Plr->Gossip_SendPOI(-4821.52f, -1152.3f, 7, 6, 0, "Ironforge Gryphon Master");
+					Messenger::SendGossipPOI( Plr, -4821.52f, -1152.3f, 7, 6, 0, "Ironforge Gryphon Master");
 					break;
 
 				case 5:     // Guild Master
 					SendQuickMenu(2764);
-					Plr->Gossip_SendPOI(-5021, -996.45f, 7, 6, 0, "Ironforge Visitor's Center");
+					Messenger::SendGossipPOI( Plr, -5021, -996.45f, 7, 6, 0, "Ironforge Visitor's Center");
 					break;
 
 				case 6:     // The Inn
 					SendQuickMenu(2768);
-					Plr->Gossip_SendPOI(-4850.47f, -872.57f, 7, 6, 0, "Stonefire Tavern");
+					Messenger::SendGossipPOI( Plr, -4850.47f, -872.57f, 7, 6, 0, "Stonefire Tavern");
 					break;
 
 				case 7:     // Mailbox
 					SendQuickMenu(2769);
-					Plr->Gossip_SendPOI(-4845.7f, -880.55f, 7, 6, 0, "Ironforge Mailbox");
+					Messenger::SendGossipPOI( Plr, -4845.7f, -880.55f, 7, 6, 0, "Ironforge Mailbox");
 					break;
 
 				case 8:     // Stable Master
 					SendQuickMenu(5986);
-					Plr->Gossip_SendPOI(-5010.2f, -1262, 7, 6, 0, "Ulbrek Firehand");
+					Messenger::SendGossipPOI( Plr, -5010.2f, -1262, 7, 6, 0, "Ulbrek Firehand");
 					break;
 
 				case 9:    // Weapon Trainer
 					SendQuickMenu(4518);
-					Plr->Gossip_SendPOI(-5040, -1201.88f, 7, 6, 0, "Bixi and Buliwyf");
+					Messenger::SendGossipPOI( Plr, -5040, -1201.88f, 7, 6, 0, "Bixi and Buliwyf");
 					break;
 
 				case 10:    // Battlemaster
 					SendQuickMenu(10216);
-					Plr->Gossip_SendPOI(-5038.54f, -1266.44f, 7, 6, 0, "Battlemasters Ironforge");
+					Messenger::SendGossipPOI( Plr, -5038.54f, -1266.44f, 7, 6, 0, "Battlemasters Ironforge");
 					break;
 
 				case 11:    // Barber
 					SendQuickMenu(13885);
-					Plr->Gossip_SendPOI(-4838.49f, -919.18f, 7, 6, 0, "Ironforge Barber");
+					Messenger::SendGossipPOI( Plr, -4838.49f, -919.18f, 7, 6, 0, "Ironforge Barber");
 					break;
 
 				case 12:    // A class trainer
@@ -3360,154 +3361,154 @@ class IronforgeGuard : public GossipScript
 
 				case 14: //Hunter
 					{
-						Plr->Gossip_SendPOI(-5023, -1253.68f, 7, 6, 0, "Hall of Arms");
+						Messenger::SendGossipPOI( Plr, -5023, -1253.68f, 7, 6, 0, "Hall of Arms");
 						SendQuickMenu(2770);
 					}
 					break;
 
 				case 15: //Mage
 					{
-						Plr->Gossip_SendPOI(-4627, -926.45f, 7, 6, 0, "Hall of Mysteries");
+						Messenger::SendGossipPOI( Plr, -4627, -926.45f, 7, 6, 0, "Hall of Mysteries");
 						SendQuickMenu(2771);
 					}
 					break;
 
 				case 16: //Paladin
 					{
-						Plr->Gossip_SendPOI(-4627.02f, -926.45f, 7, 6, 0, "Hall of Mysteries");
+						Messenger::SendGossipPOI( Plr, -4627.02f, -926.45f, 7, 6, 0, "Hall of Mysteries");
 						SendQuickMenu(2773);
 					}
 					break;
 
 				case 17: //Priest
 					{
-						Plr->Gossip_SendPOI(-4627, -926.45f, 7, 6, 0, "Hall of Mysteries");
+						Messenger::SendGossipPOI( Plr, -4627, -926.45f, 7, 6, 0, "Hall of Mysteries");
 						SendQuickMenu(2772);
 					}
 					break;
 
 				case 18: //Rogue
 					{
-						Plr->Gossip_SendPOI(-4647.83f, -1124, 7, 6, 0, "Ironforge Rogue Trainer");
+						Messenger::SendGossipPOI( Plr, -4647.83f, -1124, 7, 6, 0, "Ironforge Rogue Trainer");
 						SendQuickMenu(2774);
 					}
 					break;
 
 				case 19: //Warlock
 					{
-						Plr->Gossip_SendPOI(-4605, -1110.45f, 7, 6, 0, "Ironforge Warlock Trainer");
+						Messenger::SendGossipPOI( Plr, -4605, -1110.45f, 7, 6, 0, "Ironforge Warlock Trainer");
 						SendQuickMenu(2775);
 					}
 					break;
 
 				case 20: //Warrior
 					{
-						Plr->Gossip_SendPOI(-5023.08f, -1253.68f, 7, 6, 0, "Hall of Arms");
+						Messenger::SendGossipPOI( Plr, -5023.08f, -1253.68f, 7, 6, 0, "Hall of Arms");
 						SendQuickMenu(2776);
 					}
 					break;
 
 				case 21: //Shaman
 					{
-						Plr->Gossip_SendPOI(-4722.02f, -1150.66f, 7, 6, 0, "Ironforge Shaman Trainer");
+						Messenger::SendGossipPOI( Plr, -4722.02f, -1150.66f, 7, 6, 0, "Ironforge Shaman Trainer");
 						SendQuickMenu(10842);
 					}
 					break;
 
 				case 22: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-4858.5f, -1241.83f, 7, 6, 0, "Berryfizz's Potions and Mixed Drinks");
+						Messenger::SendGossipPOI( Plr, -4858.5f, -1241.83f, 7, 6, 0, "Berryfizz's Potions and Mixed Drinks");
 						SendQuickMenu(2794);
 					}
 					break;
 
 				case 23: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-4796.97f, -1110.17f, 7, 6, 0, "The Great Forge");
+						Messenger::SendGossipPOI( Plr, -4796.97f, -1110.17f, 7, 6, 0, "The Great Forge");
 						SendQuickMenu(2795);
 					}
 					break;
 
 				case 24: //Cooking
 					{
-						Plr->Gossip_SendPOI(-4767.83f, -1184.59f, 7, 6, 0, "The Bronze Kettle");
+						Messenger::SendGossipPOI( Plr, -4767.83f, -1184.59f, 7, 6, 0, "The Bronze Kettle");
 						SendQuickMenu(2796);
 					}
 					break;
 
 				case 25: //Enchanting
 					{
-						Plr->Gossip_SendPOI(-4803.72f, -1196.53f, 7, 6, 0, "Thistlefuzz Arcanery");
+						Messenger::SendGossipPOI( Plr, -4803.72f, -1196.53f, 7, 6, 0, "Thistlefuzz Arcanery");
 						SendQuickMenu(2797);
 					}
 					break;
 
 				case 26: //Engineering
 					{
-						Plr->Gossip_SendPOI(-4799.56f, -1250.23f, 7, 6, 0, "Springspindle's Gadgets");
+						Messenger::SendGossipPOI( Plr, -4799.56f, -1250.23f, 7, 6, 0, "Springspindle's Gadgets");
 						SendQuickMenu(2798);
 					}
 					break;
 
 				case 27: //First Aid
 					{
-						Plr->Gossip_SendPOI(-4881.6f, -1153.13f, 7, 6, 0, "Ironforge Physician");
+						Messenger::SendGossipPOI( Plr, -4881.6f, -1153.13f, 7, 6, 0, "Ironforge Physician");
 						SendQuickMenu(2799);
 					}
 					break;
 
 				case 28: //Fishing
 					{
-						Plr->Gossip_SendPOI(-4597.91f, -1091.93f, 7, 6, 0, "Traveling Fisherman");
+						Messenger::SendGossipPOI( Plr, -4597.91f, -1091.93f, 7, 6, 0, "Traveling Fisherman");
 						SendQuickMenu(2800);
 					}
 					break;
 
 				case 29: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-4876.9f, -1151.92f, 7, 6, 0, "Ironforge Physician");
+						Messenger::SendGossipPOI( Plr, -4876.9f, -1151.92f, 7, 6, 0, "Ironforge Physician");
 						SendQuickMenu(2801);
 					}
 					break;
 
 				case 30: //Inscription
 					{
-						Plr->Gossip_SendPOI(-4801.72f, -1189.41f, 7, 6, 0, "Ironforge Inscription");
+						Messenger::SendGossipPOI( Plr, -4801.72f, -1189.41f, 7, 6, 0, "Ironforge Inscription");
 						SendQuickMenu(13884);
 					}
 					break;
 
 				case 31: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-4745, -1027.57f, 7, 6, 0, "Finespindle's Leather Goods");
+						Messenger::SendGossipPOI( Plr, -4745, -1027.57f, 7, 6, 0, "Finespindle's Leather Goods");
 						SendQuickMenu(2802);
 					}
 					break;
 
 				case 32: //Mining
 					{
-						Plr->Gossip_SendPOI(-4705.06f, -1116.43f, 7, 6, 0, "Deepmountain Mining Guild");
+						Messenger::SendGossipPOI( Plr, -4705.06f, -1116.43f, 7, 6, 0, "Deepmountain Mining Guild");
 						SendQuickMenu(2804);
 					}
 					break;
 
 				case 33: //Skinning
 					{
-						Plr->Gossip_SendPOI(-4745, -1027.57f, 7, 6, 0, "Finespindle's Leather Goods");
+						Messenger::SendGossipPOI( Plr, -4745, -1027.57f, 7, 6, 0, "Finespindle's Leather Goods");
 						SendQuickMenu(2805);
 					}
 					break;
 
 				case 34: //Tailoring
 					{
-						Plr->Gossip_SendPOI(-4719.60f, -1056.96f, 7, 6, 0, "Stonebrow's Clothier");
+						Messenger::SendGossipPOI( Plr, -4719.60f, -1056.96f, 7, 6, 0, "Stonebrow's Clothier");
 						SendQuickMenu(2807);
 					}
 					break;
 
 				case 35: //Lexicon of Power
 					{
-						Plr->Gossip_SendPOI(-4801.72f, -1189.41f, 7, 6, 0, "Ironforge Inscription");
+						Messenger::SendGossipPOI( Plr, -4801.72f, -1189.41f, 7, 6, 0, "Ironforge Inscription");
 						SendQuickMenu(14174);
 					}
 					break;
@@ -3560,12 +3561,12 @@ class KharanosGuard : public GossipScript
 
 				case 4:     //The Inn
 					SendQuickMenu(4291);
-					Plr->Gossip_SendPOI(-5582.66f, -525.89f, 7, 6, 0, "Thunderbrew Distillery");
+					Messenger::SendGossipPOI( Plr, -5582.66f, -525.89f, 7, 6, 0, "Thunderbrew Distillery");
 					break;
 
 				case 5:     //Stable Master
 					SendQuickMenu(5985);
-					Plr->Gossip_SendPOI(-5604, -509.58f, 7, 6, 0, "Shelby Stoneflint");
+					Messenger::SendGossipPOI( Plr, -5604, -509.58f, 7, 6, 0, "Shelby Stoneflint");
 					break;
 
 				case 6:     //Class Trainer
@@ -3609,49 +3610,49 @@ class KharanosGuard : public GossipScript
 
 				case 8: //Hunter
 					{
-						Plr->Gossip_SendPOI(-5618.29f, -454.25f, 7, 6, 0, "Grif Wildheart");
+						Messenger::SendGossipPOI( Plr, -5618.29f, -454.25f, 7, 6, 0, "Grif Wildheart");
 						SendQuickMenu(4293);
 					}
 					break;
 
 				case 9: //Mage
 					{
-						Plr->Gossip_SendPOI(-5585.6f, -539.99f, 7, 6, 0, "Magis Sparkmantle");
+						Messenger::SendGossipPOI( Plr, -5585.6f, -539.99f, 7, 6, 0, "Magis Sparkmantle");
 						SendQuickMenu(4294);
 					}
 					break;
 
 				case 10: //Paladin
 					{
-						Plr->Gossip_SendPOI(-5585.6f, -539.99f, 7, 6, 0, "Azar Stronghammer");
+						Messenger::SendGossipPOI( Plr, -5585.6f, -539.99f, 7, 6, 0, "Azar Stronghammer");
 						SendQuickMenu(4295);
 					}
 					break;
 
 				case 11: //Priest
 					{
-						Plr->Gossip_SendPOI(-5591.74f, -525.61f, 7, 6, 0, "Maxan Anvol");
+						Messenger::SendGossipPOI( Plr, -5591.74f, -525.61f, 7, 6, 0, "Maxan Anvol");
 						SendQuickMenu(4296);
 					}
 					break;
 
 				case 12: //Rogue
 					{
-						Plr->Gossip_SendPOI(-5602.75f, -542.4f, 7, 6, 0, "Hogral Bakkan");
+						Messenger::SendGossipPOI( Plr, -5602.75f, -542.4f, 7, 6, 0, "Hogral Bakkan");
 						SendQuickMenu(4297);
 					}
 					break;
 
 				case 13: //Warlock
 					{
-						Plr->Gossip_SendPOI(-5641.97f, -523.76f, 7, 6, 0, "Gimrizz Shadowcog");
+						Messenger::SendGossipPOI( Plr, -5641.97f, -523.76f, 7, 6, 0, "Gimrizz Shadowcog");
 						SendQuickMenu(4298);
 					}
 					break;
 
 				case 14: //Warrior
 					{
-						Plr->Gossip_SendPOI(-5604.79f, -529.38f, 7, 6, 0, "Granis Swiftaxe");
+						Messenger::SendGossipPOI( Plr, -5604.79f, -529.38f, 7, 6, 0, "Granis Swiftaxe");
 						SendQuickMenu(4299);
 					}
 					break;
@@ -3664,14 +3665,14 @@ class KharanosGuard : public GossipScript
 
 				case 16: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-5584.72f, -428.41f, 7, 6, 0, "Tognus Flintfire");
+						Messenger::SendGossipPOI( Plr, -5584.72f, -428.41f, 7, 6, 0, "Tognus Flintfire");
 						SendQuickMenu(4302);
 					}
 					break;
 
 				case 17: //Cooking
 					{
-						Plr->Gossip_SendPOI(-5596.85f, -541.43f, 7, 6, 0, "Gremlock Pilsnor");
+						Messenger::SendGossipPOI( Plr, -5596.85f, -541.43f, 7, 6, 0, "Gremlock Pilsnor");
 						SendQuickMenu(4303);
 					}
 					break;
@@ -3690,14 +3691,14 @@ class KharanosGuard : public GossipScript
 
 				case 20: //First Aid
 					{
-						Plr->Gossip_SendPOI(-5603.67f, -523.57f, 7, 6, 0, "Thamner Pol");
+						Messenger::SendGossipPOI( Plr, -5603.67f, -523.57f, 7, 6, 0, "Thamner Pol");
 						SendQuickMenu(4306);
 					}
 					break;
 
 				case 21: //Fishing
 					{
-						Plr->Gossip_SendPOI(-5202.39f, -51.36f, 7, 6, 0, "Paxton Ganter");
+						Messenger::SendGossipPOI( Plr, -5202.39f, -51.36f, 7, 6, 0, "Paxton Ganter");
 						SendQuickMenu(4307);
 					}
 					break;
@@ -3710,7 +3711,7 @@ class KharanosGuard : public GossipScript
 
 				case 23: //Inscription
 					{
-						Plr->Gossip_SendPOI(-4801.72f, -1189.41f, 7, 6, 0, "Ironforge Inscription");
+						Messenger::SendGossipPOI( Plr, -4801.72f, -1189.41f, 7, 6, 0, "Ironforge Inscription");
 						SendQuickMenu(13884);
 					}
 					break;
@@ -3723,7 +3724,7 @@ class KharanosGuard : public GossipScript
 
 				case 25: //Mining
 					{
-						Plr->Gossip_SendPOI(-5531, -666.53f, 7, 6, 0, "Yarr Hamerstone");
+						Messenger::SendGossipPOI( Plr, -5531, -666.53f, 7, 6, 0, "Yarr Hamerstone");
 						SendQuickMenu(4311);
 					}
 					break;
@@ -3775,7 +3776,7 @@ class FalconwingGuard : public GossipScript
 
 				case 1:     //Bat Handler
 					SendQuickMenu(2593);
-					Plr->Gossip_SendPOI(9376.4f, -7164.92f, 7, 6, 0, "Silvermoon City, Flight Master");
+					Messenger::SendGossipPOI( Plr, 9376.4f, -7164.92f, 7, 6, 0, "Silvermoon City, Flight Master");
 					break;
 
 				case 2:     //Guild Master
@@ -3784,12 +3785,12 @@ class FalconwingGuard : public GossipScript
 
 				case 3:     //The Inn
 					SendQuickMenu(2593);
-					Plr->Gossip_SendPOI(9476.916f, -6859.2f, 7, 6, 0, "Falconwing Square, Innkeeper");
+					Messenger::SendGossipPOI( Plr, 9476.916f, -6859.2f, 7, 6, 0, "Falconwing Square, Innkeeper");
 					break;
 
 				case 4:     //Stable Master
 					SendQuickMenu(2593);
-					Plr->Gossip_SendPOI(9487.6f, -6830.59f, 7, 6, 0, "Falconwing Square, Stable Master");
+					Messenger::SendGossipPOI( Plr, 9487.6f, -6830.59f, 7, 6, 0, "Falconwing Square, Stable Master");
 					break;
 
 				case 5:     //Class Trainer
@@ -3839,70 +3840,70 @@ class FalconwingGuard : public GossipScript
 
 				case 8: //Hunter
 					{
-						Plr->Gossip_SendPOI(9529.2f, -6864.58f, 7, 6, 0, "Falconwing Square, Hunter Trainer");
+						Messenger::SendGossipPOI( Plr, 9529.2f, -6864.58f, 7, 6, 0, "Falconwing Square, Hunter Trainer");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 9: //Mage
 					{
-						Plr->Gossip_SendPOI(9462.24f, -6853.45f, 7, 6, 0, "Falconwing Square, Mage Trainer");
+						Messenger::SendGossipPOI( Plr, 9462.24f, -6853.45f, 7, 6, 0, "Falconwing Square, Mage Trainer");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 10: //Paladin <-- Needs to change flag to other sign (don't know how to describe it)
 					{
-						Plr->Gossip_SendPOI(9516.05f, -6870.96f, 7, 6, 0, "Falconwing Square, Paladin Trainer");
+						Messenger::SendGossipPOI( Plr, 9516.05f, -6870.96f, 7, 6, 0, "Falconwing Square, Paladin Trainer");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 11: //Priest
 					{
-						Plr->Gossip_SendPOI(9466.62f, -6844.23f, 7, 6, 0, "Falconwing Square, Priest Trainer");
+						Messenger::SendGossipPOI( Plr, 9466.62f, -6844.23f, 7, 6, 0, "Falconwing Square, Priest Trainer");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 12: //Rogue
 					{
-						Plr->Gossip_SendPOI(9534.15f, -6876.0f, 7, 6, 0, "Falconwing Square, Rogue Trainer");
+						Messenger::SendGossipPOI( Plr, 9534.15f, -6876.0f, 7, 6, 0, "Falconwing Square, Rogue Trainer");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 13: //Warlock
 					{
-						Plr->Gossip_SendPOI(9467.63f, -6862.82f, 7, 6, 0, "Falconwing Square, Warlock Trainer");
+						Messenger::SendGossipPOI( Plr, 9467.63f, -6862.82f, 7, 6, 0, "Falconwing Square, Warlock Trainer");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 14: //Alchemy
 					{
-						Plr->Gossip_SendPOI(8661.36f, -6367.0f, 7, 6, 0, "Saltheril's Haven, Alchemist");
+						Messenger::SendGossipPOI( Plr, 8661.36f, -6367.0f, 7, 6, 0, "Saltheril's Haven, Alchemist");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 15: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(8986.43f, -7419.07f, 7, 6, 0, "Farstrider Retreat, Blacksmith");
+						Messenger::SendGossipPOI( Plr, 8986.43f, -7419.07f, 7, 6, 0, "Farstrider Retreat, Blacksmith");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 16: //Cooking
 					{
-						Plr->Gossip_SendPOI(9494.86f, -6879.45f, 7, 6, 0, "Falconwing Square, Cook");
+						Messenger::SendGossipPOI( Plr, 9494.86f, -6879.45f, 7, 6, 0, "Falconwing Square, Cook");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 17: //Enchanting
 					{
-						Plr->Gossip_SendPOI(8657.6f, -6366.7f, 7, 6, 0, "Saltheril's Haven, Enchanter");
+						Messenger::SendGossipPOI( Plr, 8657.6f, -6366.7f, 7, 6, 0, "Saltheril's Haven, Enchanter");
 						SendQuickMenu(2593);
 					}
 					break;
@@ -3915,7 +3916,7 @@ class FalconwingGuard : public GossipScript
 
 				case 19: //First Aid
 					{
-						Plr->Gossip_SendPOI(9479.53f, -6880.07f, 7, 6, 0, "Falconwing Square, First Aid");
+						Messenger::SendGossipPOI( Plr, 9479.53f, -6880.07f, 7, 6, 0, "Falconwing Square, First Aid");
 						SendQuickMenu(2593);
 					}
 					break;
@@ -3928,21 +3929,21 @@ class FalconwingGuard : public GossipScript
 
 				case 21: //Herbalism
 					{
-						Plr->Gossip_SendPOI(8678.92f, -6329.09f, 7, 6, 0, "Saltheril's Haven, Herbalist");
+						Messenger::SendGossipPOI( Plr, 8678.92f, -6329.09f, 7, 6, 0, "Saltheril's Haven, Herbalist");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 22: //Jewelcrafting
 					{
-						Plr->Gossip_SendPOI(9484.79f, -6876.58f, 7, 6, 0, "Falconwing Square, Jewelcrafter");
+						Messenger::SendGossipPOI( Plr, 9484.79f, -6876.58f, 7, 6, 0, "Falconwing Square, Jewelcrafter");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 23: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(9363.75f, -7130.75f, 7, 6, 0, "Eversong Woods, Leatherworker");
+						Messenger::SendGossipPOI( Plr, 9363.75f, -7130.75f, 7, 6, 0, "Eversong Woods, Leatherworker");
 						SendQuickMenu(2593);
 					}
 					break;
@@ -3955,14 +3956,14 @@ class FalconwingGuard : public GossipScript
 
 				case 25: //Skinning
 					{
-						Plr->Gossip_SendPOI(9362.89f, -7134.58f, 7, 6, 0, "Eversong Woods, Skinner");
+						Messenger::SendGossipPOI( Plr, 9362.89f, -7134.58f, 7, 6, 0, "Eversong Woods, Skinner");
 						SendQuickMenu(2593);
 					}
 					break;
 
 				case 26: //Tailoring
 					{
-						Plr->Gossip_SendPOI(8680.36f, -6327.51f, 7, 6, 0, "Saltheril's Haven, Tailor");
+						Messenger::SendGossipPOI( Plr, 8680.36f, -6327.51f, 7, 6, 0, "Saltheril's Haven, Tailor");
 						SendQuickMenu(2593);
 					}
 					break;
@@ -4015,12 +4016,12 @@ class AzureWatchGuard : public GossipScript
 
 				case 4:     //Inn
 					SendQuickMenu(10074);
-					Plr->Gossip_SendPOI(-4127.81f, -12467.7f, 7, 6, 0, "Azure Watch, Innkeeper");
+					Messenger::SendGossipPOI( Plr, -4127.81f, -12467.7f, 7, 6, 0, "Azure Watch, Innkeeper");
 					break;
 
 				case 5:     //Stable Master
 					SendQuickMenu(10075);
-					Plr->Gossip_SendPOI(-4146.42f, -12492.7f, 7, 6, 0, "Azure Watch, Stable Master");
+					Messenger::SendGossipPOI( Plr, -4146.42f, -12492.7f, 7, 6, 0, "Azure Watch, Stable Master");
 					break;
 
 				case 6:     //Class Trainer
@@ -4071,63 +4072,63 @@ class AzureWatchGuard : public GossipScript
 
 				case 9: //Hunter
 					{
-						Plr->Gossip_SendPOI(-4203.65f, -12467.7f, 7, 6, 0, "Azure Watch, Hunter Trainer");
+						Messenger::SendGossipPOI( Plr, -4203.65f, -12467.7f, 7, 6, 0, "Azure Watch, Hunter Trainer");
 						SendQuickMenu(10078);
 					}
 					break;
 
 				case 10: //Mage
 					{
-						Plr->Gossip_SendPOI(-4149.62f, -12530.1f, 7, 6, 0, "Azure Watch, Mage Trainer");
+						Messenger::SendGossipPOI( Plr, -4149.62f, -12530.1f, 7, 6, 0, "Azure Watch, Mage Trainer");
 						SendQuickMenu(10081);
 					}
 					break;
 
 				case 11: //Paladin
 					{
-						Plr->Gossip_SendPOI(-4138.98f, -12468.5f, 7, 6, 0, "Azure Watch, Paladin Trainer");
+						Messenger::SendGossipPOI( Plr, -4138.98f, -12468.5f, 7, 6, 0, "Azure Watch, Paladin Trainer");
 						SendQuickMenu(10083);
 					}
 					break;
 
 				case 12: //Priest
 					{
-						Plr->Gossip_SendPOI(-4131.66f, -12478.6f, 7, 6, 0, "Azure Watch, Priest Trainer");
+						Messenger::SendGossipPOI( Plr, -4131.66f, -12478.6f, 7, 6, 0, "Azure Watch, Priest Trainer");
 						SendQuickMenu(10084);
 					}
 					break;
 
 				case 13: //Shaman
 					{
-						Plr->Gossip_SendPOI(-4162.33f, -12456.1f, 7, 6, 0, "Azure Watch, Shaman Trainer");
+						Messenger::SendGossipPOI( Plr, -4162.33f, -12456.1f, 7, 6, 0, "Azure Watch, Shaman Trainer");
 						SendQuickMenu(10085);
 					}
 					break;
 
 				case 14: //Warrior
 					{
-						Plr->Gossip_SendPOI(-4165.05f, -12536.4f, 7, 6, 0, "Azure Watch, Warrior Trainer");
+						Messenger::SendGossipPOI( Plr, -4165.05f, -12536.4f, 7, 6, 0, "Azure Watch, Warrior Trainer");
 						SendQuickMenu(10086);
 					}
 					break;
 
 				case 15: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-4191.15f, -12470, 7, 6, 0, "Azure Watch, Alchemist");
+						Messenger::SendGossipPOI( Plr, -4191.15f, -12470, 7, 6, 0, "Azure Watch, Alchemist");
 						SendQuickMenu(10088);
 					}
 					break;
 
 				case 16: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-4726.29f, -12387.0f, 7, 6, 0, "Odesyus' Landing, Blacksmith");
+						Messenger::SendGossipPOI( Plr, -4726.29f, -12387.0f, 7, 6, 0, "Odesyus' Landing, Blacksmith");
 						SendQuickMenu(10089);
 					}
 					break;
 
 				case 17: //Cooking
 					{
-						Plr->Gossip_SendPOI(-4708.59f, -12400.3f, 7, 6, 0, "Odesyus' Landing, Cook");
+						Messenger::SendGossipPOI( Plr, -4708.59f, -12400.3f, 7, 6, 0, "Odesyus' Landing, Cook");
 						SendQuickMenu(10090);
 					}
 					break;
@@ -4140,35 +4141,35 @@ class AzureWatchGuard : public GossipScript
 
 				case 19: //Engineering
 					{
-						Plr->Gossip_SendPOI(-4157.57f, -12470.2f, 7, 6, 0, "Azure Watch, Engineering Trainer");
+						Messenger::SendGossipPOI( Plr, -4157.57f, -12470.2f, 7, 6, 0, "Azure Watch, Engineering Trainer");
 						SendQuickMenu(10092);
 					}
 					break;
 
 				case 20: //First Aid
 					{
-						Plr->Gossip_SendPOI(-4199.1f, -12469.9f, 7, 6, 0, "Azure Watch, First Aid Trainer");
+						Messenger::SendGossipPOI( Plr, -4199.1f, -12469.9f, 7, 6, 0, "Azure Watch, First Aid Trainer");
 						SendQuickMenu(10093);
 					}
 					break;
 
 				case 21: //Fishing
 					{
-						Plr->Gossip_SendPOI(-4266.34f, -12985.4f, 7, 6, 0, "Ammen Ford, Fisherwoman");
+						Messenger::SendGossipPOI( Plr, -4266.34f, -12985.4f, 7, 6, 0, "Ammen Ford, Fisherwoman");
 						SendQuickMenu(10094);
 					}
 					break;
 
 				case 22: //Herbalism
 					{
-						Plr->Gossip_SendPOI(-4189.43f, -12459.4f, 7, 6, 0, "Azure Watch, Herbalist");
+						Messenger::SendGossipPOI( Plr, -4189.43f, -12459.4f, 7, 6, 0, "Azure Watch, Herbalist");
 						SendQuickMenu(10095);
 					}
 					break;
 
 				case 23: //Inscription
 					{
-						Plr->Gossip_SendPOI(-3889.3f, -11495, 7, 6, 0, "Exodar, Inscription");
+						Messenger::SendGossipPOI( Plr, -3889.3f, -11495, 7, 6, 0, "Exodar, Inscription");
 						SendQuickMenu(13887);
 					}
 					break;
@@ -4181,28 +4182,28 @@ class AzureWatchGuard : public GossipScript
 
 				case 25: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-3442.68f, -12322.2f, 7, 6, 0, "Stillpine Hold, Leatherworker");
+						Messenger::SendGossipPOI( Plr, -3442.68f, -12322.2f, 7, 6, 0, "Stillpine Hold, Leatherworker");
 						SendQuickMenu(10096);
 					}
 					break;
 
 				case 26: //Mining
 					{
-						Plr->Gossip_SendPOI(-4179.89f, -12493.1f, 7, 6, 0, "Azure Watch, Mining Trainer");
+						Messenger::SendGossipPOI( Plr, -4179.89f, -12493.1f, 7, 6, 0, "Azure Watch, Mining Trainer");
 						SendQuickMenu(10097);
 					}
 					break;
 
 				case 27: //Skinning
 					{
-						Plr->Gossip_SendPOI(-3431.17f, -12316.5f, 7, 6, 0, "Stillpine Hold, Skinner");
+						Messenger::SendGossipPOI( Plr, -3431.17f, -12316.5f, 7, 6, 0, "Stillpine Hold, Skinner");
 						SendQuickMenu(10098);
 					}
 					break;
 
 				case 28: //Tailoring
 					{
-						Plr->Gossip_SendPOI(-4711.54f, -12386.7f, 7, 6, 0, "Odesyus' Landing, Tailor");
+						Messenger::SendGossipPOI( Plr, -4711.54f, -12386.7f, 7, 6, 0, "Odesyus' Landing, Tailor");
 						SendQuickMenu(10099);
 					}
 					break;
@@ -4252,7 +4253,7 @@ class ShattrathGuard : public GossipScript
 
 				case 1:     // World's End Tavern
 					SendQuickMenu(10394);
-					Plr->Gossip_SendPOI(-1760.4f, 5166.9f, 7, 6, 0, "World's End Tavern");
+					Messenger::SendGossipPOI( Plr, -1760.4f, 5166.9f, 7, 6, 0, "World's End Tavern");
 					break;
 
 				case 2:     // Shattrath Banks
@@ -4276,7 +4277,7 @@ class ShattrathGuard : public GossipScript
 
 				case 4:     // Gryphon Master
 					SendQuickMenu(10402);
-					Plr->Gossip_SendPOI(-1831.9f, 5298.2f, 7, 6, 0, "Gryphon Master");
+					Messenger::SendGossipPOI( Plr, -1831.9f, 5298.2f, 7, 6, 0, "Gryphon Master");
 					break;
 
 				case 5:     // Mailboxes
@@ -4325,12 +4326,12 @@ class ShattrathGuard : public GossipScript
 
 				case 9:     // Mana Loom
 					SendQuickMenu(10408);
-					Plr->Gossip_SendPOI(-2073.9f, 5265.7f, 7, 6, 0, "Mana Loom");
+					Messenger::SendGossipPOI( Plr, -2073.9f, 5265.7f, 7, 6, 0, "Mana Loom");
 					break;
 
 				case 10:    // Alchemy Lab
 					SendQuickMenu(10409);
-					Plr->Gossip_SendPOI(-1648.1f, 5537.3f, 7, 6, 0, "Alchemy Lab");
+					Messenger::SendGossipPOI( Plr, -1648.1f, 5537.3f, 7, 6, 0, "Alchemy Lab");
 					break;
 
 				case 11:    // Gem Merchants
@@ -4350,14 +4351,14 @@ class ShattrathGuard : public GossipScript
 
 				case 12: //Aldor Bank
 					{
-						Plr->Gossip_SendPOI(-1730.8f, 5496.2f, 7, 6, 0, "Aldor Bank");
+						Messenger::SendGossipPOI( Plr, -1730.8f, 5496.2f, 7, 6, 0, "Aldor Bank");
 						SendQuickMenu(10396);
 					}
 					break;
 
 				case 13: //Scryers Bank
 					{
-						Plr->Gossip_SendPOI(-1999.6f, 5362.0f, 7, 6, 0, "Scryers Bank");
+						Messenger::SendGossipPOI( Plr, -1999.6f, 5362.0f, 7, 6, 0, "Scryers Bank");
 						SendQuickMenu(10397);
 					}
 					break;
@@ -4370,14 +4371,14 @@ class ShattrathGuard : public GossipScript
 
 				case 14: //Aldor Inn
 					{
-						Plr->Gossip_SendPOI(-1897.5f, 5767.6f, 7, 6, 0, "Aldor inn");
+						Messenger::SendGossipPOI( Plr, -1897.5f, 5767.6f, 7, 6, 0, "Aldor inn");
 						SendQuickMenu(10399);
 					}
 					break;
 
 				case 15: //Scryers Inn
 					{
-						Plr->Gossip_SendPOI(-2180.6f, 5403.9f, 7, 6, 0, "Scryers inn");
+						Messenger::SendGossipPOI( Plr, -2180.6f, 5403.9f, 7, 6, 0, "Scryers inn");
 						SendQuickMenu(10401);
 					}
 					break;
@@ -4390,28 +4391,28 @@ class ShattrathGuard : public GossipScript
 
 				case 16: //Aldor Inn
 					{
-						Plr->Gossip_SendPOI(-1886.9f, 5761.5f, 7, 6, 0, "Aldor Inn");
+						Messenger::SendGossipPOI( Plr, -1886.9f, 5761.5f, 7, 6, 0, "Aldor Inn");
 						SendQuickMenu(10399);
 					}
 					break;
 
 				case 17: //Scryers Bank
 					{
-						Plr->Gossip_SendPOI(-2175.0f, 5411.7f, 7, 6, 0, "Scryers Bank");
+						Messenger::SendGossipPOI( Plr, -2175.0f, 5411.7f, 7, 6, 0, "Scryers Bank");
 						SendQuickMenu(10397);
 					}
 					break;
 
 				case 18: //Aldor Bank
 					{
-						Plr->Gossip_SendPOI(-1695.5f, 5521.8f, 7, 6, 0, "Aldor Bank");
+						Messenger::SendGossipPOI( Plr, -1695.5f, 5521.8f, 7, 6, 0, "Aldor Bank");
 						SendQuickMenu(10396);
 					}
 					break;
 
 				case 19: //Scryers Inn
 					{
-						Plr->Gossip_SendPOI(-2033.0f, 5336.1f, 7, 6, 0, "Scryers Inn");
+						Messenger::SendGossipPOI( Plr, -2033.0f, 5336.1f, 7, 6, 0, "Scryers Inn");
 						SendQuickMenu(10401);
 					}
 					break;
@@ -4424,14 +4425,14 @@ class ShattrathGuard : public GossipScript
 
 				case 20: //Aldor Stable Master
 					{
-						Plr->Gossip_SendPOI(-1889.6f, 5761.5f, 7, 6, 0, "Aldor Stable");
+						Messenger::SendGossipPOI( Plr, -1889.6f, 5761.5f, 7, 6, 0, "Aldor Stable");
 						SendQuickMenu(10399);
 					}
 					break;
 
 				case 21: //Scryers Stable Master
 					{
-						Plr->Gossip_SendPOI(-2170.0f, 5404.6f, 7, 6, 0, "Scryers Stable");
+						Messenger::SendGossipPOI( Plr, -2170.0f, 5404.6f, 7, 6, 0, "Scryers Stable");
 						SendQuickMenu(10401);
 					}
 					break;
@@ -4444,14 +4445,14 @@ class ShattrathGuard : public GossipScript
 
 				case 22: //Alliance Battlemaster
 					{
-						Plr->Gossip_SendPOI(-1831.9f, 5298.2f, 7, 6, 0, "Alliance Battlemasters");
+						Messenger::SendGossipPOI( Plr, -1831.9f, 5298.2f, 7, 6, 0, "Alliance Battlemasters");
 						SendQuickMenu(10406);
 					}
 					break;
 
 				case 23: //Horde Battle Master and Arena Battle Master
 					{
-						Plr->Gossip_SendPOI(-1968.7f, 5262.2f, 7, 6, 0, "Horde & Arena Battlemasters");
+						Messenger::SendGossipPOI( Plr, -1968.7f, 5262.2f, 7, 6, 0, "Horde & Arena Battlemasters");
 						SendQuickMenu(10407);
 					}
 					break;
@@ -4468,56 +4469,56 @@ class ShattrathGuard : public GossipScript
 
 				case 24: //Alchemy
 					{
-						Plr->Gossip_SendPOI(-1661.0f, 5538, 7, 6, 0, "Alchemy Trainer");
+						Messenger::SendGossipPOI( Plr, -1661.0f, 5538, 7, 6, 0, "Alchemy Trainer");
 						SendQuickMenu(10413);
 					}
 					break;
 
 				case 25: //Blacksmithing
 					{
-						Plr->Gossip_SendPOI(-1847.7f, 5230.3f, 7, 6, 0, "Blacksmithing Trainer");
+						Messenger::SendGossipPOI( Plr, -1847.7f, 5230.3f, 7, 6, 0, "Blacksmithing Trainer");
 						SendQuickMenu(10400);
 					}
 					break;
 
 				case 26: //Cooking
 					{
-						Plr->Gossip_SendPOI(-2067.4f, 5316.5f, 7, 6, 0, "Cooking Trainer");
+						Messenger::SendGossipPOI( Plr, -2067.4f, 5316.5f, 7, 6, 0, "Cooking Trainer");
 						SendQuickMenu(10414);
 					}
 					break;
 
 				case 27: //Enchanting
 					{
-						Plr->Gossip_SendPOI(-2278.5f, 5567.7f, 7, 6, 0, "Enchanting Trainer");
+						Messenger::SendGossipPOI( Plr, -2278.5f, 5567.7f, 7, 6, 0, "Enchanting Trainer");
 						SendQuickMenu(10415);
 					}
 					break;
 
 				case 28: //First Aid
 					{
-						Plr->Gossip_SendPOI(-1592.0f, 5263.7f, 7, 6, 0, "First Aid Trainer");
+						Messenger::SendGossipPOI( Plr, -1592.0f, 5263.7f, 7, 6, 0, "First Aid Trainer");
 						SendQuickMenu(10416);
 					}
 					break;
 
 				case 29: //Jewelcrafting
 					{
-						Plr->Gossip_SendPOI(-1653.3f, 5665.1f, 7, 6, 0, "Jewelcrafting Trainer");
+						Messenger::SendGossipPOI( Plr, -1653.3f, 5665.1f, 7, 6, 0, "Jewelcrafting Trainer");
 						SendQuickMenu(10417);
 					}
 					break;
 
 				case 30: //Leatherworking
 					{
-						Plr->Gossip_SendPOI(-2060.9f, 5256.6f, 7, 6, 0, "Leatherworking Trainer");
+						Messenger::SendGossipPOI( Plr, -2060.9f, 5256.6f, 7, 6, 0, "Leatherworking Trainer");
 						SendQuickMenu(10418);
 					}
 					break;
 
 				case 31: //Skinning
 					{
-						Plr->Gossip_SendPOI(-2047.9f, 5299.6f, 7, 6, 0, "Skinning Trainer");
+						Messenger::SendGossipPOI( Plr, -2047.9f, 5299.6f, 7, 6, 0, "Skinning Trainer");
 						SendQuickMenu(10419);
 					}
 					break;
@@ -4530,14 +4531,14 @@ class ShattrathGuard : public GossipScript
 
 				case 32: //Aldor gem merchant
 					{
-						Plr->Gossip_SendPOI(-1649.3f, 5668.6f, 7, 6, 0, "Aldor gem merchant");
+						Messenger::SendGossipPOI( Plr, -1649.3f, 5668.6f, 7, 6, 0, "Aldor gem merchant");
 						SendQuickMenu(10411);
 					}
 					break;
 
 				case 33: //Scryers gem merchant
 					{
-						Plr->Gossip_SendPOI(-2193.9f, 5422.1f, 7, 6, 0, "Scryers gem merchant");
+						Messenger::SendGossipPOI( Plr, -2193.9f, 5422.1f, 7, 6, 0, "Scryers gem merchant");
 						SendQuickMenu(10412);
 					}
 					break;
@@ -4600,7 +4601,7 @@ public:
 			}break;
 		case 4:		// Barber
 			{
-				Plr->Gossip_SendPOI(5889.67f, 621.21f, 7, 99, 0, "Barber");
+				Messenger::SendGossipPOI( Plr, 5889.67f, 621.21f, 7, 99, 0, "Barber");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14003, Plr);
 			}break;
 		case 5:		// Battlemasters
@@ -4619,12 +4620,12 @@ public:
 			}break;
 		case 7:		// Flight Master
 			{
-				Plr->Gossip_SendPOI(5815.91f, 453.64f, 7, 99, 0, "Flight Master");
+				Messenger::SendGossipPOI( Plr, 5815.91f, 453.64f, 7, 99, 0, "Flight Master");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 10086, Plr);
 			}break;
 		case 8:		// Guild Master
 			{
-				Plr->Gossip_SendPOI(5762.21f, 622.84f, 7, 99, 0, "Guild Master");
+				Messenger::SendGossipPOI( Plr, 5762.21f, 622.84f, 7, 99, 0, "Guild Master");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 10095, Plr);
 			}break;
 		case 9:		// Inn
@@ -4662,7 +4663,7 @@ public:
 			}break;
 		case 12:	// Stable Master
 			{
-				Plr->Gossip_SendPOI(5859.68f, 557.57f, 7, 99, 0, "Stable Master");
+				Messenger::SendGossipPOI( Plr, 5859.68f, 557.57f, 7, 99, 0, "Stable Master");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 10083, Plr);
 			}break;
 		case 13:	// Trainers
@@ -4696,97 +4697,97 @@ public:
 			}break;
 		case 15:	// Eastern Sewer Entrance
 			{
-				Plr->Gossip_SendPOI(5801.77f, 551.07f, 7, 99, 0, "Eastern Sewer Entrance");
+				Messenger::SendGossipPOI( Plr, 5801.77f, 551.07f, 7, 99, 0, "Eastern Sewer Entrance");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13961, Plr);
 			}break;
 		case 16:	// Western Sewer Entrance
 			{
-				Plr->Gossip_SendPOI(5815.21f, 762.65f, 7, 99, 0, "Western Sewer Entrance");
+				Messenger::SendGossipPOI( Plr, 5815.21f, 762.65f, 7, 99, 0, "Western Sewer Entrance");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13960, Plr);
 			}break;
 		case 17:	// Well Entrance
 			{
-				Plr->Gossip_SendPOI(5791.60f, 561.82f, 7, 99, 0, "Well Entrance");
+				Messenger::SendGossipPOI( Plr, 5791.60f, 561.82f, 7, 99, 0, "Well Entrance");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13969, Plr);
 			}break;
 		case 18:	// The Alliance Quarter
 			{
-				Plr->Gossip_SendPOI(5763.20f, 711.77f, 7, 99, 0, "The Alliance Quarter");
+				Messenger::SendGossipPOI( Plr, 5763.20f, 711.77f, 7, 99, 0, "The Alliance Quarter");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13973, Plr);
 			}break;
 		case 19:	// The Horde Quarter
 			{
-				Plr->Gossip_SendPOI(5860.35f, 592.97f, 7, 99, 0, "The Horde Quarter");
+				Messenger::SendGossipPOI( Plr, 5860.35f, 592.97f, 7, 99, 0, "The Horde Quarter");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13972, Plr);
 			}break;
 		case 20:	// Northern Bank
 			{
-				Plr->Gossip_SendPOI(5979.58f, 608.16f, 7, 99, 0, "Northern Bank");
+				Messenger::SendGossipPOI( Plr, 5979.58f, 608.16f, 7, 99, 0, "Northern Bank");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14005, Plr);
 			}break;
 		case 21:	// Southern Bank
 			{
-				Plr->Gossip_SendPOI(5631.20f, 694.15f, 7, 99, 0, "Southern Bank");
+				Messenger::SendGossipPOI( Plr, 5631.20f, 694.15f, 7, 99, 0, "Southern Bank");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14006, Plr);
 			}break;
 		case 22:	// Sewers 1
 			{
-				Plr->Gossip_SendPOI(5766.31f, 731.66f, 7, 99, 0, "Sewers");
+				Messenger::SendGossipPOI( Plr, 5766.31f, 731.66f, 7, 99, 0, "Sewers");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13974, Plr);
 			}break;
 		case 24:	// Alliance Inn
 			{
-				Plr->Gossip_SendPOI(5718.01f, 689.28f, 7, 99, 0, "Alliance Inn");
+				Messenger::SendGossipPOI( Plr, 5718.01f, 689.28f, 7, 99, 0, "Alliance Inn");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13992, Plr);
 			}break;
 		case 25:	// Horde Inn
 			{
-				Plr->Gossip_SendPOI(5890.22f, 500.58f, 7, 99, 0, "Horde Inn");
+				Messenger::SendGossipPOI( Plr, 5890.22f, 500.58f, 7, 99, 0, "Horde Inn");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13993, Plr);
 			}break;	
 		case 26:	// Sewers 2
 			{
-				Plr->Gossip_SendPOI(5761.06f, 714.45f, 7, 99, 0, "Sewers");
+				Messenger::SendGossipPOI( Plr, 5761.06f, 714.45f, 7, 99, 0, "Sewers");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13974, Plr);
 			}break;	
 		case 27:	// The Violet Citadel
 			{
-				Plr->Gossip_SendPOI(5795.11f, 769.15f, 7, 99, 0, "The Violet Citadel");
+				Messenger::SendGossipPOI( Plr, 5795.11f, 769.15f, 7, 99, 0, "The Violet Citadel");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13971, Plr);
 			}break;
 		case 28:	// The Violet Hold
 			{
-				Plr->Gossip_SendPOI(5720.40f, 537.46f, 7, 99, 0, "The Violet Hold");
+				Messenger::SendGossipPOI( Plr, 5720.40f, 537.46f, 7, 99, 0, "The Violet Hold");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13970, Plr);
 			}break;
 		case 29:	// Trade District
 			{
-				Plr->Gossip_SendPOI(5900.88f, 726.65f, 7, 99, 0, "Trade District");
+				Messenger::SendGossipPOI( Plr, 5900.88f, 726.65f, 7, 99, 0, "Trade District");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13980, Plr);
 			}break;
 		case 30:	// Antonidas Memorial
 			{
-				Plr->Gossip_SendPOI(5951.74f, 683.53f, 7, 99, 0, "Antonidas Memorial");
+				Messenger::SendGossipPOI( Plr, 5951.74f, 683.53f, 7, 99, 0, "Antonidas Memorial");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13968, Plr);
 			}break;
 		case 31:	// Runeweaver Square
 			{
-				Plr->Gossip_SendPOI(5810.96f, 632.72f, 7, 99, 0, "Runeweaver Square");
+				Messenger::SendGossipPOI( Plr, 5810.96f, 632.72f, 7, 99, 0, "Runeweaver Square");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13967, Plr);
 			}break;
 		case 32:	// The Eventide
 			{
-				Plr->Gossip_SendPOI(5694.66f, 650.82f, 7, 99, 0, "The Eventide");
+				Messenger::SendGossipPOI( Plr, 5694.66f, 650.82f, 7, 99, 0, "The Eventide");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13966, Plr);
 			}break;
 		case 33:	// Cemetary
 			{
-				Plr->Gossip_SendPOI(5853.35f, 769.06f, 7, 99, 0, "Cemetary");
+				Messenger::SendGossipPOI( Plr, 5853.35f, 769.06f, 7, 99, 0, "Cemetary");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13965, Plr);
 			}break;	
 		case 34:	// Lexicon of Power
 			{
-				Plr->Gossip_SendPOI(5860.99f, 707.23f, 7, 99, 0, "Lexicon of Power");
+				Messenger::SendGossipPOI( Plr, 5860.99f, 707.23f, 7, 99, 0, "Lexicon of Power");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14174, Plr);
 			}break;	
 		case 35:	// Class Trainers
@@ -4798,7 +4799,7 @@ public:
 			}break;
 		case 36:	// Portal Trainer
 			{
-				Plr->Gossip_SendPOI(5810.07f, 581.0f, 7, 99, 0, "Portal Trainer");
+				Messenger::SendGossipPOI( Plr, 5810.07f, 581.0f, 7, 99, 0, "Portal Trainer");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13999, Plr);
 			}break;
 		case 37:	// Profession Trainer
@@ -4832,7 +4833,7 @@ public:
 			}break;
 		case 39:	// Clothing
 			{
-				Plr->Gossip_SendPOI(5793.11f, 686.44f, 7, 99, 0, "Clothing");
+				Messenger::SendGossipPOI( Plr, 5793.11f, 686.44f, 7, 99, 0, "Clothing");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14112, Plr);
 			}break;
 		case 40:	// Emblem Gear
@@ -4844,47 +4845,47 @@ public:
 			}break;
 		case 41:	// Flowers
 			{
-				Plr->Gossip_SendPOI(5772.27f, 576.61f, 7, 99, 0, "Flowers");
+				Messenger::SendGossipPOI( Plr, 5772.27f, 576.61f, 7, 99, 0, "Flowers");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 10159, Plr);
 			}break;
 		case 42:	// Fruit
 			{
-				Plr->Gossip_SendPOI(5754.02f, 694.18f, 7, 99, 0, "Fruit");
+				Messenger::SendGossipPOI( Plr, 5754.02f, 694.18f, 7, 99, 0, "Fruit");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14106, Plr);
 			}break;
 		case 43:	// General Goods
 			{
-				Plr->Gossip_SendPOI(5681.22f, 616.57f, 7, 99, 0, "General Goods");
+				Messenger::SendGossipPOI( Plr, 5681.22f, 616.57f, 7, 99, 0, "General Goods");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14105, Plr);
 			}break;
 		case 44:	// Jewelry
 			{
-				Plr->Gossip_SendPOI(5874.27f, 719.18f, 7, 99, 0, "Portal Trainer");
+				Messenger::SendGossipPOI( Plr, 5874.27f, 719.18f, 7, 99, 0, "Portal Trainer");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13984, Plr);
 			}break;
 		case 45:	// Pet Supplies & Exotic Mounts
 			{
-				Plr->Gossip_SendPOI(5833.13f, 572.72f, 7, 99, 0, "Pet Supplies & Exotic Mounts");
+				Messenger::SendGossipPOI( Plr, 5833.13f, 572.72f, 7, 99, 0, "Pet Supplies & Exotic Mounts");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14103, Plr);
 			}break;
 		case 46:	// Pie, Pastry & Cakes
 			{
-				Plr->Gossip_SendPOI(5905.86f, 629.29f, 7, 99, 0, "Pie, Pastry & Cakes");
+				Messenger::SendGossipPOI( Plr, 5905.86f, 629.29f, 7, 99, 0, "Pie, Pastry & Cakes");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14102, Plr);
 			}break;
 		case 47:	// Reagents & Magical Goods
 			{
-				Plr->Gossip_SendPOI(5758.7f, 737.24f, 7, 99, 0, "Reagents & Magical Goods");
+				Messenger::SendGossipPOI( Plr, 5758.7f, 737.24f, 7, 99, 0, "Reagents & Magical Goods");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14104, Plr);
 			}break;
 		case 48:	// Toys
 			{
-				Plr->Gossip_SendPOI(5813.48f, 688.49f, 7, 99, 0, "Toys");
+				Messenger::SendGossipPOI( Plr, 5813.48f, 688.49f, 7, 99, 0, "Toys");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14100, Plr);
 			}break;
 		case 49:	// Trinkets. Relics & Off-hand items
 			{
-				Plr->Gossip_SendPOI(5755.53f, 642.03f, 7, 99, 0, "Trinkets. Relics & Off-hand items");
+				Messenger::SendGossipPOI( Plr, 5755.53f, 642.03f, 7, 99, 0, "Trinkets. Relics & Off-hand items");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14110, Plr);
 			}break;
 		case 50:	// Weapons
@@ -4897,17 +4898,17 @@ public:
 			}break;
 		case 51:	// Wine & Cheese
 			{
-				Plr->Gossip_SendPOI(5885.66f, 606.89f, 7, 99, 0, "Wine & Cheese");
+				Messenger::SendGossipPOI( Plr, 5885.66f, 606.89f, 7, 99, 0, "Wine & Cheese");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14095, Plr);
 			}break;
 		case 52:	// Alchemy
 			{
-				Plr->Gossip_SendPOI(5888.05f, 702.44f, 7, 99, 0, "Alchemy");
+				Messenger::SendGossipPOI( Plr, 5888.05f, 702.44f, 7, 99, 0, "Alchemy");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13995, Plr);
 			}break;
 		case 53:	// Blacksmithing
 			{
-				Plr->Gossip_SendPOI(5904.86f, 680.12f, 7, 99, 0, "Blacksmithing");
+				Messenger::SendGossipPOI( Plr, 5904.86f, 680.12f, 7, 99, 0, "Blacksmithing");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13994, Plr);
 			}break;
 		case 54:	// Cooking
@@ -4919,117 +4920,117 @@ public:
 			}break;
 		case 55:	// Enchanting
 			{
-				Plr->Gossip_SendPOI(5840.01f, 726.53f, 7, 99, 0, "Enchanting");
+				Messenger::SendGossipPOI( Plr, 5840.01f, 726.53f, 7, 99, 0, "Enchanting");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13990, Plr);
 			}break;
 		case 56:	// Engineering
 			{
-				Plr->Gossip_SendPOI(5922.55f, 727.05f, 7, 99, 0, "Engineering");
+				Messenger::SendGossipPOI( Plr, 5922.55f, 727.05f, 7, 99, 0, "Engineering");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13989, Plr);
 			}break;
 		case 57:	// First Aid
 			{
-				Plr->Gossip_SendPOI(5862.76f, 743.71f, 7, 99, 0, "First Aid");
+				Messenger::SendGossipPOI( Plr, 5862.76f, 743.71f, 7, 99, 0, "First Aid");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13988, Plr);
 			}break;
 		case 58:	// Fishing
 			{
-				Plr->Gossip_SendPOI(5707.45f, 614.57f, 7, 99, 0, "Fishing");
+				Messenger::SendGossipPOI( Plr, 5707.45f, 614.57f, 7, 99, 0, "Fishing");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13987, Plr);
 			}break;
 		case 59:	// Herbalism
 			{
-				Plr->Gossip_SendPOI(5873.99f, 689.44f, 7, 99, 0, "Herbalism");
+				Messenger::SendGossipPOI( Plr, 5873.99f, 689.44f, 7, 99, 0, "Herbalism");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13986, Plr);
 			}break;
 		case 60:	// Inscription
 			{
-				Plr->Gossip_SendPOI(5861.8f, 704.3f, 7, 99, 0, "Inscription");
+				Messenger::SendGossipPOI( Plr, 5861.8f, 704.3f, 7, 99, 0, "Inscription");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13985, Plr);
 			}break;
 		case 61:	// Jewelcrafting
 			{
-				Plr->Gossip_SendPOI(5874.27f, 719.18f, 7, 99, 0, "Jewelcrafting");
+				Messenger::SendGossipPOI( Plr, 5874.27f, 719.18f, 7, 99, 0, "Jewelcrafting");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13984, Plr);
 			}break;
 		case 62:	// Leatherworking
 			{
-				Plr->Gossip_SendPOI(5903.9f, 751.97f, 7, 99, 0, "Leatherworking");
+				Messenger::SendGossipPOI( Plr, 5903.9f, 751.97f, 7, 99, 0, "Leatherworking");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13982, Plr);
 			}break;
 		case 63:	// Mining
 			{
-				Plr->Gossip_SendPOI(5923.27f, 709.86f, 7, 99, 0, "Mining");
+				Messenger::SendGossipPOI( Plr, 5923.27f, 709.86f, 7, 99, 0, "Mining");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13983, Plr);
 			}break;
 		case 64:	// Skinning
 			{
-				Plr->Gossip_SendPOI(5903.9f, 751.97f, 7, 99, 0, "Skinning");
+				Messenger::SendGossipPOI( Plr, 5903.9f, 751.97f, 7, 99, 0, "Skinning");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13982, Plr);
 			}break;
 		case 65:	// Tailoring
 			{
-				Plr->Gossip_SendPOI(5881.78f, 746.64f, 7, 99, 0, "Tailoring");
+				Messenger::SendGossipPOI( Plr, 5881.78f, 746.64f, 7, 99, 0, "Tailoring");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 13981, Plr);
 			}break;
 		case 66:	// Cloth Armor
 			{
-				Plr->Gossip_SendPOI(5793.11f, 686.44f, 7, 99, 0, "Cloth Armor");
+				Messenger::SendGossipPOI( Plr, 5793.11f, 686.44f, 7, 99, 0, "Cloth Armor");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14112, Plr);
 			}break;
 		case 67:	// Leather Armor
 			{
-				Plr->Gossip_SendPOI(5667.76f, 627.16f, 7, 99, 0, "Leather Armor");
+				Messenger::SendGossipPOI( Plr, 5667.76f, 627.16f, 7, 99, 0, "Leather Armor");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14111, Plr);
 			}break;
 		case 68:	// Mail Armor
 			{
-				Plr->Gossip_SendPOI(5667.76f, 627.16f, 7, 99, 0, "Mail Armor");
+				Messenger::SendGossipPOI( Plr, 5667.76f, 627.16f, 7, 99, 0, "Mail Armor");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14111, Plr);
 			}break;
 		case 69:	// Plate Armor
 			{
-				Plr->Gossip_SendPOI(5914.85f, 667.22f, 7, 99, 0, "Plate Armor");
+				Messenger::SendGossipPOI( Plr, 5914.85f, 667.22f, 7, 99, 0, "Plate Armor");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14109, Plr);
 			}break;
 		case 70:	// Shields
 			{
-				Plr->Gossip_SendPOI(5914.85f, 667.22f, 7, 99, 0, "Shields");
+				Messenger::SendGossipPOI( Plr, 5914.85f, 667.22f, 7, 99, 0, "Shields");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14109, Plr);
 			}break;
 		case 71:	// Melee Weapons
 			{
-				Plr->Gossip_SendPOI(5725.11f, 602.57f, 7, 99, 0, "Melee Weapons");
+				Messenger::SendGossipPOI( Plr, 5725.11f, 602.57f, 7, 99, 0, "Melee Weapons");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14098, Plr);
 			}break;
 		case 72:	// Ranged & Thrown Weapons
 			{
-				Plr->Gossip_SendPOI(5778.50f, 556.18f, 7, 99, 0, "Ranged & Thrown Weapons");
+				Messenger::SendGossipPOI( Plr, 5778.50f, 556.18f, 7, 99, 0, "Ranged & Thrown Weapons");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14097, Plr);
 			}break;
 		case 73:	// Staves & Wands
 			{
-				Plr->Gossip_SendPOI(5665.40f, 644.91f, 7, 99, 0, "Staves & Wands");
+				Messenger::SendGossipPOI( Plr, 5665.40f, 644.91f, 7, 99, 0, "Staves & Wands");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14096, Plr);
 			}break;
 		case 74:	// Krasu's Landing
 			{
-				Plr->Gossip_SendPOI(5815.91f, 453.64f, 7, 99, 0, "Krasus' Landing");
+				Messenger::SendGossipPOI( Plr, 5815.91f, 453.64f, 7, 99, 0, "Krasus' Landing");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14009, Plr);
 			}break;
 		case 75:	// Trinkets, Relics & Off-hand Items
 			{
-				Plr->Gossip_SendPOI(5752.0f, 645.427f, 7, 99, 0, "Dalaran Trinkets");
+				Messenger::SendGossipPOI( Plr, 5752.0f, 645.427f, 7, 99, 0, "Dalaran Trinkets");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14110, Plr);
 			}break;
 		case 76:	// Cold weather flying trainer
 			{
-				Plr->Gossip_SendPOI(5815.91f, 453.64f, 7, 99, 0, "Flight Master");
+				Messenger::SendGossipPOI( Plr, 5815.91f, 453.64f, 7, 99, 0, "Flight Master");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 60059, Plr);
 			}break;
 		case 77:	// Locksmith
 			{
-				Plr->Gossip_SendPOI(5934.0f, 575.626f, 7, 99, 0, "Dalaran Locksmith");
+				Messenger::SendGossipPOI( Plr, 5934.0f, 575.626f, 7, 99, 0, "Dalaran Locksmith");
 				Arcemu::Gossip::Menu::SendSimpleMenu(pObject->GetGUID(), 14004, Plr);
 			}break;
 		}

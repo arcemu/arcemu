@@ -260,6 +260,9 @@ public:
 
 	/// Tells the client where the player's heartstone is bound
 	static void SendPlayerBound( Player* player, uint64 GUID, uint32 zone );
+
+	/// Tells the client to mark a Point Of Interest on the player's map
+	static void SendGossipPOI( Player* player, float x, float y, uint32 icon, uint32 flags, uint32 dataField, const char* name );
 };
 
 #endif
