@@ -1,7 +1,7 @@
 env:
   global:
-    - secure: "WflHDejmwG3XDqH8Bv1wXQk81HN6jiv4BE0F802G/kvmxpOmkNXHou7NO5LyXD373TuIQdYW0PIRtY78pXQ2lK+aU+PAKTj4VgwQyWSYOCV8QJOrYPlRCKTx/jOVrfkgxHtaAhu8KokGkPb/yt7jpDgjYM7GXcyeY4FpJ56tyqQ="
-    - secure: "CmG/NVO33hboU6GNX1N/fD8VbKO6zphnA7sCp7oK2eM3XDqi4brfKAfABNFjs0tdyeB+dr1nisXLU4wfpHw13N1fLfR+E3aUBfFXyX9hlHQ0VhuDhbtT6HXJPrJYNmZsKkqe8OoGYmrt7Xq3/p+L11/jxN4HJnoVCOwHnAzRxLU="
+  - secure: DY4b7ihgRyDgZEqOEF3MjnrE2N37cDEnGZZTBZP5/3vVzQm2jK1GNhuMaDLVftAPZYATBvmxAi4u6unVN9OebCiMFJatj+ePnIiUcExumofU+NJKZgzzwBiOqjXYolg9ZP8bApaYGa4EIjzkRWzkLYieLCXTryfZbvpgfcwQoEg=
+  - secure: C6BbV3/nsNES3oSiushXePbGGg8V3QlIACVlYwhoobu1FtnUP+UD918H6lAHqrP5qZ1+R3L3n9PAgnEw/S81T4yUX/z3KayleUfIzpDCqlj8SWwC/Pm70FKcnLMO2STaR6Oahjtg1Qb5FbG87sOhhHlOVT2MsbjQBS3Or0bJERQ=
 
 sudo: false
 dist: bionic
