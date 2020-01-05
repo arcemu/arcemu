@@ -1308,3 +1308,13 @@ void Messenger::SendLogXPGain( Player *player, uint64 guid, uint32 normalXP, uin
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendSpellCooldownEvent(Player *player, uint32 spell)
+{
+	WorldPacket data( SMSG_COOLDOWN_EVENT, 12 );
+
+	data << uint32( spell );
+	data << uint64( player->GetGUID() );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

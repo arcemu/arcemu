@@ -266,6 +266,9 @@ public:
 
 	/// Sends an XP gain log entry to the client.
 	static void SendLogXPGain( Player* player, uint64 guid, uint32 normalXP, uint32 restedXP );
+
+	/// Tells the client to start cooldown. Only certain spells require this. E.g.: Rogue stealth
+	static void SendSpellCooldownEvent( Player* player, uint32 spell );
 };
 
 #endif

@@ -58,18 +58,6 @@ void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast,
 	m_session->SendPacket(&data);
 }
 
-void Player::SendSpellCooldownEvent(uint32 SpellId)
-{
-
-	WorldPacket data(SMSG_COOLDOWN_EVENT, 12);
-
-	data << uint32(SpellId);
-	data << uint64(GetGUID());
-
-	m_session->SendPacket(&data);
-}
-
-
 void Player::SendSpellModifier(uint8 spellgroup, uint8 spelltype, int32 v, bool is_pct)
 {
 

@@ -10680,7 +10680,7 @@ void Player::UpdatePotionCooldown()
 				if(spellInfo != NULL)
 				{
 					Cooldown_AddItem(proto, i);
-					SendSpellCooldownEvent(spellInfo->Id);
+					Messenger::SendSpellCooldownEvent( this, spellInfo->Id );
 				}
 			}
 		}
