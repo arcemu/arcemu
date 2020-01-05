@@ -1342,3 +1342,13 @@ void Messenger::SendLoginVerifyWorld( Player *player, uint32 map, const Location
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendSetItemProficiency( Player *player, uint8 itemClass, uint32 proficiency )
+{
+	WorldPacket data( SMSG_SET_PROFICIENCY, 40 );
+
+	data << uint8( itemClass );
+	data << uint32( proficiency );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

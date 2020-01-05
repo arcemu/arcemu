@@ -108,17 +108,6 @@ void Player::SendItemPushResult(bool created, bool recieved, bool sendtoset, boo
 
 }
 
-void Player::SendSetProficiency(uint8 ItemClass, uint32 Proficiency)
-{
-
-	WorldPacket data(SMSG_SET_PROFICIENCY, 40);
-
-	data << uint8(ItemClass);
-	data << uint32(Proficiency);
-
-	m_session->SendPacket(&data);
-}
-
 void Player::SendDungeonDifficulty()
 {
 
@@ -446,8 +435,8 @@ void Player::SendInitialLogonPackets()
 	Messenger::SendBindPointUpdate( this, LocationVector( m_bind_pos_x, m_bind_pos_y, m_bind_pos_z ), m_bind_mapid, m_bind_zoneid );
 
 	//Proficiencies
-	SendSetProficiency(4, armor_proficiency);
-	SendSetProficiency(2, weapon_proficiency);
+	Messenger::SendSetItemProficiency( this, 4, armor_proficiency);
+	Messenger::SendSetItemProficiency( this, 2, weapon_proficiency);
 
 	//Tutorial Flags
 	WorldPacket data( 32 );

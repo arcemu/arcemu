@@ -9950,12 +9950,12 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 		if(prof->itemclass == 4)
 		{
 			armor_proficiency |= prof->subclass;
-			SendSetProficiency(prof->itemclass, armor_proficiency);
+			Messenger::SendSetItemProficiency( this, prof->itemclass, armor_proficiency);
 		}
 		else
 		{
 			weapon_proficiency |= prof->subclass;
-			SendSetProficiency(prof->itemclass, weapon_proficiency);
+			Messenger::SendSetItemProficiency( this, prof->itemclass, weapon_proficiency);
 		}
 	}
 	_LearnSkillSpells(SkillLine, Curr_sk);

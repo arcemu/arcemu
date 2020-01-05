@@ -275,6 +275,9 @@ public:
 
 	/// Tells the client where the player was spawned? Client doesn't seem to care if it's not sent.
 	static void SendLoginVerifyWorld( Player *player, uint32 map, const LocationVector &location );
+
+	/// Tells the client that the player has a new proficiency level with an item class (weapons, armor for example)
+	static void SendSetItemProficiency( Player *player, uint8 itemClass, uint32 proficiency );
 };
 
 #endif
