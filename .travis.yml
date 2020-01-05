@@ -21,6 +21,8 @@ install: true
 script:
    - echo "$SUPERSECRET1"
    - echo "$SUPERSECRET2"
+# This below is set from Travis dashboard
+   - echo "$MYSECRET"
 #  - mkdir bin
 #  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
 #  - ls -la ./bin
