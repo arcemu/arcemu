@@ -1,6 +1,7 @@
 env:
   global:
-    - secure: "ppF1L5w5vAm66EKgze8G3vdYn7Palr99ruJaj/gh+HsKVGOi9X0APsRu1LfOnXxRZpqxK0TcpxG7IMnI1vXHBaeWjReXHPLrEax4i2cMK3X2KAbLxc//nfLd5r6vFZpCdxRARr+4KvT98/nkfeqUKa6L1AZ+4L9IgBAiuBj9KwY="
+    - secure: "WflHDejmwG3XDqH8Bv1wXQk81HN6jiv4BE0F802G/kvmxpOmkNXHou7NO5LyXD373TuIQdYW0PIRtY78pXQ2lK+aU+PAKTj4VgwQyWSYOCV8QJOrYPlRCKTx/jOVrfkgxHtaAhu8KokGkPb/yt7jpDgjYM7GXcyeY4FpJ56tyqQ="
+    - secure: "CmG/NVO33hboU6GNX1N/fD8VbKO6zphnA7sCp7oK2eM3XDqi4brfKAfABNFjs0tdyeB+dr1nisXLU4wfpHw13N1fLfR+E3aUBfFXyX9hlHQ0VhuDhbtT6HXJPrJYNmZsKkqe8OoGYmrt7Xq3/p+L11/jxN4HJnoVCOwHnAzRxLU="
 
 sudo: false
 dist: bionic
