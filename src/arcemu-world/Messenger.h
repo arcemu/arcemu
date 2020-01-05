@@ -281,6 +281,10 @@ public:
 
 	/// Sends the result of the spell cast to the client.
 	static void SendCastResult( Player* player, CastResult result );
+
+	/// Tells the client that a totem has been created.
+	/// Client will show a right-clickable icon with a timer that can cancel the summon
+	static void SendTotemCreated( Player* player, const TotemCreationInfo& totem );
 };
 
 #endif

@@ -604,16 +604,6 @@ void Player::SendEquipmentSetUseResult(uint8 result)
 	LOG_DEBUG("SMSG_EQUIPMENT_SET_USE_RESULT sent.");
 }
 
-void Player::SendTotemCreated(uint8 slot, uint64 GUID, uint32 duration, uint32 spellid)
-{
-	WorldPacket data(SMSG_TOTEM_CREATED, 17);
-	data << uint8(slot);
-	data << uint64(GUID);
-	data << uint32(duration);
-	data << uint32(spellid);
-	m_session->SendPacket(&data);
-}
-
 void Player::SendInitialWorldstates(){
 	WorldPacket data( SMSG_INIT_WORLD_STATES, 100 );
 	m_mapMgr->GetWorldStatesHandler().BuildInitWorldStatesForZone( m_zoneId, m_AreaID, data );

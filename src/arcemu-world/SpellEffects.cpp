@@ -2128,7 +2128,14 @@ void Spell::SpellEffectSummonWild(uint32 i, SummonPropertiesEntry* spe, Creature
 		s->PushToWorld(m_caster->GetMapMgr());
 
 		if((p_caster != NULL) && (spe->Slot != 0))
-			p_caster->SendTotemCreated(spe->Slot - 1, s->GetGUID(), GetDuration(), m_spellInfo->Id);
+		{
+			TotemCreationInfo totem;
+			totem.slot = spe->Slot - 1;
+			totem.GUID = s->GetGUID();
+			totem.duration = GetDuration();
+			totem.spell = m_spellInfo->Id;
+			Messenger::SendTotemCreated( p_caster, totem );
+		}
 
 		int32 duration = static_cast< int32 >(GetDuration());
 		if(duration > 0)
@@ -2166,7 +2173,14 @@ void Spell::SpellEffectSummonGuardian(uint32 i, SummonPropertiesEntry* spe, Crea
 		s->PushToWorld(u_caster->GetMapMgr());
 
 		if((p_caster != NULL) && (spe->Slot != 0))
-			p_caster->SendTotemCreated(spe->Slot - 1, s->GetGUID(), GetDuration(), m_spellInfo->Id);
+		{
+			TotemCreationInfo totem;
+			totem.slot = spe->Slot - 1;
+			totem.GUID = s->GetGUID();
+			totem.duration = GetDuration();
+			totem.spell = m_spellInfo->Id;
+			Messenger::SendTotemCreated( p_caster, totem );
+		}
 
 		// Lightwell
 		if(spe->Type == SUMMON_TYPE_LIGHTWELL)
@@ -2249,7 +2263,14 @@ void Spell::SpellEffectSummonTotem(uint32 i, SummonPropertiesEntry* spe, Creatur
 	s->PushToWorld(u_caster->GetMapMgr());
 
 	if(p_caster != NULL)
-		p_caster->SendTotemCreated(spe->Slot - 1, s->GetGUID(), GetDuration(), m_spellInfo->Id);
+	{
+		TotemCreationInfo totem;
+		totem.slot = spe->Slot - 1;
+		totem.GUID = s->GetGUID();
+		totem.duration = GetDuration();
+		totem.spell = m_spellInfo->Id;
+		Messenger::SendTotemCreated( p_caster, totem );
+	}
 
 	int32 duration = static_cast< int32 >(GetDuration());
 	if(duration > 0)

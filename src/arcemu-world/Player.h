@@ -23,6 +23,23 @@
 
 #include "PlayerCache.h"
 
+class TotemCreationInfo
+{
+public:
+	uint8 slot;
+	uint64 GUID;
+	uint32 duration;
+	uint32 spell;
+
+	TotemCreationInfo()
+	{
+		slot = 0;
+		GUID = 0;
+		duration = 0;
+		spell = 0;
+	}
+};
+
 struct BGScore;
 #ifdef ENABLE_ACHIEVEMENTS
 class AchievementMgr;
@@ -915,24 +932,6 @@ class SERVER_DECL Player : public Unit
 		void SendEquipmentSetSaved(uint32 setID, uint32 setGUID);
 		void SendEquipmentSetUseResult(uint8 result);
 		void SendEmptyPetSpellList();
-
-		/////////////////////////////////////////////////////////////////////////////////////////
-		//void SendTotemCreated( uint8 slot, uint64 GUID, uint32 duration, uint32 spellid )
-		//  Notifies the client about the creation of a Totem/Summon
-		//  ( client will show a right-clickable icon with a timer that can cancel the summon )
-		//
-		//Parameter(s)
-		//  uint8 slot       -  Summon slot number
-		//  uint64 GUID      -  GUID of the summon
-		//  uint32 duration  -  Duration of the summon ( the timer of the icon )
-		//  uint32 spellid   -  ID of the spell that created this summon
-		//
-		//Return Value
-		//  None
-		//
-		//
-		/////////////////////////////////////////////////////////////////////////////////////////
-		void SendTotemCreated(uint8 slot, uint64 GUID, uint32 duration, uint32 spellid);
 
 		void SendInitialWorldstates();
 

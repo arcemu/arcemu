@@ -1366,3 +1366,14 @@ void Messenger::SendCastResult(Player *player, CastResult result)
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendTotemCreated( Player *player, const TotemCreationInfo& totem )
+{
+	WorldPacket data( SMSG_TOTEM_CREATED, 17 );
+	data << uint8( totem.slot );
+	data << uint64( totem.GUID );
+	data << uint32( totem.duration );
+	data << uint32( totem.spell );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
