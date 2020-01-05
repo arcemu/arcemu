@@ -1330,3 +1330,15 @@ void Messenger::SendNewDrunkState( Player *player, uint32 state, uint32 item )
 	router.sendMessageToPlayersInRange( &data, true );
 }
 
+void Messenger::SendLoginVerifyWorld( Player *player, uint32 map, const LocationVector &location )
+{
+	WorldPacket data( SMSG_LOGIN_VERIFY_WORLD, 20 );
+	data << uint32( map );
+	data << float( location.x );
+	data << float( location.y );
+	data << float( location.z );
+	data << float( location.o );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

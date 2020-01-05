@@ -272,6 +272,9 @@ public:
 
 	/// Tells the client that the player has reached a new level of drunkesshhnessshh ...hic!
 	static void SendNewDrunkState( Player *player, uint32 state, uint32 item );
+
+	/// Tells the client where the player was spawned? Client doesn't seem to care if it's not sent.
+	static void SendLoginVerifyWorld( Player *player, uint32 map, const LocationVector &location );
 };
 
 #endif

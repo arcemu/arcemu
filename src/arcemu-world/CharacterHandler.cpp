@@ -814,7 +814,9 @@ void WorldSession::FullLogin(Player* plr)
 		VZ = plr->GetPositionZ();
 	}
 
-	plr->SendLoginVerifyWorld(VMapId, VX, VY, VZ, VO);
+	LocationVector v( VX, VY, VZ );
+	v.o = VO;
+	Messenger::SendLoginVerifyWorld( plr, VMapId, v );
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	// send voicechat state - active/inactive

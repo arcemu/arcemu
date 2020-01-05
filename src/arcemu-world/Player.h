@@ -2173,7 +2173,6 @@ class SERVER_DECL Player : public Unit
 		void SendSpellModifier(uint8 spellgroup, uint8 spelltype, int32 v, bool is_pct);
 		void SendItemPushResult(bool created, bool recieved, bool sendtoset, bool newitem,  uint8 destbagslot, uint32 destslot, uint32 count, uint32 entry, uint32 suffix, uint32 randomprop, uint32 stack);
 		void SendSetProficiency(uint8 ItemClass, uint32 Proficiency);
-		void SendLoginVerifyWorld(uint32 MapId, float X, float Y, float Z, float O);
 
 		/************************************************************************/
 		/* End of SpellPacket wrapper                                           */
