@@ -1,9 +1,3 @@
-env:
-  global:
-  - secure: DY4b7ihgRyDgZEqOEF3MjnrE2N37cDEnGZZTBZP5/3vVzQm2jK1GNhuMaDLVftAPZYATBvmxAi4u6unVN9OebCiMFJatj+ePnIiUcExumofU+NJKZgzzwBiOqjXYolg9ZP8bApaYGa4EIjzkRWzkLYieLCXTryfZbvpgfcwQoEg=
-  - secure: C6BbV3/nsNES3oSiushXePbGGg8V3QlIACVlYwhoobu1FtnUP+UD918H6lAHqrP5qZ1+R3L3n9PAgnEw/S81T4yUX/z3KayleUfIzpDCqlj8SWwC/Pm70FKcnLMO2STaR6Oahjtg1Qb5FbG87sOhhHlOVT2MsbjQBS3Or0bJERQ=
-  - secure: "QXljgJYpIotoRwG35U+5i1sPaztAeU8+0KgWHWvVX8OKXZgGKfucdX06qrotKRysAu5Ug+t64i8/1YZWllqrVUeLyZ9XBXhmXYyFIc/jPMh8gUfon8synoTm9RMjMIVMflILz6EoKaEteSggPmvG7ta4Kz4B3UPGWb3JX6JfXo8="
-
 sudo: false
 dist: bionic
 language: cpp
@@ -14,17 +8,17 @@ services:
 
 install: true
 
-#before_script:
-#  - cd extras/docker/arcemu_build
-#  - docker build -t arcemu_build .
-#  - cd ../../../
+before_script:
+  - cd extras/docker/arcemu_build
+  - docker build -t arcemu_build .
+  - cd ../../../
 
 script:
-   - echo "$SUPERSECRET1"
-   - echo "$SUPERSECRET2"
-   - echo "$SECURESECRET"
-# This below is set from Travis dashboard
-   - echo "$MYSECRET"
+   - docker images
+   - echo "$DOCKER_PASS" | docker login -u arcemu --password-stdin
+   - docker tag arcemu_build arcemu/arcemu_build:latest
+   - docker push arcemu/arcemu_build
+   - docker logout
 #  - mkdir bin
 #  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
 #  - ls -la ./bin
