@@ -1,6 +1,6 @@
 env:
   global:
-    secure: "KiFPVXtKunznbgvq2NrAUkAXPCnC137Pb80tvF5r1+inwZmwDoT05rS/XJEhh+33Mx0FFXHJk6qa5Pufn2OprWFS7C+RJ6fp2obhdegopMxLKQC64S5YGVuFUb/175TUlmzm/R0HYLLC0dRJa1KdyooHKr1tr4LCc16hxZSu6iw="
+    - secure: "ppF1L5w5vAm66EKgze8G3vdYn7Palr99ruJaj/gh+HsKVGOi9X0APsRu1LfOnXxRZpqxK0TcpxG7IMnI1vXHBaeWjReXHPLrEax4i2cMK3X2KAbLxc//nfLd5r6vFZpCdxRARr+4KvT98/nkfeqUKa6L1AZ+4L9IgBAiuBj9KwY="
 
 sudo: false
 dist: bionic
@@ -18,7 +18,8 @@ install: true
 #  - cd ../../../
 
 script:
-   - echo "$SUPERSECRET"
+   - echo "$SUPERSECRET1"
+   - echo "$SUPERSECRET2"
 #  - mkdir bin
 #  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
 #  - ls -la ./bin
