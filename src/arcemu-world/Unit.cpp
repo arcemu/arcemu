@@ -6207,7 +6207,7 @@ void Unit::UpdateVisibility()
 			{
 				if(is_visible)
 				{
-					plr->SendDestroyObject(pObj->GetGUID());
+					Messenger::SendDestroyObject(plr, pObj);
 					plr->RemoveVisibleObject(pObj->GetGUID());
 				}
 			}
@@ -6231,7 +6231,7 @@ void Unit::UpdateVisibility()
 				{
 					if(is_visible)
 					{
-						pl->SendDestroyObject(plr->GetGUID());
+						Messenger::SendDestroyObject(pl, plr);
 						pl->RemoveVisibleObject(plr->GetGUID());
 					}
 				}
@@ -6251,7 +6251,7 @@ void Unit::UpdateVisibility()
 			{
 				if(is_visible)
 				{
-					p->SendDestroyObject(GetGUID());
+					Messenger::SendDestroyObject(p, this);
 					p->RemoveVisibleObject(GetGUID());
 				}
 			}

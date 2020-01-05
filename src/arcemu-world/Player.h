@@ -927,7 +927,6 @@ class SERVER_DECL Player : public Unit
 		void SendRaidDifficulty();
 		void SendInstanceDifficulty(uint32 difficulty);
 		void SendExploreXP(uint32 areaid, uint32 xp);
-		void SendDestroyObject(uint64 GUID);
 		void SendEquipmentSetList();
 		void SendEquipmentSetSaved(uint32 setID, uint32 setGUID);
 		void SendEquipmentSetUseResult(uint8 result);

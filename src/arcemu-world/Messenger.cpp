@@ -198,6 +198,15 @@ void Messenger::SendDestroyObjectToSet( Object* object )
 	object->SendMessageToSet(&data, false);
 }
 
+void Messenger::SendDestroyObject(Player *player, Object *object)
+{
+	WorldPacket data( SMSG_DESTROY_OBJECT, 9 );
+	data << uint64( object->GetGUID() );
+	data << uint8( 0 );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+
 void Messenger::SendGameObjectCustomAnim( GameObject *go, uint32 anim, Player *player )
 {
 	WorldPacket  data(12);

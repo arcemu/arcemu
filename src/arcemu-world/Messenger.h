@@ -53,6 +53,9 @@ public:
 	/// Destroys this Object for the players' clients that are nearby ( client removes object from the screen )
 	static void SendDestroyObjectToSet( Object* object );
 
+	/// Destroys this Object for the player's client
+	static void SendDestroyObject( Player* player, Object* object );
+
 	/// Sends a gameobject animation to the player
 	static void SendGameObjectCustomAnim( GameObject* go, uint32 anim, Player* player );
 
