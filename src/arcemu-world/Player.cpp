@@ -1502,7 +1502,7 @@ void Player::GiveXP(uint32 xp, const uint64 & guid, bool allowbonus)
 	}
 
 	UpdateRestState();
-	SendLogXPGain(guid, xp, restxp, guid == 0 ? true : false);
+	Messenger::SendLogXPGain( this, guid, xp, restxp );
 
 	int32 newxp = GetXp() + xp;
 	int32 nextlevelxp = lvlinfo->XPToNextLevel;

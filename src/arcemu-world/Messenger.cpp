@@ -1287,3 +1287,24 @@ void Messenger::SendGossipPOI( Player *player, float x, float y, uint32 icon, ui
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendLogXPGain( Player *player, uint64 guid, uint32 normalXP, uint32 restedXP )
+{
+	WorldPacket data( SMSG_LOG_XPGAIN, 24 );
+	data << uint64( guid );
+	data << uint32( normalXP );
+
+	if( guid == 0 )
+	{
+		data << uint8( 1 );
+		data << uint8( 0 );
+	}
+	else
+	{
+		data << uint8( 0 );
+		data << uint32( restedXP );
+		data << float( 1.0f );
+	}
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

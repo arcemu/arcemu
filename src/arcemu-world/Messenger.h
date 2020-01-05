@@ -263,6 +263,9 @@ public:
 
 	/// Tells the client to mark a Point Of Interest on the player's map
 	static void SendGossipPOI( Player* player, float x, float y, uint32 icon, uint32 flags, uint32 dataField, const char* name );
+
+	/// Sends an XP gain log entry to the client.
+	static void SendLogXPGain( Player* player, uint64 guid, uint32 normalXP, uint32 restedXP );
 };
 
 #endif

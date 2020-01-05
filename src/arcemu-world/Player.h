@@ -2169,7 +2169,6 @@ class SERVER_DECL Player : public Unit
 		/* Spell Packet wrapper Please keep this separated                      */
 		/************************************************************************/
 		void SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4);
-		void SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type);
 		void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 		void SendSpellCooldownEvent(uint32 SpellId);
 		void SendSpellModifier(uint8 spellgroup, uint8 spelltype, int32 v, bool is_pct);

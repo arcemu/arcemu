@@ -43,41 +43,6 @@ void Player::SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0,
 	m_session->SendPacket(&data);
 }
 
-void Player::SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type)
-{
-	WorldPacket data(SMSG_LOG_XPGAIN, 24);
-
-	if(type == false)
-	{
-		data << uint64(guid);
-		data << uint32(NormalXP);
-
-		if(type)
-			data << uint8(1);
-		else
-			data << uint8(0);
-
-		data << uint32(RestedXP);
-		data << float(1.0f);
-
-	}
-	else if(type == true)
-	{
-		data << uint64(0);            // does not need to be set for questxp
-		data << uint32(NormalXP);
-
-		if(type)
-			data << uint8(1);
-		else
-			data << uint8(0);
-
-		data << uint8(0);
-
-	}
-
-	m_session->SendPacket(&data);
-}
-
 void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
 {
 
