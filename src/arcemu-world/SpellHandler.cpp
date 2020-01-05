@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 void WorldSession::HandleUseItemOpcode(WorldPacket & recvPacket)
 {
@@ -198,14 +199,24 @@ void WorldSession::HandleUseItemOpcode(WorldPacket & recvPacket)
 
 	if(!_player->Cooldown_CanCast(spellInfo))
 	{
-		_player->SendCastResult(spellInfo->Id, SPELL_FAILED_NOT_READY, cn, 0);
+		CastResult result;
+		result.spell = spellInfo->Id;
+		result.result = SPELL_FAILED_NOT_READY;
+		result.multicast = cn;
+		result.extra = 0;
+		Messenger::SendCastResult( _player, result );
 		return;
 	}
 
 
 	if(_player->m_currentSpell)
 	{
-		_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
+		CastResult result;
+		result.spell = spellInfo->Id;
+		result.result = SPELL_FAILED_SPELL_IN_PROGRESS;
+		result.multicast = cn;
+		result.extra = 0;
+		Messenger::SendCastResult( _player, result );
 		return;
 	}
 
@@ -215,7 +226,12 @@ void WorldSession::HandleUseItemOpcode(WorldPacket & recvPacket)
 		{
 			if(_player->GetGUID() != targets.m_unitTarget)
 			{
-				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_BAD_TARGETS, cn, 0);
+				CastResult result;
+				result.spell = spellInfo->Id;
+				result.result = SPELL_FAILED_BAD_TARGETS;
+				result.multicast = cn;
+				result.extra = 0;
+				Messenger::SendCastResult( _player, result );
 				return;
 			}
 		}
@@ -224,7 +240,12 @@ void WorldSession::HandleUseItemOpcode(WorldPacket & recvPacket)
 
 			if(!_player->GetSummon() || _player->GetSummon()->GetEntry() != (uint32)itemProto->ForcedPetId)
 			{
-				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
+				CastResult result;
+				result.spell = spellInfo->Id;
+				result.result = SPELL_FAILED_SPELL_IN_PROGRESS;
+				result.multicast = cn;
+				result.extra = 0;
+				Messenger::SendCastResult( _player, result );
 				return;
 			}
 		}
@@ -426,7 +447,12 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket & recvPacket)
 			else
 			{
 				// send the error message
-				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
+				CastResult result;
+				result.spell = spellInfo->Id;
+				result.result = SPELL_FAILED_SPELL_IN_PROGRESS;
+				result.multicast = cn;
+				result.extra = 0;
+				Messenger::SendCastResult( _player, result );
 				return;
 			}
 		}
@@ -439,7 +465,12 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket & recvPacket)
 			if(targets.m_unitTarget && targets.m_unitTarget != _player->GetGUID())
 			{
 				// send the error message
-				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_BAD_TARGETS, cn, 0);
+				CastResult result;
+				result.spell = spellInfo->Id;
+				result.result = SPELL_FAILED_BAD_TARGETS;
+				result.multicast = cn;
+				result.extra = 0;
+				Messenger::SendCastResult( _player, result );
 				return;
 			}
 		}

@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 #define SPELL_CHANNEL_UPDATE_INTERVAL 1000
 
@@ -1947,7 +1948,12 @@ void Spell::SendCastResult(uint8 result)
 			//case SPELL_FAILED_TOTEM_CATEGORY: seems to be fully client sided.
 	}
 
-	plr->SendCastResult(GetProto()->Id, result, extra_cast_number, Extra);
+	CastResult castResult;
+	castResult.spell = GetProto()->Id;
+	castResult.result = result;
+	castResult.multicast = extra_cast_number;
+	castResult.extra = Extra;
+	Messenger::SendCastResult( plr, castResult );
 }
 
 // uint16 0xFFFF

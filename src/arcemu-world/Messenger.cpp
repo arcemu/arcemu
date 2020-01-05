@@ -1352,3 +1352,17 @@ void Messenger::SendSetItemProficiency( Player *player, uint8 itemClass, uint32 
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendCastResult(Player *player, CastResult result)
+{
+	WorldPacket data( SMSG_CAST_FAILED, 80 );
+
+	data << uint8( result.multicast );
+	data << uint32( result.spell );
+	data << uint8( result.result );
+
+	if( result.extra != 0 )
+		data << uint32( result.extra );
+
+	PlayerMessenger::sendMessage( player, data );
+}
+

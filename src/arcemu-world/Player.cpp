@@ -6055,9 +6055,15 @@ int32 Player::CanShootRangedWeapon(uint32 spellid, Unit* target, bool autoshot)
 				fail = SPELL_FAILED_NO_AMMO;
 	}
 
+	// If the cast failed
 	if(fail > 0)  // && fail != SPELL_FAILED_OUT_OF_RANGE)
 	{
-		SendCastResult(autoshot ? 75 : spellid, fail, 0, 0);
+		CastResult result;
+		result.spell = autoshot ? 75 : spellid;
+		result.result = (uint8)fail;
+		result.multicast = 0;
+		result.extra = 0;
+		Messenger::SendCastResult( this, result );
 
 		if(fail != SPELL_FAILED_OUT_OF_RANGE)
 		{
@@ -11781,7 +11787,14 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed)
 	if(objmgr.IsSpellDisabled(talentInfo->RankID[rank]))
 	{
 		if(IsInWorld())
-			SendCastResult(talentInfo->RankID[rank], SPELL_FAILED_SPELL_UNAVAILABLE, 0, 0);
+		{
+			CastResult result;
+			result.spell = talentInfo->RankID[rank];
+			result.result = SPELL_FAILED_SPELL_UNAVAILABLE;
+			result.multicast = 0;
+			result.extra = 0;
+			Messenger::SendCastResult( this, result );
+		}
 
 		return;
 	}

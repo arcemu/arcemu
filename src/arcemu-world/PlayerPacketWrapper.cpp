@@ -43,21 +43,6 @@ void Player::SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0,
 	m_session->SendPacket(&data);
 }
 
-void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
-{
-
-	WorldPacket data(SMSG_CAST_FAILED, 80);
-
-	data << uint8(MultiCast);
-	data << uint32(SpellId);
-	data << uint8(ErrorMessage);
-
-	if(Extra)
-		data << uint32(Extra);
-
-	m_session->SendPacket(&data);
-}
-
 void Player::SendSpellModifier(uint8 spellgroup, uint8 spelltype, int32 v, bool is_pct)
 {
 

@@ -278,6 +278,9 @@ public:
 
 	/// Tells the client that the player has a new proficiency level with an item class (weapons, armor for example)
 	static void SendSetItemProficiency( Player *player, uint8 itemClass, uint32 proficiency );
+
+	/// Sends the result of the spell cast to the client.
+	static void SendCastResult( Player* player, CastResult result );
 };
 
 #endif

@@ -18,6 +18,7 @@
 
 #include "Setup.h"
 #include "../Common/EasyFunctions.h"
+#include "Messenger.h"
 
 bool CleansingVial(uint32 i, Spell* pSpell)
 {
@@ -1417,7 +1418,12 @@ bool HunterTamingQuest(uint32 i, Aura* a, bool apply)
 
 		if(!p_caster->GetQuestLogForEntry(tamequest->id) || m_target->GetEntry() != static_cast<uint32>(tamequest->required_mob[0]))
 		{
-			p_caster->SendCastResult(triggerspell->Id, SPELL_FAILED_BAD_TARGETS, 0, 0);
+			CastResult result;
+			result.spell = triggerspell->Id;
+			result.result = SPELL_FAILED_BAD_TARGETS;
+			result.multicast = 0;
+			result.extra = 0;
+			Messenger::SendCastResult( p_caster, result );
 		}
 		else if(!a->GetTimeLeft())
 		{
@@ -1451,7 +1457,12 @@ bool HunterTamingQuest(uint32 i, Aura* a, bool apply)
 			}
 			else
 			{
-				p_caster->SendCastResult(triggerspell->Id, SPELL_FAILED_TRY_AGAIN, 0, 0);
+				CastResult result;
+				result.spell = triggerspell->Id;
+				result.result = SPELL_FAILED_TRY_AGAIN;
+				result.multicast = 0;
+				result.extra = 0;
+				Messenger::SendCastResult( p_caster, result );
 			}
 		}
 	}

@@ -33,6 +33,23 @@ class Item;
 class Group;
 class Aura;
 
+class CastResult
+{
+public:
+	uint8 multicast;
+	uint32 spell;
+	uint8 result;
+	uint32 extra;
+
+	CastResult()
+	{
+		multicast = 0;
+		spell = 0;
+		result = SPELL_FAILED_UNKNOWN;
+		extra = 0;
+	}
+};
+
 
 struct SpellClickSpell
 {

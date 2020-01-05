@@ -470,7 +470,12 @@ bool ChatHandler::HandleSendFailed(const char* args , WorldSession* m_session)
 		RedSystemMessage(m_session, "Argument %u is out of range!", fail);
 		return false;
 	}
-	plr->SendCastResult(1, (uint8)fail, 0, 0);
+	CastResult result;
+	result.spell = 1;
+	result.result = (uint8)fail;
+	result.multicast = 0;
+	result.extra = 0;
+	Messenger::SendCastResult( plr, result );
 	return true;
 }
 
