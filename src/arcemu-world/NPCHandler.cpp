@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Messenger.h"
 
 trainertype trainer_types[TRAINER_TYPE_MAX] =
 {
@@ -232,8 +233,8 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket & recvPacket)
 	else
 	{
 /////////////////////////////////////// Showing the learning spellvisuals//////////////
-		_player->SendPlaySpellVisual(pCreature->GetGUID(), 0x5B3);
-		_player->SendPlaySpellVisual(_player->GetGUID(), 0x16A);
+		Messenger::SendPlaySpellVisualToSet( pCreature, 0x5B3 );
+		Messenger::SendPlaySpellVisualToSet( _player, 0x16A );
 ///////////////////////////////////////////////////////////////////////////////////////
 
 		// add the spell itself
