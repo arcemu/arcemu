@@ -1,3 +1,7 @@
+env:
+  global:
+    secure: "KiFPVXtKunznbgvq2NrAUkAXPCnC137Pb80tvF5r1+inwZmwDoT05rS/XJEhh+33Mx0FFXHJk6qa5Pufn2OprWFS7C+RJ6fp2obhdegopMxLKQC64S5YGVuFUb/175TUlmzm/R0HYLLC0dRJa1KdyooHKr1tr4LCc16hxZSu6iw="
+
 sudo: false
 dist: bionic
 language: cpp
@@ -8,23 +12,24 @@ services:
 
 install: true
 
-before_script:
-  - cd extras/docker/arcemu_build
-  - docker build -t arcemu_build .
-  - cd ../../../
+#before_script:
+#  - cd extras/docker/arcemu_build
+#  - docker build -t arcemu_build .
+#  - cd ../../../
 
 script:
-  - mkdir bin
-  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
-  - ls -la ./bin
-  - mkdir docker_build
-  - cp -r extras/docker/arcemu_logon docker_build/
-  - cp -r extras/docker/arcemu_world docker_build/
-  - find ./docker_build
-  - cp bin/logon docker_build/arcemu_logon/srv/arcemu_logon/
-  - cp bin/world docker_build/arcemu_world/srv/arcemu_world/
-  - cp -r bin/modules docker_build/arcemu_world/srv/arcemu_world/
-  - cd docker_build/arcemu_logon
-  - docker build --no-cache -t arcemu_logon .
-  - cd ../arcemu_world
-  - docker build --no-cache -t arcemu_world .
+   - echo $SUPERSECRET
+#  - mkdir bin
+#  - docker run -t -i -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
+#  - ls -la ./bin
+#  - mkdir docker_build
+#  - cp -r extras/docker/arcemu_logon docker_build/
+#  - cp -r extras/docker/arcemu_world docker_build/
+#  - find ./docker_build
+#  - cp bin/logon docker_build/arcemu_logon/srv/arcemu_logon/
+#  - cp bin/world docker_build/arcemu_world/srv/arcemu_world/
+#  - cp -r bin/modules docker_build/arcemu_world/srv/arcemu_world/
+#  - cd docker_build/arcemu_logon
+#  - docker build --no-cache -t arcemu_logon .
+#  - cd ../arcemu_world
+#  - docker build --no-cache -t arcemu_world .
