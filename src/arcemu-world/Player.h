@@ -1380,7 +1380,6 @@ class SERVER_DECL Player : public Unit
 		void SendLoot(uint64 guid, uint8 loot_type, uint32 mapid);
 		void SendLootUpdate(Object* o);
 		void TagUnit(Object* o);
-		void SendPartyKillLog(uint64 GUID);
 		// loot variables
 		uint64              m_lootGuid;
 		uint64              m_currentLoot;

@@ -288,6 +288,10 @@ public:
 	/// Tells the client that a totem has been created.
 	/// Client will show a right-clickable icon with a timer that can cancel the summon
 	static void SendTotemCreated( Player* player, const TotemCreationInfo& totem );
+
+	/// Tells nearby players' clients that the player killed something.
+	/// Based on the opcode name, maybe this should be sent to party members only.
+	static void SendPartyKillLogToSet( Player* player, uint64 GUID );
 };
 
 #endif

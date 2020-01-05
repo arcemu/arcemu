@@ -1386,3 +1386,13 @@ void Messenger::SendTotemCreated( Player *player, const TotemCreationInfo& totem
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendPartyKillLogToSet( Player *player, uint64 GUID )
+{
+	WorldPacket data( SMSG_PARTYKILLLOG, 16 );
+	data << uint64( player->GetGUID() );
+	data << uint64( GUID );
+
+	MessageRouter router( player );
+	router.sendMessageToPlayersInRange( &data, true );
+}
+

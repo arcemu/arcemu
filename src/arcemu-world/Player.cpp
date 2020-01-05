@@ -12252,7 +12252,7 @@ void Player::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		EventAttackStop();
 
-		SendPartyKillLog(pVictim->GetGUID());
+		Messenger::SendPartyKillLogToSet( this, pVictim->GetGUID() );
 
 		if(pVictim->IsPvPFlagged())
 		{
