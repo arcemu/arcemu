@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 RUN apt-get update
 RUN apt-get install -y libssl1.0.0 libmysqlclient20
