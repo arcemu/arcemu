@@ -9,10 +9,6 @@ RUN mkdir -p /srv/arcemu_world/DBC
 RUN mkdir -p /srv/arcemu_world/maps
 RUN mkdir -p /srv/arcemu_world/log
 
-COPY srv/arcemu_world/etc/world.conf /srv/arcemu_world/etc/world.conf
-COPY srv/arcemu_world/etc/realms.conf /srv/arcemu_world/etc/realms.conf
-COPY srv/arcemu_world/etc/optional.conf /srv/arcemu_world/etc/optional.conf
-
 COPY srv/arcemu_world/world /srv/arcemu_world/world
 COPY srv/arcemu_world/modules/* /srv/arcemu_world/modules/
 
