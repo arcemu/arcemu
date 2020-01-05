@@ -5872,7 +5872,7 @@ void Player::SetDrunkValue(uint16 newDrunkenValue, uint32 itemId)
 
 	UpdateVisibility();
 
-	SendNewDrunkState(newDrunkenState, itemId);
+	Messenger::SendNewDrunkState( this, newDrunkenState, itemId );
 }
 
 void Player::LoadTaxiMask(const char* data)

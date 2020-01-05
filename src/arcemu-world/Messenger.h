@@ -269,6 +269,9 @@ public:
 
 	/// Tells the client to start cooldown. Only certain spells require this. E.g.: Rogue stealth
 	static void SendSpellCooldownEvent( Player* player, uint32 spell );
+
+	/// Tells the client that the player has reached a new level of drunkesshhnessshh ...hic!
+	static void SendNewDrunkState( Player *player, uint32 state, uint32 item );
 };
 
 #endif

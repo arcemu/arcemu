@@ -166,18 +166,6 @@ void Player::SendInstanceDifficulty(uint32 difficulty)
 	m_session->SendPacket(&data);
 }
 
-void Player::SendNewDrunkState(uint32 state, uint32 itemid)
-{
-
-	WorldPacket data(SMSG_CROSSED_INEBRIATION_THRESHOLD, (8 + 4 + 4));
-
-	data << GetGUID();
-	data << uint32(state);
-	data << uint32(itemid);
-
-	SendMessageToSet(&data, true);
-}
-
 /*Loot type MUST be
 1-corpse, go
 2-skinning/herbalism/minning

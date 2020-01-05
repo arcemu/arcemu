@@ -1318,3 +1318,15 @@ void Messenger::SendSpellCooldownEvent(Player *player, uint32 spell)
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::SendNewDrunkState( Player *player, uint32 state, uint32 item )
+{
+	WorldPacket data (SMSG_CROSSED_INEBRIATION_THRESHOLD, 8 + 4 + 4 );
+
+	data << uint64( player->GetGUID() );
+	data << uint32( state );
+	data << uint32( item );
+
+	MessageRouter router( player );
+	router.sendMessageToPlayersInRange( &data, true );
+}
+
