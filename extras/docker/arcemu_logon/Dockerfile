@@ -9,6 +9,7 @@ RUN mkdir -p /srv/arcemu_logon/log
 COPY srv/arcemu_logon/logon /srv/arcemu_logon/logon
 
 EXPOSE 3724
+EXPOSE 8093
 
 WORKDIR /srv/arcemu_logon
 CMD ["./logon"]
