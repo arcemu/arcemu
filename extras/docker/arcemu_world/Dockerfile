@@ -8,6 +8,7 @@ RUN mkdir -p /srv/arcemu_world/modules
 RUN mkdir -p /srv/arcemu_world/DBC
 RUN mkdir -p /srv/arcemu_world/maps
 RUN mkdir -p /srv/arcemu_world/log
+RUN mkdir -p /srv/arcemu_world/scripts
 
 COPY srv/arcemu_world/world /srv/arcemu_world/world
 COPY srv/arcemu_world/modules/* /srv/arcemu_world/modules/
