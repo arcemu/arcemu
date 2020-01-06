@@ -74,10 +74,10 @@ dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 cmake -DCMAKE_INSTALL_PREFIX=/home/arcemu/arcemu/bin -DCMAKE_BUILD_TYPE=Debug ../src/cmake 2>&1
 	
 	 # Build! NOTE: This can take a very long time.
-	 #make
+	 make
 	 
 	 # Install the binaries
-	 #make install
+	 make install
 	 
 	 # Create some directories
 	 mkdir -p /home/arcemu/arcemu/bin/DBC
