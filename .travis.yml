@@ -33,6 +33,13 @@ script:
   - docker images
 # Finally push it all to Docker Hub
   - echo "$DOCKER_PASS" | docker login -u arcemu --password-stdin
+# build(er) image
   - docker tag arcemu_build arcemu/arcemu_build:latest
   - docker push arcemu/arcemu_build
+# logon image
+  - docker tag arcemu_logon arcemu/arcemu_logon:latest
+  - docker push arcemu/arcemu_logon
+# world image
+  - docker tag arcemu_world arcemu/arcemu_world:latest
+  - docker push arcemu/arcemu_world
   - docker logout
