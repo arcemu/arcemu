@@ -39,3 +39,4 @@ The username and password should be both arcemu (in lowercase).
 
 * [Website](http://arcemu.org/)
 * [Forums](http://www.arcemu.org/forums/)
+* [Docker hub](https://hub.docker.com/u/arcemu)
