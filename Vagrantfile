@@ -72,9 +72,12 @@ dmin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 mkdir /home/arcemu/arcemu/build
 	 cd /home/arcemu/arcemu/build
 	 cmake -DCMAKE_INSTALL_PREFIX=/home/arcemu/arcemu/bin -DCMAKE_BUILD_TYPE=Debug ../src/cmake 2>&1
+
+	 # Get the number of virtual CPUs
+	 VCPUS=`cat /proc/cpuinfo | grep -P "^processor" | wc -l`
 	
 	 # Build! NOTE: This can take a very long time.
-	 make
+	 make -j$((VCPUS+1))
 	 
 	 # Install the binaries
 	 make install
