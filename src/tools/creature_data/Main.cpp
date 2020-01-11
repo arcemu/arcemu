@@ -3,13 +3,14 @@
 #include <cassert>
 #include <vector>
 #include <map>
+#include <iostream>
 
 #include "dbcfile.h"
 #include "mpq_libmpq04.h"
 
 #include "structs.h"
 
-void InitMPQs()
+bool InitMPQs()
 {
 	//COPIED FROM MAP EXTRACTOR
 	FILE * tf;
@@ -21,8 +22,8 @@ void InitMPQs()
 	tf = fopen("Data/common-2.MPQ", "r");
 	if (!tf)
 	{
-		printf("Could not find Data/common.MPQ-2\n");
-		return;
+		printf("Could not find Data/common-2.MPQ\n");
+		return false;
 	}
 	fclose(tf);
 	new MPQArchive("Data/common-2.MPQ");
@@ -38,6 +39,12 @@ void InitMPQs()
 		new MPQArchive(tmp);
 	}
 
+	if( locale == -1 )
+	{
+		printf( "Could not open a locale MPQ :(\n" );
+		return false;
+	}
+
 	tf = fopen("Data/expansion.MPQ", "r");
 	if (tf)
 	{
@@ -48,6 +55,11 @@ void InitMPQs()
 			sprintf(tmp, "Data/%s/expansion-locale-%s.MPQ", localeNames[locale], localeNames[locale]);
 			new MPQArchive(tmp);
 		}
+	}
+	else
+	{
+		printf( "Failed to open expansion (TBC) MPQ. Exiting.." );
+		return false;
 	}
 
 	tf = fopen("Data/lichking.MPQ", "r");
@@ -60,6 +72,11 @@ void InitMPQs()
 			sprintf(tmp, "Data/%s/lichking-locale-%s.MPQ", localeNames[locale], localeNames[locale]);
 			new MPQArchive(tmp);
 		}
+	}
+	else
+	{
+		printf( "Failed to open lichking MPQ. Exiting..." );
+		return false;
 	}
 
 	tf = fopen("Data/patch.MPQ", "r");
@@ -96,6 +113,13 @@ void InitMPQs()
 			}
 		}
 	}
+	else
+	{
+		printf( "Failed to open patch.MPQ. Exiting..." );
+		return false;
+	}
+
+	return true;
 }
 
 void replace(std::string &str, const char* find, const char* rep, uint32 limit)
@@ -124,7 +148,12 @@ struct ModelCache
 
 int main()
 {
-	InitMPQs();
+	if( ! InitMPQs() )
+	{
+		std::cout << "Failed to initialize MPQ files. Exiting..." << std::endl;
+		return 1;
+	}
+
 	FILE* fo = fopen("display_bounding_boxes.sql", "w");
 	DBCFile displayInfo("DBFilesClient\\CreatureDisplayInfo.dbc");
 	DBCFile modelInfo("DBFilesClient\\CreatureModelData.dbc");	
