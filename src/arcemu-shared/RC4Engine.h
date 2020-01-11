@@ -82,17 +82,4 @@ class RC4Engine
 		}
 };
 
-
-//! Reverses the bytes in an array in the opposite order.
-__inline void ReverseBytes(unsigned char* Pointer, unsigned int Length)
-{
-	unsigned char* Temp = (unsigned char*)malloc(Length);
-	memcpy(Temp, Pointer, Length);
-
-	for(unsigned int i = 0; i < Length; ++i)
-		Pointer[i] = Temp[Length - i - 1];
-
-	free(Temp);
-}
-
 #endif  // _SHARED_RC4ENGINE_H
