@@ -155,6 +155,11 @@ int main()
 	}
 
 	FILE* fo = fopen("display_bounding_boxes.sql", "w");
+	if( fo == NULL )
+	{
+		std::cout << "Failed to open output file. Exiting..." << std::endl;
+		return 1;
+	}
 	DBCFile displayInfo("DBFilesClient\\CreatureDisplayInfo.dbc");
 	DBCFile modelInfo("DBFilesClient\\CreatureModelData.dbc");	
 	displayInfo.open();
