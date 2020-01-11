@@ -1,0 +1,63 @@
+################################################################################
+#
+# ArcEmu MMORPG Server
+# Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
+# Copyright (C) 2008-2020 <http://www.ArcEmu.org/>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+version: "3"
+services:
+  arcemu-logon:
+    image: arcemu/arcemu_logon
+    container_name: logon
+    ports:
+      - 3724
+      - 8093
+    volumes:
+      - arcemu_logon_etc:/srv/arcemu_logon/etc:ro
+      - arcemu_logon_logs:/srv/arcemu_logon/log:rw
+    network_mode: host
+    tty: true
+
+  arcemu-world:
+    image: arcemu/arcemu_world
+    container_name: world
+    ports:
+      - 8129
+    volumes:
+      - arcemu_world_DBC:/srv/arcemu_world/DBC:ro
+      - arcemu_world_maps:/srv/arcemu_world/maps:ro
+      - arcemu_world_logs:/srv/arcemu_world/log:rw
+      - arcemu_world_etc:/srv/arcemu_world/etc:ro
+      - arcemu_world_scripts:/srv/arcemu_world/scripts:ro
+    network_mode: host
+    tty: true
+
+volumes:
+  arcemu_logon_etc:
+    external: true
+  arcemu_logon_logs:
+    external: true
+  arcemu_world_DBC:
+    external: true
+  arcemu_world_maps:
+    external: true
+  arcemu_world_logs:
+    external: true
+  arcemu_world_etc:
+    external: true
+  arcemu_world_scripts:
+    external: true
