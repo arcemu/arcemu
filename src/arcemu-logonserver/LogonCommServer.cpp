@@ -141,8 +141,8 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 		NULL,												// RSMSG_SESSION_RESULT
 		&LogonCommServerSocket::HandlePing,					// RCMSG_PING
 		NULL,												// RSMSG_PONG
-		&LogonCommServerSocket::HandleSQLExecute,			// RCMSG_SQL_EXECUTE
-		&LogonCommServerSocket::HandleReloadAccounts,		// RCMSG_RELOAD_ACCOUNTS
+		NULL,			// RCMSG_SQL_EXECUTE
+		NULL,		// RCMSG_RELOAD_ACCOUNTS
 		&LogonCommServerSocket::HandleAuthChallenge,		// RCMSG_AUTH_CHALLENGE
 		NULL,												// RSMSG_AUTH_RESPONSE
 		NULL,												// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
@@ -290,20 +290,6 @@ void LogonCommServerSocket::SendPacket(WorldPacket* data)
 
 	if(rv) BurstPush();
 	BurstEnd();
-}
-
-void LogonCommServerSocket::HandleSQLExecute(WorldPacket & recvData)
-{
-	/*string Query;
-	recvData >> Query;
-	sLogonSQL->Execute(Query.c_str());*/
-	LOG_ERROR("!! WORLD SERVER IS REQUESTING US TO EXECUTE SQL. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.", GetRemoteIP().c_str());
-}
-
-void LogonCommServerSocket::HandleReloadAccounts(WorldPacket & recvData)
-{
-	LOG_ERROR("!! WORLD SERVER IS REQUESTING US TO RELOAD ACCOUNTS. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.", GetRemoteIP().c_str());
-	//sAccountMgr.ReloadAccounts(true);
 }
 
 void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
