@@ -23,7 +23,6 @@
 #include "Common.h"
 #include "Singleton.h"
 
-class WorldPacket;
 class WorldSession;
 
 #define SZLTR "\xe5\xcf\xfe\xed\xf3\xfb\x03\xeb"

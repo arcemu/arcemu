@@ -22,6 +22,8 @@
 
 #include <RC4Engine.h>
 
+class WorldPacket;
+
 class LogonCommServerSocket : public Socket
 {
 		uint32 remaining;
