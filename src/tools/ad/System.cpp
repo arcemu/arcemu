@@ -1106,8 +1106,8 @@ int main(int argc, char * arg[])
 
     if(FirstLocale < 0)
     {
-        printf("No locales detected\n");
-        return 0;
+	printf("No locales detected. Exiting...\n");
+	return 1;
     }
 
     if (CONF_extract & EXTRACT_MAP)
