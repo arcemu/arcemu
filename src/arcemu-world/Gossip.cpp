@@ -121,19 +121,10 @@ WorldPacket & Gossip::operator<<(WorldPacket & packet, const Gossip::Menu & menu
 	return packet;
 }
 
-void Gossip::Menu::BuildPacket(WorldPacket & packet) const
-{
-	packet << *this;
-}
-void Gossip::Menu::BuildPacket(WorldPacket* packet) const
-{
-	*packet << *this;
-}
-
 void Gossip::Menu::Send(Player* plr) const
 {
 	WorldPacket packet(SMSG_GOSSIP_MESSAGE, 512);
-	BuildPacket(packet);
+	packet << *this;
 	plr->GetSession()->SendPacket(&packet);
 }
 

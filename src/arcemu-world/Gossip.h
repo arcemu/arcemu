@@ -154,13 +154,6 @@ namespace Arcemu
 				//************************************
 				void RemoveQuest(Quest*);
 
-				//************************************
-				// Purpose : Fills the packet with the menu data.
-				// Parameter:	WorldPacket & - the packet to fill
-				//************************************
-				void BuildPacket(WorldPacket &) const;
-				void BuildPacket(WorldPacket*) const;
-
 				uint32 getTextID() const { return textid_; }
 				uint32 getLanguage() const { return language_; }
 
