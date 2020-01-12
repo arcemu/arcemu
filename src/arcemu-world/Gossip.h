@@ -102,9 +102,6 @@ namespace Arcemu
 				Item(size_t, uint8, const char*, bool = false, size_t = 0, const char* = NULL);
 
 				friend WorldPacket & operator<<(WorldPacket &, const Gossip::Item &);
-				template<uint32 size>
-				friend StackBuffer<size>& operator<<(StackBuffer<size>&, const Gossip::Item &);
-
 				friend class Menu;
 		};
 
@@ -164,9 +161,6 @@ namespace Arcemu
 				void BuildPacket(WorldPacket &) const;
 				void BuildPacket(WorldPacket*) const;
 
-				template<uint32 size>
-				void BuildPacket(StackBuffer<size> &) const;
-
 				uint32 getTextID() const { return textid_; }
 				uint32 getLanguage() const { return language_; }
 
@@ -179,6 +173,8 @@ namespace Arcemu
 				// Return : void
 				//************************************
 				void Send(Player*) const;
+
+				void Send(Player* plr, uint32 size) const;
 
 				//************************************
 				// Purpose : Creates a stackworldpacket SMSG_GOSSIP_MESSAGE, fills it and sends it to the specified player.
@@ -218,9 +214,6 @@ namespace Arcemu
 				static void Complete(Player*);
 
 				friend WorldPacket & operator<<(WorldPacket &, const Gossip::Menu &);
-
-				template<uint32 size>
-				friend StackBuffer<size>& operator<<(StackBuffer<size>&, const Gossip::Menu &);
 
 			protected:
 				uint32 textid_;

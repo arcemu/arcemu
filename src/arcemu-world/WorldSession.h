@@ -221,12 +221,6 @@ class SERVER_DECL WorldSession
 				_socket->SendPacket(packet);
 		}
 
-		void SendPacket(StackBufferBase* packet)
-		{
-			if(_socket && _socket->IsConnected())
-				_socket->SendPacket(packet);
-		}
-
 		void OutPacket(uint16 opcode)
 		{
 			if(_socket && _socket->IsConnected())

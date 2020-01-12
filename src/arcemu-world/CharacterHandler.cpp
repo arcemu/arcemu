@@ -834,7 +834,7 @@ void WorldSession::FullLogin(Player* plr)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	StackWorldPacket<20> datab(SMSG_FEATURE_SYSTEM_STATUS);
+	WorldPacket datab(SMSG_FEATURE_SYSTEM_STATUS,20);
 
 
 	datab.Initialize(SMSG_FEATURE_SYSTEM_STATUS);

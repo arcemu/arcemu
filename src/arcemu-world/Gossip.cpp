@@ -48,14 +48,6 @@ WorldPacket & Gossip::operator<<(WorldPacket & packet, const Gossip::Item & item
 	return packet;
 }
 
-template<uint32 size>
-StackBuffer<size>& Gossip::operator<<(StackBuffer<size>& packet, const Gossip::Item & item)
-{
-	packet << uint32(item.id_) << item.icon_ << item.coded_ << item.boxmoney_ << item.text_ << item.boxmessage_;
-	return packet;
-}
-
-
 Gossip::Menu::Menu(uint64 Creature_Guid, uint32 Text_Id, uint32 language) : textid_(Text_Id), guid_(Creature_Guid), language_(language)
 {
 }
@@ -129,34 +121,6 @@ WorldPacket & Gossip::operator<<(WorldPacket & packet, const Gossip::Menu & menu
 	return packet;
 }
 
-template<uint32 size>
-StackBuffer<size>& Gossip::operator<<(StackBuffer<size> & packet, const Gossip::Menu & menu)
-{
-	packet << menu.guid_;
-	packet << uint32(0);
-	packet << menu.textid_;
-	packet << uint32(menu.itemlist_.size());
-	{
-		for(Gossip::ItemList::const_iterator itr = menu.itemlist_.begin(); itr != menu.itemlist_.end(); ++itr)
-			packet << *itr;
-	}
-	packet << uint32(menu.questlist_.size());
-	{
-		string title;
-		for(Gossip::QuestList::const_iterator itr = menu.questlist_.begin(); itr != menu.questlist_.end(); ++itr)
-		{
-			packet << itr->first->id << uint32(itr->second) << itr->first->min_level << itr->first->quest_flags << uint8(0);
-			LocalizedQuest* lq = sLocalizationMgr.GetLocalizedQuest(itr->first->id, menu.language_);
-			if(lq != NULL)
-				title = lq->Title;
-			else
-				title = itr->first->title;
-			packet << title;
-		}
-	}
-	return packet;
-}
-
 void Gossip::Menu::BuildPacket(WorldPacket & packet) const
 {
 	packet << *this;
@@ -173,24 +137,29 @@ void Gossip::Menu::Send(Player* plr) const
 	plr->GetSession()->SendPacket(&packet);
 }
 
+void Gossip::Menu::Send(Player* plr, uint32 size) const
+{
+	WorldPacket packet(SMSG_GOSSIP_MESSAGE, size);
+	packet << *this;
+	plr->GetSession()->SendPacket(&packet);
+}
+
 template<uint32 size>
 void Gossip::Menu::StackSend(Player* plr) const
 {
-	StackWorldPacket<size> packet(SMSG_GOSSIP_MESSAGE);
-	packet << static_cast<Gossip::Menu>(*this);
-	plr->GetSession()->SendPacket(&packet);
+	Send(plr, size);
 }
 
 void Gossip::Menu::SendSimpleMenu(uint64 guid, size_t txt_id, Player* plr)
 {
-	StackWorldPacket<32> packet(SMSG_GOSSIP_MESSAGE);
+	WorldPacket packet(SMSG_GOSSIP_MESSAGE, 32);
 	packet << guid << uint32(0) << uint32(txt_id) << uint32(0) << uint32(0);
 	plr->GetSession()->SendPacket(&packet);
 }
 
 void Gossip::Menu::SendQuickMenu(uint64 guid, size_t textid, Player* Plr, size_t itemid, uint8 itemicon, const char* itemtext, size_t requiredmoney/*=0*/, const char* moneytext/*=NULL*/, uint8 extra/*=0*/)
 {
-	StackWorldPacket<64> packet(SMSG_GOSSIP_MESSAGE);
+	WorldPacket packet(SMSG_GOSSIP_MESSAGE,64);
 	string itemtexts = (itemtext != NULL) ? itemtext : "";
 	string moneytexts = (moneytext != NULL) ? moneytext : "";
 	packet << guid << uint32(0) << uint32(textid) << uint32(1) << uint32(itemid) << itemicon << extra << uint32(requiredmoney) << itemtexts;

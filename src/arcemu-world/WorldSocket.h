@@ -47,7 +47,6 @@ class SERVER_DECL WorldSocket : public Socket
 
 		// vs8 fix - send null on empty buffer
 		ARCEMU_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
-		ARCEMU_INLINE void SendPacket(StackBufferBase* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
 
 		void  OutPacket(uint16 opcode, size_t len, const void* data);
 		OUTPACKET_RESULT  _OutPacket(uint16 opcode, size_t len, const void* data);

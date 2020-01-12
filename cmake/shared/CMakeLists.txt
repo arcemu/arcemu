@@ -65,7 +65,6 @@ set( headers
 	printStackTrace.h
 	RC4Engine.h
 	Singleton.h
-	StackBuffer.h
 	StackWalker.h
 	StackTrace.h
 	Storage.h

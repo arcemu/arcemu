@@ -81,7 +81,6 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "../arcemu-shared/WorldPacket.h"
 #include "../arcemu-shared/Log.h"
 #include "../arcemu-shared/ByteBuffer.h"
-#include "../arcemu-shared/StackBuffer.h"
 #include "../arcemu-shared/Config/ConfigEnv.h"
 #include "../arcemu-shared/crc32.h"
 #include "../arcemu-shared/LocationVector.h"
