@@ -144,12 +144,6 @@ void Gossip::Menu::Send(Player* plr, uint32 size) const
 	plr->GetSession()->SendPacket(&packet);
 }
 
-template<uint32 size>
-void Gossip::Menu::StackSend(Player* plr) const
-{
-	Send(plr, size);
-}
-
 void Gossip::Menu::SendSimpleMenu(uint64 guid, size_t txt_id, Player* plr)
 {
 	WorldPacket packet(SMSG_GOSSIP_MESSAGE, 32);
@@ -351,7 +345,7 @@ void Arcemu::Gossip::Vendor::OnHello(Object* pObject, Player* Plr)
 
 	sQuestMgr.FillQuestMenu(creature, Plr, menu); //add any quests we have.
 
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::Vendor::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -398,7 +392,7 @@ void Arcemu::Gossip::Trainer::OnHello(Object* pObject, Player* Plr)
 		}
 	}
 	sQuestMgr.FillQuestMenu(trainer, Plr, menu);
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::Trainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -424,7 +418,7 @@ void Arcemu::Gossip::FlightMaster::OnHello(Object* pObject, Player* Plr)
 	menu.AddItem(Gossip::ICON_FLIGHTMASTER, Plr->GetSession()->LocalizedWorldSrv(Gossip::FLIGHTMASTER), 1);
 	sQuestMgr.FillQuestMenu(flightmaster, Plr, menu);
 
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::FlightMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -469,7 +463,7 @@ void Arcemu::Gossip::InnKeeper::OnHello(Object* pObject, Player* Plr)
 			menu.AddItem(Gossip::ICON_VENDOR, Plr->GetSession()->LocalizedWorldSrv(Gossip::VENDOR), 2);
 	}
 	sQuestMgr.FillQuestMenu(innkeeper, Plr, menu);
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::InnKeeper::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -493,7 +487,7 @@ void Arcemu::Gossip::BattleMaster::OnHello(Object* pObject, Player* Plr)
 	Gossip::Menu menu(battlemaster->GetGUID(), Text, Plr->GetSession()->language);
 	menu.AddItem(Gossip::ICON_BATTLE, Plr->GetSession()->LocalizedWorldSrv(Gossip::BATTLEMASTER), 1);
 	sQuestMgr.FillQuestMenu(battlemaster, Plr, menu);
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::BattleMaster::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -614,7 +608,7 @@ void Arcemu::Gossip::PetTrainer::OnHello(Object* pObject, Player* Plr)
 		menu.AddItem(Gossip::ICON_CHAT, Plr->GetSession()->LocalizedWorldSrv(Gossip::PETTRAINER_TALENTRESET), 1);
 	sQuestMgr.FillQuestMenu(petrain, Plr, menu);
 
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::PetTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -708,7 +702,7 @@ void Arcemu::Gossip::ClassTrainer::OnHello(Object* pObject, Player* Plr)
 		}
 	}
 	sQuestMgr.FillQuestMenu(trainer, Plr, menu);
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)
@@ -760,7 +754,7 @@ void Arcemu::Gossip::Generic::OnHello(Object* pObject, Player* Plr)
 		Text = Gossip::DEFAULT_TXTINDEX;
 	Gossip::Menu menu(pObject->GetGUID(), Text, Plr->GetSession()->language);
 	sQuestMgr.FillQuestMenu(TO_CREATURE(pObject), Plr, menu);
-	menu.StackSend<256>(Plr);
+	menu.Send(Plr, 256);
 }
 
 void Arcemu::Gossip::Generic::OnSelectOption(Object* pObject, Player* Plr, uint32 Id, const char* EnteredCode)

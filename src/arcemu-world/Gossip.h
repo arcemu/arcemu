@@ -177,14 +177,6 @@ namespace Arcemu
 				void Send(Player* plr, uint32 size) const;
 
 				//************************************
-				// Purpose : Creates a stackworldpacket SMSG_GOSSIP_MESSAGE, fills it and sends it to the specified player.
-				// Parameter:	Player * - player to send to.
-				// Return : void
-				//************************************
-				template<uint32>
-				void StackSend(Player*) const;
-
-				//************************************
 				// Purpose :	Sends a menu with just the text id and no options.
 				// Parameter:	uint64 - the creature guid.
 				// Parameter:	size_t - the text id.
