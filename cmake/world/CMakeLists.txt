@@ -67,6 +67,7 @@ SET(sources
 	LocalizationMgr.cpp 
 	LogonCommClient.cpp 
 	LogonCommHandler.cpp 
+	MailHandler.cpp
 	MailSystem.cpp 
 	MapCell.cpp 
 	Map.cpp 
