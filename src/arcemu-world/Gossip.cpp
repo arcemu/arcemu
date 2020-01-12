@@ -19,6 +19,7 @@
 
 #include "StdAfx.h"
 #include "PlayerCommands.h"
+#include "PlayerMessenger.h"
 
 using namespace Arcemu;
 
@@ -125,21 +126,21 @@ void Gossip::Menu::Send(Player* plr) const
 {
 	WorldPacket packet(SMSG_GOSSIP_MESSAGE, 512);
 	packet << *this;
-	plr->GetSession()->SendPacket(&packet);
+	PlayerMessenger::sendMessage(plr, packet);
 }
 
 void Gossip::Menu::Send(Player* plr, uint32 size) const
 {
 	WorldPacket packet(SMSG_GOSSIP_MESSAGE, size);
 	packet << *this;
-	plr->GetSession()->SendPacket(&packet);
+	PlayerMessenger::sendMessage(plr, packet);
 }
 
 void Gossip::Menu::SendSimpleMenu(uint64 guid, size_t txt_id, Player* plr)
 {
 	WorldPacket packet(SMSG_GOSSIP_MESSAGE, 32);
 	packet << guid << uint32(0) << uint32(txt_id) << uint32(0) << uint32(0);
-	plr->GetSession()->SendPacket(&packet);
+	PlayerMessenger::sendMessage(plr, packet);
 }
 
 void Gossip::Menu::SendQuickMenu(uint64 guid, size_t textid, Player* Plr, size_t itemid, uint8 itemicon, const char* itemtext, size_t requiredmoney/*=0*/, const char* moneytext/*=NULL*/, uint8 extra/*=0*/)
@@ -153,12 +154,13 @@ void Gossip::Menu::SendQuickMenu(uint64 guid, size_t textid, Player* Plr, size_t
 	else
 		packet << uint8(0);
 	packet << uint32(0);
-	Plr->GetSession()->SendPacket(&packet);
+	PlayerMessenger::sendMessage(Plr, packet);
 }
 
 void Gossip::Menu::Complete(Player* plr)
 {
-	plr->GetSession()->OutPacket(SMSG_GOSSIP_COMPLETE, 0, NULL);
+	WorldPacket data(SMSG_GOSSIP_COMPLETE,0);
+	PlayerMessenger::sendMessage(plr, data);
 }
 
 
