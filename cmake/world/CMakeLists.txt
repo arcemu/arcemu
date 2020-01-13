@@ -67,6 +67,8 @@ SET(sources
 	LocalizationMgr.cpp 
 	LogonCommClient.cpp 
 	LogonCommHandler.cpp 
+	MailMessage.cpp
+	MailBox.cpp
 	MailHandler.cpp
 	MailSystem.cpp 
 	MapCell.cpp 
@@ -219,6 +221,8 @@ SET( headers
 	LogonCommHandler.h
 	LootMgr.h
 	Mage.h
+	MailMessage.h
+	MailBox.h
 	MailSystem.h
 	MainServerDefines.h
 	Map.h

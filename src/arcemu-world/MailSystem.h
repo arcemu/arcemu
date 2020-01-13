@@ -86,56 +86,6 @@ enum MailCheckMask
 
 #define MAIL_MAX_ITEM_SLOT 12
 
-struct MailMessage
-{
-	uint32 message_id;
-	uint32 message_type;
-	uint64 player_guid;
-	uint64 sender_guid;
-	string subject;
-	string body;
-	uint32 money;
-	vector<uint32> items;
-	uint32 cod;
-	uint32 stationery;
-	uint32 expire_time;
-	uint32 delivery_time;
-	uint32 checked_flag;
-	bool deleted_flag;
-
-	bool AddMessageDataToPacket(WorldPacket & data);
-};
-
-typedef map<uint32, MailMessage> MessageMap;
-
-class Mailbox
-{
-	protected:
-		uint64 owner;
-		MessageMap Messages;
-
-	public:
-		Mailbox(uint64 owner_) : owner(owner_) {}
-
-		void AddMessage(MailMessage* Message);
-		void DeleteMessage(uint32 MessageId, bool sql);
-		MailMessage* GetMessage(uint32 message_id)
-		{
-			MessageMap::iterator iter = Messages.find(message_id);
-			if(iter == Messages.end())
-				return NULL;
-			return &(iter->second);
-		}
-
-		WorldPacket* BuildMailboxListingPacket();
-		void CleanupExpiredMessages();
-		ARCEMU_INLINE size_t MessageCount() { return Messages.size(); }
-		void FillTimePacket(WorldPacket & data);
-		ARCEMU_INLINE uint64 GetOwner() { return owner; }
-		void Load(QueryResult* result);
-};
-
-
 class SERVER_DECL MailSystem : public Singleton<MailSystem>, public EventableObject
 {
 	public:

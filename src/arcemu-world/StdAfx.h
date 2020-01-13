@@ -175,6 +175,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "AuctionHouse.h"
 #include "AuctionMgr.h"
 #include "LfgMgr.h"
+#include "MailMessage.h"
+#include "MailBox.h"
 #include "MailSystem.h"
 #include "Map.h"
 #include "MapCell.h"
