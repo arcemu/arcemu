@@ -23,7 +23,7 @@
 
 class Object;
 
-class Messenger
+class SERVER_DECL Messenger
 {
 public:
 	/// Log miss, block, etc for spell based attacks in the client

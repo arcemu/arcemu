@@ -22,7 +22,7 @@
 #define _PLAYERCOMMANDS_H
 
 /// Gets the talent reset cost calculated and gets the talent reset confirmation dialog message sent
-class SendTalentResetConfirmDialogCommand
+class SERVER_DECL SendTalentResetConfirmDialogCommand
 {
 private:
 	Player* player;
@@ -35,7 +35,7 @@ public:
 
 
 /// Resets the player's active pet's talents.
-class ResetPetTalentsCommand
+class SERVER_DECL ResetPetTalentsCommand
 {
 private:
 	Player* player;

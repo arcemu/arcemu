@@ -21,7 +21,7 @@
 #ifndef _CREATURECOMMANDS_H
 #define _CREATURECOMMANDS_H
 
-class CreatureSendChatMessageToPlayerCommand
+class SERVER_DECL CreatureSendChatMessageToPlayerCommand
 {
 private:
 	Creature *creature;
