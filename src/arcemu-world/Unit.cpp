@@ -1149,6 +1149,15 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 
 		int dmg_overwrite[3] = { 0, 0, 0 };
 
+		// Set the value for spells triggered by SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE
+		for(int i = 0; i < 3; i++)
+		{
+			if(ospinfo->EffectApplyAuraName[i] == SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE)
+			{
+				dmg_overwrite[i] = ospinfo->EffectBasePoints[i] + 1;
+				spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, dmg_overwrite, weapon_damage_type);
+			}
+		}
 		// give spell_proc a chance to handle the effect
 		if(spell_proc->DoEffect(victim, CastingSpell, flag, dmg, abs, dmg_overwrite, weapon_damage_type))
 			continue;
@@ -1170,23 +1179,6 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 			uint32 talentlevel = 0;
 			switch(origId)
 			{
-					//mace specialization
-				case 12284:
-					{talentlevel = 1;}
-					break;
-				case 12701:
-					{talentlevel = 2;}
-					break;
-				case 12702:
-					{talentlevel = 3;}
-					break;
-				case 12703:
-					{talentlevel = 4;}
-					break;
-				case 12704:
-					{talentlevel = 5;}
-					break;
-
 					//Unbridled Wrath
 				case 12332:
 					{talentlevel = 1;}
