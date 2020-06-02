@@ -274,6 +274,7 @@ enum MOD_TYPES
     SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE = 227, // Used by Mind Flay etc
     SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN = 229,
     SPELL_AURA_INCREASE_MAX_HEALTH = 230, //Used by Commanding Shout
+	SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE = 231,
     SPELL_AURA_MECHANIC_DURATION_MOD = 232,
     SPELL_AURA_MOD_HEALING_BY_AP = 237,
     SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP = 238,
@@ -585,6 +586,7 @@ class SERVER_DECL Aura : public EventableObject
 		void SpellAuraModDmgImmunity(bool apply);
 		void SpellAuraModDispelImmunity(bool apply);
 		void SpellAuraProcTriggerSpell(bool apply);
+		void SpellAuraProcTriggerSpellWithValue(bool apply);
 		void SpellAuraProcTriggerDamage(bool apply);
 		void SpellAuraTrackCreatures(bool apply);
 		void SpellAuraTrackResources(bool apply);
