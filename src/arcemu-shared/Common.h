@@ -259,6 +259,12 @@ enum MsTimeVariables
 #endif
 #endif
 
+#ifndef HAS_CXX0X
+#if COMPILER == COMPILER_MICROSOFT && _MSC_VER > 1600
+#define HAS_CXX0X
+#endif
+#endif
+
 /*
 	TEST SUPPORT FOR TR1
 	*/
