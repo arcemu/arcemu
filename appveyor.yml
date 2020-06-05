@@ -1,4 +1,15 @@
-image: Visual Studio 2013
+environment:
+  matrix:  
+  - job_name: Arcemu VS2010 build
+    appveyor_build_worker_image: Visual Studio 2013
+    CMAKE_GENERATOR_NAME: Visual Studio 10 2010
+    
+  - job_name: Arcemu VS2017 build
+    appveyor_build_worker_image: Visual Studio 2017
+    CMAKE_GENERATOR_NAME: Visual Studio 15 2017
+    
+matrix:
+  fast_finish: true
 
 build_script:
 - cmd: >-
@@ -6,6 +17,6 @@ build_script:
      
      cd build
      
-     cmake -G "Visual Studio 10 2010" -DCMAKE_BUILD_TYPE=Debug ..\cmake
+     cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=Debug ..\cmake
      
      msbuild Arcemu.sln
