@@ -31,11 +31,12 @@ You can get yourself a quick and dirty installation by using Vagrant. It will se
 * Issue the command 'vagrant up', and wait until the process finishes.
 
 Vagrant will download an OS for the virtual machine and then build and install Arcemu, this process will take a while.
-After it is done, you can log in to the box using SSH.
+After it is done, you can log in to the box, and switch to the arcemu user using the following commands:
 
-ssh -p 2222 localhost
-
-The username and password should be both arcemu (in lowercase).
+```
+vagrant ssh
+sudo su - arcemu
+```
 
 ## Links
 
