@@ -104,7 +104,7 @@ class SERVER_DECL Instance
 		void DeleteFromDB();
 };
 
-typedef HM_NAMESPACE::hash_map<uint32, Instance*> InstanceMap;
+typedef HM_NAMESPACE::HM_HASH_MAP<uint32, Instance*> InstanceMap;
 
 class SERVER_DECL InstanceMgr
 {

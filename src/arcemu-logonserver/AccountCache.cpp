@@ -68,8 +68,8 @@ void AccountMgr::ReloadAccounts(bool silent)
 
 	// check for any purged/deleted accounts
 #ifdef WIN32
-	HM_NAMESPACE::hash_map<string, Account*>::iterator itr = AccountDatabase.begin();
-	HM_NAMESPACE::hash_map<string, Account*>::iterator it2;
+	HM_NAMESPACE::HM_HASH_MAP<string, Account*>::iterator itr = AccountDatabase.begin();
+	HM_NAMESPACE::HM_HASH_MAP<string, Account*>::iterator it2;
 #else
 	std::map<string, Account*>::iterator itr = AccountDatabase.begin();
 	std::map<string, Account*>::iterator it2;
@@ -496,7 +496,7 @@ void InformationCore::SendRealms(AuthSocket* Socket)
 
 	// loop realms :/
 	map<uint32, Realm*>::iterator itr = m_realms.begin();
-	HM_NAMESPACE::hash_map<uint32, uint8>::iterator it;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, uint8>::iterator it;
 	for(; itr != m_realms.end(); ++itr)
 	{
 //		data << uint8(itr->second->Icon);

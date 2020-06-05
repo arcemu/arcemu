@@ -155,7 +155,7 @@ struct tempy
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-typedef HM_NAMESPACE::hash_map<uint32, StoreLootList > LootStore;
+typedef HM_NAMESPACE::HM_HASH_MAP<uint32, StoreLootList > LootStore;
 
 #define PARTY_LOOT_FFA	  0
 #define PARTY_LOOT_MASTER   2

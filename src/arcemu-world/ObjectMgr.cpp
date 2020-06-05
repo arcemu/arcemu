@@ -100,7 +100,7 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Waypoint Cache...");
-	for(HM_NAMESPACE::hash_map<uint32, WayPointMap*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, WayPointMap*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
 	{
 		for(WayPointMap::iterator i2 = i->second->begin(); i2 != i->second->end(); ++i2)
 			if((*i2))
@@ -110,7 +110,7 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting timed emote Cache...");
-	for(HM_NAMESPACE::hash_map<uint32, TimedEmoteList*>::iterator i = m_timedemotes.begin(); i != m_timedemotes.end(); ++i)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, TimedEmoteList*>::iterator i = m_timedemotes.begin(); i != m_timedemotes.end(); ++i)
 	{
 		for(TimedEmoteList::iterator i2 = i->second->begin(); i2 != i->second->end(); ++i2)
 			if((*i2))
@@ -142,7 +142,7 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("ObjectMgr", "Deleting Charters...");
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); ++itr)
 		{
 			delete itr->second;
 		}
@@ -162,7 +162,7 @@ ObjectMgr::~ObjectMgr()
 		delete mod;
 	}
 
-	for(HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); ++itr)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); ++itr)
 	{
 		InstanceReputationModifier* mod = itr->second;
 		mod->mods.clear();
@@ -190,7 +190,7 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
-	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
 	{
 		itr->second->m_Group = NULL;
 		free(itr->second->name);
@@ -214,7 +214,7 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Arena Teams...");
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
 	{
 		delete(*itr).second;
 	}
@@ -297,7 +297,7 @@ Group* ObjectMgr::GetGroupById(uint32 id)
 void ObjectMgr::DeletePlayerInfo(uint32 guid)
 {
 	PlayerInfo* pl;
-	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, PlayerInfo*>::iterator i;
 	PlayerNameStringIndexMap::iterator i2;
 	playernamelock.AcquireWriteLock();
 	i = m_playersinfo.find(guid);
@@ -336,7 +336,7 @@ void ObjectMgr::DeletePlayerInfo(uint32 guid)
 
 PlayerInfo* ObjectMgr::GetPlayerInfo(uint32 guid)
 {
-	HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator i;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, PlayerInfo*>::iterator i;
 	PlayerInfo* rv;
 	playernamelock.AcquireReadLock();
 	i = m_playersinfo.find(guid);
@@ -1357,7 +1357,7 @@ GM_Ticket* ObjectMgr::GetGMTicket(uint64 ticketGuid)
 
 void ObjectMgr::LoadVendors()
 {
-	HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>*>::const_iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, std::vector<CreatureItem>*>::const_iterator itr;
 	std::vector<CreatureItem> *items;
 	CreatureItem itm;
 
@@ -2405,7 +2405,7 @@ void ObjectMgr::LoadCreatureTimedEmotes()
 		te->msg_lang = static_cast<uint8>(fields[6].GetUInt32());
 		te->expire_after = fields[7].GetUInt32();
 
-		HM_NAMESPACE::hash_map<uint32, TimedEmoteList*>::const_iterator i;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, TimedEmoteList*>::const_iterator i;
 		uint32 spawnid = fields[0].GetUInt32();
 		i = m_timedemotes.find(spawnid);
 		if(i == m_timedemotes.end())
@@ -2427,7 +2427,7 @@ void ObjectMgr::LoadCreatureTimedEmotes()
 
 TimedEmoteList* ObjectMgr::GetTimedEmoteList(uint32 spawnid)
 {
-	HM_NAMESPACE::hash_map<uint32, TimedEmoteList*>::const_iterator i;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, TimedEmoteList*>::const_iterator i;
 	i = m_timedemotes.find(spawnid);
 	if(i != m_timedemotes.end())
 	{
@@ -2459,7 +2459,7 @@ void ObjectMgr::LoadCreatureWaypoints()
 		wp->forwardskinid = fields[11].GetUInt32();
 		wp->backwardskinid = fields[12].GetUInt32();
 
-		HM_NAMESPACE::hash_map<uint32, WayPointMap*>::const_iterator i;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, WayPointMap*>::const_iterator i;
 		uint32 spawnid = fields[0].GetUInt32();
 		i = m_waypoints.find(spawnid);
 		if(i == m_waypoints.end())
@@ -2486,7 +2486,7 @@ void ObjectMgr::LoadCreatureWaypoints()
 
 WayPointMap* ObjectMgr::GetWayPointMap(uint32 spawnid)
 {
-	HM_NAMESPACE::hash_map<uint32, WayPointMap*>::const_iterator i;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, WayPointMap*>::const_iterator i;
 	i = m_waypoints.find(spawnid);
 	if(i != m_waypoints.end())
 	{
@@ -2606,7 +2606,7 @@ Transporter* ObjectMgr::GetTransporter(uint32 guid)
 {
 	Transporter* rv;
 	_TransportLock.Acquire();
-	HM_NAMESPACE::hash_map<uint32, Transporter*>::const_iterator itr = mTransports.find(guid);
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Transporter*>::const_iterator itr = mTransports.find(guid);
 	rv = (itr != mTransports.end()) ? itr->second : 0;
 	_TransportLock.Release();
 	return rv;
@@ -2623,7 +2623,7 @@ Transporter* ObjectMgr::GetTransporterByEntry(uint32 entry)
 {
 	Transporter* rv = 0;
 	_TransportLock.Acquire();
-	HM_NAMESPACE::hash_map<uint32, Transporter*>::iterator itr = mTransports.begin();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Transporter*>::iterator itr = mTransports.begin();
 	for(; itr != mTransports.end(); ++itr)
 	{
 		if(itr->second->GetEntry() == entry)
@@ -2656,7 +2656,7 @@ void ObjectMgr::LoadGuildCharters()
 Charter* ObjectMgr::GetCharter(uint32 CharterId, CharterTypes Type)
 {
 	Charter* rv;
-	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Charter*>::iterator itr;
 	m_charterLock.AcquireReadLock();
 	itr = m_charters[Type].find(CharterId);
 	rv = (itr == m_charters[Type].end()) ? 0 : itr->second;
@@ -2795,7 +2795,7 @@ Charter* ObjectMgr::GetCharterByItemGuid(uint64 guid)
 	m_charterLock.AcquireReadLock();
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
-		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
+		HM_NAMESPACE::HM_HASH_MAP<uint32, Charter*>::iterator itr = m_charters[i].begin();
 		for(; itr != m_charters[i].end(); ++itr)
 		{
 			if(itr->second->ItemGuid == guid)
@@ -2812,7 +2812,7 @@ Charter* ObjectMgr::GetCharterByItemGuid(uint64 guid)
 Charter* ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 {
 	m_charterLock.AcquireReadLock();
-	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[type].begin();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Charter*>::iterator itr = m_charters[type].begin();
 	for(; itr != m_charters[type].end(); ++itr)
 	{
 		if(playerguid == itr->second->LeaderGuid)
@@ -2838,7 +2838,7 @@ Charter* ObjectMgr::GetCharterByName(string & charter_name, CharterTypes Type)
 {
 	Charter* rv = 0;
 	m_charterLock.AcquireReadLock();
-	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[Type].begin();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Charter*>::iterator itr = m_charters[Type].begin();
 	for(; itr != m_charters[Type].end(); ++itr)
 	{
 		if(itr->second->GuildName == charter_name)
@@ -3016,7 +3016,7 @@ void ObjectMgr::LoadInstanceReputationModifiers()
 		mod.faction[0] = fields[5].GetUInt32();
 		mod.faction[1] = fields[6].GetUInt32();
 
-		HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*>::iterator itr = m_reputation_instance.find(mod.mapid);
+		HM_NAMESPACE::HM_HASH_MAP<uint32, InstanceReputationModifier*>::iterator itr = m_reputation_instance.find(mod.mapid);
 		if(itr == m_reputation_instance.end())
 		{
 			InstanceReputationModifier* m = new InstanceReputationModifier;
@@ -3040,7 +3040,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player* pPlayer, Unit* pVictim
 	if(!pVictim->IsCreature())
 		return false;
 
-	HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*>::iterator itr = m_reputation_instance.find(pVictim->GetMapId());
+	HM_NAMESPACE::HM_HASH_MAP<uint32, InstanceReputationModifier*>::iterator itr = m_reputation_instance.find(pVictim->GetMapId());
 	if(itr == m_reputation_instance.end())
 		return false;
 
@@ -3152,7 +3152,7 @@ void ObjectMgr::LoadArenaTeams()
 ArenaTeam* ObjectMgr::GetArenaTeamByGuid(uint32 guid, uint32 Type)
 {
 	m_arenaTeamLock.Acquire();
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[Type].begin(); itr != m_arenaTeamMap[Type].end(); ++itr)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[Type].begin(); itr != m_arenaTeamMap[Type].end(); ++itr)
 	{
 		if(itr->second->HasMember(guid))
 		{
@@ -3166,7 +3166,7 @@ ArenaTeam* ObjectMgr::GetArenaTeamByGuid(uint32 guid, uint32 Type)
 
 ArenaTeam* ObjectMgr::GetArenaTeamById(uint32 id)
 {
-	HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr;
 	m_arenaTeamLock.Acquire();
 	itr = m_arenaTeams.find(id);
 	m_arenaTeamLock.Release();
@@ -3176,7 +3176,7 @@ ArenaTeam* ObjectMgr::GetArenaTeamById(uint32 id)
 ArenaTeam* ObjectMgr::GetArenaTeamByName(string & name, uint32 Type)
 {
 	m_arenaTeamLock.Acquire();
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
+	for(HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
 	{
 		if(!strnicmp(itr->second->m_name.c_str(), name.c_str(), name.size()))
 		{
@@ -3224,7 +3224,7 @@ void ObjectMgr::UpdateArenaTeamRankings()
 	{
 		vector<ArenaTeam*> ranking;
 
-		for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
 			ranking.push_back(itr->second);
 
 		std::sort(ranking.begin(), ranking.end(), ArenaSorter());
@@ -3247,7 +3247,7 @@ void ObjectMgr::ResetArenaTeamRatings()
 	m_arenaTeamLock.Acquire();
 	for(uint32 i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
 		{
 			ArenaTeam* team = itr->second;
 			if(team)
@@ -3280,7 +3280,7 @@ void ObjectMgr::UpdateArenaTeamWeekly()
 	m_arenaTeamLock.Acquire();
 	for(uint32 i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
 		{
 			ArenaTeam* team = itr->second;
 			if(team)

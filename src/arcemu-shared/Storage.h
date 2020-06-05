@@ -254,7 +254,7 @@ class SERVER_DECL HashMapStorageContainer
 		void InitPool(uint32 cnt) { _pool.Init(cnt); }
 #endif
 
-		typename HM_NAMESPACE::hash_map<uint32, T*> _map;
+		typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*> _map;
 
 		/** Returns an iterator currently referencing the start of the container
 		 */
@@ -264,7 +264,7 @@ class SERVER_DECL HashMapStorageContainer
 		 */
 		~HashMapStorageContainer()
 		{
-			for(typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin(); itr != _map.end(); ++itr)
+			for(typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*>::iterator itr = _map.begin(); itr != _map.end(); ++itr)
 				delete itr->second;
 		}
 
@@ -307,7 +307,7 @@ class SERVER_DECL HashMapStorageContainer
 		 */
 		bool DeallocateEntry(uint32 Entry)
 		{
-			typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.find(Entry);
+			typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*>::iterator itr = _map.find(Entry);
 			if(itr == _map.end())
 				return false;
 
@@ -321,7 +321,7 @@ class SERVER_DECL HashMapStorageContainer
 
 		T* LookupEntry(uint32 Entry)
 		{
-			typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.find(Entry);
+			typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*>::iterator itr = _map.find(Entry);
 			if(itr == _map.end())
 				return reinterpret_cast<T*>(0);
 			return itr->second;
@@ -332,7 +332,7 @@ class SERVER_DECL HashMapStorageContainer
 		 */
 		bool SetEntry(uint32 Entry, T* Pointer)
 		{
-			typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.find(Entry);
+			typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*>::iterator itr = _map.find(Entry);
 			if(itr == _map.end())
 			{
 				_map.insert(make_pair(Entry, Pointer));
@@ -360,7 +360,7 @@ class SERVER_DECL HashMapStorageContainer
 		 */
 		void Clear()
 		{
-			typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin();
+			typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*>::iterator itr = _map.begin();
 			for(; itr != _map.end(); ++itr)
 				delete itr->second;
 			_map.clear();
@@ -422,7 +422,7 @@ template<class T>
 class SERVER_DECL HashMapStorageIterator : public StorageContainerIterator<T>
 {
 		HashMapStorageContainer<T> * Source;
-		typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr;
+		typename HM_NAMESPACE::HM_HASH_MAP<uint32, T*>::iterator itr;
 	public:
 
 		/** Constructor

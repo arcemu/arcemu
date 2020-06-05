@@ -109,7 +109,7 @@ class SERVER_DECL WorldStatesHandler{
 		void setObserver( WorldStatesObserver *observer ){ this->observer = observer; }
 
 	private:
-		HM_NAMESPACE::hash_map< uint32, HM_NAMESPACE::hash_map< uint32, uint32 > > worldstates;
+		HM_NAMESPACE::HM_HASH_MAP< uint32, HM_NAMESPACE::HM_HASH_MAP< uint32, uint32 > > worldstates;
 		uint32 map;
 		WorldStatesObserver *observer;
 };

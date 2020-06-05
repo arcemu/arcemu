@@ -2219,7 +2219,7 @@ void World::UpdateTotalTraffic()
 	WorldSocket* s = NULL;
 
 	objmgr._playerslock.AcquireReadLock();
-	HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Player*>::const_iterator itr;
 
 	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{

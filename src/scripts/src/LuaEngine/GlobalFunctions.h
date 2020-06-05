@@ -294,7 +294,7 @@ namespace luaGlobalFunctions
 		lua_newtable(L);
 		objmgr._playerslock.AcquireReadLock();
 
-		HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, Player*>::const_iterator itr;
 		for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 		{
 			count++,
@@ -381,7 +381,7 @@ namespace luaGlobalFunctions
 		lua_newtable(L);
 		uint32 zoneid = luaL_checkint(L, 1);
 		objmgr._playerslock.AcquireReadLock();
-		HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, Player*>::const_iterator itr;
 		for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 		{
 			if((*itr).second->GetZoneId() == zoneid)

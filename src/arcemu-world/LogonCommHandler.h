@@ -54,7 +54,7 @@ enum RealmType
 class LogonCommHandler : public Singleton<LogonCommHandler>
 {
 #ifdef WIN32
-		typedef HM_NAMESPACE::hash_map<string, string> ForcedPermissionMap;
+		typedef HM_NAMESPACE::HM_HASH_MAP<string, string> ForcedPermissionMap;
 #else
 		typedef map<string, string> ForcedPermissionMap;
 #endif

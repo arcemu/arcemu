@@ -112,7 +112,7 @@ class AccountMgr : public Singleton < AccountMgr >
 		{
 
 #ifdef WIN32
-			for(HM_NAMESPACE::hash_map<string, Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
+			for(HM_NAMESPACE::HM_HASH_MAP<string, Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
 #else
 			for(map<string, Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
 #endif
@@ -129,7 +129,7 @@ class AccountMgr : public Singleton < AccountMgr >
 			Account* pAccount = NULL;
 			// this should already be uppercase!
 #ifdef WIN32
-			HM_NAMESPACE::hash_map<string, Account*>::iterator itr = AccountDatabase.find(Name);
+			HM_NAMESPACE::HM_HASH_MAP<string, Account*>::iterator itr = AccountDatabase.find(Name);
 #else
 			map<string, Account*>::iterator itr = AccountDatabase.find(Name);
 #endif
@@ -152,7 +152,7 @@ class AccountMgr : public Singleton < AccountMgr >
 		{
 			// this should already be uppercase!
 #ifdef WIN32
-			HM_NAMESPACE::hash_map<string, Account*>::iterator itr = AccountDatabase.find(Name);
+			HM_NAMESPACE::HM_HASH_MAP<string, Account*>::iterator itr = AccountDatabase.find(Name);
 #else
 			map<string, Account*>::iterator itr = AccountDatabase.find(Name);
 #endif
@@ -162,7 +162,7 @@ class AccountMgr : public Singleton < AccountMgr >
 		}
 
 #ifdef WIN32
-		HM_NAMESPACE::hash_map<string, Account*> AccountDatabase;
+		HM_NAMESPACE::HM_HASH_MAP<string, Account*> AccountDatabase;
 #else
 		std::map<string, Account*> AccountDatabase;
 #endif
@@ -180,7 +180,7 @@ typedef struct
 	uint32 TimeZone;
 	float Population;
 	uint8 Lock;
-	HM_NAMESPACE::hash_map<uint32, uint8> CharacterMap;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, uint8> CharacterMap;
 } Realm;
 
 class AuthSocket;

@@ -680,11 +680,11 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 	private:
 		EventableObjectHolder* eventholder;
 		//! Timers
-		typedef HM_NAMESPACE::hash_map<uint32, WorldSession*> SessionMap;
+		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, WorldSession*> SessionMap;
 		SessionMap m_sessions;
 		RWLock m_sessionlock;
 
-		typedef HM_NAMESPACE::hash_map<uint32, AreaTrigger*> AreaTriggerMap;
+		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, AreaTrigger*> AreaTriggerMap;
 		AreaTriggerMap m_AreaTrigger;
 
 		Arcemu::PerformanceCounter perfcounter;

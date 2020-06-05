@@ -386,7 +386,7 @@ void TaxiMgr::_LoadTaxiPaths()
 
 TaxiPath* TaxiMgr::GetTaxiPath(uint32 path)
 {
-	HM_NAMESPACE::hash_map<uint32, TaxiPath*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, TaxiPath*>::iterator itr;
 
 	itr = this->m_taxiPaths.find(path);
 
@@ -398,7 +398,7 @@ TaxiPath* TaxiMgr::GetTaxiPath(uint32 path)
 
 TaxiPath* TaxiMgr::GetTaxiPath(uint32 from, uint32 to)
 {
-	HM_NAMESPACE::hash_map<uint32, TaxiPath*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, TaxiPath*>::iterator itr;
 
 	for(itr = m_taxiPaths.begin(); itr != m_taxiPaths.end(); itr++)
 		if((itr->second->to == to) && (itr->second->from == from))
@@ -409,7 +409,7 @@ TaxiPath* TaxiMgr::GetTaxiPath(uint32 from, uint32 to)
 
 TaxiNode* TaxiMgr::GetTaxiNode(uint32 node)
 {
-	HM_NAMESPACE::hash_map<uint32, TaxiNode*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, TaxiNode*>::iterator itr;
 
 	itr = this->m_taxiNodes.find(node);
 
@@ -425,7 +425,7 @@ uint32 TaxiMgr::GetNearestTaxiNode(float x, float y, float z, uint32 mapid)
 	float distance = -1;
 	float nx, ny, nz, nd;
 
-	HM_NAMESPACE::hash_map<uint32, TaxiNode*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, TaxiNode*>::iterator itr;
 
 	for(itr = m_taxiNodes.begin(); itr != m_taxiNodes.end(); itr++)
 	{
@@ -448,7 +448,7 @@ uint32 TaxiMgr::GetNearestTaxiNode(float x, float y, float z, uint32 mapid)
 
 bool TaxiMgr::GetGlobalTaxiNodeMask(uint32 curloc, uint32* Mask)
 {
-	HM_NAMESPACE::hash_map<uint32, TaxiPath*>::iterator itr;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, TaxiPath*>::iterator itr;
 	uint8 field;
 
 	for(itr = m_taxiPaths.begin(); itr != m_taxiPaths.end(); itr++)

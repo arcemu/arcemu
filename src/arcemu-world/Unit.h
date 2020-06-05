@@ -59,7 +59,7 @@ struct CreatureInfo;
 struct FactionTemplateDBC;
 struct FactionDBC;
 
-typedef HM_NAMESPACE::hash_map<uint32, uint64> UniqueAuraTargetMap;
+typedef HM_NAMESPACE::HM_HASH_MAP<uint32, uint64> UniqueAuraTargetMap;
 
 ////////////////////////////////////////////////////////////////
 //class AuraCondition

@@ -272,14 +272,15 @@ enum MsTimeVariables
 #include <unordered_map>
 #include <unordered_set>
 #define HM_NAMESPACE ::std
-#define hash_map unordered_map
-#define hash_multimap unordered_multimap
-#define hash_set unordered_set
-#define hash_multiset tr1::unordered_multiset
+#define HM_HASH_MAP unordered_map
+#define HM_HASH_SET unordered_set
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #include <ext/hash_map>
 #include <ext/hash_set>
 #define HM_NAMESPACE __gnu_cxx
+#define HM_HASH_MAP hash_map
+#define HM_HASH_SET hash_set
+
 namespace __gnu_cxx
 {
 	template<> struct hash<unsigned long long>
@@ -301,6 +302,8 @@ namespace __gnu_cxx
 };
 #else
 #define HM_NAMESPACE ::stdext
+#define HM_HASH_MAP hash_map
+#define HM_HASH_SET hash_set
 #include <hash_map>
 #include <hash_set>
 #endif

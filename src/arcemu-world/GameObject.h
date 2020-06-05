@@ -69,8 +69,8 @@ enum GAMEOBJECT_OVERRIDES //by VLack
     //Later other types might folow, or the upper bytes might get used for the AREAWIDE option in the overrides variable...
 };
 
-typedef HM_NAMESPACE::hash_map<Quest*, uint32 > GameObjectGOMap;
-typedef HM_NAMESPACE::hash_map<Quest*, std::map<uint32, uint32> > GameObjectItemMap;
+typedef HM_NAMESPACE::HM_HASH_MAP<Quest*, uint32 > GameObjectGOMap;
+typedef HM_NAMESPACE::HM_HASH_MAP<Quest*, std::map<uint32, uint32> > GameObjectItemMap;
 
 #pragma pack(push,1)
 struct GameObjectInfo

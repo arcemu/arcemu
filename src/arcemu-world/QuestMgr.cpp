@@ -1417,21 +1417,21 @@ void QuestMgr::LoadGOQuests(GameObject* go)
 
 QuestRelationList* QuestMgr::GetGOQuestList(uint32 entryid)
 {
-	HM_NAMESPACE::hash_map<uint32, QuestRelationList* > &olist = _GetList<GameObject>();
-	HM_NAMESPACE::hash_map<uint32, QuestRelationList* >::iterator itr = olist.find(entryid);
+	HM_NAMESPACE::HM_HASH_MAP<uint32, QuestRelationList* > &olist = _GetList<GameObject>();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, QuestRelationList* >::iterator itr = olist.find(entryid);
 	return (itr == olist.end()) ? 0 : itr->second;
 }
 
 QuestRelationList* QuestMgr::GetCreatureQuestList(uint32 entryid)
 {
-	HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* > &olist = _GetList<Creature>();
-	HM_NAMESPACE::hash_map<uint32, QuestRelationList* >::iterator itr = olist.find(entryid);
+	HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestRelation*>* > &olist = _GetList<Creature>();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, QuestRelationList* >::iterator itr = olist.find(entryid);
 	return (itr == olist.end()) ? 0 : itr->second;
 }
 
 template <class T> void QuestMgr::_AddQuest(uint32 entryid, Quest* qst, uint8 type)
 {
-	HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* > &olist = _GetList<T>();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestRelation*>* > &olist = _GetList<T>();
 	std::list<QuestRelation*>* nlist;
 	QuestRelation* ptr = NULL;
 
@@ -1439,7 +1439,7 @@ template <class T> void QuestMgr::_AddQuest(uint32 entryid, Quest* qst, uint8 ty
 	{
 		nlist = new std::list<QuestRelation*>;
 
-		olist.insert(HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* >::value_type(entryid, nlist));
+		olist.insert(HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestRelation*>* >::value_type(entryid, nlist));
 	}
 	else
 	{
@@ -1698,7 +1698,7 @@ void QuestMgr::SendQuestLogFull(Player* plyr)
 
 uint32 QuestMgr::GetGameObjectLootQuest(uint32 GO_Entry)
 {
-	HM_NAMESPACE::hash_map<uint32, uint32>::iterator itr = m_ObjectLootQuestList.find(GO_Entry);
+	HM_NAMESPACE::HM_HASH_MAP<uint32, uint32>::iterator itr = m_ObjectLootQuestList.find(GO_Entry);
 	if(itr == m_ObjectLootQuestList.end()) return 0;
 
 	return itr->second;
@@ -1833,10 +1833,10 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 
 QuestMgr::~QuestMgr()
 {
-	HM_NAMESPACE::hash_map<uint32, Quest*>::iterator itr1;
-	HM_NAMESPACE::hash_map<uint32, list<QuestRelation*>* >::iterator itr2;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, Quest*>::iterator itr1;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestRelation*>* >::iterator itr2;
 	list<QuestRelation*>::iterator itr3;
-	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation*>* >::iterator itr4;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestAssociation*>* >::iterator itr4;
 	list<QuestAssociation*>::iterator itr5;
 
 	// clear relations
@@ -2268,7 +2268,7 @@ void QuestMgr::LoadExtraQuestStuff()
 
 void QuestMgr::AddItemQuestAssociation(uint32 itemId, Quest* qst, uint8 item_count)
 {
-	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation*>* > &associationList = GetQuestAssociationList();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestAssociation*>* > &associationList = GetQuestAssociationList();
 	std::list<QuestAssociation*>* tempList;
 	QuestAssociation* ptr = NULL;
 
@@ -2278,7 +2278,7 @@ void QuestMgr::AddItemQuestAssociation(uint32 itemId, Quest* qst, uint8 item_cou
 		// not found. Create a new entry and QuestAssociationList
 		tempList = new std::list<QuestAssociation*>;
 
-		associationList.insert(HM_NAMESPACE::hash_map<uint32, list<QuestAssociation*>* >::value_type(itemId, tempList));
+		associationList.insert(HM_NAMESPACE::HM_HASH_MAP<uint32, list<QuestAssociation*>* >::value_type(itemId, tempList));
 	}
 	else
 	{
@@ -2318,8 +2318,8 @@ void QuestMgr::AddItemQuestAssociation(uint32 itemId, Quest* qst, uint8 item_cou
 
 QuestAssociationList* QuestMgr::GetQuestAssociationListForItemId(uint32 itemId)
 {
-	HM_NAMESPACE::hash_map<uint32, QuestAssociationList* > &associationList = GetQuestAssociationList();
-	HM_NAMESPACE::hash_map<uint32, QuestAssociationList* >::iterator itr = associationList.find(itemId);
+	HM_NAMESPACE::HM_HASH_MAP<uint32, QuestAssociationList* > &associationList = GetQuestAssociationList();
+	HM_NAMESPACE::HM_HASH_MAP<uint32, QuestAssociationList* >::iterator itr = associationList.find(itemId);
 	if(itr == associationList.end())
 	{
 		return 0;

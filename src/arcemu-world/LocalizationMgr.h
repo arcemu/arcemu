@@ -104,22 +104,22 @@ class LocalizationMgr
 		LocalizedWorldMapInfo* 	GetLocalizedWorldMapInfo(uint32 id, uint32 language);
 
 		template<typename T>
-		void CopyHashMap(HM_NAMESPACE::hash_map<uint32, T> * src, HM_NAMESPACE::hash_map<uint32, T> * dest)
+		void CopyHashMap(HM_NAMESPACE::HM_HASH_MAP<uint32, T> * src, HM_NAMESPACE::HM_HASH_MAP<uint32, T> * dest)
 		{
-			for(typename HM_NAMESPACE::hash_map<uint32, T>::iterator itr = src->begin(); itr != src->end(); ++itr)
+			for(typename HM_NAMESPACE::HM_HASH_MAP<uint32, T>::iterator itr = src->begin(); itr != src->end(); ++itr)
 				dest->insert(make_pair(itr->first, itr->second));
 		}
 
 	private:
-		HM_NAMESPACE::hash_map<uint32, LocalizedQuest>				* m_Quests;
-		HM_NAMESPACE::hash_map<uint32, LocalizedItem>				* m_Items;
-		HM_NAMESPACE::hash_map<uint32, LocalizedNpcText>			* m_NpcTexts;
-		HM_NAMESPACE::hash_map<uint32, LocalizedCreatureName>		* m_CreatureNames;
-		HM_NAMESPACE::hash_map<uint32, LocalizedGameObjectName>		* m_GameObjectNames;
-		HM_NAMESPACE::hash_map<uint32, LocalizedItemPage>			* m_ItemPages;
-		HM_NAMESPACE::hash_map<uint32, LocalizedWorldStringTable>			* m_WorldStrings;
-		HM_NAMESPACE::hash_map<uint32, LocalizedWorldBroadCast>			* m_WorldBroadCast;
-		HM_NAMESPACE::hash_map<uint32, LocalizedWorldMapInfo>			* m_WorldMapInfo;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedQuest>				* m_Quests;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedItem>				* m_Items;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedNpcText>			* m_NpcTexts;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedCreatureName>		* m_CreatureNames;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedGameObjectName>		* m_GameObjectNames;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedItemPage>			* m_ItemPages;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldStringTable>			* m_WorldStrings;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldBroadCast>			* m_WorldBroadCast;
+		HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldMapInfo>			* m_WorldMapInfo;
 
 		vector<pair<uint32, uint32> >								  m_languages;
 		bool														  m_disabled;

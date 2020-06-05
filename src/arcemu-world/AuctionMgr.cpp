@@ -68,7 +68,7 @@ void AuctionMgr::LoadAuctionHouses()
 
 AuctionHouse* AuctionMgr::GetAuctionHouse(uint32 Entry)
 {
-	HM_NAMESPACE::hash_map<uint32, AuctionHouse*>::iterator itr = auctionHouseEntryMap.find(Entry);
+	HM_NAMESPACE::HM_HASH_MAP<uint32, AuctionHouse*>::iterator itr = auctionHouseEntryMap.find(Entry);
 	if(itr == auctionHouseEntryMap.end()) return NULL;
 	return itr->second;
 }

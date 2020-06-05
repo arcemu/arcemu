@@ -43,7 +43,7 @@ void LocalizationMgr::Shutdown()
 
 	for(i = 0; i < maxid; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedQuest>::iterator itr = m_Quests[i].begin(); itr != m_Quests[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedQuest>::iterator itr = m_Quests[i].begin(); itr != m_Quests[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Title);
 			SAFE_FREE_PTR(itr->second.Details);
@@ -57,13 +57,13 @@ void LocalizationMgr::Shutdown()
 			SAFE_FREE_PTR(itr->second.ObjectiveText[3]);
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedItem>::iterator itr = m_Items[i].begin(); itr != m_Items[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedItem>::iterator itr = m_Items[i].begin(); itr != m_Items[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Name);
 			SAFE_FREE_PTR(itr->second.Description);
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedNpcText>::iterator itr = m_NpcTexts[i].begin(); itr != m_NpcTexts[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedNpcText>::iterator itr = m_NpcTexts[i].begin(); itr != m_NpcTexts[i].end(); ++itr)
 		{
 			for(j = 0; j < 8; ++j)
 			{
@@ -72,34 +72,34 @@ void LocalizationMgr::Shutdown()
 			}
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedCreatureName>::iterator itr = m_CreatureNames[i].begin(); itr != m_CreatureNames[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedCreatureName>::iterator itr = m_CreatureNames[i].begin(); itr != m_CreatureNames[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Name);
 			SAFE_FREE_PTR(itr->second.SubName);
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedGameObjectName>::iterator itr = m_GameObjectNames[i].begin(); itr != m_GameObjectNames[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedGameObjectName>::iterator itr = m_GameObjectNames[i].begin(); itr != m_GameObjectNames[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Name);
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedItemPage>::iterator itr = m_ItemPages[i].begin(); itr != m_ItemPages[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedItemPage>::iterator itr = m_ItemPages[i].begin(); itr != m_ItemPages[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Text);
 		}
 
 		// (p2wow) world server common message going to be localized.
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedWorldStringTable>::iterator itr = m_WorldStrings[i].begin(); itr != m_WorldStrings[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldStringTable>::iterator itr = m_WorldStrings[i].begin(); itr != m_WorldStrings[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Text);
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedWorldBroadCast>::iterator itr = m_WorldBroadCast[i].begin(); itr != m_WorldBroadCast[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldBroadCast>::iterator itr = m_WorldBroadCast[i].begin(); itr != m_WorldBroadCast[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Text);
 		}
 
-		for(HM_NAMESPACE::hash_map<uint32, LocalizedWorldMapInfo>::iterator itr = m_WorldMapInfo[i].begin(); itr != m_WorldMapInfo[i].end(); ++itr)
+		for(HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldMapInfo>::iterator itr = m_WorldMapInfo[i].begin(); itr != m_WorldMapInfo[i].end(); ++itr)
 		{
 			SAFE_FREE_PTR(itr->second.Text);
 		}
@@ -236,15 +236,15 @@ void LocalizationMgr::Reload(bool first)
 	else
 		m_disabled = false;
 
-	m_CreatureNames = new HM_NAMESPACE::hash_map<uint32, LocalizedCreatureName>[langid];
-	m_GameObjectNames = new HM_NAMESPACE::hash_map<uint32, LocalizedGameObjectName>[langid];
-	m_Quests = new HM_NAMESPACE::hash_map<uint32, LocalizedQuest>[langid];
-	m_NpcTexts = new HM_NAMESPACE::hash_map<uint32, LocalizedNpcText>[langid];
-	m_Items = new HM_NAMESPACE::hash_map<uint32, LocalizedItem>[langid];
-	m_ItemPages = new HM_NAMESPACE::hash_map<uint32, LocalizedItemPage>[langid];
-	m_WorldStrings = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldStringTable>[langid];
-	m_WorldBroadCast = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldBroadCast>[langid];
-	m_WorldMapInfo = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldMapInfo>[langid];
+	m_CreatureNames = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedCreatureName>[langid];
+	m_GameObjectNames = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedGameObjectName>[langid];
+	m_Quests = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedQuest>[langid];
+	m_NpcTexts = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedNpcText>[langid];
+	m_Items = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedItem>[langid];
+	m_ItemPages = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedItemPage>[langid];
+	m_WorldStrings = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldStringTable>[langid];
+	m_WorldBroadCast = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldBroadCast>[langid];
+	m_WorldMapInfo = new HM_NAMESPACE::HM_HASH_MAP<uint32, LocalizedWorldMapInfo>[langid];
 
 	/************************************************************************/
 	/* Creature Names                                                       */
@@ -576,7 +576,7 @@ void LocalizationMgr::Reload(bool first)
 
 #define MAKE_LOOKUP_FUNCTION(t, hm, fn) t * LocalizationMgr::fn(uint32 id, uint32 language) { \
 	if(m_disabled) { return NULL; } \
-	HM_NAMESPACE::hash_map<uint32, t>::iterator itr = hm[language].find(id); \
+	HM_NAMESPACE::HM_HASH_MAP<uint32, t>::iterator itr = hm[language].find(id); \
 	return (itr == hm[language].end()) ? NULL : &itr->second; }
 
 MAKE_LOOKUP_FUNCTION(LocalizedCreatureName, m_CreatureNames, GetLocalizedCreatureName);
