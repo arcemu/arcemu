@@ -290,7 +290,7 @@ BAN_STATUS IPBanner::CalculateBanStatus(in_addr ip_address)
 		itr = itr2;
 		++itr2;
 
-		if(ParseCIDRBan(ip_address.s_addr, itr->Mask, itr->Bytes))
+		if(Arcemu::Shared::Util::ParseCIDRBan(ip_address.s_addr, itr->Mask, itr->Bytes))
 		{
 			// ban hit
 			if(itr->Expire == 0)

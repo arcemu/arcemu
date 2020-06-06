@@ -173,7 +173,7 @@ bool IsServerAllowed(unsigned int IP)
 	m_allowedIpLock.Acquire();
 	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); ++itr)
 	{
-		if(ParseCIDRBan(IP, itr->IP, itr->Bytes))
+		if(Arcemu::Shared::Util::ParseCIDRBan(IP, itr->IP, itr->Bytes))
 		{
 			m_allowedIpLock.Release();
 			return true;
@@ -188,7 +188,7 @@ bool IsServerAllowedMod(unsigned int IP)
 	m_allowedIpLock.Acquire();
 	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); ++itr)
 	{
-		if(ParseCIDRBan(IP, itr->IP, itr->Bytes))
+		if(Arcemu::Shared::Util::ParseCIDRBan(IP, itr->IP, itr->Bytes))
 		{
 			m_allowedIpLock.Release();
 			return true;

@@ -472,59 +472,58 @@ namespace Arcemu
 			for(size_t i = 0; i < str.length(); ++i)
 				str[i] = (char)toupper(str[i]);
 		}
-	}
-}
 
-// returns true if the ip hits the mask, otherwise false
-bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits)
-{
-	// CIDR bans are a compacted form of IP / Submask
-	// So 192.168.1.0/255.255.255.0 would be 192.168.1.0/24
-	// IP's in the 192.168l.1.x range would be hit, others not.
-	unsigned char* source_ip = (unsigned char*)&IP;
-	unsigned char* mask = (unsigned char*)&Mask;
-	int full_bytes = MaskBits / 8;
-	int leftover_bits = MaskBits % 8;
-	//int byte;
-
-	// sanity checks for the data first
-	if(MaskBits > 32)
-		return false;
-
-	// this is the table for comparing leftover bits
-	static const unsigned char leftover_bits_compare[9] =
-	{
-		0x00,			// 00000000
-		0x80,			// 10000000
-		0xC0,			// 11000000
-		0xE0,			// 11100000
-		0xF0,			// 11110000
-		0xF8,			// 11111000
-		0xFC,			// 11111100
-		0xFE,			// 11111110
-		0xFF,			// 11111111 - This one isn't used
-	};
-
-	// if we have any full bytes, compare them with memcpy
-	if(full_bytes > 0)
-	{
-		if(memcmp(source_ip, mask, full_bytes) != 0)
-			return false;
-	}
-
-	// compare the left over bits
-	if(leftover_bits > 0)
-	{
-		if((source_ip[full_bytes] & leftover_bits_compare[leftover_bits]) !=
-		        (mask[full_bytes] & leftover_bits_compare[leftover_bits]))
+		bool Util::ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits)
 		{
-			// one of the bits does not match
-			return false;
+			// CIDR bans are a compacted form of IP / Submask
+			// So 192.168.1.0/255.255.255.0 would be 192.168.1.0/24
+			// IP's in the 192.168l.1.x range would be hit, others not.
+			unsigned char* source_ip = (unsigned char*)&IP;
+			unsigned char* mask = (unsigned char*)&Mask;
+			int full_bytes = MaskBits / 8;
+			int leftover_bits = MaskBits % 8;
+			//int byte;
+
+			// sanity checks for the data first
+			if(MaskBits > 32)
+				return false;
+
+			// this is the table for comparing leftover bits
+			static const unsigned char leftover_bits_compare[9] =
+			{
+				0x00,			// 00000000
+				0x80,			// 10000000
+				0xC0,			// 11000000
+				0xE0,			// 11100000
+				0xF0,			// 11110000
+				0xF8,			// 11111000
+				0xFC,			// 11111100
+				0xFE,			// 11111110
+				0xFF,			// 11111111 - This one isn't used
+			};
+
+			// if we have any full bytes, compare them with memcpy
+			if(full_bytes > 0)
+			{
+				if(memcmp(source_ip, mask, full_bytes) != 0)
+					return false;
+			}
+
+			// compare the left over bits
+			if(leftover_bits > 0)
+			{
+				if((source_ip[full_bytes] & leftover_bits_compare[leftover_bits]) !=
+						(mask[full_bytes] & leftover_bits_compare[leftover_bits]))
+				{
+					// one of the bits does not match
+					return false;
+				}
+			}
+
+			// all of the bits match that were testable
+			return true;
 		}
 	}
-
-	// all of the bits match that were testable
-	return true;
 }
 
 unsigned int MakeIP(const char* str)

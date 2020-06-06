@@ -94,12 +94,13 @@ namespace Arcemu
 			static void arcemu_TOLOWER(std::string & str);
 
 			static void arcemu_TOUPPER(std::string & str);
+
+			// returns true if the ip hits the mask, otherwise false
+			static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
 		};
 	}
 }
 
-bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
-			
 unsigned int MakeIP(const char* str);
 
 
