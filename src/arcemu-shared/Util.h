@@ -105,4 +105,33 @@ ARCEMU_INLINE uint32 getMSTime()
 	return MSTime;
 }
 
+ARCEMU_INLINE uint32 now()
+{
+#ifdef WIN32
+	return GetTickCount();
+#else
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+#endif
+}
+
+int32 GetTimePeriodFromString(const char* str);
+
+std::string ConvertTimeStampToString(uint32 timestamp);
+
+std::string ConvertTimeStampToDataTime(uint32 timestamp);
+
+uint32 DecimalToMask(uint32 dec);
+
+void arcemu_TOLOWER(std::string & str);
+
+void arcemu_TOUPPER(std::string & str);
+
+bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
+
+unsigned int MakeIP(const char* str);
+
+
+
 #endif
