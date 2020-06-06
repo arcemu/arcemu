@@ -65,18 +65,21 @@ ObjectMgr::~ObjectMgr()
 	{
 		delete i->second;
 	}
+	mGuild.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Vendors...");
 	for(VendorMap::iterator i = mVendors.begin(); i != mVendors.end(); ++ i)
 	{
 		delete i->second;
 	}
+	mVendors.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Spell Override...");
 	for(OverrideIdMap::iterator i = mOverrideIdMap.begin(); i != mOverrideIdMap.end(); ++i)
 	{
 		delete i->second;
 	}
+	mOverrideIdMap.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Trainers...");
 	for(TrainerMap::iterator i = mTrainers.begin(); i != mTrainers.end(); ++ i)
@@ -86,6 +89,7 @@ ObjectMgr::~ObjectMgr()
 			delete [] t->UIMessage;
 		delete t;
 	}
+	mTrainers.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Level Information...");
 	for(LevelInfoMap::iterator i = mLevelInfo.begin(); i != mLevelInfo.end(); ++i)
@@ -98,6 +102,7 @@ ObjectMgr::~ObjectMgr()
 		l->clear();
 		delete l;
 	}
+	mLevelInfo.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Waypoint Cache...");
 	for(HM_NAMESPACE::HM_HASH_MAP<uint32, WayPointMap*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
@@ -108,6 +113,7 @@ ObjectMgr::~ObjectMgr()
 
 		delete i->second;
 	}
+	m_waypoints.clear();
 
 	Log.Notice("ObjectMgr", "Deleting timed emote Cache...");
 	for(HM_NAMESPACE::HM_HASH_MAP<uint32, TimedEmoteList*>::iterator i = m_timedemotes.begin(); i != m_timedemotes.end(); ++i)
@@ -121,6 +127,7 @@ ObjectMgr::~ObjectMgr()
 
 		delete i->second;
 	}
+	m_timedemotes.clear();
 
 	Log.Notice("ObjectMgr", "Deleting NPC Say Texts...");
 	for(uint32 i = 0 ; i < NUM_MONSTER_SAY_EVENTS ; ++i)
@@ -146,6 +153,7 @@ ObjectMgr::~ObjectMgr()
 		{
 			delete itr->second;
 		}
+		m_charters[i].clear();
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Reputation Tables...");
@@ -155,12 +163,15 @@ ObjectMgr::~ObjectMgr()
 		mod->mods.clear();
 		delete mod;
 	}
+	m_reputation_creature.clear();
+
 	for(ReputationModMap::iterator itr = this->m_reputation_faction.begin(); itr != m_reputation_faction.end(); ++itr)
 	{
 		ReputationModifier* mod = itr->second;
 		mod->mods.clear();
 		delete mod;
 	}
+	m_reputation_faction.clear();
 
 	for(HM_NAMESPACE::HM_HASH_MAP<uint32, InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); ++itr)
 	{
@@ -168,6 +179,7 @@ ObjectMgr::~ObjectMgr()
 		mod->mods.clear();
 		delete mod;
 	}
+	m_reputation_instance.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Groups...");
 	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end();)
@@ -188,6 +200,7 @@ ObjectMgr::~ObjectMgr()
 			delete pGroup;
 		}
 	}
+	m_groups.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
 	for(HM_NAMESPACE::HM_HASH_MAP<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
@@ -196,10 +209,12 @@ ObjectMgr::~ObjectMgr()
 		free(itr->second->name);
 		delete itr->second;
 	}
+	m_playersinfo.clear();
 
 	Log.Notice("ObjectMgr", "Deleting GM Tickets...");
 	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); ++itr)
 		delete(*itr);
+	GM_TicketList.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Boss Information...");
 	for(uint32 i = 0; i < NUM_MAPS; i++)
@@ -218,11 +233,13 @@ ObjectMgr::~ObjectMgr()
 	{
 		delete(*itr).second;
 	}
+	m_arenaTeams.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
 	std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin();
 	for(; itr != ProfessionDiscoveryTable.end(); itr++)
 		delete(*itr);
+	ProfessionDiscoveryTable.clear();
 
 	Log.Notice("ObjectMgr", "Cleaning up BroadCastStorages...");
 	m_BCEntryStorage.clear();
