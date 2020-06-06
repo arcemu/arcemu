@@ -84,12 +84,12 @@ namespace Arcemu
 		{
 		public:
 			static int32 GetTimePeriodFromString(const char* str);
+			
+			static std::string ConvertTimeStampToString(uint32 timestamp);
 		};
 	}
 }
 
-std::string ConvertTimeStampToString(uint32 timestamp);
-			
 std::string ConvertTimeStampToDataTime(uint32 timestamp);
 			
 uint32 DecimalToMask(uint32 dec);

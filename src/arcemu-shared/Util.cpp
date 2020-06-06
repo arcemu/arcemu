@@ -138,103 +138,6 @@ void MakeIntStringNoZero(char* buf, int num)
 	sprintf(buf, "%u", num);
 }
 
-string ConvertTimeStampToString(uint32 timestamp)
-{
-	int seconds = (int)timestamp;
-	int mins = 0;
-	int hours = 0;
-	int days = 0;
-	int months = 0;
-	int years = 0;
-	if(seconds >= 60)
-	{
-		mins = seconds / 60;
-		if(mins)
-		{
-			seconds -= mins * 60;
-			if(mins >= 60)
-			{
-				hours = mins / 60;
-				if(hours)
-				{
-					mins -= hours * 60;
-					if(hours >= 24)
-					{
-						days = hours / 24;
-						if(days)
-						{
-							hours -= days * 24;
-							if(days >= 30)
-							{
-								months = days / 30;
-								if(months)
-								{
-									days -= months * 30;
-									if(months >= 12)
-									{
-										years = months / 12;
-										if(years)
-										{
-											months -= years * 12;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	char szTempBuf[100];
-	string szResult;
-
-	if(years)
-	{
-		MakeIntStringNoZero(szTempBuf, years);
-		szResult += szTempBuf;
-		szResult += " years, ";
-	}
-
-	if(months)
-	{
-		MakeIntStringNoZero(szTempBuf, months);
-		szResult += szTempBuf;
-		szResult += " months, ";
-	}
-
-	if(days)
-	{
-		MakeIntStringNoZero(szTempBuf, days);
-		szResult += szTempBuf;
-		szResult += " days, ";
-	}
-
-	if(hours)
-	{
-		MakeIntStringNoZero(szTempBuf, hours);
-		szResult += szTempBuf;
-		szResult += " hours, ";
-	}
-
-	if(mins)
-	{
-		MakeIntStringNoZero(szTempBuf, mins);
-		szResult += szTempBuf;
-		szResult += " minutes, ";
-	}
-
-	if(seconds)
-	{
-		MakeIntStringNoZero(szTempBuf, seconds);
-		szResult += szTempBuf;
-		szResult += " seconds";
-	}
-
-	return szResult;
-}
-
 string ConvertTimeStampToDataTime(uint32 timestamp)
 {
 	char szTempBuf[100];
@@ -459,6 +362,103 @@ namespace Arcemu
 				time_to_ban += (multiplier * multipliee);
 			}
 			return time_to_ban;
+		}
+
+		string Util::ConvertTimeStampToString(uint32 timestamp)
+		{
+			int seconds = (int)timestamp;
+			int mins = 0;
+			int hours = 0;
+			int days = 0;
+			int months = 0;
+			int years = 0;
+			if(seconds >= 60)
+			{
+				mins = seconds / 60;
+				if(mins)
+				{
+					seconds -= mins * 60;
+					if(mins >= 60)
+					{
+						hours = mins / 60;
+						if(hours)
+						{
+							mins -= hours * 60;
+							if(hours >= 24)
+							{
+								days = hours / 24;
+								if(days)
+								{
+									hours -= days * 24;
+									if(days >= 30)
+									{
+										months = days / 30;
+										if(months)
+										{
+											days -= months * 30;
+											if(months >= 12)
+											{
+												years = months / 12;
+												if(years)
+												{
+													months -= years * 12;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			char szTempBuf[100];
+			string szResult;
+
+			if(years)
+			{
+				MakeIntStringNoZero(szTempBuf, years);
+				szResult += szTempBuf;
+				szResult += " years, ";
+			}
+
+			if(months)
+			{
+				MakeIntStringNoZero(szTempBuf, months);
+				szResult += szTempBuf;
+				szResult += " months, ";
+			}
+
+			if(days)
+			{
+				MakeIntStringNoZero(szTempBuf, days);
+				szResult += szTempBuf;
+				szResult += " days, ";
+			}
+
+			if(hours)
+			{
+				MakeIntStringNoZero(szTempBuf, hours);
+				szResult += szTempBuf;
+				szResult += " hours, ";
+			}
+
+			if(mins)
+			{
+				MakeIntStringNoZero(szTempBuf, mins);
+				szResult += szTempBuf;
+				szResult += " minutes, ";
+			}
+
+			if(seconds)
+			{
+				MakeIntStringNoZero(szTempBuf, seconds);
+				szResult += szTempBuf;
+				szResult += " seconds";
+			}
+
+			return szResult;
 		}
 	}
 }
