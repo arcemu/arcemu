@@ -477,7 +477,7 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession* m_se
 	ParseBanArgs(pCharacter, &pDuration, &pReason);
 	if(pDuration != NULL)
 	{
-		BanTime = GetTimePeriodFromString(pDuration);
+		BanTime = Arcemu::Shared::Util::GetTimePeriodFromString(pDuration);
 		if(BanTime < 0) // if time is 0, ban is permanent
 			return false;
 	}
@@ -540,7 +540,7 @@ bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession* m_session)
 	int32 BanTime = 0;
 	if(pDuration != NULL)
 	{
-		BanTime = GetTimePeriodFromString(pDuration);
+		BanTime = Arcemu::Shared::Util::GetTimePeriodFromString(pDuration);
 		if(BanTime < 0)
 			return false;
 	}
@@ -1164,7 +1164,7 @@ bool ChatHandler::HandleAccountBannedCommand(const char* args, WorldSession* m_s
 	int32 timeperiod = 0;
 	if(pDuration != NULL)
 	{
-		timeperiod = GetTimePeriodFromString(pDuration);
+		timeperiod = Arcemu::Shared::Util::GetTimePeriodFromString(pDuration);
 		if(timeperiod < 0)
 			return false;
 	}
@@ -1200,7 +1200,7 @@ bool ChatHandler::HandleAccountMuteCommand(const char* args, WorldSession* m_ses
 	*pDuration = 0;
 	++pDuration;
 
-	int32 timeperiod = GetTimePeriodFromString(pDuration);
+	int32 timeperiod = Arcemu::Shared::Util::GetTimePeriodFromString(pDuration);
 	if(timeperiod <= 0)
 		return false;
 
@@ -2727,7 +2727,7 @@ bool ChatHandler::HandleIPBanCommand(const char* args, WorldSession* m_session)
 	int32 timeperiod = 0;
 	if(pDuration != NULL)
 	{
-		timeperiod = GetTimePeriodFromString(pDuration);
+		timeperiod = Arcemu::Shared::Util::GetTimePeriodFromString(pDuration);
 		if(timeperiod < 0)
 			return false;
 	}

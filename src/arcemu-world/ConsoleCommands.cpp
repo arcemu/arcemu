@@ -259,7 +259,7 @@ bool HandleBanAccountCommand(BaseConsole* pConsole, int argc, const char* argv[]
 	if(argc < 3)
 		return false;
 
-	int32 timeperiod = GetTimePeriodFromString(argv[2]);
+	int32 timeperiod = Arcemu::Shared::Util::GetTimePeriodFromString(argv[2]);
 	if(timeperiod < 0)
 		return false;
 

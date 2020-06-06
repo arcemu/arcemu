@@ -106,56 +106,6 @@ time_t convTimePeriod(uint32 dLength, char dType)
 	}
 	return mktime(ti);
 }
-int32 GetTimePeriodFromString(const char* str)
-{
-	uint32 time_to_ban = 0;
-	char* p = (char*)str;
-	uint32 multiplier;
-	string number_temp;
-	uint32 multipliee;
-	number_temp.reserve(10);
-	while(*p != 0)
-	{
-		// always starts with a number.
-		if(!isdigit(*p))
-			break;
-		number_temp.clear();
-		while(isdigit(*p) && *p != 0)
-		{
-			number_temp += *p;
-			++p;
-		}
-		// try to find a letter
-		if(*p != 0)
-		{
-			// check the type
-			switch(tolower(*p))
-			{
-				case 'y':
-					multiplier = TIME_YEAR;		// eek!
-					break;
-				case 'm':
-					multiplier = TIME_MONTH;
-					break;
-				case 'd':
-					multiplier = TIME_DAY;
-					break;
-				case 'h':
-					multiplier = TIME_HOUR;
-					break;
-				default:
-					return -1;
-					break;
-			}
-			++p;
-		}
-		else
-			multiplier = TIME_MINUTE; // Defaults to MINUTES, if no letter is given
-		multipliee = atoi(number_temp.c_str());
-		time_to_ban += (multiplier * multipliee);
-	}
-	return time_to_ban;
-}
 
 const char* szDayNames[7] =
 {
@@ -456,6 +406,60 @@ namespace Arcemu
 		nanosleep(&tv, NULL);
 #endif
 
+	}
+
+	namespace Shared
+	{
+		int32 Util::GetTimePeriodFromString(const char* str)
+		{
+			uint32 time_to_ban = 0;
+			char* p = (char*)str;
+			uint32 multiplier;
+			string number_temp;
+			uint32 multipliee;
+			number_temp.reserve(10);
+			while(*p != 0)
+			{
+				// always starts with a number.
+				if(!isdigit(*p))
+					break;
+				number_temp.clear();
+				while(isdigit(*p) && *p != 0)
+				{
+					number_temp += *p;
+					++p;
+				}
+				// try to find a letter
+				if(*p != 0)
+				{
+					// check the type
+					switch(tolower(*p))
+					{
+						case 'y':
+							multiplier = TIME_YEAR;		// eek!
+							break;
+						case 'm':
+							multiplier = TIME_MONTH;
+							break;
+						case 'd':
+							multiplier = TIME_DAY;
+							break;
+						case 'h':
+							multiplier = TIME_HOUR;
+							break;
+						default:
+							return -1;
+							break;
+					}
+					++p;
+				}
+				else
+					multiplier = TIME_MINUTE; // Defaults to MINUTES, if no letter is given
+				multipliee = atoi(number_temp.c_str());
+				time_to_ban += (multiplier * multipliee);
+			}
+			return time_to_ban;
+		}
 	}
 }
 
