@@ -27,15 +27,15 @@ then
 fi
 
 
-echo "#ifndef GIT_VERSION_HPP" > src/arcemu-shared/git_version.h
-echo "#define GIT_VERSION_HPP" >> src/arcemu-shared/git_version.h
-echo "" >> src/arcemu-shared/git_version.h
-echo "#define BUILD_BRANCH \"$branch\"" >> src/arcemu-shared/git_version.h
-echo "#define BUILD_HASH 0x$version" >> src/arcemu-shared/git_version.h
-echo "#define COMMIT_TIMESTAMP $timestamp" >> src/arcemu-shared/git_version.h
-echo "#define COMMIT_TIME \"$commit_time\"" >> src/arcemu-shared/git_version.h
-echo "#define BUILD_HASH_STR \"$version\"" >> src/arcemu-shared/git_version.h
-echo "#define BUILD_USER_STR \"$username\"" >> src/arcemu-shared/git_version.h
-echo "#define BUILD_HOST_STR \"$hostname\"" >> src/arcemu-shared/git_version.h
-echo "" >> src/arcemu-shared/git_version.h
-echo "#endif" >> src/arcemu-shared/git_version.h
+echo "#ifndef GIT_VERSION_HPP" > src/shared/git_version.h
+echo "#define GIT_VERSION_HPP" >> src/shared/git_version.h
+echo "" >> src/shared/git_version.h
+echo "#define BUILD_BRANCH \"$branch\"" >> src/shared/git_version.h
+echo "#define BUILD_HASH 0x$version" >> src/shared/git_version.h
+echo "#define COMMIT_TIMESTAMP $timestamp" >> src/shared/git_version.h
+echo "#define COMMIT_TIME \"$commit_time\"" >> src/shared/git_version.h
+echo "#define BUILD_HASH_STR \"$version\"" >> src/shared/git_version.h
+echo "#define BUILD_USER_STR \"$username\"" >> src/shared/git_version.h
+echo "#define BUILD_HOST_STR \"$hostname\"" >> src/shared/git_version.h
+echo "" >> src/shared/git_version.h
+echo "#endif" >> src/shared/git_version.h

@@ -17,7 +17,7 @@
  *
  */
 
-#include "../arcemu-shared/CallBack.h"
+#include "../shared/CallBack.h"
 
 #ifndef WIN32
 static pthread_cond_t abortcond;

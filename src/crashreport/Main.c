@@ -59,7 +59,7 @@ void buildCrashdump(char *filename) {
 	int ret;
 
 	printf("%s: building crashdump from '%s'\n", __FUNCTION__, filename);
-	snprintf(cmd, 1024, "gdb --batch --eval-command=\"bt ful\" arcemu-world %s &> crashdump.log", filename);
+	snprintf(cmd, 1024, "gdb --batch --eval-command=\"bt ful\" world %s &> crashdump.log", filename);
 	ret = system(cmd);
 	if (ret == 0) {
 		char dstfile[1024];

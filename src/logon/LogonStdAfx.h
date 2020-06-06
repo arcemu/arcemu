@@ -29,29 +29,29 @@
 #include "Common.h"
 #include <Network/Network.h>
 
-#include "../arcemu-shared/Log.h"
-#include "../arcemu-shared/Util.h"
-#include "../arcemu-shared/ByteBuffer.h"
-#include "../arcemu-shared/Config/ConfigEnv.h"
+#include "../shared/Log.h"
+#include "../shared/Util.h"
+#include "../shared/ByteBuffer.h"
+#include "../shared/Config/ConfigEnv.h"
 #include <zlib.h>
 
-#include "../arcemu-shared/Database/DatabaseEnv.h"
+#include "../shared/Database/DatabaseEnv.h"
 
-#include "../arcemu-shared/Auth/BigNumber.h"
-#include "../arcemu-shared/Auth/Sha1.h"
-#include "../arcemu-shared/Auth/WowCrypt.h"
+#include "../shared/Auth/BigNumber.h"
+#include "../shared/Auth/Sha1.h"
+#include "../shared/Auth/WowCrypt.h"
 
 #include "LogonOpcodes.h"
-#include "../arcemu-logonserver/Main.h"
-#include "../arcemu-world/NameTables.h"
+#include "../logon/Main.h"
+#include "../world/NameTables.h"
 #include "AccountCache.h"
 #include "PeriodicFunctionCall_Thread.h"
-#include "../arcemu-logonserver/AutoPatcher.h"
-#include "../arcemu-logonserver/AuthSocket.h"
-#include "../arcemu-logonserver/AuthStructs.h"
-#include "../arcemu-logonserver/LogonCommServer.h"
-#include "../arcemu-logonserver/LogonConsole.h"
-#include "../arcemu-shared/WorldPacket.h"
+#include "../logon/AutoPatcher.h"
+#include "../logon/AuthSocket.h"
+#include "../logon/AuthStructs.h"
+#include "../logon/LogonCommServer.h"
+#include "../logon/LogonConsole.h"
+#include "../shared/WorldPacket.h"
 
 // database decl
 extern Database* sLogonSQL;

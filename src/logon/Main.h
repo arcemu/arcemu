@@ -17,7 +17,7 @@
  *
  */
 
-#include "../arcemu-shared/Singleton.h"
+#include "../shared/Singleton.h"
 
 enum RealmFlags
 {

@@ -76,15 +76,15 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "DetourAlloc.h"
 #include "DetourAssert.h"
 
-#include "../arcemu-shared/Common.h"
-#include "../arcemu-shared/Util.h"
-#include "../arcemu-shared/MersenneTwister.h"
-#include "../arcemu-shared/WorldPacket.h"
-#include "../arcemu-shared/Log.h"
-#include "../arcemu-shared/ByteBuffer.h"
-#include "../arcemu-shared/Config/ConfigEnv.h"
-#include "../arcemu-shared/crc32.h"
-#include "../arcemu-shared/LocationVector.h"
+#include "../shared/Common.h"
+#include "../shared/Util.h"
+#include "../shared/MersenneTwister.h"
+#include "../shared/WorldPacket.h"
+#include "../shared/Log.h"
+#include "../shared/ByteBuffer.h"
+#include "../shared/Config/ConfigEnv.h"
+#include "../shared/crc32.h"
+#include "../shared/LocationVector.h"
 
 extern SERVER_DECL SessionLogWriter* Anticheat_Log;
 extern SERVER_DECL SessionLogWriter* GMCommand_Log;
@@ -96,21 +96,21 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 
 #include <zlib.h>
 
-#include "../arcemu-shared/Database/DatabaseEnv.h"
+#include "../shared/Database/DatabaseEnv.h"
 #include "DBC/DBCStores.h"
 
 #include <Network/Network.h>
 
-#include "../arcemu-shared/Auth/MD5.h"
-#include "../arcemu-shared/Auth/BigNumber.h"
-#include "../arcemu-shared/Auth/Sha1.h"
-#include "../arcemu-shared/Auth/WowCrypt.h"
-#include "../arcemu-shared/FastQueue.h"
-#include "../arcemu-shared/CircularQueue.h"
-#include "../arcemu-shared/Threading/RWLock.h"
-#include "../arcemu-shared/arcemu_getopt.h"
-#include "../arcemu-shared/TLSObject.h"
-#include "../arcemu-shared/Tokenizer.h"
+#include "../shared/Auth/MD5.h"
+#include "../shared/Auth/BigNumber.h"
+#include "../shared/Auth/Sha1.h"
+#include "../shared/Auth/WowCrypt.h"
+#include "../shared/FastQueue.h"
+#include "../shared/CircularQueue.h"
+#include "../shared/Threading/RWLock.h"
+#include "../shared/arcemu_getopt.h"
+#include "../shared/TLSObject.h"
+#include "../shared/Tokenizer.h"
 
 #ifdef WIN32
 #include "printStackTrace.h"
@@ -123,7 +123,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "UpdateMask.h"
 #include "Opcodes.h"
 #include "AuthCodes.h"
-#include "../arcemu-shared/CallBack.h"
+#include "../shared/CallBack.h"
 #include "WordFilter.h"
 #include "Events.h"
 #include "EventMgr.h"
@@ -221,7 +221,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "LogonCommHandler.h"
 #include "MainServerDefines.h"
 #include "WorldRunnable.h"
-#include "../arcemu-shared/Storage.h"
+#include "../shared/Storage.h"
 #include "ObjectStorage.h"
 #include "DatabaseCleaner.h"
 #include "DayWatcherThread.h"
