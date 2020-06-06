@@ -29,10 +29,6 @@ inline uint32 secsToTimeBitFields(time_t secs)
 }
 
 
-extern SERVER_DECL const char* _StringToUTF8(const char* pASCIIBuf);
-extern SERVER_DECL const char* _StringToANSI(const char* pUtf8Buf);
-extern SERVER_DECL bool _IsStringUTF8(const char* str);
-
 #ifdef WIN32
 
 typedef struct tagTHREADNAME_INFO
