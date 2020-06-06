@@ -92,12 +92,12 @@ namespace Arcemu
 			static uint32 DecimalToMask(uint32 dec);
 
 			static void arcemu_TOLOWER(std::string & str);
+
+			static void arcemu_TOUPPER(std::string & str);
 		};
 	}
 }
 
-void arcemu_TOUPPER(std::string & str);
-			
 bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
 			
 unsigned int MakeIP(const char* str);

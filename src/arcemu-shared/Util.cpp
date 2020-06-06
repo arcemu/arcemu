@@ -466,13 +466,13 @@ namespace Arcemu
 			for(size_t i = 0; i < str.length(); ++i)
 				str[i] = (char)tolower(str[i]);
 		}
-	}
-}
 
-void arcemu_TOUPPER(std::string & str)
-{
-	for(size_t i = 0; i < str.length(); ++i)
-		str[i] = (char)toupper(str[i]);
+		void Util::arcemu_TOUPPER(std::string & str)
+		{
+			for(size_t i = 0; i < str.length(); ++i)
+				str[i] = (char)toupper(str[i]);
+		}
+	}
 }
 
 // returns true if the ip hits the mask, otherwise false

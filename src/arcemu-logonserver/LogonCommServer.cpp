@@ -450,7 +450,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket & recvData)
 				recvData >> account >> duration >> banreason;
 
 				// remember we expect this in uppercase
-				arcemu_TOUPPER(account);
+				Arcemu::Shared::Util::arcemu_TOUPPER(account);
 
 				Account* pAccount = sAccountMgr.GetAccount(account);
 				if(pAccount == NULL)
@@ -471,7 +471,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket & recvData)
 				recvData >> account >> gm;
 
 				// remember we expect this in uppercase
-				arcemu_TOUPPER(account);
+				Arcemu::Shared::Util::arcemu_TOUPPER(account);
 
 				Account* pAccount = sAccountMgr.GetAccount(account);
 				if(pAccount == NULL)
@@ -492,7 +492,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket & recvData)
 				recvData >> account >> duration;
 
 				// remember we expect this in uppercase
-				arcemu_TOUPPER(account);
+				Arcemu::Shared::Util::arcemu_TOUPPER(account);
 
 				Account* pAccount = sAccountMgr.GetAccount(account);
 				if(pAccount == NULL)

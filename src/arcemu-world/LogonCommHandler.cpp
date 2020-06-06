@@ -135,7 +135,7 @@ void LogonCommHandler::Startup()
 			string acct = result->Fetch()[0].GetString();
 			string perm = result->Fetch()[1].GetString();
 
-			arcemu_TOUPPER(acct);
+			Arcemu::Shared::Util::arcemu_TOUPPER(acct);
 			forced_permissions.insert(make_pair(acct, perm));
 
 		}
@@ -429,8 +429,8 @@ void LogonCommHandler::TestConsoleLogon(string & username, string & password, ui
 	string newpass = password;
 	string srpstr;
 
-	arcemu_TOUPPER(newuser);
-	arcemu_TOUPPER(newpass);
+	Arcemu::Shared::Util::arcemu_TOUPPER(newuser);
+	Arcemu::Shared::Util::arcemu_TOUPPER(newpass);
 
 	srpstr = newuser + ":" + newpass;
 

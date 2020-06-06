@@ -58,7 +58,7 @@ void AccountMgr::ReloadAccounts(bool silent)
 			AccountName = field[1].GetString();
 
 			// transform to uppercase
-			arcemu_TOUPPER(AccountName);
+			Arcemu::Shared::Util::arcemu_TOUPPER(AccountName);
 
 			//Use private __GetAccount, for locks
 			acct = __GetAccount(AccountName);
@@ -151,8 +151,8 @@ void AccountMgr::AddAccount(Field* field)
 		sLogonSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u", acct->AccountId);
 	}
 	// Convert username/password to uppercase. this is needed ;)
-	arcemu_TOUPPER(Username);
-	arcemu_TOUPPER(Password);
+	Arcemu::Shared::Util::arcemu_TOUPPER(Username);
+	Arcemu::Shared::Util::arcemu_TOUPPER(Password);
 
 	// prefer encrypted passwords over nonencrypted
 	if(EncryptedPassword.size() > 0)
@@ -237,8 +237,8 @@ void AccountMgr::UpdateAccount(Account* acct, Field* field)
 		sLogonSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u", acct->AccountId);
 	}
 	// Convert username/password to uppercase. this is needed ;)
-	arcemu_TOUPPER(Username);
-	arcemu_TOUPPER(Password);
+	Arcemu::Shared::Util::arcemu_TOUPPER(Username);
+	Arcemu::Shared::Util::arcemu_TOUPPER(Password);
 
 	// prefer encrypted passwords over nonencrypted
 	if(EncryptedPassword.size() > 0)
