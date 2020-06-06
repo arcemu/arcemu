@@ -76,37 +76,6 @@ void SetThreadName(const char* format, ...)
 	va_end(ap);
 }
 
-time_t convTimePeriod(uint32 dLength, char dType)
-{
-	time_t rawtime = 0;
-	if(dLength == 0)
-		return rawtime;
-	struct tm* ti = localtime(&rawtime);
-	switch(dType)
-	{
-		case 'h':		// hours
-			ti->tm_hour += dLength;
-			break;
-		case 'd':		// days
-			ti->tm_mday += dLength;
-			break;
-		case 'w':		// weeks
-			ti->tm_mday += 7 * dLength;
-			break;
-		case 'm':		// months
-			ti->tm_mon += dLength;
-			break;
-		case 'y':		// years
-			// are leap years considered ? do we care ?
-			ti->tm_year += dLength;
-			break;
-		default:		// minutes
-			ti->tm_min += dLength;
-			break;
-	}
-	return mktime(ti);
-}
-
 const char* szDayNames[7] =
 {
 	"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
@@ -276,6 +245,36 @@ namespace Arcemu
 
 	namespace Shared
 	{
+		time_t Util::convTimePeriod(uint32 dLength, char dType)
+		{
+			time_t rawtime = 0;
+			if(dLength == 0)
+				return rawtime;
+			struct tm* ti = localtime(&rawtime);
+			switch(dType)
+			{
+				case 'h':		// hours
+					ti->tm_hour += dLength;
+					break;
+				case 'd':		// days
+					ti->tm_mday += dLength;
+					break;
+				case 'w':		// weeks
+					ti->tm_mday += 7 * dLength;
+					break;
+				case 'm':		// months
+					ti->tm_mon += dLength;
+					break;
+				case 'y':		// years
+					// are leap years considered ? do we care ?
+					ti->tm_year += dLength;
+					break;
+				default:		// minutes
+					ti->tm_min += dLength;
+					break;
+			}
+			return mktime(ti);
+		}
 		int32 Util::GetTimePeriodFromString(const char* str)
 		{
 			uint32 time_to_ban = 0;

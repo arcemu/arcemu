@@ -29,7 +29,6 @@ std::vector<std::string> StrSplit(const std::string & src, const std::string & s
 
 // This HAS to be called outside the threads __try / __except block!
 void SetThreadName(const char* format, ...);
-time_t convTimePeriod(uint32 dLength, char dType);
 
 inline uint32 secsToTimeBitFields(time_t secs)
 {
@@ -83,6 +82,8 @@ namespace Arcemu
 		class SERVER_DECL Util
 		{
 		public:
+			static time_t convTimePeriod(uint32 dLength, char dType);
+
 			static int32 GetTimePeriodFromString(const char* str);
 			
 			static std::string ConvertTimeStampToString(uint32 timestamp);
