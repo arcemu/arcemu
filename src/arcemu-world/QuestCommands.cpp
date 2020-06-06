@@ -94,7 +94,7 @@ bool ChatHandler::HandleQuestLookupCommand(const char* args, WorldSession* m_ses
 	if(!*args) return false;
 
 	string x = string(args);
-	arcemu_TOLOWER(x);
+	Arcemu::Shared::Util::arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
 		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
@@ -120,8 +120,8 @@ bool ChatHandler::HandleQuestLookupCommand(const char* args, WorldSession* m_ses
 
 		std::string liName	= std::string(li ? li->Title : "");
 
-		arcemu_TOLOWER(liName);
-		arcemu_TOLOWER(y);
+		Arcemu::Shared::Util::arcemu_TOLOWER(liName);
+		Arcemu::Shared::Util::arcemu_TOLOWER(y);
 
 		bool localizedFound	= false;
 		if(FindXinYString(x, liName))

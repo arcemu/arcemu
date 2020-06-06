@@ -460,13 +460,13 @@ namespace Arcemu
 		{
 			return ((uint32)1 << (dec - 1));
 		}
-	}
-}
 
-void arcemu_TOLOWER(std::string & str)
-{
-	for(size_t i = 0; i < str.length(); ++i)
-		str[i] = (char)tolower(str[i]);
+		void Util::arcemu_TOLOWER(std::string & str)
+		{
+			for(size_t i = 0; i < str.length(); ++i)
+				str[i] = (char)tolower(str[i]);
+		}
+	}
 }
 
 void arcemu_TOUPPER(std::string & str)
