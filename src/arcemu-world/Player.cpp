@@ -8997,7 +8997,7 @@ void Player::OnWorldPortAck()
 				/*welcome_msg += "This instance is scheduled to reset on ";
 				welcome_msg += asctime(localtime(&m_mapMgr->pInstance->m_expiration));*/
 				welcome_msg += string(GetSession()->LocalizedWorldSrv(66)) + " ";
-				welcome_msg += ConvertTimeStampToDataTime((uint32)m_mapMgr->pInstance->m_expiration);
+				welcome_msg += Arcemu::Shared::Util::ConvertTimeStampToDataTime((uint32)m_mapMgr->pInstance->m_expiration);
 			}
 			sChatHandler.SystemMessage(m_session, welcome_msg.c_str());
 		}

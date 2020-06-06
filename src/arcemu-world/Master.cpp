@@ -481,7 +481,7 @@ bool Master::Run(int argc, char** argv)
 	delete console;
 
 	// begin server shutdown
-	Log.Success("Shutdown", "Initiated at %s", ConvertTimeStampToDataTime((uint32)UNIXTIME).c_str());
+	Log.Success("Shutdown", "Initiated at %s", Arcemu::Shared::Util::ConvertTimeStampToDataTime((uint32)UNIXTIME).c_str());
 
 	if(lootmgr.is_loading)
 	{
