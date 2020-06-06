@@ -87,7 +87,7 @@ namespace Arcemu
 			
 			static std::string ConvertTimeStampToString(uint32 timestamp);
 
-			static std::string ConvertTimeStampToDataTime(uint32 timestamp);
+			static std::string ConvertTimeStampToDateTime(uint32 timestamp);
 		};
 	}
 }

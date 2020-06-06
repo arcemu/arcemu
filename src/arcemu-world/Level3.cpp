@@ -504,7 +504,7 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession* m_se
 		pPlayer->SetBanned(uBanTime, sReason);
 		pInfo = pPlayer->getPlayerInfo();
 	}
-	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? Arcemu::Shared::Util::ConvertTimeStampToDataTime(BanTime + (uint32)UNIXTIME).c_str() : "Never");
+	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? Arcemu::Shared::Util::ConvertTimeStampToDateTime(BanTime + (uint32)UNIXTIME).c_str() : "Never");
 
 	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, (pReason == NULL) ? "No reason" : pReason, BanTime ? Arcemu::Shared::Util::ConvertTimeStampToString(BanTime).c_str() : "ever");
 	char msg[200];
@@ -1182,10 +1182,10 @@ bool ChatHandler::HandleAccountBannedCommand(const char* args, WorldSession* m_s
 	sLogonCommHandler.Account_SetBanned(pAccount, banned, pReason);
 
 	GreenSystemMessage(m_session, "Account '%s' has been banned %s%s for reason : %s. The change will be effective immediately.", pAccount,
-	                   timeperiod ? "until " : "forever", timeperiod ? Arcemu::Shared::Util::ConvertTimeStampToDataTime(timeperiod + (uint32)UNIXTIME).c_str() : "", pReason);
+	                   timeperiod ? "until " : "forever", timeperiod ? Arcemu::Shared::Util::ConvertTimeStampToDateTime(timeperiod + (uint32)UNIXTIME).c_str() : "", pReason);
 
 	sWorld.DisconnectUsersWithAccount(pAccount, m_session);
-	sGMLog.writefromsession(m_session, "banned account %s until %s", pAccount, timeperiod ? Arcemu::Shared::Util::ConvertTimeStampToDataTime(timeperiod + (uint32)UNIXTIME).c_str() : "permanent");
+	sGMLog.writefromsession(m_session, "banned account %s until %s", pAccount, timeperiod ? Arcemu::Shared::Util::ConvertTimeStampToDateTime(timeperiod + (uint32)UNIXTIME).c_str() : "permanent");
 	return true;
 }
 
@@ -1208,11 +1208,11 @@ bool ChatHandler::HandleAccountMuteCommand(const char* args, WorldSession* m_ses
 
 	sLogonCommHandler.Account_SetMute(pAccount, banned);
 
-	string tsstr = Arcemu::Shared::Util::ConvertTimeStampToDataTime(timeperiod + (uint32)UNIXTIME);
+	string tsstr = Arcemu::Shared::Util::ConvertTimeStampToDateTime(timeperiod + (uint32)UNIXTIME);
 	GreenSystemMessage(m_session, "Account '%s' has been muted until %s. The change will be effective immediately.", pAccount,
 	                   tsstr.c_str());
 
-	sGMLog.writefromsession(m_session, "mutex account %s until %s", pAccount, Arcemu::Shared::Util::ConvertTimeStampToDataTime(timeperiod + (uint32)UNIXTIME).c_str());
+	sGMLog.writefromsession(m_session, "mutex account %s until %s", pAccount, Arcemu::Shared::Util::ConvertTimeStampToDateTime(timeperiod + (uint32)UNIXTIME).c_str());
 
 	WorldSession* pSession = sWorld.FindSessionByName(pAccount);
 	if(pSession != NULL)

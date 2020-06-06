@@ -429,7 +429,7 @@ namespace Arcemu
 			return szResult;
 		}
 
-		string Util::ConvertTimeStampToDataTime(uint32 timestamp)
+		string Util::ConvertTimeStampToDateTime(uint32 timestamp)
 		{
 			char szTempBuf[100];
 			time_t t = (time_t)timestamp;

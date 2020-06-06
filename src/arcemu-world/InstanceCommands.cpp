@@ -287,9 +287,9 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession* m
 
 		ss << "\n";
 	}
-	ss << "Created: " << MSG_COLOR_CYAN << Arcemu::Shared::Util::ConvertTimeStampToDataTime((uint32)instance->m_creation) << "|r\n";
+	ss << "Created: " << MSG_COLOR_CYAN << Arcemu::Shared::Util::ConvertTimeStampToDateTime((uint32)instance->m_creation) << "|r\n";
 	if(instance->m_expiration != 0)
-		ss << "Expires: " << MSG_COLOR_CYAN << Arcemu::Shared::Util::ConvertTimeStampToDataTime((uint32)instance->m_expiration) << "|r\n";
+		ss << "Expires: " << MSG_COLOR_CYAN << Arcemu::Shared::Util::ConvertTimeStampToDateTime((uint32)instance->m_expiration) << "|r\n";
 
 	if(instance->m_mapMgr == NULL)
 	{
