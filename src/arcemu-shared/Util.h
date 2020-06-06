@@ -33,10 +33,6 @@ extern SERVER_DECL const char* _StringToUTF8(const char* pASCIIBuf);
 extern SERVER_DECL const char* _StringToANSI(const char* pUtf8Buf);
 extern SERVER_DECL bool _IsStringUTF8(const char* str);
 
-volatile long Sync_Add(volatile long* value);
-
-volatile long Sync_Sub(volatile long* value);
-
 #ifdef WIN32
 
 typedef struct tagTHREADNAME_INFO
@@ -56,6 +52,10 @@ namespace Arcemu
 		class SERVER_DECL Util
 		{
 		public:
+			static volatile long Sync_Add(volatile long* value);
+			
+			static volatile long Sync_Sub(volatile long* value);
+
 			// This HAS to be called outside the threads __try / __except block!
 			static void SetThreadName(const char* format, ...);
 

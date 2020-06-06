@@ -67,8 +67,8 @@ class SERVER_DECL EventableObject
 
 		virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
 
-		void AddRef() { Sync_Add(&m_refs); }
-		void DecRef() { if(Sync_Sub(&m_refs) == 0) delete this; }
+		void AddRef() { Arcemu::Shared::Util::Sync_Add(&m_refs); }
+		void DecRef() { if(Arcemu::Shared::Util::Sync_Sub(&m_refs) == 0) delete this; }
 
 	protected:
 
