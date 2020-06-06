@@ -54,15 +54,17 @@ typedef struct tagTHREADNAME_INFO
 
 namespace Arcemu
 {
-	SERVER_DECL float round(float f);
-	SERVER_DECL double round(double d);
-	SERVER_DECL long double round(long double ld);
-
 	namespace Shared
 	{
 		class SERVER_DECL Util
 		{
 		public:
+			static float round(float f);
+			
+			static double round(double d);
+			
+			static long double round(long double ld);
+
 			/////////////////////////////////////////////////////////////////////////
 			//void Sleep( unsigned long timems );
 			//  Puts the calling thread to sleep for the specified miliseconds

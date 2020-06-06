@@ -1583,7 +1583,7 @@ void Spell::SpellEffectCreateItem(uint32 i)
 		count = mincount + randcount;
 	}
 
-	uint32 countperlevel = static_cast< uint32 >(Arcemu::round(m_spellInfo->EffectRealPointsPerLevel[ i ]));
+	uint32 countperlevel = static_cast< uint32 >(Arcemu::Shared::Util::round(m_spellInfo->EffectRealPointsPerLevel[ i ]));
 
 	if(countperlevel != 0)
 	{
