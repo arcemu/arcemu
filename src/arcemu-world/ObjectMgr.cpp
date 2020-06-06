@@ -593,7 +593,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		pPlayerCreateInfo->introid = fields[23].GetUInt32();
 
 		string taxiMaskStr = fields[24].GetString();
-		vector<string> tokens = StrSplit(taxiMaskStr, " ");
+		vector<string> tokens = Arcemu::Shared::Util::StrSplit(taxiMaskStr, " ");
 
 		memset(pPlayerCreateInfo->taximask, 0, sizeof(pPlayerCreateInfo->taximask));
 		int index;

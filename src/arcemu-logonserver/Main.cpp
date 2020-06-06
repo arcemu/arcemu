@@ -211,8 +211,8 @@ bool Rehash()
 	string ips = Config.MainConfig.GetStringDefault("LogonServer", "AllowedIPs", "");
 	string ipsmod = Config.MainConfig.GetStringDefault("LogonServer", "AllowedModIPs", "");
 
-	vector<string> vips = StrSplit(ips, " ");
-	vector<string> vipsmod = StrSplit(ips, " ");
+	vector<string> vips = Arcemu::Shared::Util::StrSplit(ips, " ");
+	vector<string> vipsmod = Arcemu::Shared::Util::StrSplit(ips, " ");
 
 	m_allowedIpLock.Acquire();
 	m_allowedIps.clear();

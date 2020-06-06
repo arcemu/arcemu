@@ -1968,7 +1968,7 @@ void QuestMgr::LoadExtraQuestStuff()
 		{
 			it->Get()->quest_list.clear();
 			string quests = string(it->Get()->x_or_y_quest_string);
-			vector<string> qsts = StrSplit(quests, " ");
+			vector<string> qsts = Arcemu::Shared::Util::StrSplit(quests, " ");
 			for(vector<string>::iterator iter = qsts.begin(); iter != qsts.end(); ++iter)
 			{
 				uint32 id = atol((*iter).c_str());
@@ -1980,7 +1980,7 @@ void QuestMgr::LoadExtraQuestStuff()
 		if(it->Get()->remove_quests)
 		{
 			string quests = string(it->Get()->remove_quests);
-			vector<string> qsts = StrSplit(quests, " ");
+			vector<string> qsts = Arcemu::Shared::Util::StrSplit(quests, " ");
 			for(vector<string>::iterator iter = qsts.begin(); iter != qsts.end(); ++iter)
 			{
 				uint32 id = atol((*iter).c_str());

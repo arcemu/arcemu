@@ -30,8 +30,8 @@ void Channel::LoadConfSettings()
 	string BannedChannels = Config.MainConfig.GetStringDefault("Channels", "BannedChannels", "");
 	string MinimumLevel = Config.MainConfig.GetStringDefault("Channels", "MinimumLevel", "");
 	m_confSettingLock.Acquire();
-	m_bannedChannels = StrSplit(BannedChannels, ";");
-	m_minimumChannel = StrSplit(MinimumLevel, ";");
+	m_bannedChannels = Arcemu::Shared::Util::StrSplit(BannedChannels, ";");
+	m_minimumChannel = Arcemu::Shared::Util::StrSplit(MinimumLevel, ";");
 	m_confSettingLock.Release();
 }
 

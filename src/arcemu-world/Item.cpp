@@ -193,7 +193,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light)
 		return;
 
 	string enchant_field = fields[15].GetString();
-	vector< string > enchants = StrSplit(enchant_field, ";");
+	vector< string > enchants = Arcemu::Shared::Util::StrSplit(enchant_field, ";");
 	uint32 enchant_id;
 	EnchantEntry* entry;
 	uint32 time_left;

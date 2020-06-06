@@ -142,7 +142,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 			if(cn->aura_string)
 			{
 				string auras = string(cn->aura_string);
-				vector<string> aurs = StrSplit(auras, " ");
+				vector<string> aurs = Arcemu::Shared::Util::StrSplit(auras, " ");
 				for(vector<string>::iterator it = aurs.begin(); it != aurs.end(); ++it)
 				{
 					uint32 id = atol((*it).c_str());
@@ -723,7 +723,7 @@ void Storage_LoadAdditionalTables()
 	if(strData.empty())
 		return;
 
-	vector<string> strs = StrSplit(strData, ",");
+	vector<string> strs = Arcemu::Shared::Util::StrSplit(strData, ",");
 	if(strs.empty())
 		return;
 

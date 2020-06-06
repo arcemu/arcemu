@@ -5877,7 +5877,7 @@ void Player::SetDrunkValue(uint16 newDrunkenValue, uint32 itemId)
 
 void Player::LoadTaxiMask(const char* data)
 {
-	vector<string> tokens = StrSplit(data, " ");
+	vector<string> tokens = Arcemu::Shared::Util::StrSplit(data, " ");
 
 	int index;
 	vector<string>::iterator iter;

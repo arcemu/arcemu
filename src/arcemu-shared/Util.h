@@ -22,11 +22,6 @@
 
 #include "Common.h"
 
-///////////////////////////////////////////////////////////////////////////////
-// String Functions ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> StrSplit(const std::string & src, const std::string & sep);
-
 // This HAS to be called outside the threads __try / __except block!
 void SetThreadName(const char* format, ...);
 
@@ -82,6 +77,8 @@ namespace Arcemu
 		class SERVER_DECL Util
 		{
 		public:
+			static std::vector<std::string> StrSplit(const std::string & src, const std::string & sep);
+
 			static time_t convTimePeriod(uint32 dLength, char dType);
 
 			static int32 GetTimePeriodFromString(const char* str);

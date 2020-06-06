@@ -181,7 +181,7 @@ void LocalizationMgr::Reload(bool first)
 	/* Read Language Bindings From Config                                   */
 	/************************************************************************/
 	string ls = Config.MainConfig.GetStringDefault("Localization", "LocaleBindings", "");
-	vector<string> tbindings = StrSplit(ls, " ");
+	vector<string> tbindings = Arcemu::Shared::Util::StrSplit(ls, " ");
 	for(vector<string>::iterator ztr = tbindings.begin(); ztr != tbindings.end(); ++ztr)
 	{
 		char lb[200];
