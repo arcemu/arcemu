@@ -1,4 +1,4 @@
-PROJECT(arcemu-crashreport)
+PROJECT(crashreport)
 
 SET( prefix ${ROOT_PATH}/src/${PROJECT_NAME} )
 SET( SRCS

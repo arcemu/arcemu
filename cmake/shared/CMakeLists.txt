@@ -1,6 +1,6 @@
 PROJECT(shared)
 
-SET( prefix ${ROOT_PATH}/src/arcemu-shared )
+SET( prefix ${ROOT_PATH}/src/shared )
 SET( sources
     CThreads.cpp 
     CrashHandler.cpp 

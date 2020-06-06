@@ -1,5 +1,5 @@
 PROJECT(world)
-SET( prefix ${ROOT_PATH}/src/arcemu-world )
+SET( prefix ${ROOT_PATH}/src/world )
 SET(sources
   DBC/DBCStores.cpp
 	AchievementMgr.cpp 
