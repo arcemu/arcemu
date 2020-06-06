@@ -36,19 +36,16 @@ void MakeIntString(char* buf, int num)
 	if(num < 10)
 	{
 		buf[0] = '0';
-		//itoa(num, &buf[1], 10);
 		sprintf(&buf[1], "%u", num);
 	}
 	else
 	{
-		//itoa(num,buf,10);
 		sprintf(buf, "%u", num);
 	}
 }
 
 void MakeIntStringNoZero(char* buf, int num)
 {
-	//itoa(num,buf,10);
 	sprintf(buf, "%u", num);
 }
 
