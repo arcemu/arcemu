@@ -20,12 +20,6 @@
 #ifndef WOWSERVER_COMMON_H
 #define WOWSERVER_COMMON_H
 
-/* Define these if you are creating a repack */
-/*
-#define REPACK "Moocow's Repack"
-#define REPACK_AUTHOR "Trelorn"
-#define REPACK_WEBSITE "www.google.com"*/
-
 #ifdef WIN32
 #pragma warning(disable:4996)
 #define _CRT_SECURE_NO_DEPRECATE 1
