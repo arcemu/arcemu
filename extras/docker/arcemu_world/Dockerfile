@@ -24,14 +24,14 @@ RUN apt-get update
 RUN apt-get install -y libssl1.0.0 libmysqlclient20
 RUN mkdir -p /srv/arcemu_world
 RUN mkdir -p /srv/arcemu_world/etc
-RUN mkdir -p /srv/arcemu_world/modules
+RUN mkdir -p /srv/arcemu_world/plugins
 RUN mkdir -p /srv/arcemu_world/DBC
 RUN mkdir -p /srv/arcemu_world/maps
 RUN mkdir -p /srv/arcemu_world/log
 RUN mkdir -p /srv/arcemu_world/scripts
 
 COPY srv/arcemu_world/world /srv/arcemu_world/world
-COPY srv/arcemu_world/modules/* /srv/arcemu_world/modules/
+COPY srv/arcemu_world/plugins/* /srv/arcemu_world/plugins/
 
 EXPOSE 8129
 
