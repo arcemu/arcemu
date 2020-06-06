@@ -208,23 +208,22 @@ namespace Arcemu
 		return std::floor(ld + 0.5);
 	}
 
-	void Sleep(unsigned long timems)
-	{
-#ifdef WIN32
-		::Sleep(timems);
-#else
-		timespec tv;
-
-		tv.tv_sec = timems / 1000;
-		tv.tv_nsec = (timems % 1000) * 1000 * 1000;
-
-		nanosleep(&tv, NULL);
-#endif
-
-	}
-
 	namespace Shared
 	{
+		void Util::Sleep(unsigned long timems)
+		{
+	#ifdef WIN32
+			::Sleep(timems);
+	#else
+			timespec tv;
+
+			tv.tv_sec = timems / 1000;
+			tv.tv_nsec = (timems % 1000) * 1000 * 1000;
+
+			nanosleep(&tv, NULL);
+	#endif
+		}
+
 		vector<string> Util::StrSplit(const string & src, const string & sep)
 		{
 			vector<string> r;

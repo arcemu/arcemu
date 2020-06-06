@@ -96,7 +96,7 @@ class PeriodicFunctionCaller : public ThreadBase
 			/* wait for the thread to exit */
 			while(thread_active)
 			{
-				Arcemu::Sleep(100);
+				Arcemu::Shared::Util::Sleep(100);
 			}
 			LOG_DETAIL("PFC thread exited.");
 #else

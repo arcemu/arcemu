@@ -468,7 +468,7 @@ bool Master::Run(int argc, char** argv)
 		if(50 > etime)
 		{
 
-			Arcemu::Sleep(50 - etime);
+			Arcemu::Shared::Util::Sleep(50 - etime);
 
 		}
 	}
@@ -487,7 +487,7 @@ bool Master::Run(int argc, char** argv)
 	{
 		Log.Notice("Shutdown", "Waiting for loot to finish loading...");
 		while(lootmgr.is_loading)
-			Arcemu::Sleep(100);
+			Arcemu::Shared::Util::Sleep(100);
 	}
 
 	// send a query to wake it up if its inactive

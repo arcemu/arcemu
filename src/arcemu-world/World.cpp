@@ -1153,7 +1153,7 @@ void TaskList::wait()
 			}
 		}
 		queueLock.Release();
-		Arcemu::Sleep(20);
+		Arcemu::Shared::Util::Sleep(20);
 	}
 }
 
@@ -1184,7 +1184,7 @@ bool TaskExecutor::run()
 			delete t;
 		}
 		else
-			Arcemu::Sleep(20);
+			Arcemu::Shared::Util::Sleep(20);
 	}
 
 	THREAD_HANDLE_CRASH
@@ -1196,7 +1196,7 @@ void TaskList::waitForThreadsToExit()
 {
 	while(thread_count.GetVal())
 	{
-		Arcemu::Sleep(20);
+		Arcemu::Shared::Util::Sleep(20);
 	}
 }
 

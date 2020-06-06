@@ -10552,7 +10552,7 @@ bool CMovementCompressorThread::run()
 			(*itr)->EventDumpCompressedMovement();
 		}
 		m_listLock.Release();
-		Arcemu::Sleep(World::m_movementCompressInterval);
+		Arcemu::Shared::Util::Sleep(World::m_movementCompressInterval);
 	}
 
 	return true;

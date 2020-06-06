@@ -58,25 +58,25 @@ namespace Arcemu
 	SERVER_DECL double round(double d);
 	SERVER_DECL long double round(long double ld);
 
-	/////////////////////////////////////////////////////////////////////////
-	//void Sleep( unsigned long timems );
-	//  Puts the calling thread to sleep for the specified miliseconds
-	//
-	//Parameter(s)
-	//  unsigned long timemes  -  time interval to put the thread to sleep for
-	//
-	//Return Value
-	//  None
-	//
-	//
-	/////////////////////////////////////////////////////////////////////////
-	void Sleep(unsigned long timems);
-
 	namespace Shared
 	{
 		class SERVER_DECL Util
 		{
 		public:
+			/////////////////////////////////////////////////////////////////////////
+			//void Sleep( unsigned long timems );
+			//  Puts the calling thread to sleep for the specified miliseconds
+			//
+			//Parameter(s)
+			//  unsigned long timemes  -  time interval to put the thread to sleep for
+			//
+			//Return Value
+			//  None
+			//
+			//
+			/////////////////////////////////////////////////////////////////////////
+			void static Sleep(unsigned long timems);
+
 			static std::vector<std::string> StrSplit(const std::string & src, const std::string & sep);
 
 			static time_t convTimePeriod(uint32 dLength, char dType);

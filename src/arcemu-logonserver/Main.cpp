@@ -477,7 +477,7 @@ void LogonServer::Run(int argc, char** argv)
 			}
 
 			PatchMgr::getSingleton().UpdateJobs();
-			Arcemu::Sleep(1000);
+			Arcemu::Shared::Util::Sleep(1000);
 		}
 
 		sLog.outString("Shutting down...");
