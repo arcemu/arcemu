@@ -255,6 +255,7 @@ SET( headers
 	Shaman.h
 	Skill.h
 	SkillNameMgr.h
+	SpawnTimedEmotes.h
 	SpeedDetector.h
 	Spell.h
 	SpellAuras.h

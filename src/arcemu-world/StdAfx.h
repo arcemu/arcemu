@@ -134,6 +134,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Vehicle.h"
 #include "Unit.h"
 #include "Gossip.h"
+#include "SpawnTimedEmotes.h"
 
 #ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"
