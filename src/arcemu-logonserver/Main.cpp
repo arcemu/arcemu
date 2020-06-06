@@ -230,7 +230,7 @@ bool Rehash()
 		string stmp = itr->substr(0, i);
 		string smask = itr->substr(i + 1);
 
-		unsigned int ipraw = MakeIP(stmp.c_str());
+		unsigned int ipraw = Arcemu::Shared::Util::MakeIP(stmp.c_str());
 		unsigned char ipmask = (char)atoi(smask.c_str());
 		if(ipraw == 0 || ipmask == 0)
 		{
@@ -256,7 +256,7 @@ bool Rehash()
 		string stmp = itr->substr(0, i);
 		string smask = itr->substr(i + 1);
 
-		unsigned int ipraw = MakeIP(stmp.c_str());
+		unsigned int ipraw = Arcemu::Shared::Util::MakeIP(stmp.c_str());
 		unsigned char ipmask = (char)atoi(smask.c_str());
 		if(ipraw == 0 || ipmask == 0)
 		{

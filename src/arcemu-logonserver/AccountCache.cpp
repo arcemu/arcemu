@@ -322,7 +322,7 @@ bool IPBanner::Add(const char* ip, uint32 dur)
 	string stmp = sip.substr(0, i);
 	string smask = sip.substr(i + 1);
 
-	unsigned int ipraw = MakeIP(stmp.c_str());
+	unsigned int ipraw = Arcemu::Shared::Util::MakeIP(stmp.c_str());
 	unsigned int ipmask = atoi(smask.c_str());
 	if(ipraw == 0 || ipmask == 0)
 		return false;
@@ -384,7 +384,7 @@ void IPBanner::Reload()
 			else
 				smask = ip.substr(i + 1);
 
-			unsigned int ipraw = MakeIP(stmp.c_str());
+			unsigned int ipraw = Arcemu::Shared::Util::MakeIP(stmp.c_str());
 			unsigned int ipmask = atoi(smask.c_str());
 			if(ipraw == 0 || ipmask == 0)
 			{

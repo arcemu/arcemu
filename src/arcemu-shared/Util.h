@@ -97,12 +97,11 @@ namespace Arcemu
 
 			// returns true if the ip hits the mask, otherwise false
 			static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
+
+			static unsigned int MakeIP(const char* str);
 		};
 	}
 }
-
-unsigned int MakeIP(const char* str);
-
 
 /////////////////////////////////////////////////////////
 //uint32 getMSTime()
