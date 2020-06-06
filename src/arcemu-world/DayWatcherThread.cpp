@@ -255,7 +255,7 @@ void DayWatcherThread::update_arena()
 					}
 
 					if(Y > 1.0)
-						arenapointsPerTeam[i] += long2int32(double(ceil(Y)));
+						arenapointsPerTeam[i] += uint32(double(ceil(Y)));
 				}
 			}
 

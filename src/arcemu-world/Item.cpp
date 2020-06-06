@@ -1066,7 +1066,7 @@ uint32 Item::GenerateRandomSuffixFactor(ItemPrototype* m_itemProto)
 		value = SuffixMods[m_itemProto->InventoryType];
 
 	value = (value * double(m_itemProto->ItemLevel)) + 0.5;
-	return long2int32(value);
+	return uint32(value);
 }
 
 string Item::GetItemLink(uint32 language = 0)
@@ -1268,7 +1268,7 @@ uint32 Item::RepairItemCost()
 	}
 
 	uint32 dmodifier = dcosts->modifier[ m_itemProto->Class == ITEM_CLASS_WEAPON ? m_itemProto->SubClass : m_itemProto->SubClass + 21 ];
-	uint32 cost = long2int32((GetDurabilityMax() - GetDurability()) * dmodifier * double(dquality->quality_modifier));
+	uint32 cost = uint32((GetDurabilityMax() - GetDurability()) * dmodifier * double(dquality->quality_modifier));
 	return cost;
 }
 

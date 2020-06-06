@@ -43,7 +43,7 @@ uint32 c_GetNanoSeconds(uint64 t1, uint64 t2)
 	QueryPerformanceFrequency(&li);
 	val = double(t1 - t2) * 1000000;
 	val /= li.QuadPart;
-	return long2int32(val);
+	return uint32(val);
 }
 
 #define COLLISION_BEGINTIMER uint64 v1 = c_GetTimerValue();

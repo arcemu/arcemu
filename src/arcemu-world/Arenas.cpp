@@ -328,7 +328,7 @@ uint32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outc
 	// K is the maximum possible change
 	// Through investigation, K was estimated to be 32 (same as chess)
 	double multiplier = (outcome ? 1.0 : 0.0) - winChance;
-	return long2int32(32.0 * multiplier);
+	return uint32(32.0 * multiplier);
 }
 
 uint32 Arena::GetTeamFaction( uint32 team )
