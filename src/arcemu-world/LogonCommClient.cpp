@@ -168,13 +168,13 @@ void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 
 void LogonCommClientSocket::HandlePong(WorldPacket & recvData)
 {
-	latency = getMSTime() - pingtime;
+	latency = Arcemu::Shared::Util::getMSTime() - pingtime;
 	last_pong = (uint32)UNIXTIME;
 }
 
 void LogonCommClientSocket::SendPing()
 {
-	pingtime = getMSTime();
+	pingtime = Arcemu::Shared::Util::getMSTime();
 	WorldPacket data(RCMSG_PING, 4);
 	SendPacket(&data, false);
 
@@ -270,7 +270,7 @@ void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)
 
 void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 {
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	uint32 realm_id;
 	uint32 account_id;
 	QueryResult* result;
@@ -331,7 +331,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 
 		uncompressed.clear();
 	}
-	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", getMSTime() - t, mapping_to_send.size());
+	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", Arcemu::Shared::Util::getMSTime() - t, mapping_to_send.size());
 }
 
 void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)

@@ -28,7 +28,7 @@ OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
 WorldSession::WorldSession(uint32 id, string Name, WorldSocket* sock):
 	m_loggingInPlayer(NULL),
-	m_currMsTime(getMSTime()),
+	m_currMsTime(Arcemu::Shared::Util::getMSTime()),
 	bDeleted(false),
 	m_moveDelayTime(0),
 	m_clientTimeDelay(0),
@@ -94,7 +94,7 @@ WorldSession::~WorldSession()
 
 int WorldSession::Update(uint32 InstanceID)
 {
-	m_currMsTime = getMSTime();
+	m_currMsTime = Arcemu::Shared::Util::getMSTime();
 
 	if(!((++_updatecount) % 2) && _socket)
 		_socket->UpdateQueuedPackets();

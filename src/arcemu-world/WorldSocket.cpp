@@ -219,7 +219,7 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 void WorldSocket::OnConnect()
 {
 	sWorld.mAcceptedConnections++;
-	_latency = getMSTime();
+	_latency = Arcemu::Shared::Util::getMSTime();
 
 	WorldPacket wp(SMSG_AUTH_CHALLENGE, 24);
 
@@ -241,7 +241,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	uint64 unk4;
 	uint32 unk5, unk6, unk7;
 
-	_latency = getMSTime() - _latency;
+	_latency = Arcemu::Shared::Util::getMSTime() - _latency;
 
 	try
 	{
@@ -629,7 +629,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 		unsigned int count = 0;
 
 		fprintf(m_file, "{%s} Packet: (0x%04X) %s PacketSize = %u stamp = %u accountid = %u\n", (direction ? "SERVER" : "CLIENT"), opcode,
-		        LookupName(opcode, g_worldOpcodeNames), lenght, getMSTime(), accountid);
+		        LookupName(opcode, g_worldOpcodeNames), lenght, Arcemu::Shared::Util::getMSTime(), accountid);
 		fprintf(m_file, "|------------------------------------------------|----------------|\n");
 		fprintf(m_file, "|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|\n");
 		fprintf(m_file, "|------------------------------------------------|----------------|\n");

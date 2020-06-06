@@ -234,7 +234,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->cooldown = fields[9].GetInt32();
 				sp->floatMisc1 = fields[10].GetFloat();
 				sp->autocast_type = (uint32) - 1;
-				sp->cooldowntime = getMSTime();
+				sp->cooldowntime = Arcemu::Shared::Util::getMSTime();
 				sp->procCounter = 0;
 				sp->Misc2 = fields[11].GetUInt32();
 				if(sp->agent == AGENT_SPELL)

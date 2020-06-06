@@ -277,7 +277,7 @@ void Messenger::SendTeleportAck( Player *player, const LocationVector &location 
 	WorldPacket data( MSG_MOVE_TELEPORT_ACK, 80 );
 	data << player->GetNewGUID();
 	data << uint32( 2 );   // flags
-	data << uint32( getMSTime() );
+	data << uint32( Arcemu::Shared::Util::getMSTime() );
 	data << uint16( 0 );
 	data << float( 0 );
 	data << float( location.x );
@@ -544,7 +544,7 @@ void Messenger::SendHopOnVehicle( Unit *unit, Unit *vehicleowner, uint32 seat )
 	data << float( unit->GetPositionX() /* - vehicleowner->GetPositionX() */ );
 	data << float( unit->GetPositionY() /* - vehicleowner->GetPositionY() */ );
 	data << float( unit->GetPositionZ() /* - vehicleowner->GetPositionZ() */ );
-	data << getMSTime();
+	data << Arcemu::Shared::Util::getMSTime();
 	data << uint8( 4 ); // splinetype_facing_angle
 	data << float( 0.0f ); // facing angle
 	data << uint32( 0x00800000 ); // splineflag transport
@@ -570,7 +570,7 @@ void Messenger::SendHopOffVehicle( Unit *unit, Unit *vehicleowner, LocationVecto
 	data << float( unit->GetPositionX() );
 	data << float( unit->GetPositionY() );
 	data << float( unit->GetPositionZ() );
-	data << uint32( getMSTime() );
+	data << uint32( Arcemu::Shared::Util::getMSTime() );
 	data << uint8( 4 /* SPLINETYPE_FACING_ANGLE */ );
 	data << float( unit->GetOrientation() );                        // guess
 	data << uint32( 0x01000000 /* SPLINEFLAG_EXIT_VEHICLE */ );
@@ -597,7 +597,7 @@ void Messenger::SendSetFacing( Unit *unit, float orientation )
 	data << float( unit->GetPositionX() );
 	data << float( unit->GetPositionY() );
 	data << float( unit->GetPositionZ() );
-	data << getMSTime();
+	data << Arcemu::Shared::Util::getMSTime();
 	data << uint8(4);
 	data << float( orientation );
 	data << uint32(0x1000); //move flags: run
@@ -999,7 +999,7 @@ void Messenger::SendSetPlayerSpeeds(Player *player, uint8 type, float speed, uin
 
 		data << uint32( 0 );
 		data << uint8( 0 );
-		data << uint32( getMSTime() );
+		data << uint32( Arcemu::Shared::Util::getMSTime() );
 		data << float( position.x );
 		data << float( position.y );
 		data << float( position.z );
@@ -1170,7 +1170,7 @@ void Messenger::SendMoveKnockback( Player *player, float horizontal, float verti
 
 	WorldPacket data( SMSG_MOVE_KNOCK_BACK, 50 );
 	data << player->GetNewGUID();
-	data << uint32( getMSTime() );
+	data << uint32( Arcemu::Shared::Util::getMSTime() );
 	data << float( cosf( orientation ) );
 	data << float( sinf( orientation ) );
 	data << float( horizontal );
@@ -1183,7 +1183,7 @@ void Messenger::SendMoveKnockback( Player *player, float angle, float horizontal
 {
 	WorldPacket data( SMSG_MOVE_KNOCK_BACK, 50 );
 	data << player->GetNewGUID();
-	data << uint32( getMSTime() );
+	data << uint32( Arcemu::Shared::Util::getMSTime() );
 	data << float( cosf( angle ) );
 	data << float( sinf( angle ) );
 	data << float( horizontal );

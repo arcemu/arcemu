@@ -1628,7 +1628,7 @@ AI_Spell* Pet::HandleAutoCastEvent()
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
-			if(chance && (*itr)->spell && getMSTime() >= (*itr)->cooldowntime &&  //cebernic:crashfix
+			if(chance && (*itr)->spell && Arcemu::Shared::Util::getMSTime() >= (*itr)->cooldowntime &&  //cebernic:crashfix
 			        GetPower((*itr)->spell->powerType) >= (*itr)->spell->manaCost)
 			{
 				return *itr;
@@ -1660,7 +1660,7 @@ void Pet::HandleAutoCastEvent(AutoCastEvents Type)
 			{
 				if(itr == m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end())
 				{
-					if(getMSTime() >= (*itr)->cooldowntime)
+					if(Arcemu::Shared::Util::getMSTime() >= (*itr)->cooldowntime)
 						m_aiInterface->SetNextSpell(*itr);
 					else
 						return;
@@ -1668,7 +1668,7 @@ void Pet::HandleAutoCastEvent(AutoCastEvents Type)
 				}
 				else
 				{
-					if((*itr)->cooldowntime > getMSTime())
+					if((*itr)->cooldowntime > Arcemu::Shared::Util::getMSTime())
 						continue;
 
 					m_aiInterface->SetNextSpell(*itr);
@@ -1678,7 +1678,7 @@ void Pet::HandleAutoCastEvent(AutoCastEvents Type)
 		else if(m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size())
 		{
 			sp = *m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin();
-			if(sp->cooldown && getMSTime() < sp->cooldowntime)
+			if(sp->cooldown && Arcemu::Shared::Util::getMSTime() < sp->cooldowntime)
 				return;
 
 			m_aiInterface->SetNextSpell(sp);

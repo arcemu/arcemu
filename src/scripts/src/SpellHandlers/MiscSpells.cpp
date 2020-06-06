@@ -240,7 +240,7 @@ bool DeadlyThrowInterrupt(uint32 i, Aura* a, bool apply)
 	}
 
 	m_target->InterruptSpell();
-	m_target->SchoolCastPrevent[ school ] = 3000 + getMSTime();
+	m_target->SchoolCastPrevent[ school ] = 3000 + Arcemu::Shared::Util::getMSTime();
 
 	return true;
 }

@@ -114,7 +114,7 @@ void MapCell::SetActivity(bool state)
 void MapCell::RemoveObjects()
 {
 	ObjectSet::iterator itr;
-	//uint32 ltime = getMSTime();
+	//uint32 ltime = Arcemu::Shared::Util::getMSTime();
 
 	//Zack : we are delaying cell removal so transports can see objects far away. We are waiting for the event to remove us
 	if(_unloadpending == true)

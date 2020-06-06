@@ -206,7 +206,7 @@ bool Master::Run(int argc, char** argv)
 	Log.Notice("Rnd", "Initialized Random Number Generators.");
 
 	ThreadPool.Startup();
-	uint32 LoadingTime = getMSTime();
+	uint32 LoadingTime = Arcemu::Shared::Util::getMSTime();
 
 	Log.Success("Config", "Loading Config Files...");
 	if(Config.MainConfig.SetSource(config_file))
@@ -318,14 +318,14 @@ bool Master::Run(int argc, char** argv)
 	ThreadPool.ExecuteTask(console);
 
 	uint32 realCurrTime, realPrevTime;
-	realCurrTime = realPrevTime = getMSTime();
+	realCurrTime = realPrevTime = Arcemu::Shared::Util::getMSTime();
 
 	// Socket loop!
 	uint32 start;
 	uint32 diff;
-	uint32 last_time = getMSTime();
+	uint32 last_time = Arcemu::Shared::Util::getMSTime();
 	uint32 etime;
-	uint32 next_printout = getMSTime(), next_send = getMSTime();
+	uint32 next_printout = Arcemu::Shared::Util::getMSTime(), next_send = Arcemu::Shared::Util::getMSTime();
 
 	// Start Network Subsystem
 	Log.Success("Network", "Starting subsystem...");
@@ -338,7 +338,7 @@ bool Master::Run(int argc, char** argv)
 	if(Config.MainConfig.GetBoolDefault("Startup", "EnableSpellIDDump", false))
 		sScriptMgr.DumpUnimplementedSpells();
 
-	LoadingTime = getMSTime() - LoadingTime;
+	LoadingTime = Arcemu::Shared::Util::getMSTime() - LoadingTime;
 	Log.Success("Server", "Ready for connections. Startup time: %ums", LoadingTime);
 
 	Log.Notice("RemoteConsole", "Starting...");
@@ -386,7 +386,7 @@ bool Master::Run(int argc, char** argv)
 
 	while(!m_stopEvent && listnersockcreate)
 	{
-		start = getMSTime();
+		start = Arcemu::Shared::Util::getMSTime();
 		diff = start - last_time;
 		if(!((++loopcounter) % 10000))		// 5mins
 		{
@@ -413,11 +413,11 @@ bool Master::Run(int argc, char** argv)
 		sSocketGarbageCollector.Update();
 
 		/* UPDATE */
-		last_time = getMSTime();
+		last_time = Arcemu::Shared::Util::getMSTime();
 		etime = last_time - start;
 		if(m_ShutdownEvent)
 		{
-			if(getMSTime() >= next_printout)
+			if(Arcemu::Shared::Util::getMSTime() >= next_printout)
 			{
 				if(m_ShutdownTimer > 60000.0f)
 				{
@@ -427,10 +427,10 @@ bool Master::Run(int argc, char** argv)
 				else
 					Log.Notice("Server", "Shutdown in %i seconds.", (int)(m_ShutdownTimer / 1000.0f));
 
-				next_printout = getMSTime() + 500;
+				next_printout = Arcemu::Shared::Util::getMSTime() + 500;
 			}
 
-			if(getMSTime() >= next_send)
+			if(Arcemu::Shared::Util::getMSTime() >= next_send)
 			{
 				int time = m_ShutdownTimer / 1000;
 				if((time % 30 == 0) || time < 10)
@@ -457,7 +457,7 @@ bool Master::Run(int argc, char** argv)
 						sWorld.SendGlobalMessage(&data, NULL);
 					}
 				}
-				next_send = getMSTime() + 1000;
+				next_send = Arcemu::Shared::Util::getMSTime() + 1000;
 			}
 			if(diff >= m_ShutdownTimer)
 				break;

@@ -1379,7 +1379,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 	}
 	//const char* setname = sItemSetStore.LookupString(entry->name);
 	BlueSystemMessage(m_session, "Searching item set %u...", setid);
-	uint32 start = getMSTime();
+	uint32 start = Arcemu::Shared::Util::getMSTime();
 	sGMLog.writefromsession(m_session, "used add item set command, set %u, target %s", setid, chr->GetName());
 	for(std::list<ItemPrototype*>::iterator itr = l->begin(); itr != l->end(); ++itr)
 	{
@@ -1406,7 +1406,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 			chr->SendItemPushResult(false, true, false, true, le->ContainerSlot, le->Slot, 1 , itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetStackCount());
 		}
 	}
-	GreenSystemMessage(m_session, "Added set to inventory complete. Time: %u ms", getMSTime() - start);
+	GreenSystemMessage(m_session, "Added set to inventory complete. Time: %u ms", Arcemu::Shared::Util::getMSTime() - start);
 	return true;
 }
 
@@ -1641,7 +1641,7 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 		return false;
 
 
-	uint32 mstime = getMSTime();
+	uint32 mstime = Arcemu::Shared::Util::getMSTime();
 	snprintf(str, 200, "%s%s initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
 		MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName(), args);
 	sWorld.SendWorldText(str, 0);
@@ -1664,7 +1664,7 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 	if (ret == 0)
 		snprintf(str, 200, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
 	else
-		snprintf(str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, getMSTime() - mstime);
+		snprintf(str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, Arcemu::Shared::Util::getMSTime() - mstime);
 	sWorld.SendWorldText(str, 0);
 	sGMLog.writefromsession(m_session, "reloaded table %s", args);
 	return true;
@@ -3108,7 +3108,7 @@ bool ChatHandler::HandleLookupItemCommand(const char* args, WorldSession* m_sess
 	}
 
 	BlueSystemMessage(m_session, "Starting search of item `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	ItemPrototype* it;
 	uint32 count = 0;
 
@@ -3145,7 +3145,7 @@ bool ChatHandler::HandleLookupItemCommand(const char* args, WorldSession* m_sess
 	}
 	itr->Destruct();
 
-	BlueSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	BlueSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 	return true;
 }
 
@@ -3159,7 +3159,7 @@ bool ChatHandler::HandleLookupObjectCommand(const char* args, WorldSession* m_se
 	StorageContainerIterator<GameObjectInfo> * itr = GameObjectNameStorage.MakeIterator();
 
 	GreenSystemMessage(m_session, "Starting search of object `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	GameObjectInfo* i;
 	uint32 count = 0;
 	string y;
@@ -3201,7 +3201,7 @@ bool ChatHandler::HandleLookupObjectCommand(const char* args, WorldSession* m_se
 		recout = "|cff00ccffNo matches found.";
 		SendMultilineMessage(m_session, recout.c_str());
 	}
-	BlueSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	BlueSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 	return true;
 }
 bool ChatHandler::HandleLookupCreatureCommand(const char* args, WorldSession* m_session)
@@ -3219,7 +3219,7 @@ bool ChatHandler::HandleLookupCreatureCommand(const char* args, WorldSession* m_
 	StorageContainerIterator<CreatureInfo> * itr = CreatureNameStorage.MakeIterator();
 
 	GreenSystemMessage(m_session, "Starting search of creature `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	CreatureInfo* i;
 	uint32 count = 0;
 	while(!itr->AtEnd())
@@ -3252,7 +3252,7 @@ bool ChatHandler::HandleLookupCreatureCommand(const char* args, WorldSession* m_
 	}
 	itr->Destruct();
 
-	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	GreenSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 	return true;
 }
 
@@ -3269,7 +3269,7 @@ bool ChatHandler::HandleLookupSpellCommand(const char* args, WorldSession* m_ses
 	}
 
 	GreenSystemMessage(m_session, "Starting search of spell `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	uint32 count = 0;
 	string recout;
 	char itoabuf[12];
@@ -3308,7 +3308,7 @@ bool ChatHandler::HandleLookupSpellCommand(const char* args, WorldSession* m_ses
 		}
 	}
 
-	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	GreenSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 	return true;
 }
 
@@ -3325,7 +3325,7 @@ bool ChatHandler::HandleLookupSkillCommand(const char* args, WorldSession* m_ses
 	}
 
 	GreenSystemMessage(m_session, "Starting search of skill `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	uint32 count = 0;
 	for(uint32 index = 0; index < dbcSkillLine.GetNumRows(); ++index)
 	{
@@ -3345,7 +3345,7 @@ bool ChatHandler::HandleLookupSkillCommand(const char* args, WorldSession* m_ses
 		}
 	}
 
-	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	GreenSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 	return true;
 }
 
@@ -3362,7 +3362,7 @@ bool ChatHandler::HandleLookupFactionCommand(const char* args, WorldSession* m_s
 	}
 
 	GreenSystemMessage(m_session, "Starting search of faction `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	uint32 count = 0;
 	for(uint32 index = 0; index < dbcFaction.GetNumRows(); ++index)
 	{
@@ -3382,7 +3382,7 @@ bool ChatHandler::HandleLookupFactionCommand(const char* args, WorldSession* m_s
 		}
 	}
 
-	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	GreenSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 	return true;
 }
 

@@ -398,7 +398,7 @@ bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* arg
 
 	char str[200];
 	int ret = 0;
-	uint32 mstime = getMSTime();
+	uint32 mstime = Arcemu::Shared::Util::getMSTime();
 
 	snprintf(str, 200, "%sConsole initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
 		MSG_COLOR_LIGHTRED, argv[1]);
@@ -425,7 +425,7 @@ bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* arg
 	}
 	else
 	{
-		uint32 timediff = (unsigned int)(getMSTime() - mstime);
+		uint32 timediff = (unsigned int)(Arcemu::Shared::Util::getMSTime() - mstime);
 		pConsole->Write( "Database reload completed in %u ms.\r\n", timediff );
 		snprintf( str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, timediff );
 	}

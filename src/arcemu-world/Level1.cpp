@@ -1186,7 +1186,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	}
 	Arcemu::Shared::Util::arcemu_TOLOWER(x);
 	GreenSystemMessage(m_session, "Starting search of achievement `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 	uint32 i, j, numFound = 0;
 	string y, recout;
 	char playerGUID[17];
@@ -1360,7 +1360,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		SendMultilineMessage(m_session, recout.c_str());
 	}
 
-	BlueSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	BlueSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 
 	return true;
 }

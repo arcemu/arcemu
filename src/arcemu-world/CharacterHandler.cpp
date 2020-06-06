@@ -73,7 +73,7 @@ LoginErrorCode VerifyName(const char* name, size_t nlen)
 bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_session)
 {
 	uint32 uCount = 0;
-	uint32 ts = getMSTime();
+	uint32 ts = Arcemu::Shared::Util::getMSTime();
 	QueryResult* result = CharacterDatabase.Query("SELECT guid, name FROM characters");
 	if(result)
 	{
@@ -102,7 +102,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_ses
 		delete result;
 	}
 
-	SystemMessage(m_session, "Procedure completed in %u ms. %u character(s) forced to rename.", getMSTime() - ts, uCount);
+	SystemMessage(m_session, "Procedure completed in %u ms. %u character(s) forced to rename.", Arcemu::Shared::Util::getMSTime() - ts, uCount);
 	return true;
 }
 
@@ -123,7 +123,7 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 		uint32 enchantment; // added in 2.4
 	};
 
-	uint32 start_time = getMSTime();
+	uint32 start_time = Arcemu::Shared::Util::getMSTime();
 
 	player_item items[23];
 	int8 slot;
@@ -288,7 +288,7 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 		while(result->NextRow());
 	}
 
-	Log.Debug("Character Enum", "Built in %u ms.", getMSTime() - start_time);
+	Log.Debug("Character Enum", "Built in %u ms.", Arcemu::Shared::Util::getMSTime() - start_time);
 	SendPacket(&data);
 }
 

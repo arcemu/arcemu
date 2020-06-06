@@ -908,7 +908,7 @@ void WorldSession::HandleBuyBackOpcode(WorldPacket & recv_data)
 		WorldPacket data(16);
 		data.Initialize(SMSG_BUY_ITEM);
 		data << uint64(guid);
-		data << getMSTime(); //VLack: seen is Aspire code
+		data << Arcemu::Shared::Util::getMSTime(); //VLack: seen is Aspire code
 		data << uint32(itemid) << uint32(amount);
 		SendPacket(&data);
 	}
@@ -1202,7 +1202,7 @@ void WorldSession::HandleBuyItemInSlotOpcode(WorldPacket & recv_data)   // drag 
 
 	WorldPacket data(SMSG_BUY_ITEM, 22);
 	data << uint64(srcguid);
-	data << getMSTime();
+	data << Arcemu::Shared::Util::getMSTime();
 	data << uint32(itemid);
 	data << uint32(amount);
 
@@ -1365,7 +1365,7 @@ void WorldSession::HandleBuyItemOpcode(WorldPacket & recv_data)   // right-click
 	data.Initialize(SMSG_BUY_ITEM);
 
 	data << uint64(srcguid);
-	data << getMSTime();
+	data << Arcemu::Shared::Util::getMSTime();
 	data << uint32(itemid);
 	data << uint32(amount * item.amount);
 

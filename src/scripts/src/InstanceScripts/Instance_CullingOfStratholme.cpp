@@ -105,12 +105,12 @@ class MEATHOOK_AI : public CreatureAIScript
 			{
 				for(uint8 i = 0; i < spells.size(); i++)
 				{
-					if(spells[i]->time < getMSTime())
+					if(spells[i]->time < Arcemu::Shared::Util::getMSTime())
 					{
 						if(Rand(spells[i]->chance))
 						{
 							CastScriptSpell(spells[i]);
-							spells[i]->time = getMSTime() + spells[i]->timer;
+							spells[i]->time = Arcemu::Shared::Util::getMSTime() + spells[i]->timer;
 						}
 					}
 				}
@@ -288,12 +288,12 @@ class SALRAMM_THE_FLESHCRAFTER_AI : public CreatureAIScript
 			{
 				for(uint8 i = 0; i < spells.size(); i++)
 				{
-					if(spells[i]->time < getMSTime())
+					if(spells[i]->time < Arcemu::Shared::Util::getMSTime())
 					{
 						if(Rand(spells[i]->chance))
 						{
 							CastScriptSpell(spells[i]);
-							spells[i]->time = getMSTime() + spells[i]->timer;
+							spells[i]->time = Arcemu::Shared::Util::getMSTime() + spells[i]->timer;
 						}
 					}
 				}
@@ -468,12 +468,12 @@ class CHRONO_LORD_EPOCH_AI : public CreatureAIScript
 			{
 				for(uint8 i = 0; i < spells.size(); i++)
 				{
-					if(spells[i]->time < getMSTime())
+					if(spells[i]->time < Arcemu::Shared::Util::getMSTime())
 					{
 						if(Rand(spells[i]->chance))
 						{
 							CastScriptSpell(spells[i]);
-							spells[i]->time = getMSTime() + spells[i]->timer;
+							spells[i]->time = Arcemu::Shared::Util::getMSTime() + spells[i]->timer;
 						}
 					}
 				}
@@ -603,12 +603,12 @@ class INFINITE_CORRUPTOR_AI : public CreatureAIScript
 			{
 				for(uint8 i = 0; i < spells.size(); i++)
 				{
-					if(spells[i]->time < getMSTime())
+					if(spells[i]->time < Arcemu::Shared::Util::getMSTime())
 					{
 						if(Rand(spells[i]->chance))
 						{
 							CastScriptSpell(spells[i]);
-							spells[i]->time = getMSTime() + spells[i]->timer;
+							spells[i]->time = Arcemu::Shared::Util::getMSTime() + spells[i]->timer;
 						}
 					}
 				}
@@ -798,12 +798,12 @@ class MALGANIS_AI : public CreatureAIScript
 			{
 				for(uint8 i = 0; i < spells.size(); i++)
 				{
-					if(spells[i]->time < getMSTime())
+					if(spells[i]->time < Arcemu::Shared::Util::getMSTime())
 					{
 						if(Rand(spells[i]->chance))
 						{
 							CastScriptSpell(spells[i]);
-							spells[i]->time = getMSTime() + spells[i]->timer;
+							spells[i]->time = Arcemu::Shared::Util::getMSTime() + spells[i]->timer;
 						}
 					}
 				}

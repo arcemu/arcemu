@@ -3768,7 +3768,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 			}
 			else
 				// Prevent unit from casting in that school
-				unitTarget->SchoolCastPrevent[school] = duration + getMSTime();
+				unitTarget->SchoolCastPrevent[school] = duration + Arcemu::Shared::Util::getMSTime();
 
 			TargetSpell->cancel(); // Interrupt the spell cast
 		}
@@ -4923,7 +4923,7 @@ void Spell::SpellEffectPlayerPull(uint32 i)
 	data << p_target->GetNewGUID();
 	data << uint8(0);
 	data << p_target->GetPositionX() << p_target->GetPositionY() << p_target->GetPositionZ();
-	data << getMSTime();
+	data << Arcemu::Shared::Util::getMSTime();
 	data << uint8(4);
 	data << pullO;
 	data << uint32(0x00001000);

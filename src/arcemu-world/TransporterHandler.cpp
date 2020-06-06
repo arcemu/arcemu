@@ -321,7 +321,7 @@ void Transporter::UpdatePosition()
 	if(m_WayPoints.size() <= 1)
 		return;
 
-	m_timer = getMSTime() % m_period;
+	m_timer = Arcemu::Shared::Util::getMSTime() % m_period;
 
 	while(((m_timer - mCurrentWaypoint->first) % m_pathTime) >= ((mNextWaypoint->first - mCurrentWaypoint->first) % m_pathTime))
 	{

@@ -437,7 +437,7 @@ void UpdateBuilder::_BuildMovementUpdate( ByteBuffer* data, uint16 flags, uint32
 
 		*data << (uint16)moveflags2;
 
-		*data << getMSTime(); // this appears to be time in ms but can be any thing. Maybe packet serializer ?
+		*data << Arcemu::Shared::Util::getMSTime(); // this appears to be time in ms but can be any thing. Maybe packet serializer ?
 
 		// this stuff:
 		//   0x01 -> Enable Swimming?
@@ -573,7 +573,7 @@ void UpdateBuilder::_BuildMovementUpdate( ByteBuffer* data, uint16 flags, uint32
 
 	if(flags & UPDATEFLAG_TRANSPORT)   //0x2
 	{
-	*data << getMSTime();
+	*data << Arcemu::Shared::Util::getMSTime();
     }
 	if( flags & UPDATEFLAG_VEHICLE ){
 		uint32 vehicleid = 0;

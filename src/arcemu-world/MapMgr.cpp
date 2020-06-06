@@ -59,8 +59,8 @@ worldstateshandler( mapId )
 
 	m_GOHighGuid = m_CreatureHighGuid = 0;
 	m_DynamicObjectHighGuid = 0;
-	lastUnitUpdate = getMSTime();
-	lastGameobjectUpdate = getMSTime();
+	lastUnitUpdate = Arcemu::Shared::Util::getMSTime();
+	lastGameobjectUpdate = Arcemu::Shared::Util::getMSTime();
 	m_battleground = NULL;
 
 	m_holder = &eventHolder;
@@ -1253,7 +1253,7 @@ bool MapMgr::Do()
 	ThreadState.SetVal(THREADSTATE_BUSY);
 	SetThreadName("Map mgr - M%u|I%u", this->_mapId , this->m_instanceID);
 	ObjectSet::iterator i;
-	uint32 last_exec = getMSTime();
+	uint32 last_exec = Arcemu::Shared::Util::getMSTime();
 
 	// Create Instance script
 	LoadInstanceScript();
@@ -1288,7 +1288,7 @@ bool MapMgr::Do()
 
 	while((GetThreadState() != THREADSTATE_TERMINATE) && !_shutdown)
 	{
-		exec_start = getMSTime();
+		exec_start = Arcemu::Shared::Util::getMSTime();
 
 ///////////////////////////////////////////// first push to world new objects ////////////////////////////////////////////
 
@@ -1313,7 +1313,7 @@ bool MapMgr::Do()
 		//Now update sessions of this map + objects
 		_PerformObjectDuties();
 
-		last_exec = getMSTime();
+		last_exec = Arcemu::Shared::Util::getMSTime();
 		exec_time = last_exec - exec_start;
 		if(exec_time < MAP_MGR_UPDATE_PERIOD)
 		{
@@ -1449,7 +1449,7 @@ Object* MapMgr::_GetObject(const uint64 & guid)
 void MapMgr::_PerformObjectDuties()
 {
 	++mLoopCounter;
-	uint32 mstime = getMSTime();
+	uint32 mstime = Arcemu::Shared::Util::getMSTime();
 	uint32 difftime = mstime - lastUnitUpdate;
 	if(difftime > 500)
 		difftime = 500;

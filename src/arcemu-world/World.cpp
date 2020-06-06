@@ -329,7 +329,7 @@ bool World::SetInitialWorldSettings()
 
 	// Start
 
-	uint32 start_time = getMSTime();
+	uint32 start_time = Arcemu::Shared::Util::getMSTime();
 
 	Log.Success("World", "Loading DBC files...");
 	if(!LoadDBCs())
@@ -445,7 +445,7 @@ bool World::SetInitialWorldSettings()
 
 	Log.Success("WordFilter", "Done.");
 
-	Log.Success("World", "Database loaded in %ums.", getMSTime() - start_time);
+	Log.Success("World", "Database loaded in %ums.", Arcemu::Shared::Util::getMSTime() - start_time);
 
 	if(Collision)
 	{
@@ -1003,9 +1003,9 @@ void World::SaveAllPlayers()
 	{
 		if(itr->second->GetSession())
 		{
-			mt = getMSTime();
+			mt = Arcemu::Shared::Util::getMSTime();
 			itr->second->SaveToDB(false);
-			LOG_DETAIL("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), getMSTime() - mt);
+			LOG_DETAIL("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), Arcemu::Shared::Util::getMSTime() - mt);
 			++count;
 		}
 	}

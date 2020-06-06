@@ -226,7 +226,7 @@ void TaxiPath::SendMoveForTime(Player* riding, Player* to, uint32 time)
 	*data << riding->GetNewGUID();
 	*data << uint8(0); //VLack: usual uint8 after new style guid
 	*data << riding->GetPositionX() << riding->GetPositionY() << riding->GetPositionZ();
-	*data << getMSTime();
+	*data << Arcemu::Shared::Util::getMSTime();
 	*data << uint8(0);
 //	*data << uint32( 0x00000300 );
 	*data << uint32(0x00003000);
@@ -298,7 +298,7 @@ void TaxiPath::SendMoveForTime(Player* riding, Player* to, uint32 time)
 
 		*data << riding->GetNewGUID();
 		*data << riding->GetPositionX( ) << riding->GetPositionY( ) << riding->GetPositionZ( );
-		*data << getMSTime();
+		*data << Arcemu::Shared::Util::getMSTime();
 		*data << uint8( 0 );
 		*data << uint32( 0x00000300 );
 		*data << uint32( uint32((getLength() * TAXI_TRAVEL_SPEED) - time));

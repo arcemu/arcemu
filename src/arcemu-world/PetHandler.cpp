@@ -178,7 +178,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					if(sp != NULL)
 					{
 						// Check the cooldown
-						if(sp->cooldowntime && getMSTime() < sp->cooldowntime)
+						if(sp->cooldowntime && Arcemu::Shared::Util::getMSTime() < sp->cooldowntime)
 						{
 							pPet->SendCastFailed(misc, SPELL_FAILED_NOT_READY);
 							return;

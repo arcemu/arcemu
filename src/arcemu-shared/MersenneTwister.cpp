@@ -28,7 +28,7 @@ Arcemu::Threading::AtomicCounter counter;
 
 uint32 generate_seed()
 {
-	uint32 mstime = getMSTime();
+	uint32 mstime = Arcemu::Shared::Util::getMSTime();
 	uint32 stime = (uint32)time(NULL);
 	uint32 rnd[2];
 	rnd[0] = rand() * rand() * rand();
@@ -41,7 +41,7 @@ uint32 generate_seed()
 
 void InitRandomNumberGenerators()
 {
-	srand(getMSTime());
+	srand(Arcemu::Shared::Util::getMSTime());
 	for(uint32 i = 0; i < NUMBER_OF_GENERATORS; ++i)
 	{
 		m_generators[i] = new CRandomMersenne(generate_seed());
@@ -51,7 +51,7 @@ void InitRandomNumberGenerators()
 
 void CleanupRandomNumberGenerators()
 {
-	srand(getMSTime());
+	srand(Arcemu::Shared::Util::getMSTime());
 	for(uint32 i = 0; i < NUMBER_OF_GENERATORS; ++i)
 	{
 		delete m_generators[i];

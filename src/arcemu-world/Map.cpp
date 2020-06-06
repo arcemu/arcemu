@@ -117,7 +117,7 @@ bool CheckResultLengthGameObject(QueryResult* res)
 
 void Map::LoadSpawns(bool reload)
 {
-	//uint32 st=getMSTime();
+	//uint32 st=Arcemu::Shared::Util::getMSTime();
 	CreatureSpawnCount = 0;
 	if(reload)   //perform cleanup
 		for(uint32 x = 0; x < _sizeX; x++)

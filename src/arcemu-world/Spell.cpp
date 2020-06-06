@@ -2135,7 +2135,7 @@ void Spell::SendSpellGo()
 	data << extra_cast_number; //3.0.2
 	data << GetProto()->Id;
 	data << flags;
-	data << getMSTime();
+	data << Arcemu::Shared::Util::getMSTime();
 	data << (uint8)(UniqueTargets.size()); //number of hits
 	writeSpellGoTargets(&data);
 
@@ -4209,7 +4209,7 @@ uint8 Spell::CanCast(bool tolerate)
 	{
 		if(u_caster->SchoolCastPrevent[GetProto()->School])
 		{
-			uint32 now_ = getMSTime();
+			uint32 now_ = Arcemu::Shared::Util::getMSTime();
 			if(now_ > u_caster->SchoolCastPrevent[GetProto()->School]) //this limit has expired,remove
 				u_caster->SchoolCastPrevent[GetProto()->School] = 0;
 			else
@@ -4975,7 +4975,7 @@ void Spell::HandleTeleport(float x, float y, float z, uint32 mapid, Unit* Target
 		data << Target->GetPositionX();
 		data << Target->GetPositionY();
 		data << Target->GetPositionZ();
-		data << getMSTime();
+		data << Arcemu::Shared::Util::getMSTime();
 		data << uint8(0x00);
 		data << uint32(256);
 		data << uint32(1);

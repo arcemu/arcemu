@@ -2092,7 +2092,7 @@ class LuaUnit
 			data << ptr->GetPositionX();
 			data << ptr->GetPositionY();
 			data << ptr->GetPositionZ();
-			data << getMSTime();
+			data << Arcemu::Shared::Util::getMSTime();
 			data << uint8(0x00);
 			data << uint32(256);
 			data << uint32(1);
@@ -4705,7 +4705,7 @@ class LuaUnit
 			data << ptr->GetPositionX();
 			data << ptr->GetPositionY();
 			data << ptr->GetPositionZ();
-			data << getMSTime();
+			data << Arcemu::Shared::Util::getMSTime();
 			data << uint8(0x00);
 			data << uint32(mov_flag);
 			data << moveTime;
@@ -5863,7 +5863,7 @@ class LuaUnit
 			data << ptr->GetNewGUID();
 			data << uint8(0);
 			data << ptr->GetPositionX() << ptr->GetPositionY() << ptr->GetPositionZ();
-			data << getMSTime();
+			data << Arcemu::Shared::Util::getMSTime();
 			data << uint8(0x0);
 			data << uint32(0x100);
 			data << uint32(1) << uint32(1);

@@ -203,7 +203,7 @@ bool DeathGrip(uint32 i, Spell* s)
 		data << unitTarget->GetPositionX();
 		data << unitTarget->GetPositionY();
 		data << unitTarget->GetPositionZ();
-		data << getMSTime();
+		data << Arcemu::Shared::Util::getMSTime();
 		data << uint8(0x00);
 		data << uint32(0x00001000);
 		data << time;

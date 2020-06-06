@@ -39,7 +39,7 @@ void LocalizationMgr::Shutdown()
 
 	maxid++;
 	Log.Notice("LocalizationMgr", "Beginning pointer cleanup...");
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 
 	for(i = 0; i < maxid; ++i)
 	{
@@ -118,7 +118,7 @@ void LocalizationMgr::Shutdown()
 	delete [] m_WorldBroadCast;
 	delete [] m_WorldMapInfo;
 	m_languages.clear();
-	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", (getMSTime() - t) / 1000.0f);
+	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", (Arcemu::Shared::Util::getMSTime() - t) / 1000.0f);
 #undef SAFE_FREE_PTR
 }
 

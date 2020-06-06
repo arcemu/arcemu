@@ -1137,7 +1137,7 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 		//check if we can trigger due to time limitation
 		if(ospinfo->proc_interval)
 		{
-			uint32 now_in_ms = getMSTime();
+			uint32 now_in_ms = Arcemu::Shared::Util::getMSTime();
 			if(spell_proc->mLastTrigger + ospinfo->proc_interval > now_in_ms)
 				continue; //we can't trigger it yet.
 			spell_proc->mLastTrigger = now_in_ms; // consider it triggered
@@ -3881,7 +3881,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 				if(itr->second.first)
 				{
 					// We have a *periodic* delayed spell.
-					uint32 t = getMSTime();
+					uint32 t = Arcemu::Shared::Util::getMSTime();
 					if(t > itr->second.second)    // Time expired
 					{
 						// Set new time
@@ -4176,7 +4176,7 @@ void Unit::stopAttack(Unit* pVictim)
 	{
 		if(!IsPlayer() || getClass() == ROGUE)
 		{
-			m_cTimer = getMSTime() + 8000;
+			m_cTimer = Arcemu::Shared::Util::getMSTime() + 8000;
 			sEventMgr.RemoveEvents(this, EVENT_COMBAT_TIMER);
 			sEventMgr.AddEvent(this, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 8000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			if(pVictim->IsUnit())   // there could be damage coming from objects/enviromental
@@ -7195,17 +7195,17 @@ void Unit::setAttackTimer(int32 time, bool offhand)
 		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME + 1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
 	if(offhand)
-		m_attackTimer_1 = getMSTime() + time;
+		m_attackTimer_1 = Arcemu::Shared::Util::getMSTime() + time;
 	else
-		m_attackTimer = getMSTime() + time;
+		m_attackTimer = Arcemu::Shared::Util::getMSTime() + time;
 }
 
 bool Unit::isAttackReady(bool offhand)
 {
 	if(offhand)
-		return (getMSTime() >= m_attackTimer_1) ? true : false;
+		return (Arcemu::Shared::Util::getMSTime() >= m_attackTimer_1) ? true : false;
 	else
-		return (getMSTime() >= m_attackTimer) ? true : false;
+		return (Arcemu::Shared::Util::getMSTime() >= m_attackTimer) ? true : false;
 }
 
 void Unit::ReplaceAIInterface(AIInterface* new_interface)

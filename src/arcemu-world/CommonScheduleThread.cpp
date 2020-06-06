@@ -52,7 +52,7 @@ bool CommonScheduleThread::run()
 	// cebernic nothing in storage
 	if(objmgr.IsBCEntryStorageEmpty()) sWorld.BCSystemEnable = 0;
 
-	BCTimerCount = getMSTime() + ((uint32)sWorld.BCInterval * 1000);
+	BCTimerCount = Arcemu::Shared::Util::getMSTime() + ((uint32)sWorld.BCInterval * 1000);
 
 	while(GetThreadState() != THREADSTATE_TERMINATE)
 	{
@@ -81,11 +81,11 @@ void CommonScheduleThread::BroadCastExec()
 
 	if((uint32)sWorld.BCInterval > THREAD_LOOP_INTERVAL)
 	{
-		if(getMSTime() <= BCTimerCount)
+		if(Arcemu::Shared::Util::getMSTime() <= BCTimerCount)
 		{
 			return;
 		}
-		else	BCTimerCount = getMSTime() + ((uint32)sWorld.BCInterval * 1000);
+		else	BCTimerCount = Arcemu::Shared::Util::getMSTime() + ((uint32)sWorld.BCInterval * 1000);
 	}
 
 	switch(sWorld.BCOrderMode)

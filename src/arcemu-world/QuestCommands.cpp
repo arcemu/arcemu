@@ -102,7 +102,7 @@ bool ChatHandler::HandleQuestLookupCommand(const char* args, WorldSession* m_ses
 	}
 
 	BlueSystemMessage(m_session, "Starting search of quests `%s`...", x.c_str());
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 
 	StorageContainerIterator<Quest> * itr = QuestStorage.MakeIterator();
 
@@ -160,7 +160,7 @@ bool ChatHandler::HandleQuestLookupCommand(const char* args, WorldSession* m_ses
 		SendMultilineMessage(m_session, recout.c_str());
 	}
 
-	BlueSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	BlueSystemMessage(m_session, "Search completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 
 	return true;
 }
@@ -1559,11 +1559,11 @@ bool ChatHandler::HandleQuestFinisherSpawnCommand(const char* args, WorldSession
 bool ChatHandler::HandleQuestLoadCommand(const char* args, WorldSession* m_session)
 {
 	BlueSystemMessage(m_session, "Load of quests from the database has been initiated ...", "");
-	uint32 t = getMSTime();
+	uint32 t = Arcemu::Shared::Util::getMSTime();
 
 	sQuestMgr.LoadExtraQuestStuff();
 
-	BlueSystemMessage(m_session, "Load completed in %u ms.", getMSTime() - t);
+	BlueSystemMessage(m_session, "Load completed in %u ms.", Arcemu::Shared::Util::getMSTime() - t);
 
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(guid == 0)
