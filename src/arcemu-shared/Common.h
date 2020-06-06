@@ -308,49 +308,6 @@ namespace __gnu_cxx
 #include <hash_set>
 #endif
 
-
-
-/*#ifdef _STLPORT_VERSION
-#define HM_NAMESPACE std
-using std::hash_map;
-using std::hash_set;
-#elif COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1300
-#define HM_NAMESPACE stdext
-using stdext::hash_map;
-using stdext::hash_set;
-#define ENABLE_SHITTY_STL_HACKS 1
-
-// hacky stuff for vc++
-#define snprintf _snprintf
-#define vsnprintf _vsnprintf
-//#define strlen lstrlen
-
-/*#ifdef WIN32
-typedef char TCHAR;
-#define __T(x) x
-#endif/
-
-// cebernic added it
-#define __utf8(x) _StringToUTF8(x)
-#define __ansi(x) _StringToANSI(x)
-#define __isutf8(x) _IsStringUTF8(x)
-
-
-#elif COMPILER == COMPILER_INTEL
-#define HM_NAMESPACE std
-using std::hash_map;
-using std::hash_set;
-#elif defined(HAS_TR1)
-#define HM_NAMESPACE std
-#define hash_map std::tr1::unordered_map
-#define hash_set std::tr1::unordered_set
-/*using std::unordered_map;
-using std::unordered_set;/
-#elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
-#define HM_NAMESPACE __gnu_cxx
-using __gnu_cxx::hash_map;
-using __gnu_cxx::hash_set;*/
-
 /* Use correct types for x64 platforms, too */
 #if COMPILER != COMPILER_GNU
 typedef signed __int64 int64;
