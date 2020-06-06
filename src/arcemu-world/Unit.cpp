@@ -954,7 +954,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 		for(int i = 0; i < active_player_count; i++)
 		{
 			Player* plr = active_player_list[i];
-			plr->GiveXP(float2int32(((xp * plr->getLevel()) / total_level) * xp_mod), pVictim->GetGUID(), true);
+			plr->GiveXP(int(((xp * plr->getLevel()) / total_level) * xp_mod), pVictim->GetGUID(), true);
 
 			active_player_list[i]->SetFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_LASTKILLWITHHONOR);
 			if(!sEventMgr.HasEvent(active_player_list[i], EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
@@ -1107,12 +1107,12 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 			{
 				uint32 mhs = mh->GetProto()->Delay;
 				uint32 ohs = of->GetProto()->Delay;
-				proc_Chance = float2int32((mhs + ohs) * 0.001f * ppm / 0.6f);
+				proc_Chance = int((mhs + ohs) * 0.001f * ppm / 0.6f);
 			}
 			else if(mh != NULL)
 			{
 				uint32 mhs = mh->GetProto()->Delay;
-				proc_Chance = float2int32(mhs * 0.001f * ppm / 0.6f);
+				proc_Chance = int(mhs * 0.001f * ppm / 0.6f);
 			}
 			else
 				proc_Chance = 0;
@@ -1121,11 +1121,11 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 			{
 				if(TO< Player* >(this)->GetShapeShift() == FORM_CAT)
 				{
-					proc_Chance = float2int32(ppm / 0.6f);
+					proc_Chance = int(ppm / 0.6f);
 				}
 				else if(TO< Player* >(this)->GetShapeShift() == FORM_BEAR || TO< Player* >(this)->GetShapeShift() == FORM_DIREBEAR)
 				{
-					proc_Chance = float2int32(ppm / 0.24f);
+					proc_Chance = int(ppm / 0.24f);
 				}
 			}
 		}
@@ -2797,7 +2797,7 @@ void Unit::CalculateResistanceReduction(Unit* pVictim, dealdamage* dmg, SpellEnt
 	else
 	{
 		// applying resistance to other type of damage
-		int32 RResist = float2int32((pVictim->GetResistance((*dmg).school_type) + ((pVictim->getLevel() > getLevel()) ? (pVictim->getLevel() - this->getLevel()) * 5 : 0)) - PowerCostPctMod[(*dmg).school_type]);
+		int32 RResist = int((pVictim->GetResistance((*dmg).school_type) + ((pVictim->getLevel() > getLevel()) ? (pVictim->getLevel() - this->getLevel()) * 5 : 0)) - PowerCostPctMod[(*dmg).school_type]);
 		if(RResist < 0)
 			RResist = 0;
 		AverageResistance = (float)(RResist) / (float)(getLevel() * 5) * 0.75f;
@@ -2860,7 +2860,7 @@ uint32 Unit::GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, Spel
 				}
 			}
 		}
-		victim_skill = float2int32(vskill + TO< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_DEFENCE));
+		victim_skill = int(vskill + TO< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_DEFENCE));
 	}
 	//--------------------------------mob defensive chances-------------------------------------
 	else
@@ -2891,17 +2891,17 @@ uint32 Unit::GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, Spel
 			case MELEE:   // melee main hand weapon
 				it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 				hitmodifier += pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_HIT);
-				self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL));
+				self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL));
 				break;
 			case OFFHAND: // melee offhand weapon (dualwield)
 				it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 				hitmodifier += pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_HIT);
-				self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL));
+				self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL));
 				break;
 			case RANGED:  // ranged weapon
 				it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
 				hitmodifier += pr->CalcRating(PLAYER_RATING_MODIFIER_RANGED_HIT);
-				self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_RANGED_SKILL));
+				self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_RANGED_SKILL));
 				break;
 		}
 
@@ -2911,7 +2911,7 @@ uint32 Unit::GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, Spel
 		{
 			it = pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 			hitmodifier += pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_HIT);
-			self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL));
+			self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL));
 		}
 		if(it)
 			SubClassSkill = GetSkillByProto(it->GetProto()->Class, it->GetProto()->SubClass);
@@ -3138,7 +3138,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 				block = plr->GetBlockChance();
 			}
 		}
-		victim_skill = float2int32(vskill + floorf(plr->CalcRating(PLAYER_RATING_MODIFIER_DEFENCE)));
+		victim_skill = int(vskill + floorf(plr->CalcRating(PLAYER_RATING_MODIFIER_DEFENCE)));
 	}
 //--------------------------------mob defensive chances-------------------------------------
 	else
@@ -3189,7 +3189,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		{
 			case MELEE:   // melee main hand weapon
 				it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-				self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL));
+				self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL));
 				if(it)
 				{
 					dmg.school_type = it->GetProto()->Damage[0].Type;
@@ -3199,7 +3199,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 				break;
 			case OFFHAND: // melee offhand weapon (dualwield)
 				it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
-				self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL));
+				self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL));
 				hit_status |= HITSTATUS_DUALWIELD;//animation
 				if(it)
 				{
@@ -3210,7 +3210,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 				break;
 			case RANGED:  // ranged weapon
 				it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
-				self_skill = float2int32(pr->CalcRating(PLAYER_RATING_MODIFIER_RANGED_SKILL));
+				self_skill = int(pr->CalcRating(PLAYER_RATING_MODIFIER_RANGED_SKILL));
 				if(it)
 					dmg.school_type = it->GetProto()->Damage[0].Type;
 				break;
@@ -3605,19 +3605,19 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 					disable_dR = true;
 
 
-				dmg.full_damage += float2int32(dmg.full_damage * pVictim->DamageTakenPctMod[ dmg.school_type ]);
+				dmg.full_damage += int(dmg.full_damage * pVictim->DamageTakenPctMod[ dmg.school_type ]);
 
 				if(dmg.school_type != SCHOOL_NORMAL)
-					dmg.full_damage += float2int32(dmg.full_damage * (GetDamageDonePctMod(dmg.school_type) - 1));
+					dmg.full_damage += int(dmg.full_damage * (GetDamageDonePctMod(dmg.school_type) - 1));
 
 				if(ability != NULL && ability->NameHash == SPELL_HASH_SHRED)
-					dmg.full_damage += float2int32(dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING]);
+					dmg.full_damage += int(dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING]);
 				if(ability != NULL && ability->NameHash == SPELL_HASH_MAUL)
-					dmg.full_damage += float2int32(dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING]);
+					dmg.full_damage += int(dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING]);
 
 				//pet happiness state dmg modifier
 				if(IsPet() && !TO< Pet* >(this)->IsSummonedPet())
-					dmg.full_damage = (dmg.full_damage <= 0) ? 0 : float2int32(dmg.full_damage * TO< Pet* >(this)->GetHappinessDmgMod());
+					dmg.full_damage = (dmg.full_damage <= 0) ? 0 : int(dmg.full_damage * TO< Pet* >(this)->GetHappinessDmgMod());
 
 				if(dmg.full_damage < 0)
 					dmg.full_damage = 0;
@@ -3641,7 +3641,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 							float damage_reduction = (high_dmg_mod + low_dmg_mod) / 2.0f;
 							if(damage_reduction > 0)
 							{
-								dmg.full_damage = float2int32(damage_reduction * dmg.full_damage);
+								dmg.full_damage = int(damage_reduction * dmg.full_damage);
 							}
 							hit_status |= HITSTATUS_GLANCING;
 						}
@@ -3660,7 +3660,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 									float block_multiplier = (100.0f + TO< Player* >(pVictim)->m_modblockabsorbvalue) / 100.0f;
 									if(block_multiplier < 1.0f)block_multiplier = 1.0f;
 
-									blocked_damage = float2int32((shield->GetProto()->Block + ((TO< Player* >(pVictim)->m_modblockvaluefromspells + pVictim->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK))) + ((pVictim->GetStat(STAT_STRENGTH) / 2.0f) - 1.0f)) * block_multiplier);
+									blocked_damage = int((shield->GetProto()->Block + ((TO< Player* >(pVictim)->m_modblockvaluefromspells + pVictim->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK))) + ((pVictim->GetStat(STAT_STRENGTH) / 2.0f) - 1.0f)) * block_multiplier);
 
 									if(Rand(m_BlockModPct))
 										blocked_damage *= 2;
@@ -3710,16 +3710,16 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 									dmg.full_damage += dmg.full_damage * TO< Player* >(this)->m_modphyscritdmgPCT / 100;
 								}
 								if(!pVictim->IsPlayer())
-									dmg.full_damage += float2int32(dmg.full_damage * TO< Player* >(this)->IncreaseCricticalByTypePCT[TO_CREATURE(pVictim)->GetCreatureInfo()->Type]);
+									dmg.full_damage += int(dmg.full_damage * TO< Player* >(this)->IncreaseCricticalByTypePCT[TO_CREATURE(pVictim)->GetCreatureInfo()->Type]);
 								//sLog.outString( "DEBUG: After IncreaseCricticalByTypePCT: %u" , dmg.full_damage );
 							}
 
 							dmg.full_damage += dmgbonus;
 
 							if(weapon_damage_type == RANGED)
-								dmg.full_damage = dmg.full_damage - float2int32(dmg.full_damage * CritRangedDamageTakenPctMod[dmg.school_type]);
+								dmg.full_damage = dmg.full_damage - int(dmg.full_damage * CritRangedDamageTakenPctMod[dmg.school_type]);
 							else
-								dmg.full_damage = dmg.full_damage - float2int32(dmg.full_damage * CritMeleeDamageTakenPctMod[dmg.school_type]);
+								dmg.full_damage = dmg.full_damage - int(dmg.full_damage * CritMeleeDamageTakenPctMod[dmg.school_type]);
 
 							if(pVictim->IsPlayer())
 							{
@@ -3727,7 +3727,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 								float dmg_reduction_pct = 2.0f * TO< Player* >(pVictim)->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE) / 100.0f;
 								if(dmg_reduction_pct > 1.0f)
 									dmg_reduction_pct = 1.0f; //we cannot resist more then he is criticalling us, there is no point of the critical then :P
-								dmg.full_damage = float2int32(dmg.full_damage - dmg.full_damage * dmg_reduction_pct);
+								dmg.full_damage = int(dmg.full_damage - dmg.full_damage * dmg_reduction_pct);
 								//sLog.outString( "DEBUG: After Resilience check: %u" , dmg.full_damage );
 							}
 
@@ -3932,7 +3932,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		{
 			Player* owner = GetMapMgr()->GetPlayer((uint32)GetUInt64Value(UNIT_FIELD_SUMMONEDBY));
 			if(owner != NULL)
-				Heal(owner, 50452, float2int32(1.5f * realdamage));
+				Heal(owner, 50452, int(1.5f * realdamage));
 		}
 	}
 
@@ -4016,7 +4016,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 			Player* pr = TO< Player* >(pVictim);
 			if(Rand(pr->GetSkillUpChance(SKILL_DEFENSE) * sWorld.getRate(RATE_SKILLCHANCE)))
 			{
-				pr->_AdvanceSkillLine(SKILL_DEFENSE, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+				pr->_AdvanceSkillLine(SKILL_DEFENSE, int(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 				pr->UpdateChances();
 			}
 		}
@@ -4033,7 +4033,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 			Player* pr = TO< Player* >(this);
 			if(Rand(pr->GetSkillUpChance(SubClassSkill) * sWorld.getRate(RATE_SKILLCHANCE)))
 			{
-				pr->_AdvanceSkillLine(SubClassSkill, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+				pr->_AdvanceSkillLine(SubClassSkill, int(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 				//pr->UpdateChances();
 			}
 		}
@@ -6295,7 +6295,7 @@ int32 Unit::GetAP()
 	int32 baseap = GetAttackPower() + GetAttackPowerMods();
 	float totalap = baseap * (GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER) + 1);
 	if(totalap >= 0)
-		return float2int32(totalap);
+		return int(totalap);
 	return	0;
 }
 
@@ -6304,7 +6304,7 @@ int32 Unit::GetRAP()
 	int32 baseap = GetRangedAttackPower() + GetRangedAttackPowerMods();
 	float totalap = baseap * (GetRangedAttackPowerMultiplier() + 1);
 	if(totalap >= 0)
-		return float2int32(totalap);
+		return int(totalap);
 	return	0;
 }
 
@@ -7190,7 +7190,7 @@ void Unit::setAttackTimer(int32 time, bool offhand)
 	if(!time)
 		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME + 1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
-	time = std::max(1000, float2int32(time * GetCastSpeedMod()));
+	time = std::max(1000, int(time * GetCastSpeedMod()));
 	if(time > 300000)		// just in case.. shouldn't happen though
 		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME + 1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
@@ -7393,7 +7393,7 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 			tmpsplit = res; // prevent < 0 damage
 		splitdamage = tmpsplit;
 		res -= tmpsplit;
-		tmpsplit = float2int32(ds->m_pctDamageSplit * res);
+		tmpsplit = int(ds->m_pctDamageSplit * res);
 		if(tmpsplit > res)
 			tmpsplit = res;
 		splitdamage += tmpsplit;
@@ -7930,7 +7930,7 @@ bool Unit::IsCriticalHealForSpell(Object* victim, SpellEntry* spell)
 {
 	int32 crit_chance = 0;
 
-	crit_chance = float2int32(this->spellcritperc + this->SpellCritChanceSchool[spell->School]);
+	crit_chance = int(this->spellcritperc + this->SpellCritChanceSchool[spell->School]);
 
 	//Sacred Shield
 	if(victim->IsUnit() && TO_UNIT(victim)->HasAurasWithNameHash(SPELL_HASH_SACRED_SHIELD) && spell->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
@@ -7952,7 +7952,7 @@ float Unit::GetCriticalHealBonusForSpell(Object* victim, SpellEntry* spell, floa
 	{
 		// the bonuses are halved by 50% (funky blizzard math :S)
 		float b = critical_bonus / 200.0f;
-		amount += float2int32(amount * b);
+		amount += int(amount * b);
 	}
 
 	return amount;

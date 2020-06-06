@@ -525,7 +525,7 @@ void GameObject::UseFishingNode(Player* player)
 	uint32 minskill = entry->MinSkill;
 
 	if(player->_GetSkillLineCurrent(SKILL_FISHING, false) < maxskill)
-		player->_AdvanceSkillLine(SKILL_FISHING, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+		player->_AdvanceSkillLine(SKILL_FISHING, int(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 
 	GameObject* school = NULL;
 	for(InRangeSet::iterator it = GetInRangeSetBegin(); it != GetInRangeSetEnd(); ++it)

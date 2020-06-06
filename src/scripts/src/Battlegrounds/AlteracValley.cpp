@@ -1866,7 +1866,7 @@ void AlteracValley::HookGenerateLoot(Player* plr, Object* pCorpse)
 	gold *= sWorld.getRate(RATE_MONEY);
 
 	// set it
-	TO< Corpse* >(pCorpse)->loot.gold = float2int32(gold);
+	TO< Corpse* >(pCorpse)->loot.gold = int(gold);
 }
 
 void AlteracValley::EventUpdateResources()

@@ -1488,7 +1488,7 @@ class SERVER_DECL Unit : public Object
 			return (int)(GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 		};
 
-		void SetHealthPct(uint32 val) { if(val > 0) SetHealth(float2int32(val * 0.01f * GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
+		void SetHealthPct(uint32 val) { if(val > 0) SetHealth(int(val * 0.01f * GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
 
 		int GetManaPct()
 		{

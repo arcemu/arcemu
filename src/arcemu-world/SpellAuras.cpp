@@ -744,7 +744,7 @@ Aura::Aura(SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool
 	}
 
 	if(GetDuration() > 0 && m_spellProto->ChannelInterruptFlags != 0 && caster->IsUnit())
-		SetDuration(GetDuration() * float2int32(TO_UNIT(caster)->GetCastSpeedMod()));
+		SetDuration(GetDuration() * int(TO_UNIT(caster)->GetCastSpeedMod()));
 
 	//SetCasterFaction(caster->_getFaction());
 
@@ -1699,7 +1699,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 						return;
 					if(c != NULL && c->IsPlayer())
 					{
-						dmg = float2int32(TO< Player* >(c)->m_casted_amount[SCHOOL_FIRE] * parentsp->EffectBasePoints[0] / 100.0f);
+						dmg = int(TO< Player* >(c)->m_casted_amount[SCHOOL_FIRE] * parentsp->EffectBasePoints[0] / 100.0f);
 					}
 					else if(c != NULL)
 					{
@@ -2187,17 +2187,17 @@ void Aura::EventPeriodicHeal(uint32 amount)
 		if(c->IsPlayer())
 		{
 			for(uint32 a = 0; a < 5; a++)
-				bonus += float2int32(TO< Player* >(c)->SpellHealDoneByAttribute[a][m_spellProto->School] * TO< Player* >(c)->GetStat(a));
+				bonus += int(TO< Player* >(c)->SpellHealDoneByAttribute[a][m_spellProto->School] * TO< Player* >(c)->GetStat(a));
 		}
 		//Spell Coefficient
 		if(m_spellProto->OTspell_coef_override >= 0)   //In case we have forced coefficients
-			bonus = float2int32(bonus * m_spellProto->OTspell_coef_override);
+			bonus = int(bonus * m_spellProto->OTspell_coef_override);
 		else
 		{
 			//Bonus to HoT part
 			if(m_spellProto->fixed_hotdotcoef >= 0)
 			{
-				bonus = float2int32(bonus * m_spellProto->fixed_hotdotcoef);
+				bonus = int(bonus * m_spellProto->fixed_hotdotcoef);
 				//we did most calculations in world.cpp, but talents that increase DoT spells duration
 				//must be included now.
 				if(c->IsPlayer())
@@ -2264,14 +2264,14 @@ void Aura::EventPeriodicHeal(uint32 amount)
 	        if( downrank2 >= 1 || downrank2 < 0 )
 	            downrank2 = 1.0f;
 
-	        bonus = float2int32( float( bonus ) * downrank1 * downrank2 );
+	        bonus = int( float( bonus ) * downrank1 * downrank2 );
 	    }
 	}*/
 
 	int add = (bonus + amount > 0) ? bonus + amount : 0;
 	if(c != NULL)
 	{
-		add += float2int32(add * (m_target->HealTakenPctMod[m_spellProto->School] + c->HealDonePctMod[GetSpellProto()->School]));
+		add += int(add * (m_target->HealTakenPctMod[m_spellProto->School] + c->HealDonePctMod[GetSpellProto()->School]));
 		if(m_spellProto->SpellGroupType)
 			SM_PIValue(c->SM_PDOT, &add, m_spellProto->SpellGroupType);
 
@@ -2279,7 +2279,7 @@ void Aura::EventPeriodicHeal(uint32 amount)
 		{
 			is_critical = c->IsCriticalHealForSpell(m_target, GetSpellProto());
 			if(is_critical)
-				add = float2int32(c->GetCriticalHealBonusForSpell(m_target, GetSpellProto(), (float) add));
+				add = int(c->GetCriticalHealBonusForSpell(m_target, GetSpellProto(), (float) add));
 		}
 	}
 
@@ -2910,7 +2910,7 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 	if(!m_target->isAlive())
 		return;
 
-	uint32 add = float2int32(m_target->GetMaxHealth() * (RegenPct / 100.0f));
+	uint32 add = int(m_target->GetMaxHealth() * (RegenPct / 100.0f));
 
 	uint32 newHealth = m_target->GetHealth() + add;
 
@@ -3053,7 +3053,7 @@ void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 		}
 
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe, true, mod->m_amount,
-		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, int(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -3107,7 +3107,7 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 		}
 
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, trigger, false, int32(0),
-		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, float2int32(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		                   EVENT_AURA_PERIODIC_TRIGGERSPELL, int(amptitude), numticks, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -4271,7 +4271,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		float fbonus = m_caster->GetSpellDmgBonus(m_target, sp, amount, true) * 0.5f;
 		if(fbonus < 0)
 			fbonus = 0.0f;
-		bonus = float2int32(fbonus * amp / GetDuration());
+		bonus = int(fbonus * amp / GetDuration());
 	}
 
 	amount += bonus;
@@ -4288,7 +4288,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 		if(is_critical)
 		{
-			amount = float2int32(m_caster->GetCriticalDamageBonusForSpell(m_target, sp, (float) amount));
+			amount = int(m_caster->GetCriticalDamageBonusForSpell(m_target, sp, (float) amount));
 
 			aproc |= PROC_ON_SPELL_CRIT_HIT;
 			vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
@@ -4353,7 +4353,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 	}
 
 	uint32 dmg_amount  = amount;
-	uint32 heal_amount = float2int32(amount * sp->EffectMultipleValue[mod->i]);
+	uint32 heal_amount = int(amount * sp->EffectMultipleValue[mod->i]);
 
 	uint32 newHealth = m_caster->GetHealth() + heal_amount;
 
@@ -5711,7 +5711,7 @@ void Aura::EventPeriodicDamagePercent(uint32 amount)
 	if(m_target->SchoolImmunityList[GetSpellProto()->School])
 		return;
 
-	uint32 damage = float2int32(amount / 100.0f * m_target->GetMaxHealth());
+	uint32 damage = int(amount / 100.0f * m_target->GetMaxHealth());
 
 	Unit* c = GetUnitCaster();
 
@@ -7231,7 +7231,7 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 			{
 				if(apply)
 				{
-					mod->realamount = float2int32(((float)val / 100) * m_target->GetStat(stat));
+					mod->realamount = int(((float)val / 100) * m_target->GetStat(stat));
 					p_target->ModPosDamageDoneMod(x, mod->realamount);
 				}
 				else
@@ -7312,7 +7312,7 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 		p_target->UpdateChanceFields();
 		if(apply)
 		{
-			mod->realamount = float2int32(((float)val / 100.0f) * p_target->GetStat(stat));
+			mod->realamount = int(((float)val / 100.0f) * p_target->GetStat(stat));
 			p_target->ModHealingDoneMod(mod->realamount);
 		}
 		else
@@ -7527,7 +7527,7 @@ void Aura::SpellAuraModHealingDone(bool apply)
 
 	uint32 player_class = m_target->getClass();
 	if(player_class == DRUID || player_class == PALADIN || player_class == SHAMAN || player_class == PRIEST)
-		val = float2int32(val * 1.88f);
+		val = int(val * 1.88f);
 
 	for(uint8 x = 0; x < SCHOOL_COUNT; x++)
 	{
@@ -7667,7 +7667,7 @@ void Aura::SpellAuraIncreaseArmorByPctInt(bool apply)
 {
 	uint32 i_Int = m_target->GetStat(STAT_INTELLECT);
 
-	int32 amt = float2int32(i_Int * ((float)mod->m_amount / 100.0f));
+	int32 amt = int(i_Int * ((float)mod->m_amount / 100.0f));
 	amt *= (!apply) ? -1 : 1;
 
 	for(uint8 x = 0; x < 7; x++)
@@ -8867,10 +8867,10 @@ void AbsorbAura::SpellAuraSchoolAbsorb(bool apply)
 
 		//For spells Affected by Bonus Healing we use Dspell_coef_override.
 		if(GetSpellProto()->Dspell_coef_override >= 0)
-			val += float2int32(caster->HealDoneMod[GetSpellProto()->School] * GetSpellProto()->Dspell_coef_override);
+			val += int(caster->HealDoneMod[GetSpellProto()->School] * GetSpellProto()->Dspell_coef_override);
 		//For spells Affected by Bonus Damage we use OTspell_coef_override.
 		else if(GetSpellProto()->OTspell_coef_override >= 0)
-			val += float2int32(caster->GetDamageDoneMod(GetSpellProto()->School) * GetSpellProto()->OTspell_coef_override);
+			val += int(caster->GetDamageDoneMod(GetSpellProto()->School) * GetSpellProto()->OTspell_coef_override);
 	}
 
 	m_total_amount = val;

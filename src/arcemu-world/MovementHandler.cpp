@@ -577,7 +577,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 				mover->z_axisposition = movement_info.z;
 
 			// calculate distance fallen
-			uint32 falldistance = float2int32(mover->z_axisposition - movement_info.z);
+			uint32 falldistance = int(mover->z_axisposition - movement_info.z);
 			if(mover->z_axisposition <= movement_info.z)
 				falldistance = 1;
 			/*Safe Fall*/

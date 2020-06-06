@@ -396,12 +396,12 @@ bool ChatHandler::HandleRangeCheckCommand(const char* args , WorldSession* m_ses
 		return true;
 	}
 	float DistSq = unit->GetDistanceSq(m_session->GetPlayer());
-	m_session->SystemMessage("GetDistanceSq  :   %u" , float2int32(DistSq));
+	m_session->SystemMessage("GetDistanceSq  :   %u" , int(DistSq));
 	LocationVector locvec(m_session->GetPlayer()->GetPositionX() , m_session->GetPlayer()->GetPositionY() , m_session->GetPlayer()->GetPositionZ());
 	float DistReal = unit->CalcDistance(locvec);
-	m_session->SystemMessage("CalcDistance   :   %u" , float2int32(DistReal));
+	m_session->SystemMessage("CalcDistance   :   %u" , int(DistReal));
 	float Dist2DSq = unit->GetDistance2dSq(m_session->GetPlayer());
-	m_session->SystemMessage("GetDistance2dSq:   %u" , float2int32(Dist2DSq));
+	m_session->SystemMessage("GetDistance2dSq:   %u" , int(Dist2DSq));
 	return true;
 }
 

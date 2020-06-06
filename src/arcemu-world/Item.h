@@ -152,7 +152,7 @@ enum RandomEnchantmentTypes
     RANDOMSUFFIX   = 2
 };
 
-#define RANDOM_SUFFIX_MAGIC_CALCULATION( __suffix, __scale ) float2int32( float( __suffix ) * float( __scale ) / 10000.0f );
+#define RANDOM_SUFFIX_MAGIC_CALCULATION( __suffix, __scale ) int( float( __suffix ) * float( __scale ) / 10000.0f );
 
 class SERVER_DECL Item : public Object
 {

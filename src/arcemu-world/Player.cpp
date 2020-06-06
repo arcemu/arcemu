@@ -1442,7 +1442,7 @@ void Player::_EventExploration()
 		SetUInt32Value(offset, (uint32)(currFields | val));
 
 		uint32 explore_xp = at->level * 10;
-		explore_xp *= float2int32(sWorld.getRate(RATE_EXPLOREXP));
+		explore_xp *= int(sWorld.getRate(RATE_EXPLOREXP));
 
 #ifdef ENABLE_ACHIEVEMENTS
 		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA);
@@ -5252,7 +5252,7 @@ void Player::UpdateStats()
 			if(GetShapeShift() == FORM_MOONKIN)
 			{
 				//(Strength x 2) + (Character Level x 1.5) - 20
-				AP += float2int32(static_cast<float>(lev) * 1.5f);
+				AP += int(static_cast<float>(lev) * 1.5f);
 			}
 			if(GetShapeShift() == FORM_CAT)
 			{
@@ -5464,7 +5464,7 @@ void Player::UpdateStats()
 		float block_multiplier = (100.0f + m_modblockabsorbvalue) / 100.0f;
 		if(block_multiplier < 1.0f)block_multiplier = 1.0f;
 
-		int32 blockable_damage = float2int32((shield->GetProto()->Block + m_modblockvaluefromspells + GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + (str / 2.0f) - 1.0f) * block_multiplier);
+		int32 blockable_damage = int((shield->GetProto()->Block + m_modblockvaluefromspells + GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + (str / 2.0f) - 1.0f) * block_multiplier);
 		SetUInt32Value(PLAYER_SHIELD_BLOCK, blockable_damage);
 	}
 	else
@@ -6863,7 +6863,7 @@ void Player::RegenerateMana(bool is_interrupted)
 		++cur;
 	}
 	else
-		cur += float2int32(amt);
+		cur += int(amt);
 //	Unit::SetPower() will call Object::SetUInt32Value(), which will (for players) call SendPowerUpdate(),
 //	which can be slightly out-of-sync with client regeneration [with latency] (and wastes packets since client can handle this on its own)
 	if(wrate != 1.0) // our config has custom regen rate, so send new amount to player's client
@@ -6920,11 +6920,11 @@ void Player::RegenerateHealth(bool inCombat)
 			if(amt <= 1.0f)//this fixes regen like 0.98
 				cur++;
 			else
-				cur += float2int32(amt);
+				cur += int(amt);
 			SetHealth((cur >= mh) ? mh : cur);
 		}
 		else
-			DealDamage(this, float2int32(-amt), 0, 0, 0);
+			DealDamage(this, int(-amt), 0, 0, 0);
 	}
 }
 
@@ -6960,7 +6960,7 @@ void Player::RegenerateEnergy()
 	float amt = PctPowerRegenModifier[POWER_TYPE_ENERGY];
 	amt *= wrate * 20.0f;
 
-	cur += float2int32(amt);
+	cur += int(amt);
 //	Object::SetUInt32Value() will (for players) call SendPowerUpdate(),
 //	which can be slightly out-of-sync with client regeneration [latency] (and wastes packets since client can handle this on its own)
 	if(wrate != 1.0f) // our config has custom regen rate, so send new amount to player's client
@@ -9626,7 +9626,7 @@ uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
 			r = ap_bonus * 1000.0f;
 		else
 			r = ap_bonus * 2500.0f;
-		return float2int32(r);
+		return int(r);
 	}
 //////no druid ss
 	uint32 speed = 2000;
@@ -9637,7 +9637,7 @@ uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
 			speed = it->GetProto()->Delay;
 	}
 	r = ap_bonus * speed;
-	return float2int32(r);
+	return int(r);
 }
 
 void Player::EventPortToGM(Player* p)
@@ -10774,12 +10774,12 @@ void Player::Cooldown_AddStart(SpellEntry* pSpell)
 		return;
 
 	uint32 mstime = getMSTime();
-	int32 atime; // = float2int32( float( pSpell->StartRecoveryTime ) / SpellHasteRatingBonus );
+	int32 atime; // = int( float( pSpell->StartRecoveryTime ) / SpellHasteRatingBonus );
 
 	if(GetCastSpeedMod() >= 1.0f)
 		atime = pSpell->StartRecoveryTime;
 	else
-		atime = float2int32(pSpell->StartRecoveryTime * GetCastSpeedMod());
+		atime = int(pSpell->StartRecoveryTime * GetCastSpeedMod());
 
 	if(pSpell->SpellGroupType)
 	{
@@ -11015,7 +11015,7 @@ void Player::_FlyhackCheck()
 
 		float p_height = GetPositionZ();
 
-		int32 diff = float2int32(p_height - t_height);
+		int32 diff = int(p_height - t_height);
 		if(diff < 0)
 			diff = -diff;
 
@@ -12135,7 +12135,7 @@ void Player::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 
 	//the black sheep , no actually it is paladin : Ardent Defender
 	if(DamageTakenPctModOnHP35 && HasFlag(UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35))
-		damage = damage - float2int32(damage * DamageTakenPctModOnHP35) / 100;
+		damage = damage - int(damage * DamageTakenPctModOnHP35) / 100;
 
 
 	//Mage: Fiery Payback
@@ -12415,7 +12415,7 @@ void Player::TakeDamage(Unit* pAttacker, uint32 damage, uint32 spellid, bool no_
 		val = 2.5f * damage / c;
 		uint32 rage = GetPower(POWER_TYPE_RAGE);
 
-		if(rage + float2int32(val) > 1000)
+		if(rage + int(val) > 1000)
 			val = 1000.0f - static_cast< float >(GetPower(POWER_TYPE_RAGE));
 
 		val *= 10.0;
@@ -12664,7 +12664,7 @@ uint32 Player::GetBlockDamageReduction()
 	if(block_multiplier < 1.0f)
 		block_multiplier = 1.0f;
 
-	return float2int32((it->GetProto()->Block + this->m_modblockvaluefromspells + this->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + this->GetStat(STAT_STRENGTH) / 2.0f - 1.0f) * block_multiplier);
+	return int((it->GetProto()->Block + this->m_modblockvaluefromspells + this->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + this->GetStat(STAT_STRENGTH) / 2.0f - 1.0f) * block_multiplier);
 }
 
 void Player::ApplyFeralAttackPower(bool apply, Item* item)

@@ -636,8 +636,8 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			case SPELL_HASH_ARCANE_SHOT: //hunter - arcane shot
 				{
 					if(u_caster)
-						dmg += float2int32(u_caster->GetRAP() * 0.15f);
-					dmg = float2int32(dmg * (0.9f + RandomFloat(0.2f)));      // randomized damage
+						dmg += int(u_caster->GetRAP() * 0.15f);
+					dmg = int(dmg * (0.9f + RandomFloat(0.2f)));      // randomized damage
 				}
 				break;
 			case SPELL_HASH_GORE: // boar/ravager: Gore (50% chance of double damage)
@@ -648,13 +648,13 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			case SPELL_HASH_THUNDER_CLAP: // Thunderclap
 				{
 					if(u_caster)
-						dmg = (GetProto()->EffectBasePoints[0] + 1) + float2int32(u_caster->GetAP() * 0.12f);
+						dmg = (GetProto()->EffectBasePoints[0] + 1) + int(u_caster->GetAP() * 0.12f);
 				}
 				break;
 			case SPELL_HASH_INTERCEPT: // Warrior - Intercept
 				{
 					if(u_caster)
-						dmg = float2int32(u_caster->GetAP() * 0.12f);
+						dmg = int(u_caster->GetAP() * 0.12f);
 				}
 				break;
 			case SPELL_HASH_SHOCKWAVE:		// Shockwave
@@ -688,7 +688,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 				{
 					if(p_caster != NULL)
 					{
-						dmg += float2int32(1.30f * p_caster->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + GetProto()->EffectBasePoints[0]);
+						dmg += int(1.30f * p_caster->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + GetProto()->EffectBasePoints[0]);
 					}
 				}
 				break;
@@ -702,7 +702,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 							float block_multiplier = (100.0f + p_caster->m_modblockabsorbvalue) / 100.0f;
 							if(block_multiplier < 1.0f)block_multiplier = 1.0f;
 
-							int32 blockable_damage = float2int32((it->GetProto()->Block + p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + ((p_caster->GetStat(STAT_STRENGTH) / 2.0f) - 1.0f)) * block_multiplier);
+							int32 blockable_damage = int((it->GetProto()->Block + p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value(PLAYER_RATING_MODIFIER_BLOCK) + ((p_caster->GetStat(STAT_STRENGTH) / 2.0f) - 1.0f)) * block_multiplier);
 
 							/*
 								3.2.0:
@@ -746,7 +746,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					{
 						uint32 sph = p_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + 1);
 						int32 ap = p_caster->GetAP();
-						dmg += float2int32((0.15f * sph) + (0.15f * ap));
+						dmg += int((0.15f * sph) + (0.15f * ap));
 						if(unitTarget && unitTarget->IsCreature())
 						{
 							uint32 type = TO_CREATURE(unitTarget)->GetCreatureInfo()->Type;
@@ -1187,7 +1187,7 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 			return;
 
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
-		damage = float2int32(damage * (1 - ((TO< Player* >(unitTarget)->CalcRating(PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE) * 2) / 100.0f)));
+		damage = int(damage * (1 - ((TO< Player* >(unitTarget)->CalcRating(PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE) * 2) / 100.0f)));
 	}
 	uint32 amt = damage + ((u_caster->GetDamageDoneMod(GetProto()->School) * 80) / 100);
 	if(amt > curPower)
@@ -1316,7 +1316,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					            mPlayer->GetShapeShift() != FORM_DIREBEAR))
 						break;
 					uint32 max = mPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
-					uint32 val = float2int32(((mPlayer->FindAura(34300)) ? 0.04f : 0.02f) * max);
+					uint32 val = int(((mPlayer->FindAura(34300)) ? 0.04f : 0.02f) * max);
 					if(val)
 						mPlayer->Heal(mPlayer, 34299, (uint32)(val));
 				}
@@ -1333,7 +1333,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					uint32 val = mPlayer->GetPower(POWER_TYPE_RAGE);
 					if(val > 100)
 						val = 100;
-					uint32 HpPerPoint = float2int32((mPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * 0.003f));   //0.3% of hp per point of rage
+					uint32 HpPerPoint = int((mPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * 0.003f));   //0.3% of hp per point of rage
 					uint32 heal = HpPerPoint * (val / 10); //1 point of rage = 0.3% of max hp
 					mPlayer->ModPower(POWER_TYPE_RAGE, -1 * val);
 
@@ -2412,13 +2412,13 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 			break;
 		case 57669:
 			{
-				modEnergy = float2int32(0.01f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
+				modEnergy = int(0.01f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
 			}
 			break;
 		case 31930:
 			{
 				if(u_caster)
-					modEnergy = float2int32(0.25f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
+					modEnergy = int(0.25f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
 			}
 			break;
 		case 2687: // Improved Bloodrage, dirty fix
@@ -3630,7 +3630,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 			return;
 
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
-		damage = float2int32(damage * (1 - ((TO< Player* >(unitTarget)->CalcRating(PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE) * 2) / 100.0f)));
+		damage = int(damage * (1 - ((TO< Player* >(unitTarget)->CalcRating(PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE) * 2) / 100.0f)));
 	}
 	int32 mult = damage;
 	damage = mult * unitTarget->GetMaxPower(POWER_TYPE_MANA) / 100;
@@ -3813,7 +3813,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 	lootmgr.FillPickpocketingLoot(&TO< Creature* >(unitTarget)->loot, unitTarget->GetEntry());
 
 	uint32 _rank = TO< Creature* >(unitTarget)->GetCreatureInfo()->Rank;
-	unitTarget->loot.gold = float2int32((_rank + 1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
+	unitTarget->loot.gold = int((_rank + 1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
 	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING, unitTarget->GetMapId());
 	target->SetPickPocketed(true);
@@ -4296,7 +4296,7 @@ void Spell::SpellEffectDisenchant(uint32 i)
 	{
 		if(Rand(100.0f - skill * 0.75f))
 		{
-			uint32 SkillUp = float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE));
+			uint32 SkillUp = int(1.0f * sWorld.getRate(RATE_SKILLRATE));
 			if(skill + SkillUp > 60)
 				SkillUp = 60 - skill;
 

@@ -935,7 +935,7 @@ uint8 Spell::prepare(SpellCastTargets* targets)
 		// handle MOD_CAST_TIME
 		if(u_caster != NULL && m_castTime)
 		{
-			m_castTime = float2int32(m_castTime * u_caster->GetCastSpeedMod());
+			m_castTime = int(m_castTime * u_caster->GetCastSpeedMod());
 		}
 	}
 
@@ -2519,7 +2519,7 @@ bool Spell::HasPower()
 			cost += u_caster->PowerCostMod[GetProto()->School];//this is not percent!
 		else
 			cost += u_caster->PowerCostMod[0];
-		cost += float2int32(cost * u_caster->GetPowerCostMultiplier(GetProto()->School));
+		cost += int(cost * u_caster->GetPowerCostMultiplier(GetProto()->School));
 	}
 
 	//hackfix for shiv's energy cost
@@ -2660,7 +2660,7 @@ bool Spell::TakePower()
 			cost += u_caster->PowerCostMod[GetProto()->School];//this is not percent!
 		else
 			cost += u_caster->PowerCostMod[0];
-		cost += float2int32(cost * u_caster->GetPowerCostMultiplier(GetProto()->School));
+		cost += int(cost * u_caster->GetPowerCostMultiplier(GetProto()->School));
 	}
 
 	//hackfix for shiv's energy cost
@@ -3070,7 +3070,7 @@ void Spell::DetermineSkillUp()
 			chance = 100.0f;
 	}
 	if(Rand(chance * sWorld.getRate(RATE_SKILLCHANCE)))
-		p_caster->_AdvanceSkillLine(skill->skilline, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+		p_caster->_AdvanceSkillLine(skill->skilline, int(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 }
 
 bool Spell::IsAspect()
@@ -4521,8 +4521,8 @@ exit:
 			diff += GetProto()->maxLevel;
 		else
 			diff += u_caster->getLevel();
-		//randomPoints += float2int32(diff * randomPointsPerLevel);
-		basePoints += float2int32(diff * basePointsPerLevel);
+		//randomPoints += int(diff * randomPointsPerLevel);
+		basePoints += int(diff * basePointsPerLevel);
 	}
 
 	if(randomPoints <= 1)
@@ -4588,7 +4588,7 @@ exit:
 				break;
 		}
 
-		value = float2int32(value * (float)(spell_pct_modifers / 100.0f)) + spell_flat_modifers;
+		value = int(value * (float)(spell_pct_modifers / 100.0f)) + spell_flat_modifers;
 	}
 	else if(i_caster != NULL && target != NULL)
 	{
@@ -4606,7 +4606,7 @@ exit:
 			SM_FIValue(item_creator->SM_FEffectBonus, &spell_flat_modifers, GetProto()->SpellGroupType);
 			SM_PIValue(item_creator->SM_PEffectBonus, &spell_pct_modifers, GetProto()->SpellGroupType);
 
-			value = float2int32(value * (float)(spell_pct_modifers / 100.0f)) + spell_flat_modifers;
+			value = int(value * (float)(spell_pct_modifers / 100.0f)) + spell_flat_modifers;
 		}
 	}
 
@@ -4633,7 +4633,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 						if(it)
 						{
 							float weapondmg = RandomFloat(1) * (it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
-							value += float2int32(GetProto()->EffectBasePoints[0] + weapondmg / (it->GetProto()->Delay / 1000.0f) * 2.8f);
+							value += int(GetProto()->EffectBasePoints[0] + weapondmg / (it->GetProto()->Delay / 1000.0f) * 2.8f);
 						}
 					}
 					if(target && target->IsDazed())
@@ -4654,11 +4654,11 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 						{
 							float avgwepdmg = (it->GetProto()->Damage[0].Min + it->GetProto()->Damage[0].Max) * 0.5f;
 							float wepspd = (it->GetProto()->Delay * 0.001f);
-							int32 dmg = float2int32((avgwepdmg) + p_caster->GetAP() / 14 * wepspd);
+							int32 dmg = int((avgwepdmg) + p_caster->GetAP() / 14 * wepspd);
 
 							if(target && target->GetHealthPct() > 75)
 							{
-								dmg = float2int32(dmg + dmg * 0.35f);
+								dmg = int(dmg + dmg * 0.35f);
 							}
 
 							value += dmg / 5;
@@ -4674,7 +4674,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 					Item* mainHand;
 					mainHand = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 					float avgWeaponDmg = (mainHand->GetProto()->Damage[0].Max + mainHand->GetProto()->Damage[0].Min) / 2;
-					value += float2int32((GetProto()->EffectBasePoints[0] + 1) + avgWeaponDmg);
+					value += int((GetProto()->EffectBasePoints[0] + 1) + avgWeaponDmg);
 				}
 				break;
 			}
@@ -4707,9 +4707,9 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 				{
 					float ap = float(u_caster->GetAP());
 					if(i == 0)
-						value += float2int32(ceilf(ap * 0.01f));	// / 100
+						value += int(ceilf(ap * 0.01f));	// / 100
 					else if(i == 1)
-						value += float2int32(ap * 0.06f);
+						value += int(ap * 0.06f);
 				}
 				break;
 			}
@@ -4740,7 +4740,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 		case SPELL_HASH_RIP:
 			{
 				if(p_caster != NULL)
-					value += float2int32(p_caster->GetAP() * 0.01f * p_caster->m_comboPoints);
+					value += int(p_caster->GetAP() * 0.01f * p_caster->m_comboPoints);
 				break;
 			}
 		case SPELL_HASH_MONGOOSE_BITE:
@@ -4754,14 +4754,14 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 			{
 				// ${$AP*0.06+$m1} damage.
 				if(u_caster != NULL)
-					value += float2int32(u_caster->GetAP() * 0.06f);
+					value += int(u_caster->GetAP() * 0.06f);
 				break;
 			}
 		case SPELL_HASH_HAMMER_OF_THE_RIGHTEOUS:
 			{
 				if(p_caster != NULL)
 					//4x 1h weapon-dps ->  4*(mindmg+maxdmg)/speed/2 = 2*(mindmg+maxdmg)/speed
-					value = float2int32((p_caster->GetMinDamage() + p_caster->GetMaxDamage()) / (float(p_caster->GetBaseAttackTime(MELEE)) / 1000.0f)) << 1;
+					value = int((p_caster->GetMinDamage() + p_caster->GetMaxDamage()) / (float(p_caster->GetBaseAttackTime(MELEE)) / 1000.0f)) << 1;
 				break;
 			}
 		case SPELL_HASH_BACKSTAB:  // Egari: spell 31220 is interfering with combopoints
@@ -4875,7 +4875,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 				{
 					if(p_caster != NULL && i == 0)
 						//Heal is increased by 6%
-						value = float2int32(value * 1.06f);
+						value = int(value * 1.06f);
 					break;
 				}
 			case 57669: //Replenishment
@@ -4909,7 +4909,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 					case SPELL_HASH_DEADLY_POISON_II:
 					case SPELL_HASH_DEADLY_POISON:
 						if(GetProto()->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_DAMAGE)
-							value += float2int32(u_caster->GetAP() * 0.03f);
+							value += int(u_caster->GetAP() * 0.03f);
 						break;
 					case SPELL_HASH_INSTANT_POISON_IX:
 					case SPELL_HASH_INSTANT_POISON_VIII:
@@ -4921,7 +4921,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 					case SPELL_HASH_INSTANT_POISON_II:
 					case SPELL_HASH_INSTANT_POISON:
 						if(GetProto()->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE)
-							value += float2int32(u_caster->GetAP() * 0.10f);
+							value += int(u_caster->GetAP() * 0.10f);
 						break;
 					case SPELL_HASH_WOUND_POISON_VII:
 					case SPELL_HASH_WOUND_POISON_VI:
@@ -4931,7 +4931,7 @@ int32 Spell::DoCalculateEffect(uint32 i, Unit* target, int32 value)
 					case SPELL_HASH_WOUND_POISON_II:
 					case SPELL_HASH_WOUND_POISON:
 						if(GetProto()->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE)
-							value += float2int32(u_caster->GetAP() * 0.04f);
+							value += int(u_caster->GetAP() * 0.04f);
 						break;
 				}
 			}
@@ -5071,20 +5071,20 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		if(p_caster != NULL)
 		{
 			for(uint8 a = 0; a < 5; a++)
-				bonus += float2int32(p_caster->SpellHealDoneByAttribute[a][school] * p_caster->GetStat(a));
+				bonus += int(p_caster->SpellHealDoneByAttribute[a][school] * p_caster->GetStat(a));
 		}
 
 		//Spell Coefficient
 		if(GetProto()->Dspell_coef_override >= 0)    //In case we have forced coefficients
-			bonus = float2int32(bonus * GetProto()->Dspell_coef_override);
+			bonus = int(bonus * GetProto()->Dspell_coef_override);
 		else
 		{
 			//Bonus to DH part
 			if(GetProto()->fixed_dddhcoef >= 0)
-				bonus = float2int32(bonus * GetProto()->fixed_dddhcoef);
+				bonus = int(bonus * GetProto()->fixed_dddhcoef);
 		}
 
-		critchance = float2int32(u_caster->spellcritperc + u_caster->SpellCritChanceSchool[school]);
+		critchance = int(u_caster->spellcritperc + u_caster->SpellCritChanceSchool[school]);
 
 		//Sacred Shield
 		if(unitTarget->HasAurasWithNameHash(SPELL_HASH_SACRED_SHIELD) && m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
@@ -5148,7 +5148,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 		amount += bonus;
 		amount += amount * (int32)(u_caster->HealDonePctMod[ school ]);
-		amount += float2int32(amount * unitTarget->HealTakenPctMod[ school ]);
+		amount += int(amount * unitTarget->HealTakenPctMod[ school ]);
 
 		if(GetProto()->SpellGroupType)
 			SM_PIValue(u_caster->SM_PDamageBonus, &amount, GetProto()->SpellGroupType);
@@ -5163,7 +5163,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 			{
 				// the bonuses are halved by 50% (funky blizzard math :S)
 				float b = (critical_bonus / 2.0f) / 100.0f;
-				amount += float2int32(amount * b);
+				amount += int(amount * b);
 			}
 
 			unitTarget->HandleProc(PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, GetProto(), false, amount);
@@ -5268,7 +5268,7 @@ void Spell::DetermineSkillUp(uint32 skillid, uint32 targetlevel, uint32 multipli
 
 	if(Rand((chance * sWorld.getRate(RATE_SKILLCHANCE)) * multiplicator))
 	{
-		p_caster->_AdvanceSkillLine(skillid, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+		p_caster->_AdvanceSkillLine(skillid, int(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 
 		uint32 value = p_caster->_GetSkillLineCurrent(skillid, true);
 		uint32 spellid = 0;
@@ -5380,7 +5380,7 @@ void Spell::DetermineSkillUp(uint32 skillid)
 			chance = 100.0f;
 	}
 	if(Rand(chance * sWorld.getRate(RATE_SKILLCHANCE)))
-		p_caster->_AdvanceSkillLine(skillid, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+		p_caster->_AdvanceSkillLine(skillid, int(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 }
 
 void Spell::SafeAddTarget(TargetsList* tgt, uint64 guid)
@@ -5899,7 +5899,7 @@ void Spell::HandleCastEffects(uint64 guid, uint32 i)
 			//if (reflected)
 			//	time *= 1.25; //reflected projectiles move back 4x faster
 
-			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_HIT, float2int32(time), 1, 0);
+			sEventMgr.AddEvent(this, &Spell::HandleEffects, guid, i, EVENT_SPELL_HIT, int(time), 1, 0);
 			AddRef();
 		}
 	}
@@ -5962,7 +5962,7 @@ void Spell::HandleModeratedTarget(uint64 guid)
 			//todo: arcemu doesn't support reflected spells
 			//if (reflected)
 			//	time *= 1.25; //reflected projectiles move back 4x faster
-			sEventMgr.AddEvent(this, &Spell::HandleModeratedEffects, guid, EVENT_SPELL_HIT, float2int32(time), 1, 0);
+			sEventMgr.AddEvent(this, &Spell::HandleModeratedEffects, guid, EVENT_SPELL_HIT, int(time), 1, 0);
 			AddRef();
 		}
 	}

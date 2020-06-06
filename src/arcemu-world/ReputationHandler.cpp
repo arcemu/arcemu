@@ -398,7 +398,7 @@ void Player::Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop)
 						continue;
 				}
 			}
-			ModStanding(itr->faction[team], float2int32(itr->value * sWorld.getRate(RATE_KILLREPUTATION)));
+			ModStanding(itr->faction[team], int(itr->value * sWorld.getRate(RATE_KILLREPUTATION)));
 		}
 	}
 	else

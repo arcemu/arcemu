@@ -400,26 +400,6 @@ Scripting system exports/imports
 #pragma float_control(precise, on)
 #endif
 
-/// Fastest Method of float2int32
-static inline int float2int32(const float value)
-{
-#if !defined(X64) && COMPILER == COMPILER_MICROSOFT && !defined(USING_BIG_ENDIAN)
-	int i;
-	__asm
-	{
-		fld value
-		frndint
-		fistp i
-	}
-	return i;
-#else
-	union { int asInt[2]; double asDouble; } n;
-	n.asDouble = value + 6755399441055744.0;
-
-	return n.asInt [0];
-#endif
-}
-
 #if COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
 #pragma float_control(pop)
 #endif

@@ -3072,7 +3072,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player* pPlayer, Unit* pVictim
 			continue;
 
 		//value *= sWorld.getRate(RATE_KILLREPUTATION);
-		value = float2int32(value * sWorld.getRate(RATE_KILLREPUTATION));
+		value = int(value * sWorld.getRate(RATE_KILLREPUTATION));
 		pPlayer->ModStanding(i->faction[team], value);
 	}
 
