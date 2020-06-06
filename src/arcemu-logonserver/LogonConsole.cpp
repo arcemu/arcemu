@@ -64,7 +64,7 @@ bool LogonConsoleThread::run()
 {
 	new LogonConsole;
 
-	SetThreadName("Console Interpreter");
+	Arcemu::Shared::Util::SetThreadName("Console Interpreter");
 	sLogonConsole._thread = this;
 	size_t i = 0, len = 0;
 	char cmd[96];

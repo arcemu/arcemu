@@ -231,7 +231,7 @@ bool Database::WaitExecuteNA(const char* QueryString)
 
 bool Database::run()
 {
-	SetThreadName("Database Execute Thread");
+	Arcemu::Shared::Util::SetThreadName("Database Execute Thread");
 	SetThreadState(THREADSTATE_BUSY);
 	ThreadRunning = true;
 	char* query = queries_queue.pop();

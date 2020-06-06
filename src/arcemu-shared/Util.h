@@ -22,9 +22,6 @@
 
 #include "Common.h"
 
-// This HAS to be called outside the threads __try / __except block!
-void SetThreadName(const char* format, ...);
-
 inline uint32 secsToTimeBitFields(time_t secs)
 {
 	tm* lt = localtime(&secs);
@@ -59,6 +56,9 @@ namespace Arcemu
 		class SERVER_DECL Util
 		{
 		public:
+			// This HAS to be called outside the threads __try / __except block!
+			static void SetThreadName(const char* format, ...);
+
 			static float round(float f);
 			
 			static double round(double d);

@@ -52,7 +52,7 @@ int unix_main(int argc, char** argv)
 
 int win32_main(int argc, char** argv)
 {
-	SetThreadName("Main Thread");
+	Arcemu::Shared::Util::SetThreadName("Main Thread");
 
 	StartCrashHandler();
 

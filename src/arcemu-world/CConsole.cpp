@@ -58,7 +58,7 @@ void ConsoleThread::terminate()
 
 bool ConsoleThread::run()
 {
-	SetThreadName("Console Interpreter");
+	Arcemu::Shared::Util::SetThreadName("Console Interpreter");
 	size_t i = 0;
 	size_t len;
 	char cmd[300];

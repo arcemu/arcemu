@@ -1251,7 +1251,7 @@ bool MapMgr::Do()
 
 	thread_running = true;
 	ThreadState.SetVal(THREADSTATE_BUSY);
-	SetThreadName("Map mgr - M%u|I%u", this->_mapId , this->m_instanceID);
+	Arcemu::Shared::Util::SetThreadName("Map mgr - M%u|I%u", this->_mapId , this->m_instanceID);
 	ObjectSet::iterator i;
 	uint32 last_exec = Arcemu::Shared::Util::getMSTime();
 

@@ -34,7 +34,7 @@ WorldRunnable::WorldRunnable() : CThread()
 
 bool WorldRunnable::run()
 {
-	SetThreadName("WorldRunnable (non-instance/logon)");
+	Arcemu::Shared::Util::SetThreadName("WorldRunnable (non-instance/logon)");
 	uint32 LastWorldUpdate = Arcemu::Shared::Util::getMSTime();
 	uint32 LastSessionsUpdate = Arcemu::Shared::Util::getMSTime();
 
