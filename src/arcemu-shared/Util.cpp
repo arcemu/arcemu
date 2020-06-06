@@ -138,11 +138,6 @@ void MakeIntStringNoZero(char* buf, int num)
 	sprintf(buf, "%u", num);
 }
 
-uint32 DecimalToMask(uint32 dec)
-{
-	return ((uint32)1 << (dec - 1));
-}
-
 #ifdef WIN32
 static char _StringConversionStorage[2048];
 #endif
@@ -459,6 +454,11 @@ namespace Arcemu
 			szResult += szTempBuf;
 
 			return szResult;
+		}
+
+		uint32 Util::DecimalToMask(uint32 dec)
+		{
+			return ((uint32)1 << (dec - 1));
 		}
 	}
 }

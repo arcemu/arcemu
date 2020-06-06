@@ -5766,7 +5766,7 @@ void Spell::SendCastSuccess(const uint64 & guid)
 
 uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry* spellInfo, uint32 form)
 {
-	uint32 stanceMask = (form ? DecimalToMask(form) : 0);
+	uint32 stanceMask = (form ? Arcemu::Shared::Util::DecimalToMask(form) : 0);
 
 	if(spellInfo->ShapeshiftExclude > 0 && spellInfo->ShapeshiftExclude & stanceMask)				// can explicitly not be casted in this stance
 		return SPELL_FAILED_NOT_SHAPESHIFT;

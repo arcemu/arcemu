@@ -5447,7 +5447,7 @@ void ApplyNormalFixes()
 		sp->procFlags = PROC_ON_CRIT_ATTACK;
 
 	// Druid - Predatory Strikes
-	uint32 mm = DecimalToMask(FORM_BEAR) | DecimalToMask(FORM_DIREBEAR) | DecimalToMask(FORM_MOONKIN) | DecimalToMask(FORM_CAT);
+	uint32 mm = Arcemu::Shared::Util::DecimalToMask(FORM_BEAR) | Arcemu::Shared::Util::DecimalToMask(FORM_DIREBEAR) | Arcemu::Shared::Util::DecimalToMask(FORM_MOONKIN) | Arcemu::Shared::Util::DecimalToMask(FORM_CAT);
 
 	sp = CheckAndReturnSpellEntry(16972);
 	if(sp != NULL)

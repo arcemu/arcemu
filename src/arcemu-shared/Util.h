@@ -88,12 +88,12 @@ namespace Arcemu
 			static std::string ConvertTimeStampToString(uint32 timestamp);
 
 			static std::string ConvertTimeStampToDateTime(uint32 timestamp);
+
+			static uint32 DecimalToMask(uint32 dec);
 		};
 	}
 }
 
-uint32 DecimalToMask(uint32 dec);
-			
 void arcemu_TOLOWER(std::string & str);
 			
 void arcemu_TOUPPER(std::string & str);
