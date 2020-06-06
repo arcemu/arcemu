@@ -20,6 +20,8 @@
 #include "ThreadPool.h"
 #include "../Log.h"
 
+#include "Util.h"
+
 #ifdef WIN32
 
 #include <process.h>

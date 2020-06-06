@@ -77,6 +77,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "DetourAssert.h"
 
 #include "../arcemu-shared/Common.h"
+#include "../arcemu-shared/Util.h"
 #include "../arcemu-shared/MersenneTwister.h"
 #include "../arcemu-shared/WorldPacket.h"
 #include "../arcemu-shared/Log.h"

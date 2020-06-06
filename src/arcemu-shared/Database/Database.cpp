@@ -25,6 +25,7 @@
 //////////////////////////////////////////////
 
 #include "DatabaseEnv.h"
+#include "Util.h"
 
 SQLCallbackBase::~SQLCallbackBase()
 {

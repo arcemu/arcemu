@@ -407,7 +407,6 @@ Scripting system exports/imports
 #define TRUE	1
 #endif
 
-#include "Util.h"
 #include "DynLib.hpp"
 #include "FindFiles.hpp"
 #include "SysInfo.hpp"
