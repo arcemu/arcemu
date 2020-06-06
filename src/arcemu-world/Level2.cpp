@@ -389,7 +389,7 @@ bool ChatHandler::HandleNPCFlagCommand(const char* args, WorldSession* m_session
 bool ChatHandler::HandleSaveAllCommand(const char* args, WorldSession* m_session)
 {
 	PlayerStorageMap::const_iterator itr;
-	uint32 stime = now();
+	uint32 stime = getMSTime();
 	uint32 count = 0;
 	objmgr._playerslock.AcquireReadLock();
 	for(itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
@@ -402,7 +402,7 @@ bool ChatHandler::HandleSaveAllCommand(const char* args, WorldSession* m_session
 	}
 	objmgr._playerslock.ReleaseReadLock();
 	char msg[100];
-	snprintf(msg, 100, "Saved all %u online players in %u msec.", count, now() - stime);
+	snprintf(msg, 100, "Saved all %u online players in %u msec.", count, getMSTime() - stime);
 	sWorld.SendWorldText(msg);
 	sWorld.SendWorldWideScreenText(msg);
 	sGMLog.writefromsession(m_session, "saved all players");

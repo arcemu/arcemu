@@ -105,17 +105,6 @@ ARCEMU_INLINE uint32 getMSTime()
 	return MSTime;
 }
 
-ARCEMU_INLINE uint32 now()
-{
-#ifdef WIN32
-	return GetTickCount();
-#else
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-#endif
-}
-
 int32 GetTimePeriodFromString(const char* str);
 
 std::string ConvertTimeStampToString(uint32 timestamp);

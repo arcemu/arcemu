@@ -323,7 +323,7 @@ bool Master::Run(int argc, char** argv)
 	// Socket loop!
 	uint32 start;
 	uint32 diff;
-	uint32 last_time = now();
+	uint32 last_time = getMSTime();
 	uint32 etime;
 	uint32 next_printout = getMSTime(), next_send = getMSTime();
 
@@ -386,7 +386,7 @@ bool Master::Run(int argc, char** argv)
 
 	while(!m_stopEvent && listnersockcreate)
 	{
-		start = now();
+		start = getMSTime();
 		diff = start - last_time;
 		if(!((++loopcounter) % 10000))		// 5mins
 		{
@@ -413,7 +413,7 @@ bool Master::Run(int argc, char** argv)
 		sSocketGarbageCollector.Update();
 
 		/* UPDATE */
-		last_time = now();
+		last_time = getMSTime();
 		etime = last_time - start;
 		if(m_ShutdownEvent)
 		{
