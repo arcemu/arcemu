@@ -400,18 +400,6 @@ Scripting system exports/imports
 #pragma float_control(precise, on)
 #endif
 
-// fast int abs
-static inline int int32abs(const int value)
-{
-	return (value ^ (value >> 31)) - (value >> 31);
-}
-
-// fast int abs and recast to unsigned
-static inline uint32 int32abs2uint32(const int value)
-{
-	return (uint32)(value ^ (value >> 31)) - (value >> 31);
-}
-
 /// Fastest Method of float2int32
 static inline int float2int32(const float value)
 {
