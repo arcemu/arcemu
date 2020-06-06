@@ -508,7 +508,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	WorldPacket data(SMSG_ACHIEVEMENT_EARNED, 30);
 	data << GetPlayer()->GetNewGUID();
 	data << uint32(achievement->ID);
-	data << uint32(secsToTimeBitFields(UNIXTIME));
+	data << uint32(Arcemu::Shared::Util::secsToTimeBitFields(UNIXTIME));
 	data << uint32(0);
 	GetPlayer()->GetSession()->SendPacket(&data);
 	if(guidList)
@@ -534,7 +534,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 
 	data << GetPlayer()->GetNewGUID();
 	data << uint32(0);
-	data << uint32(secsToTimeBitFields(progress->date));
+	data << uint32(Arcemu::Shared::Util::secsToTimeBitFields(progress->date));
 	data << uint32(0);  // timer 1
 	data << uint32(0);  // timer 2
 	if(!GetPlayer()->IsInWorld())   //VLack: maybe we should NOT send these delayed, for 3.1.1, but seems logical
@@ -1692,7 +1692,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 				if(ShowCompletedAchievement(completeIter->first, m_player))
 				{
 					data << uint32(completeIter->first);
-					data << uint32(secsToTimeBitFields(completeIter->second));
+					data << uint32(Arcemu::Shared::Util::secsToTimeBitFields(completeIter->second));
 				}
 				packetFull = data.size() > 0x7f00;
 			}
@@ -1725,7 +1725,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 					data.appendPackGUID(progressIter->second->counter);
 					data << GetPlayer()->GetNewGUID();
 					data << uint32(0);
-					data << uint32(secsToTimeBitFields(progressIter->second->date));
+					data << uint32(Arcemu::Shared::Util::secsToTimeBitFields(progressIter->second->date));
 					data << uint32(0);
 					data << uint32(0);
 				}
@@ -1740,7 +1740,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 					data.appendPackGUID(progressIter->second->counter);
 					data << GetPlayer()->GetNewGUID();
 					data << uint32(0);
-					data << uint32(secsToTimeBitFields(progressIter->second->date));
+					data << uint32(Arcemu::Shared::Util::secsToTimeBitFields(progressIter->second->date));
 					data << uint32(0);
 					data << uint32(0);
 				}
