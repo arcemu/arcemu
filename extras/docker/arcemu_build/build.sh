@@ -19,7 +19,8 @@ then
     exit 1
 fi
 
-make
+VCPUS=`cat /proc/cpuinfo | grep -P "^processor" | wc -l`
+make -j$((VCPUS+1))
 if [ $? -ne 0 ]
 then
     exit 1
