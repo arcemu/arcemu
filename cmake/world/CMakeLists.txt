@@ -278,6 +278,7 @@ SET( headers
 	Vehicle.h
 	Warlock.h
 	Warrior.h
+	Waypoint.h
 	WeatherMgr.h
 	Entities/Summons/WildSummon.h
 	WordFilter.h

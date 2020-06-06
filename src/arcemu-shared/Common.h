@@ -477,27 +477,6 @@ ARCEMU_INLINE uint32 now()
 #endif
 
 #include "Util.h"
-struct WayPoint
-{
-	WayPoint()
-	{
-		o = 0.0f;
-	}
-	uint32 id;
-	float x;
-	float y;
-	float z;
-	float o;
-	uint32 waittime; //ms
-	uint32 flags;
-	bool forwardemoteoneshot;
-	uint32 forwardemoteid;
-	bool backwardemoteoneshot;
-	uint32 backwardemoteid;
-	uint32 forwardskinid;
-	uint32 backwardskinid;
-
-};
 
 struct spawn_timed_emotes
 {
@@ -509,8 +488,6 @@ struct spawn_timed_emotes
 	uint32		expire_after; //going to nex faze in
 };
 typedef std::list<spawn_timed_emotes*> TimedEmoteList;
-
-typedef std::vector<WayPoint*> WayPointMap;
 
 int32 GetTimePeriodFromString(const char* str);
 std::string ConvertTimeStampToString(uint32 timestamp);
