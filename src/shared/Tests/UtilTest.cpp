@@ -26,8 +26,14 @@ class UtilTest
 public:
 	bool testArcemuToLower();	
 	bool testArcemuToLowerWithLowerCase();
+	
 	bool testArcemuToUpper();
 	bool testArcemuToUpperWithUpperCase();
+	
+	bool testFloatRoundUp();
+	bool testFloatRoundDown();
+	bool testFloatRoundWhole();
+
 	bool run();
 };
 
@@ -38,7 +44,10 @@ static UtilTestMethod testMethods[] =
 	&UtilTest::testArcemuToLower,
 	&UtilTest::testArcemuToLowerWithLowerCase,
 	&UtilTest::testArcemuToUpper,
-	&UtilTest::testArcemuToUpperWithUpperCase
+	&UtilTest::testArcemuToUpperWithUpperCase,
+	&UtilTest::testFloatRoundUp,
+	&UtilTest::testFloatRoundDown,
+	&UtilTest::testFloatRoundWhole
 };
 
 bool UtilTest::testArcemuToLower()
@@ -54,7 +63,6 @@ bool UtilTest::testArcemuToLower()
 	std::cout << "Original: " << original << std::endl;
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
-	std::cout << std::endl;
 
 	if( expected.compare( actual ) == 0 )
 		return true;
@@ -75,7 +83,6 @@ bool UtilTest::testArcemuToLowerWithLowerCase()
 	std::cout << "Original: " << original << std::endl;
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
-	std::cout << std::endl;
 
 	if( expected.compare( actual ) == 0 )
 		return true;
@@ -96,7 +103,6 @@ bool UtilTest::testArcemuToUpper()
 	std::cout << "Original: " << original << std::endl;
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
-	std::cout << std::endl;
 
 	if( expected.compare( actual ) == 0 )
 		return true;
@@ -117,9 +123,62 @@ bool UtilTest::testArcemuToUpperWithUpperCase()
 	std::cout << "Original: " << original << std::endl;
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
-	std::cout << std::endl;
 
 	if( expected.compare( actual ) == 0 )
+		return true;
+	else
+		return false;
+}
+
+bool UtilTest::testFloatRoundUp()
+{
+	std::cout << "Test that round( float ) rounds up when appropriate" << std::endl;
+
+	float input = 2.6f;
+	float expected = 3.0f;
+	float actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	if( actual == expected )
+		return true;
+	else
+		return false;
+}
+
+bool UtilTest::testFloatRoundDown()
+{
+	std::cout << "Test that round( float ) rounds down when appropriate" << std::endl;
+
+	float input = 2.2f;
+	float expected = 2.0f;
+	float actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	if( actual == expected )
+		return true;
+	else
+		return false;
+}
+
+bool UtilTest::testFloatRoundWhole()
+{
+	std::cout << "Test that round( float ) doesn't round a whole number" << std::endl;
+
+	float input = 2.0f;
+	float expected = 2.0f;
+	float actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	if( actual == expected )
 		return true;
 	else
 		return false;
@@ -133,6 +192,8 @@ bool UtilTest::run()
 	{
 		if( ! (this->*(testMethods[ i ]))() )
 			return false;
+		
+		std::cout << std::endl;
 	}
 
 	return true;
