@@ -220,6 +220,8 @@ IF( APPLE )
 	ENDIF( NOT IS_64BIT )
 ENDIF( APPLE )
 
+ENABLE_TESTING()
+
 add_subdirectory(g3dlite)
 add_subdirectory(vmaplib)
 add_subdirectory(recast)

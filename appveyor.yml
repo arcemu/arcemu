@@ -20,3 +20,5 @@ build_script:
      cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=Debug ..\cmake
      
      msbuild Arcemu.sln
+     
+     ctest -C Debug --verbose
