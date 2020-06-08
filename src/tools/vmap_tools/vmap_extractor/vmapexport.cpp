@@ -110,7 +110,7 @@ void ReadLiquidTypeTableDBC()
     printf("Done! (%u LiqTypes loaded)\n", (unsigned int)LiqType_count);
 }
 
-int ExtractWmo()
+bool ExtractWmo()
 {
     char   szLocalFile[1024] = "";
     bool success=true;
