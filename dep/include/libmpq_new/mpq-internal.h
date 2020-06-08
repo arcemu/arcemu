@@ -30,6 +30,8 @@
 #endif
 #include <stdio.h>
 
+#pragma warning(disable : 4103)
+
 /* define return value if nothing failed. */
 #define LIBMPQ_SUCCESS				0		/* return value for all functions which success. */
 

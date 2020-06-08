@@ -27,6 +27,8 @@
 #ifndef _EXPLODE_H
 #define _EXPLODE_H
 
+#pragma warning(disable : 4103)
+
 /* define compression constants and return values. */
 #define LIBMPQ_PKZIP_CMP_BINARY			0		/* binary compression. */
 #define LIBMPQ_PKZIP_CMP_ASCII			1		/* ascii compression. */
