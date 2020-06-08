@@ -165,11 +165,9 @@ class TileMap
 		uint32 GetArea(float x, float y);
 };
 
-class TerrainTile
+class TerrainTile : public Arcemu::Shared::CRefCounter
 {
 	public:
-		Arcemu::Threading::AtomicCounter m_refs;
-
 		TerrainHolder* m_parent;
 		uint32 m_mapid;
 		int32 m_tx;
@@ -180,8 +178,6 @@ class TerrainTile
 
 		TerrainTile(TerrainHolder* parent, uint32 mapid, int32 x, int32 y);
 		~TerrainTile();
-		void AddRef() { ++m_refs; }
-		void DecRef() { if(--m_refs == 0) delete this; }
 
 		void Load()
 		{

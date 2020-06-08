@@ -36,7 +36,7 @@ typedef multimap<uint32, TimedEvent*> EventMap;
 #define EVENT_REMOVAL_FLAG_ALL 0xFFFFFFFF
 #define WORLD_INSTANCE -1
 
-class SERVER_DECL EventableObject
+class SERVER_DECL EventableObject : public Arcemu::Shared::CRefCounter
 {
 		friend class EventMgr;
 		friend class EventableObjectHolder;
@@ -67,17 +67,12 @@ class SERVER_DECL EventableObject
 
 		virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
 
-		void AddRef() { ++m_refs; }
-		void DecRef() { if(--m_refs == 0) delete this; }
-
 	protected:
 
 		int32 m_event_Instanceid;
 		Mutex m_lock;
 		EventMap m_events;
 		EventableObjectHolder* m_holder;
-
-		Arcemu::Threading::AtomicCounter m_refs;
 };
 
 /**

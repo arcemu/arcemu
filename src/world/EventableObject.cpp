@@ -35,8 +35,7 @@ EventableObject::~EventableObject()
 	m_events.clear();
 }
 
-EventableObject::EventableObject() :
-m_refs( 1 )
+EventableObject::EventableObject()
 {
 	/* commented, these will be allocated when the first event is added. */
 	//m_event_Instanceid = event_GetInstanceID();

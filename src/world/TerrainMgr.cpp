@@ -76,7 +76,6 @@ TerrainTile::TerrainTile(TerrainHolder* parent, uint32 mapid, int32 x, int32 y)
 	m_mapid = mapid;
 	m_tx = x;
 	m_ty = y;
-	++m_refs;
 }
 
 float TileMap::GetHeightB(float x, float y, int x_int, int y_int)
