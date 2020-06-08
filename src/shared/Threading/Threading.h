@@ -30,7 +30,7 @@
 #include "Guard.h"
 
 // Platform Specific Thread Starter
-#include "ThreadStarter.h"
+#include "ThreadBase.h"
 
 // Platform independant locked queue
 #include "LockedQueue.h"
