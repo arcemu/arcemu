@@ -65,7 +65,7 @@ extern "C" {
 typedef struct mpq_archive mpq_archive_s;
 
 /* file offset data type for API*/
-typedef int64_t libmpq__off_t;
+typedef size_t libmpq__off_t;
 
 /* generic information about library. */
 extern LIBMPQ_API const char *libmpq__version(void);
