@@ -34,17 +34,35 @@ public:
 	bool testFloatRoundDown();
 	bool testFloatRoundWhole();
 
+	bool testDoubleRoundUp();
+	bool testDoubleRoundDown();
+	bool testDoubleRoundWhole();
+
+	bool testLongDoubleRoundUp();
+	bool testLongDoubleRoundDown();
+	bool testLongDoubleRoundWhole();
+
 	bool run();
 };
 
 TESTCASE_REGISTRY_FOR( UtilTest )
 	TESTCASE( UtilTest, testArcemuToLower, "arcemu_TOLOWER converts uppercase to lowercase." )
 	TESTCASE( UtilTest, testArcemuToLowerWithLowerCase, "arcemu_TOLOWER converts leaves lowercase." )
+
 	TESTCASE( UtilTest, testArcemuToUpper, "arcemu_TOUPPER converts lowercase to uppercase." )
 	TESTCASE( UtilTest, testArcemuToUpperWithUpperCase, "arcemu_TOUPPER leaves uppercase as is" )
+
 	TESTCASE( UtilTest, testFloatRoundUp, "round( float ) rounds up when appropriate" )
 	TESTCASE( UtilTest, testFloatRoundDown, "round( float ) rounds down when appropriate" )
-	TESTCASE( UtilTest, testFloatRoundWhole, "Test that round( float ) doesn't round a whole number" )
+	TESTCASE( UtilTest, testFloatRoundWhole, "round( float ) doesn't round a whole number" )
+
+	TESTCASE( UtilTest, testDoubleRoundUp, "round( double ) rounds up when appropriate" )
+	TESTCASE( UtilTest, testDoubleRoundDown, "round( double ) rounds down when appropriate" )
+	TESTCASE( UtilTest, testDoubleRoundWhole, "round( double ) doesn't round a whole number" )
+
+	TESTCASE( UtilTest, testLongDoubleRoundUp, "round( long double ) rounds up when appropriate" )
+	TESTCASE( UtilTest, testLongDoubleRoundDown, "round( long double ) rounds down when appropriate" )
+	TESTCASE( UtilTest, testLongDoubleRoundWhole, "round( long double ) doesn't round a whole number" )
 TESTCASE_REGISTRY_END()
 
 bool UtilTest::testArcemuToLower()
@@ -150,6 +168,96 @@ bool UtilTest::testFloatRoundWhole()
 	float input = 2.0f;
 	float expected = 2.0f;
 	float actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testDoubleRoundUp()
+{
+	double input = 2.6;
+	double expected = 3.0;
+	double actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testDoubleRoundDown()
+{
+	double input = 2.2;
+	double expected = 2.0;
+	double actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testDoubleRoundWhole()
+{
+	double input = 2.0;
+	double expected = 2.0;
+	double actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testLongDoubleRoundUp()
+{
+	long double input = 2.6;
+	long double expected = 3.0;
+	long double actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testLongDoubleRoundDown()
+{
+	long double input = 2.2;
+	long double expected = 2.0;
+	long double actual = Arcemu::Shared::Util::round( input );
+
+	std::cout << "Input: " << input << std::endl;
+	std::cout << "Expected: " << expected << std::endl;
+	std::cout << "Actual: " << actual << std::endl;
+
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testLongDoubleRoundWhole()
+{
+	long double input = 2.0;
+	long double expected = 2.0;
+	long double actual = Arcemu::Shared::Util::round( input );
 
 	std::cout << "Input: " << input << std::endl;
 	std::cout << "Expected: " << expected << std::endl;
