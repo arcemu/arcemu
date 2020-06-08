@@ -2,7 +2,6 @@ PROJECT(shared)
 
 SET( prefix ${ROOT_PATH}/src/shared )
 SET( sources
-    CThreads.cpp 
     CrashHandler.cpp 
     Log.cpp 
     MersenneTwister.cpp 
@@ -16,6 +15,7 @@ SET( sources
     DynLib.cpp
     SysInfo.cpp
     PerformanceCounter.cpp
+    Threading/CThreads.cpp 
     Threading/Mutex.cpp
     Threading/Threading.h  
     Threading/ThreadPool.cpp 
@@ -47,8 +47,6 @@ set( headers
 	Common.h
 	CrashHandler.h
 	crc32.h
-	CRefcounter.h
-	CThreads.h
 	Database/DatabaseEnv.h
 	DynLib.hpp
 	Errors.h
@@ -99,6 +97,8 @@ set( headers
 	Threading/AtomicFloat.h
 	Threading/AtomicULong.h
 	Threading/ConditionVariable.h
+	Threading/CThreads.h
+	Threading/CRefcounter.h
 	Threading/Guard.h
 	Threading/LockedQueue.h
 	Threading/Mutex.h
@@ -106,7 +106,7 @@ set( headers
 	Threading/RWLock.h
 	Threading/Threading.h
 	Threading/ThreadPool.h
-	Threading/ThreadStarter.h
+	Threading/ThreadBase.h
 )
 
 IF(WIN32)

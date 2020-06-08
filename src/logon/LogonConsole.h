@@ -21,7 +21,7 @@
 #define __LOGONCONSOLE_H
 
 #include "Common.h"
-#include "CThreads.h"
+#include "Threading/CThreads.h"
 
 class LogonConsoleThread : public ThreadBase
 {
