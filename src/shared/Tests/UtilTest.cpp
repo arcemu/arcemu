@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2020 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 #include "../Util.h"
-
+#include "../../testing/testmacros.h"
 #include <iostream>
 
 class UtilTest
@@ -37,23 +37,18 @@ public:
 	bool run();
 };
 
-typedef bool (UtilTest::*UtilTestMethod)();
-
-static UtilTestMethod testMethods[] = 
-{
-	&UtilTest::testArcemuToLower,
-	&UtilTest::testArcemuToLowerWithLowerCase,
-	&UtilTest::testArcemuToUpper,
-	&UtilTest::testArcemuToUpperWithUpperCase,
-	&UtilTest::testFloatRoundUp,
-	&UtilTest::testFloatRoundDown,
-	&UtilTest::testFloatRoundWhole
-};
+TESTCASE_REGISTRY_FOR( UtilTest )
+	TESTCASE( UtilTest, testArcemuToLower, "arcemu_TOLOWER converts uppercase to lowercase." )
+	TESTCASE( UtilTest, testArcemuToLowerWithLowerCase, "arcemu_TOLOWER converts leaves lowercase." )
+	TESTCASE( UtilTest, testArcemuToUpper, "arcemu_TOUPPER converts lowercase to uppercase." )
+	TESTCASE( UtilTest, testArcemuToUpperWithUpperCase, "arcemu_TOUPPER leaves uppercase as is" )
+	TESTCASE( UtilTest, testFloatRoundUp, "round( float ) rounds up when appropriate" )
+	TESTCASE( UtilTest, testFloatRoundDown, "round( float ) rounds down when appropriate" )
+	TESTCASE( UtilTest, testFloatRoundWhole, "Test that round( float ) doesn't round a whole number" )
+TESTCASE_REGISTRY_END()
 
 bool UtilTest::testArcemuToLower()
 {
-	std::cout << "Test that arcemu_TOLOWER converts uppercase to lowercase." << std::endl;
-
 	std::string actual = "UPPERCASE STRING";
 	std::string original = actual;
 	std::string expected = "uppercase string";
@@ -64,16 +59,13 @@ bool UtilTest::testArcemuToLower()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( expected.compare( actual ) == 0 )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected.compare( actual ), 0 );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::testArcemuToLowerWithLowerCase()
 {
-	std::cout << "Test that arcemu_TOLOWER converts leaves lowercase." << std::endl;
-
 	std::string actual = "lowercase string";
 	std::string original = actual;
 	std::string expected = original;
@@ -84,16 +76,13 @@ bool UtilTest::testArcemuToLowerWithLowerCase()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( expected.compare( actual ) == 0 )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected.compare( actual ), 0 );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::testArcemuToUpper()
 {
-	std::cout << "Test that arcemu_TOUPPER converts lowercase to uppercase." << std::endl;
-
 	std::string actual = "lowercase string";
 	std::string original = actual;
 	std::string expected = "LOWERCASE STRING";
@@ -104,16 +93,13 @@ bool UtilTest::testArcemuToUpper()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( expected.compare( actual ) == 0 )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected.compare( actual ), 0 );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::testArcemuToUpperWithUpperCase()
 {
-	std::cout << "Test that arcemu_TOUPPER leaves uppercase as is" << std::endl;
-
 	std::string actual = "UPPERCASE STRING";
 	std::string original = actual;
 	std::string expected = original;
@@ -124,16 +110,13 @@ bool UtilTest::testArcemuToUpperWithUpperCase()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( expected.compare( actual ) == 0 )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected.compare( actual ), 0 );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::testFloatRoundUp()
 {
-	std::cout << "Test that round( float ) rounds up when appropriate" << std::endl;
-
 	float input = 2.6f;
 	float expected = 3.0f;
 	float actual = Arcemu::Shared::Util::round( input );
@@ -142,16 +125,13 @@ bool UtilTest::testFloatRoundUp()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( actual == expected )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::testFloatRoundDown()
 {
-	std::cout << "Test that round( float ) rounds down when appropriate" << std::endl;
-
 	float input = 2.2f;
 	float expected = 2.0f;
 	float actual = Arcemu::Shared::Util::round( input );
@@ -160,16 +140,13 @@ bool UtilTest::testFloatRoundDown()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( actual == expected )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::testFloatRoundWhole()
 {
-	std::cout << "Test that round( float ) doesn't round a whole number" << std::endl;
-
 	float input = 2.0f;
 	float expected = 2.0f;
 	float actual = Arcemu::Shared::Util::round( input );
@@ -178,35 +155,17 @@ bool UtilTest::testFloatRoundWhole()
 	std::cout << "Expected: " << expected << std::endl;
 	std::cout << "Actual: " << actual << std::endl;
 
-	if( actual == expected )
-		return true;
-	else
-		return false;
+	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
 }
 
 bool UtilTest::run()
 {
-	int count = sizeof( testMethods ) / sizeof( UtilTestMethod );
-
-	for( int i = 0; i < count; i++ )
-	{
-		if( ! (this->*(testMethods[ i ]))() )
-			return false;
-		
-		std::cout << std::endl;
-	}
-
-	return true;
+	RUN_TESTS();
 }
 
 int main( int argc, char *argv[] )
 {
-	std::cout << "Running UtilTest..." << std::endl;
-	std::cout << std::endl;
-
-	UtilTest test;
-	if( test.run() )
-		return 0;
-	else
-		return 1;
+	RUN_TESTCLASS( UtilTest );
 }
