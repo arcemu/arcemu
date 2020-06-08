@@ -42,6 +42,11 @@ public:
 	bool testLongDoubleRoundDown();
 	bool testLongDoubleRoundWhole();
 
+	bool testStrSplitWhenEmpty();
+	bool testStrSplitWhenEmptySeparator();
+	bool testStrSplitWhenWrongSeparator();
+	bool testStrSplit();
+
 	bool run();
 };
 
@@ -63,6 +68,11 @@ TESTCASE_REGISTRY_FOR( UtilTest )
 	TESTCASE( UtilTest, testLongDoubleRoundUp, "round( long double ) rounds up when appropriate" )
 	TESTCASE( UtilTest, testLongDoubleRoundDown, "round( long double ) rounds down when appropriate" )
 	TESTCASE( UtilTest, testLongDoubleRoundWhole, "round( long double ) doesn't round a whole number" )
+
+	TESTCASE( UtilTest, testStrSplitWhenEmpty, "StrSplit returns an empty vector when given an empty string" )
+	TESTCASE( UtilTest, testStrSplitWhenEmptySeparator, "StrSplit returns the original string in a 1 length vector, when given an empty separator" )
+	TESTCASE( UtilTest, testStrSplitWhenWrongSeparator, "StrSplit returns the original string in a 1 length vector, when given a wrong separator" )
+	TESTCASE( UtilTest, testStrSplit, "StrSplit splits the string into a vector of string" )
 TESTCASE_REGISTRY_END()
 
 bool UtilTest::testArcemuToLower()
@@ -264,6 +274,46 @@ bool UtilTest::testLongDoubleRoundWhole()
 	std::cout << "Actual: " << actual << std::endl;
 
 	TEST_EQ( expected, actual );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testStrSplitWhenEmpty()
+{
+	std::vector< std::string > strings = Arcemu::Shared::Util::StrSplit( "", ";" );
+	TEST_EQ( 0, strings.size() );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testStrSplitWhenEmptySeparator()
+{
+	std::string string = "one;two;three";
+	std::vector< std::string > strings = Arcemu::Shared::Util::StrSplit( string, "" );
+	TEST_EQ( 1, strings.size() );
+	TEST_EQ( strings[ 0 ], string );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testStrSplitWhenWrongSeparator()
+{
+	std::string string = "one;two;three";
+	std::vector< std::string > strings = Arcemu::Shared::Util::StrSplit( string, "|" );
+	TEST_EQ( 1, strings.size() );
+	TEST_EQ( strings[ 0 ], string );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testStrSplit()
+{
+	std::string string = "one;two;three";
+	std::vector< std::string > strings = Arcemu::Shared::Util::StrSplit( string, ";" );
+	TEST_EQ( 3, strings.size() );
+	TEST_EQ( "one", strings[ 0 ] );
+	TEST_EQ( "two", strings[ 1 ] );
+	TEST_EQ( "three", strings[ 2 ] );
 
 	TESTCASE_END();
 }
