@@ -22,6 +22,7 @@
 
 #include "ByteBuffer.h"
 #include "WoWGuid.h"
+#include "LocationVector.h"
 
 ARCEMU_INLINE ByteBuffer & operator<<(ByteBuffer & b, const WoWGuid & value)
 {
@@ -39,6 +40,28 @@ ARCEMU_INLINE ByteBuffer & operator>>(ByteBuffer & b, WoWGuid & value)
 		field = b.read<uint8>();
 		value.AppendField(field);
 	}
+	return b;
+}
+
+//! Only does X,Y,Z!
+ARCEMU_INLINE ByteBuffer & operator << (ByteBuffer & b, const LocationVector & vec)
+{
+
+	b.append<float>(vec.x);
+	b.append<float>(vec.y);
+	b.append<float>(vec.z);
+
+	return b;
+}
+
+//! Only does X,Y,Z!
+ARCEMU_INLINE ByteBuffer & operator >> (ByteBuffer & b, LocationVector & vec)
+{
+
+	vec.x = b.read<float>();
+	vec.y = b.read<float>();
+	vec.z = b.read<float>();
+
 	return b;
 }
 

@@ -55,7 +55,6 @@ set( headers
 	FastQueue.h
 	FindFiles.hpp
 	FindFilesResult.hpp
-	LocationVector.h
 	Log.h
 	MapFile.h
 	MapFileEntry.h

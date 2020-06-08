@@ -218,6 +218,7 @@ SET( headers
 	ItemPrototype.h
 	LfgMgr.h
 	LocalizationMgr.h
+	LocationVector.h
 	LogonCommClient.h
 	LogonCommHandler.h
 	LootMgr.h

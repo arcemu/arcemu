@@ -84,7 +84,6 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "../shared/ByteBuffer.h"
 #include "../shared/Config/ConfigEnv.h"
 #include "../shared/crc32.h"
-#include "../shared/LocationVector.h"
 
 extern SERVER_DECL SessionLogWriter* Anticheat_Log;
 extern SERVER_DECL SessionLogWriter* GMCommand_Log;
@@ -116,6 +115,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "printStackTrace.h"
 #endif
 
+#include "LocationVector.h"
 #include "ByteBufferExtension.h"
 
 #include "Waypoint.h"

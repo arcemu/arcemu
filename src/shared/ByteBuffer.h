@@ -21,7 +21,6 @@
 #define _BYTEBUFFER_H
 
 #include "Common.h"
-#include "LocationVector.h"
 
 class SERVER_DECL ByteBuffer
 {
@@ -230,27 +229,6 @@ class SERVER_DECL ByteBuffer
 				value += c;
 			}
 			return *this;
-		}
-		//! Only does X,Y,Z!
-		ByteBuffer & operator << (const LocationVector & vec)
-		{
-
-			append<float>(vec.x);
-			append<float>(vec.y);
-			append<float>(vec.z);
-
-			return *this;
-		}
-
-		//! Only does X,Y,Z!
-		ByteBuffer & operator >> (LocationVector & vec)
-		{
-
-			vec.x = read<float>();
-			vec.y = read<float>();
-			vec.z = read<float>();
-
-			return * this;
 		}
 
 		uint8 operator[](size_t pos)
