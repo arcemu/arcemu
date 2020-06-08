@@ -67,8 +67,8 @@ class SERVER_DECL EventableObject
 
 		virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
 
-		void AddRef() { Arcemu::Shared::Util::Sync_Add(&m_refs); }
-		void DecRef() { if(Arcemu::Shared::Util::Sync_Sub(&m_refs) == 0) delete this; }
+		void AddRef() { ++m_refs; }
+		void DecRef() { if(--m_refs == 0) delete this; }
 
 	protected:
 
@@ -76,7 +76,8 @@ class SERVER_DECL EventableObject
 		Mutex m_lock;
 		EventMap m_events;
 		EventableObjectHolder* m_holder;
-		volatile long m_refs;
+
+		Arcemu::Threading::AtomicCounter m_refs;
 };
 
 /**

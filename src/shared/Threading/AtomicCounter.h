@@ -37,6 +37,11 @@ namespace Arcemu
 				AtomicCounter() { Value = 0; }
 				AtomicCounter(unsigned long InitialValue) { Value = InitialValue; }
 
+				AtomicCounter operator=(const AtomicCounter & other)
+				{
+					SetVal( other.GetVal() );
+					return *this;
+				}
 
 				//////////////////////////////////////////////////////////
 				//unsigned long operator++()
@@ -69,9 +74,6 @@ namespace Arcemu
 			private:
 				// Disabled copy constructor
 				AtomicCounter(const AtomicCounter & other) {}
-
-				// Disabled assignment operator
-				AtomicCounter operator=(const AtomicCounter & other) { return *this; }
 		};
 	}
 }

@@ -61,7 +61,7 @@ namespace Arcemu
 				// Return values
 				//  Returns the value contained
 				//////////////////////////////////////////////////////////
-				unsigned long GetVal() { return Value; }
+				unsigned long GetVal() const { return Value; }
 
 
 			private:

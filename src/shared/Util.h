@@ -47,10 +47,6 @@ namespace Arcemu
 				return (lt->tm_year - 100) << 24 | lt->tm_mon  << 20 | (lt->tm_mday - 1) << 14 | lt->tm_wday << 11 | lt->tm_hour << 6 | lt->tm_min;
 			}
 
-			static volatile long Sync_Add(volatile long* value);
-			
-			static volatile long Sync_Sub(volatile long* value);
-
 			// This HAS to be called outside the threads __try / __except block!
 			static void SetThreadName(const char* format, ...);
 
