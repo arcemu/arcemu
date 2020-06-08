@@ -9663,7 +9663,6 @@ void Player::AddComboPoints(uint64 target, int8 count)
 void Player::UpdateComboPoints()
 {
 	// fuck bytebuffers :D
-	unsigned char buffer[10];
 	uint16 c = 2;
 
 	// check for overflow
