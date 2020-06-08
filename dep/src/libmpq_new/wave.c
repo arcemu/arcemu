@@ -83,7 +83,7 @@ int32_t libmpq__do_decompress_wave(uint8_t *out_buf, int32_t out_length, uint8_t
 	in.pw++;
 
 	/* 15007AD7 */
-	for (count = 0; count < channels; count++) {
+	for (count = 0; count < (uint32_t)channels; count++) {
 
 		/* some common variables. */
 		int32_t temp;
