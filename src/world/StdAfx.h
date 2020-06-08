@@ -116,6 +116,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "printStackTrace.h"
 #endif
 
+#include "ByteBufferExtension.h"
+
 #include "Waypoint.h"
 
 #include "WUtil.h"

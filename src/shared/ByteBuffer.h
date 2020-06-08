@@ -147,12 +147,6 @@ class SERVER_DECL ByteBuffer
 			append((uint8)0);
 			return *this;
 		}
-		ByteBuffer & operator<<(const WoWGuid & value)
-		{
-			append<uint8>(value.GetNewGuidMask());
-			append((uint8*)value.GetNewGuid(), value.GetNewGuidLen());
-			return *this;
-		}
 
 		// stream like operators for reading data
 		ByteBuffer & operator>>(bool & value)
@@ -258,18 +252,6 @@ class SERVER_DECL ByteBuffer
 			vec.z = read<float>();
 
 			return * this;
-		}
-
-		ByteBuffer & operator>>(WoWGuid & value)
-		{
-			uint8 field, mask = read<uint8>();
-			value.Init((uint8)mask);
-			for(int i = 0; i < BitCount8(mask); i++)
-			{
-				field = read<uint8>();
-				value.AppendField(field);
-			}
-			return *this;
 		}
 
 		uint8 operator[](size_t pos)
@@ -493,7 +475,6 @@ class SERVER_DECL ByteBuffer
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
 template <typename T> ByteBuffer & operator<<(ByteBuffer & b, std::vector<T> v)
 {
 	b << (uint32)v.size();

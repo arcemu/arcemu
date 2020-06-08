@@ -180,6 +180,7 @@ SET( headers
 	BaseConsole.h
 	Battleground.h
 	BattlegroundMgr.h
+	ByteBufferExtension.h
 	CConsole.h
 	CellHandler.h
 	Channel.h
@@ -290,6 +291,7 @@ SET( headers
 	WorldSocket.h
 	WorldStatesHandler.h
 	WorldStates.h
+	WoWGuid.h
 	WUtil.h
 )
 	
