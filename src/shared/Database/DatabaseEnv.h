@@ -24,7 +24,7 @@
 #include "Common.h"
 #include "Singleton.h"
 #include "Log.h"
-#include "CThreads.h"
+#include "Threading/CThreads.h"
 
 //! Our own includes.
 #include "Database/Field.h"
