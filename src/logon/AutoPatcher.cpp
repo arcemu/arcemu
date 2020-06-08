@@ -18,7 +18,7 @@
  */
 
 #include "LogonStdAfx.h"
-#include "../shared/Auth/MD5.h"
+#include "../shared/Crypto/MD5.h"
 
 #ifndef WIN32
 #include <fcntl.h>

@@ -25,10 +25,10 @@ SET( sources
     Threading/AtomicBoolean.cpp 
     Threading/ConditionVariable.cpp
     arcemu_getopt.cpp 
-    Auth/BigNumber.cpp 
-    Auth/MD5.cpp 
-    Auth/Sha1.cpp 
-    Auth/WowCrypt.cpp 
+    Crypto/BigNumber.cpp 
+    Crypto/MD5.cpp 
+    Crypto/Sha1.cpp 
+    Crypto/WowCrypt.cpp 
     Config/Config.cpp 
     Database/Database.cpp 
     Database/MySQLDatabase.cpp 
@@ -71,10 +71,10 @@ set( headers
 	Tokenizer.h
 	Util.h
 	WorldPacket.h
-	Auth/BigNumber.h
-	Auth/MD5.h
-	Auth/Sha1.h
-	Auth/WowCrypt.h
+	Crypto/BigNumber.h
+	Crypto/MD5.h
+	Crypto/Sha1.h
+	Crypto/WowCrypt.h
 	Config/Config.h
 	Config/ConfigEnv.h
 	Database/Database.h

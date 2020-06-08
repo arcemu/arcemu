@@ -37,9 +37,9 @@
 
 #include "../shared/Database/DatabaseEnv.h"
 
-#include "../shared/Auth/BigNumber.h"
-#include "../shared/Auth/Sha1.h"
-#include "../shared/Auth/WowCrypt.h"
+#include "../shared/Crypto/BigNumber.h"
+#include "../shared/Crypto/Sha1.h"
+#include "../shared/Crypto/WowCrypt.h"
 
 #include "LogonOpcodes.h"
 #include "../logon/Main.h"

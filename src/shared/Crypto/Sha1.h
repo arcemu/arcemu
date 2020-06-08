@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include "Common.h"
 #include <openssl/sha.h>
-#include "Auth/BigNumber.h"
+#include "Crypto/BigNumber.h"
 
 class Sha1Hash
 {
