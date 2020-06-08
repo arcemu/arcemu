@@ -20,6 +20,9 @@
 #ifndef BYTEBUFFER_EXTENSION_H_
 #define BYTEBUFFER_EXTENSION_H_
 
+#include "ByteBuffer.h"
+#include "WoWGuid.h"
+
 ARCEMU_INLINE ByteBuffer & operator<<(ByteBuffer & b, const WoWGuid & value)
 {
 	b.append<uint8>(value.GetNewGuidMask());

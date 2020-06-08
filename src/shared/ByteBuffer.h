@@ -21,7 +21,6 @@
 #define _BYTEBUFFER_H
 
 #include "Common.h"
-#include "WoWGuid.h"
 #include "LocationVector.h"
 
 class SERVER_DECL ByteBuffer
