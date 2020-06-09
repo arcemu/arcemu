@@ -109,7 +109,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "../shared/Threading/RWLock.h"
 #include "../shared/Threading/CRefCounter.h"
 #include "../shared/arcemu_getopt.h"
-#include "../shared/TLSObject.h"
+#include "../shared/Threading/TLSObject.h"
 #include "../shared/Tokenizer.h"
 
 #ifdef WIN32

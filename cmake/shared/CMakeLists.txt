@@ -65,7 +65,6 @@ set( headers
 	Storage.h
 	SysInfo.hpp
 	TextFile.h
-	TLSObject.h
 	Tokenizer.h
 	Util.h
 	WorldPacket.h
@@ -105,6 +104,7 @@ set( headers
 	Threading/Threading.h
 	Threading/ThreadPool.h
 	Threading/ThreadBase.h
+	Threading/TLSObject.h
 )
 
 IF(WIN32)
