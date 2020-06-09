@@ -11,7 +11,7 @@
  * without express or implied warranty.
  */
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "printStackTrace.h"
 #include "StackTrace.h"
 #include "MapFile.h"

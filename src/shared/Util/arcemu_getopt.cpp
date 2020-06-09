@@ -17,8 +17,8 @@
  *
  */
 
-#include "Common.h"
-#include "arcemu_getopt.h"
+#include "System/Platform.h"
+#include "Util/arcemu_getopt.h"
 
 int arg_counter = 1;
 char arcemu_optarg[514];

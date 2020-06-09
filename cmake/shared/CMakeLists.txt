@@ -37,7 +37,6 @@ SET( sources
 	
 set( headers 
 	Util/arcemu_getopt.h
-	arcemuConfig.h
 	Container/Array.h
 	Network/AuthCodes.h
 	Container/ByteBuffer.h

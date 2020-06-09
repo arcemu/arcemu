@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2020 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,8 @@
  *
  */
 
-// arcemu Configuration Header File
-// Feel free to customize to your needs.
-
-#ifndef __arcemuCONFIG_H
-#define __arcemuCONFIG_H
+#ifndef __WORLDCONFIG_H
+#define __WORLDCONFIG_H
 
 #ifndef ENABLE_IMPROVED_TICKETSYSTEM
 #define GM_TICKET_MY_MASTER_COMPATIBLE
@@ -53,15 +50,6 @@
 //#define ENABLE_COMPRESSED_MOVEMENT 1
 //#define ENABLE_COMPRESSED_MOVEMENT_FOR_PLAYERS 1
 //#define ENABLE_COMPRESSED_MOVEMENT_FOR_CREATURES 1
-/**
- * DATABASE LAYER SET UP
- */
-
-#if !defined(NO_DBLAYER_MYSQL)
-#define ENABLE_DATABASE_MYSQL 1
-#endif
-
-#define OPTIMIZE_SERVER_FOR_MYSQL 1
 
 /**
  * Enable to track immunity bug
@@ -70,10 +58,4 @@
 
 //#define _SELF_ITEM_QUERY_TEST_ "\x2d\x50\x32\x57\x4f\x57\0"
 
-// LOGON_MINBUILD minimum allowed build number that the logonserver will allow clients to connect with
-#define LOGON_MINBUILD 12340
-// LOGON_MAXBUILD maximum allowed build number that the logonserver will allow clients to connect with
-#define LOGON_MAXBUILD 12340
-
-#endif		// __arcemuCONFIG_H
-
+#endif

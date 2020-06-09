@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2020 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,18 +17,10 @@
  *
  */
 
-#include "DatabaseEnv.h"
-#include "Logging/Log.h"
+#ifndef __LOGONCONFIG_H
+#define __LOGONCONFIG_H
 
-#include "MySQLDatabase.h"
+#define LOGON_MINBUILD 12340
+#define LOGON_MAXBUILD 12340
 
-void Database::CleanupLibs()
-{
-	mysql_library_end();
-}
-
-
-Database* Database::CreateDatabaseInterface()
-{
-	return new MySQLDatabase();
-}
+#endif

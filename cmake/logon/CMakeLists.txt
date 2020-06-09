@@ -16,6 +16,7 @@ SET( sources
 	AuthStructs.h
 	AutoPatcher.h
 	LogonCommServer.h
+	LogonConfig.h
 	LogonConsole.h
 	LogonOpcodes.h
 	LogonStdAfx.h

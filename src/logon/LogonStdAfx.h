@@ -26,6 +26,8 @@
 #include <sstream>
 #include <string>
 
+#include "LogonConfig.h"
+
 #include "System/Platform.h"
 #include <Network/Network.h>
 

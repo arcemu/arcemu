@@ -287,6 +287,7 @@ SET( headers
 	Entities/Summons/WildSummon.h
 	WordFilter.h
 	World.h
+	WorldConfig.h
 	WorldCreator.h
 	WorldRunnable.h
 	WorldSession.h
