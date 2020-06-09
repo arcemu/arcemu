@@ -56,9 +56,9 @@ void LogonCommServerSocket::OnDisconnect()
 		set<uint32>::iterator itr = server_ids.begin();
 
 		for(; itr != server_ids.end(); ++itr)
-			sInfoCore.SetRealmOffline((*itr));
+			sRealmRegistry.SetRealmOffline((*itr));
 
-		sInfoCore.RemoveServerSocket(this);
+		sRealmRegistry.RemoveServerSocket(this);
 	}
 }
 
@@ -71,7 +71,7 @@ void LogonCommServerSocket::OnConnect()
 		return;
 	}
 
-	sInfoCore.AddServerSocket(this);
+	sRealmRegistry.AddServerSocket(this);
 	removed = false;
 }
 
@@ -171,17 +171,17 @@ void LogonCommServerSocket::HandleRegister(ServerPacket & recvData)
 	int32 my_id;
 
 	recvData >> Name;
-	my_id = sInfoCore.GetRealmIdByName(Name);
+	my_id = sRealmRegistry.GetRealmIdByName(Name);
 
 	if(my_id == -1)
 	{
-		my_id = sInfoCore.GenerateRealmID();
+		my_id = sRealmRegistry.GenerateRealmID();
 		sLog.outString("Registering realm `%s` under ID %u.", Name.c_str(), my_id);
 	}
 	else
 	{
-		sInfoCore.RemoveRealm(my_id);
-		int new_my_id = sInfoCore.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
+		sRealmRegistry.RemoveRealm(my_id);
+		int new_my_id = sRealmRegistry.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
 		sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id);
 		my_id = new_my_id;
 	}
@@ -205,7 +205,7 @@ void LogonCommServerSocket::HandleRegister(ServerPacket & recvData)
 //	sLog.outString("Registering realm `%s` under ID %u.", realm->Name.c_str(), my_id);
 
 	// Add to the main realm list
-	sInfoCore.AddRealm(my_id, realm);
+	sRealmRegistry.AddRealm(my_id, realm);
 
 	// Send back response packet.
 	ServerPacket data(RSMSG_REALM_REGISTERED, 4);
@@ -351,11 +351,11 @@ void LogonCommServerSocket::HandleMappingReply(ServerPacket & recvData)
 	uint32 count;
 	uint32 realm_id;
 	buf >> realm_id;
-	Realm* realm = sInfoCore.GetRealm(realm_id);
+	Realm* realm = sRealmRegistry.GetRealm(realm_id);
 	if(!realm)
 		return;
 
-	sInfoCore.getRealmLock().Acquire();
+	sRealmRegistry.getRealmLock().Acquire();
 
 	HM_NAMESPACE::HM_HASH_MAP<uint32, uint8>::iterator itr;
 	buf >> count;
@@ -370,7 +370,7 @@ void LogonCommServerSocket::HandleMappingReply(ServerPacket & recvData)
 			realm->CharacterMap.insert(make_pair(account_id, number_of_characters));
 	}
 
-	sInfoCore.getRealmLock().Release();
+	sRealmRegistry.getRealmLock().Release();
 }
 
 void LogonCommServerSocket::HandleUpdateMapping(ServerPacket & recvData)
@@ -380,11 +380,11 @@ void LogonCommServerSocket::HandleUpdateMapping(ServerPacket & recvData)
 	uint8 chars_to_add;
 	recvData >> realm_id;
 
-	Realm* realm = sInfoCore.GetRealm(realm_id);
+	Realm* realm = sRealmRegistry.GetRealm(realm_id);
 	if(!realm)
 		return;
 
-	sInfoCore.getRealmLock().Acquire();
+	sRealmRegistry.getRealmLock().Acquire();
 	recvData >> account_id >> chars_to_add;
 
 	HM_NAMESPACE::HM_HASH_MAP<uint32, uint8>::iterator itr = realm->CharacterMap.find(account_id);
@@ -393,7 +393,7 @@ void LogonCommServerSocket::HandleUpdateMapping(ServerPacket & recvData)
 	else
 		realm->CharacterMap.insert(make_pair(account_id, chars_to_add));
 
-	sInfoCore.getRealmLock().Release();
+	sRealmRegistry.getRealmLock().Release();
 }
 
 void LogonCommServerSocket::HandleTestConsoleLogin(ServerPacket & recvData)
@@ -538,7 +538,7 @@ void LogonCommServerSocket::HandlePopulationRespond(ServerPacket & recvData)
 	float population;
 	uint32 realmId;
 	recvData >> realmId >> population;
-	sInfoCore.UpdateRealmPop(realmId, population);
+	sRealmRegistry.UpdateRealmPop(realmId, population);
 }
 
 void LogonCommServerSocket::RefreshRealmsPop()

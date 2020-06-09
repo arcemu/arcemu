@@ -270,8 +270,8 @@ bool Rehash()
 		m_allowedModIps.push_back(tmp);
 	}
 
-	if(InformationCore::getSingletonPtr() != NULL)
-		sInfoCore.CheckServers();
+	if(RealmRegistry::getSingletonPtr() != NULL)
+		sRealmRegistry.CheckServers();
 
 	m_allowedIpLock.Release();
 
@@ -375,8 +375,8 @@ void LogonServer::Run(int argc, char** argv)
 	new AccountMgr;
 	new IPBanner;
 
-	Log.Success("InfoCore", "Starting...");
-	new InformationCore;
+	Log.Success("RealmRegistry", "Starting...");
+	new RealmRegistry;
 
 	new PatchMgr;
 	Log.Notice("AccountMgr", "Precaching accounts...");
@@ -469,7 +469,7 @@ void LogonServer::Run(int argc, char** argv)
 
 			if(!(loop_counter % 5))
 			{
-				sInfoCore.TimeoutSockets();
+				sRealmRegistry.TimeoutSockets();
 				sSocketGarbageCollector.Update();
 				CheckForDeadSockets();			  // Flood Protection
 				UNIXTIME = time(NULL);
@@ -518,7 +518,7 @@ void LogonServer::Run(int argc, char** argv)
 	remove("logonserver.pid");
 
 	delete AccountMgr::getSingletonPtr();
-	delete InformationCore::getSingletonPtr();
+	delete RealmRegistry::getSingletonPtr();
 	delete PatchMgr::getSingletonPtr();
 	delete IPBanner::getSingletonPtr();
 	delete SocketMgr::getSingletonPtr();

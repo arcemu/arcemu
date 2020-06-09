@@ -547,7 +547,7 @@ void AuthSocket::OnRead()
 
 void AuthSocket::HandleRealmlist()
 {
-	sInfoCore.SendRealms(this);
+	sRealmRegistry.SendRealms(this);
 }
 
 void AuthSocket::HandleReconnectChallenge()

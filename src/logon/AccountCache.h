@@ -168,7 +168,7 @@ typedef struct
 class AuthSocket;
 class LogonCommServerSocket;
 
-class InformationCore : public Singleton<InformationCore>
+class RealmRegistry : public Singleton<RealmRegistry>
 {
 		map<uint32, Realm*>		  m_realms;
 		set<LogonCommServerSocket*> m_serverSockets;
@@ -179,12 +179,12 @@ class InformationCore : public Singleton<InformationCore>
 		bool usepings;
 
 	public:
-		~InformationCore();
+		~RealmRegistry();
 
 		ARCEMU_INLINE Mutex & getServerSocketLock() { return serverSocketLock; }
 		ARCEMU_INLINE Mutex & getRealmLock() { return realmLock; }
 
-		InformationCore()
+		RealmRegistry()
 		{
 			realmhigh = 0;
 			usepings  = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
@@ -217,6 +217,6 @@ class InformationCore : public Singleton<InformationCore>
 
 #define sIPBanner IPBanner::getSingleton()
 #define sAccountMgr AccountMgr::getSingleton()
-#define sInfoCore InformationCore::getSingleton()
+#define sRealmRegistry RealmRegistry::getSingleton()
 
 #endif

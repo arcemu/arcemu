@@ -36,7 +36,7 @@ void reverse_array(uint8* pointer, size_t count)
 
 initialiseSingleton(AccountMgr);
 initialiseSingleton(IPBanner);
-initialiseSingleton(InformationCore);
+initialiseSingleton(RealmRegistry);
 
 void AccountMgr::ReloadAccounts(bool silent)
 {
@@ -340,7 +340,7 @@ bool IPBanner::Add(const char* ip, uint32 dur)
 	return true;
 }
 
-InformationCore::~InformationCore()
+RealmRegistry::~RealmRegistry()
 {
 	for(map<uint32, Realm*>::iterator itr = m_realms.begin(); itr != m_realms.end(); ++itr)
 		delete itr->second;
@@ -405,7 +405,7 @@ void IPBanner::Reload()
 	listBusy.Release();
 }
 
-Realm* InformationCore::AddRealm(uint32 realm_id, Realm* rlm)
+Realm* RealmRegistry::AddRealm(uint32 realm_id, Realm* rlm)
 {
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
@@ -421,7 +421,7 @@ Realm* InformationCore::AddRealm(uint32 realm_id, Realm* rlm)
 	return rlm;
 }
 
-Realm* InformationCore::GetRealm(uint32 realm_id)
+Realm* RealmRegistry::GetRealm(uint32 realm_id)
 {
 	Realm* ret = NULL;
 
@@ -435,7 +435,7 @@ Realm* InformationCore::GetRealm(uint32 realm_id)
 	return ret;
 }
 
-int32 InformationCore::GetRealmIdByName(string Name)
+int32 RealmRegistry::GetRealmIdByName(string Name)
 {
 	map<uint32, Realm*>::iterator itr = m_realms.begin();
 	for(; itr != m_realms.end(); ++itr)
@@ -446,7 +446,7 @@ int32 InformationCore::GetRealmIdByName(string Name)
 	return -1;
 }
 
-void InformationCore::RemoveRealm(uint32 realm_id)
+void RealmRegistry::RemoveRealm(uint32 realm_id)
 {
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
@@ -458,7 +458,7 @@ void InformationCore::RemoveRealm(uint32 realm_id)
 	realmLock.Release();
 }
 
-void InformationCore::UpdateRealmStatus(uint32 realm_id, uint8 flags)
+void RealmRegistry::UpdateRealmStatus(uint32 realm_id, uint8 flags)
 {
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
@@ -469,7 +469,7 @@ void InformationCore::UpdateRealmStatus(uint32 realm_id, uint8 flags)
 	realmLock.Release();
 }
 
-void InformationCore::UpdateRealmPop(uint32 realm_id, float pop)
+void RealmRegistry::UpdateRealmPop(uint32 realm_id, float pop)
 {
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
@@ -490,7 +490,7 @@ void InformationCore::UpdateRealmPop(uint32 realm_id, float pop)
 	}
 	realmLock.Release();
 }
-void InformationCore::SendRealms(AuthSocket* Socket)
+void RealmRegistry::SendRealms(AuthSocket* Socket)
 {
 	realmLock.Acquire();
 
@@ -573,7 +573,7 @@ void InformationCore::SendRealms(AuthSocket* Socket)
 	ss.clear();
 }
 
-void InformationCore::TimeoutSockets()
+void RealmRegistry::TimeoutSockets()
 {
 	if(!usepings)
 		return;
@@ -607,7 +607,7 @@ void InformationCore::TimeoutSockets()
 	serverSocketLock.Release();
 }
 
-void InformationCore::CheckServers()
+void RealmRegistry::CheckServers()
 {
 	serverSocketLock.Acquire();
 
@@ -629,7 +629,7 @@ void InformationCore::CheckServers()
 	serverSocketLock.Release();
 }
 
-void InformationCore::SetRealmOffline(uint32 realm_id)
+void RealmRegistry::SetRealmOffline(uint32 realm_id)
 {
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
