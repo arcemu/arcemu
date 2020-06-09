@@ -20,6 +20,7 @@
 #ifndef __LOGONOPCODES_H
 #define __LOGONOPCODES_H
 
+/// These are the opcodes used during Logon <-> Realm communication
 enum RealmListOpcodes
 {
     // Initialization of server/client connection...
