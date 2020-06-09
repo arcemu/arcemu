@@ -35,7 +35,7 @@ void OutputCrashLogLine(const char* format, ...);
 
 #include <DbgHelp.h>
 #include "StackWalker.h"
-#include "CircularQueue.h"
+#include "Container/CircularQueue.h"
 
 extern CircularQueue<uint32, 30> last_spells;
 

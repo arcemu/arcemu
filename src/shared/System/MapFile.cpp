@@ -14,7 +14,7 @@
 #include "MapFile.h"
 #include "MapFileEntry.h"
 #include "TextFile.h"
-#include "Array.h"
+#include "Container/Array.h"
 #include <algorithm>
 #include <cstring>
 #include <cctype>

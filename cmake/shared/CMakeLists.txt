@@ -32,24 +32,24 @@ SET( sources
     Database/Database.cpp 
     Database/MySQLDatabase.cpp 
     Database/CreateInterface.cpp 
-    Network/CircularBuffer.cpp 
+    Container/CircularBuffer.cpp 
     Network/Socket.cpp  )
 	
 set( headers 
 	arcemu_getopt.h
 	arcemuConfig.h
-	Array.h
+	Container/Array.h
 	Network/AuthCodes.h
-	ByteBuffer.h
+	Container/ByteBuffer.h
 	CallBack.h
-	CircularQueue.h
+	Container/CircularQueue.h
 	System/Platform.h
 	System/CrashHandler.h
 	System/crc32.h
 	Database/DatabaseEnv.h
 	System/DynLib.hpp
 	System/Errors.h
-	FastQueue.h
+	Container/FastQueue.h
 	System/FindFiles.hpp
 	System/FindFilesResult.hpp
 	Log.h
@@ -57,7 +57,7 @@ set( headers
 	System/MapFileEntry.h
 	MersenneTwister.h
 	System/PerformanceCounter.hpp
-	PreallocatedQueue.h
+	Container/PreallocatedQueue.h
 	System/printStackTrace.h
 	Singleton.h
 	System/StackWalker.h
@@ -78,7 +78,7 @@ set( headers
 	Database/DataStore.h
 	Database/Field.h
 	Database/MySQLDatabase.h
-	Network/CircularBuffer.h
+	Container/CircularBuffer.h
 	Network/ListenSocketFreeBSD.h
 	Network/ListenSocketLinux.h
 	Network/ListenSocketWin32.h

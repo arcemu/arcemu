@@ -38,7 +38,7 @@ void OutputCrashLogLine(const char* format, ...)
 
 #ifdef WIN32
 
-#include "CircularQueue.h"
+#include "Container/CircularQueue.h"
 Mutex m_crashLock;
 
 /* *

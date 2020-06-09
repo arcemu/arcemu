@@ -21,7 +21,7 @@
 #define _AUTH_BIGNUMBER_H
 
 #include "System/Platform.h"
-#include "ByteBuffer.h"
+#include "Container/ByteBuffer.h"
 
 //#include "openssl/bn.h"
 struct bignum_st;
