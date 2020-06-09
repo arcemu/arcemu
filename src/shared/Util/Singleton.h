@@ -20,7 +20,7 @@
 #ifndef WOWSERVER_SINGLETON_H
 #define WOWSERVER_SINGLETON_H
 
-#include "Errors.h"
+#include "System/Errors.h"
 
 /// Should be placed in the appropriate .cpp file somewhere
 #define initialiseSingleton( type ) \
