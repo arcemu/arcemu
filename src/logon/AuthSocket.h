@@ -23,13 +23,13 @@
 #include "AccountMgr.h"
 #include "AuthStructs.h"
 
-class LogonCommServerSocket;
+class RealmSocket;
 struct Patch;
 class PatchJob;
 
 class AuthSocket : public Socket
 {
-		friend class LogonCommServerSocket;
+		friend class RealmSocket;
 	public:
 
 		///////////////////////////////////////////////////

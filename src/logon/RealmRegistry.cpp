@@ -165,8 +165,8 @@ void RealmRegistry::SendRealms(AuthSocket* Socket)
 	// Send to the socket.
 	Socket->Send((const uint8*)data.contents(), uint32(data.size()));
 
-	std::list< LogonCommServerSocket* > ss;
-	std::list< LogonCommServerSocket* >::iterator SSitr;
+	std::list< RealmSocket* > ss;
+	std::list< RealmSocket* >::iterator SSitr;
 
 	ss.clear();
 
@@ -178,7 +178,7 @@ void RealmRegistry::SendRealms(AuthSocket* Socket)
 		return;
 	}
 
-	set<LogonCommServerSocket*>::iterator itr1;
+	set<RealmSocket*>::iterator itr1;
 
 	// We copy the sockets to a list and call RefreshRealmsPop() from there because if the socket is dead,
 	//then calling the method deletes the socket and removes it from the set corrupting the iterator and causing a crash!
@@ -205,9 +205,9 @@ void RealmRegistry::TimeoutSockets()
 	/* burlex: this is vulnerable to race conditions, adding a mutex to it. */
 	serverSocketLock.Acquire();
 
-	for(set< LogonCommServerSocket* >::iterator itr = m_serverSockets.begin(); itr != m_serverSockets.end();)
+	for(set< RealmSocket* >::iterator itr = m_serverSockets.begin(); itr != m_serverSockets.end();)
 	{
-		LogonCommServerSocket* s = *itr;
+		RealmSocket* s = *itr;
 		++itr;
 
 		uint32 last_ping = s->last_ping.GetVal();
@@ -233,8 +233,8 @@ void RealmRegistry::CheckServers()
 {
 	serverSocketLock.Acquire();
 
-	set<LogonCommServerSocket*>::iterator itr, it2;
-	LogonCommServerSocket* s;
+	set<RealmSocket*>::iterator itr, it2;
+	RealmSocket* s;
 	for(itr = m_serverSockets.begin(); itr != m_serverSockets.end();)
 	{
 		s = *itr;

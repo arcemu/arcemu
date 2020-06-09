@@ -22,7 +22,7 @@
 
 #include <Crypto/RC4Engine.h>
 
-class LogonCommServerSocket : public Socket
+class RealmSocket : public Socket
 {
 		uint32 remaining;
 		uint16 opcode;
@@ -33,8 +33,8 @@ class LogonCommServerSocket : public Socket
 		uint32 authenticated;
 		bool use_crypto;
 
-		LogonCommServerSocket(SOCKET fd);
-		~LogonCommServerSocket();
+		RealmSocket(SOCKET fd);
+		~RealmSocket();
 
 		void OnRead();
 		void OnDisconnect();
@@ -59,6 +59,6 @@ class LogonCommServerSocket : public Socket
 		set<uint32> server_ids;
 };
 
-typedef void (LogonCommServerSocket::*logonpacket_handler)(ServerPacket &);
+typedef void (RealmSocket::*logonpacket_handler)(ServerPacket &);
 
 #endif

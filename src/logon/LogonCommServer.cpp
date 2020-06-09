@@ -28,7 +28,7 @@ typedef struct
 
 static void swap32(uint32* p) { *p = ((*p >> 24) & 0xff) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
-LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
+RealmSocket::RealmSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
 	// do nothing
 	last_ping.SetVal((uint32)UNIXTIME);
@@ -38,17 +38,17 @@ LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 5242
 	use_crypto = false;
 	authenticated = 0;
 
-	LOG_DETAIL("Created LogonCommServerSocket %u", m_fd);
+	LOG_DETAIL("Created RealmSocket %u", m_fd);
 }
 
-LogonCommServerSocket::~LogonCommServerSocket()
+RealmSocket::~RealmSocket()
 {
 
 }
 
-void LogonCommServerSocket::OnDisconnect()
+void RealmSocket::OnDisconnect()
 {
-	LOG_DETAIL("LogonCommServerSocket::Ondisconnect event.");
+	LOG_DETAIL("RealmSocket::Ondisconnect event.");
 
 	// if we're registered -> Set offline
 	if(!removed)
@@ -62,7 +62,7 @@ void LogonCommServerSocket::OnDisconnect()
 	}
 }
 
-void LogonCommServerSocket::OnConnect()
+void RealmSocket::OnConnect()
 {
 	if(!IsServerAllowed(GetRemoteAddress().s_addr))
 	{
@@ -75,7 +75,7 @@ void LogonCommServerSocket::OnConnect()
 	removed = false;
 }
 
-void LogonCommServerSocket::OnRead()
+void RealmSocket::OnRead()
 {
 	while(true)
 	{
@@ -123,7 +123,7 @@ void LogonCommServerSocket::OnRead()
 	}
 }
 
-void LogonCommServerSocket::HandlePacket(ServerPacket & recvData)
+void RealmSocket::HandlePacket(ServerPacket & recvData)
 {
 	if(authenticated == 0 && recvData.GetOpcode() != RCMSG_AUTH_CHALLENGE)
 	{
@@ -135,25 +135,25 @@ void LogonCommServerSocket::HandlePacket(ServerPacket & recvData)
 	static logonpacket_handler Handlers[RMSG_COUNT] =
 	{
 		NULL,												// RMSG_NULL
-		&LogonCommServerSocket::HandleRegister,				// RCMSG_REGISTER_REALM
+		&RealmSocket::HandleRegister,				// RCMSG_REGISTER_REALM
 		NULL,												// RSMSG_REALM_REGISTERED
-		&LogonCommServerSocket::HandleSessionRequest,		// RCMSG_REQUEST_SESSION
+		&RealmSocket::HandleSessionRequest,		// RCMSG_REQUEST_SESSION
 		NULL,												// RSMSG_SESSION_RESULT
-		&LogonCommServerSocket::HandlePing,					// RCMSG_PING
+		&RealmSocket::HandlePing,					// RCMSG_PING
 		NULL,												// RSMSG_PONG
 		NULL,			// RCMSG_SQL_EXECUTE
 		NULL,		// RCMSG_RELOAD_ACCOUNTS
-		&LogonCommServerSocket::HandleAuthChallenge,		// RCMSG_AUTH_CHALLENGE
+		&RealmSocket::HandleAuthChallenge,		// RCMSG_AUTH_CHALLENGE
 		NULL,												// RSMSG_AUTH_RESPONSE
 		NULL,												// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
-		&LogonCommServerSocket::HandleMappingReply,			// RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
-		&LogonCommServerSocket::HandleUpdateMapping,		// RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
+		&RealmSocket::HandleMappingReply,			// RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
+		&RealmSocket::HandleUpdateMapping,		// RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
 		NULL,												// RSMSG_DISCONNECT_ACCOUNT
-		&LogonCommServerSocket::HandleTestConsoleLogin,		// RCMSG_TEST_CONSOLE_LOGIN
+		&RealmSocket::HandleTestConsoleLogin,		// RCMSG_TEST_CONSOLE_LOGIN
 		NULL,												// RSMSG_CONSOLE_LOGIN_RESULT
-		&LogonCommServerSocket::HandleDatabaseModify,		// RCMSG_MODIFY_DATABASE
+		&RealmSocket::HandleDatabaseModify,		// RCMSG_MODIFY_DATABASE
 		NULL,												// RSMSG_REALM_POP_REQ
-		&LogonCommServerSocket::HandlePopulationRespond,	// RCMSG_REALM_POP_RES
+		&RealmSocket::HandlePopulationRespond,	// RCMSG_REALM_POP_RES
 	};
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
@@ -165,7 +165,7 @@ void LogonCommServerSocket::HandlePacket(ServerPacket & recvData)
 	(this->*(Handlers[recvData.GetOpcode()]))(recvData);
 }
 
-void LogonCommServerSocket::HandleRegister(ServerPacket & recvData)
+void RealmSocket::HandleRegister(ServerPacket & recvData)
 {
 	string Name;
 	int32 my_id;
@@ -221,7 +221,7 @@ void LogonCommServerSocket::HandleRegister(ServerPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandleSessionRequest(ServerPacket & recvData)
+void RealmSocket::HandleSessionRequest(ServerPacket & recvData)
 {
 	uint32 request_id;
 	string account_name;
@@ -257,14 +257,14 @@ void LogonCommServerSocket::HandleSessionRequest(ServerPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandlePing(ServerPacket & recvData)
+void RealmSocket::HandlePing(ServerPacket & recvData)
 {
 	ServerPacket data(RSMSG_PONG, 4);
 	SendPacket(&data);
 	last_ping.SetVal((uint32)time(NULL));
 }
 
-void LogonCommServerSocket::SendPacket(ServerPacket* data)
+void RealmSocket::SendPacket(ServerPacket* data)
 {
 	bool rv;
 	BurstBegin();
@@ -292,7 +292,7 @@ void LogonCommServerSocket::SendPacket(ServerPacket* data)
 	BurstEnd();
 }
 
-void LogonCommServerSocket::HandleAuthChallenge(ServerPacket & recvData)
+void RealmSocket::HandleAuthChallenge(ServerPacket & recvData)
 {
 	unsigned char key[20];
 	uint32 result = 1;
@@ -329,7 +329,7 @@ void LogonCommServerSocket::HandleAuthChallenge(ServerPacket & recvData)
 	authenticated = result;
 }
 
-void LogonCommServerSocket::HandleMappingReply(ServerPacket & recvData)
+void RealmSocket::HandleMappingReply(ServerPacket & recvData)
 {
 	/* this packet is gzipped, whee! :D */
 	uint32 real_size;
@@ -373,7 +373,7 @@ void LogonCommServerSocket::HandleMappingReply(ServerPacket & recvData)
 	sRealmRegistry.getRealmLock().Release();
 }
 
-void LogonCommServerSocket::HandleUpdateMapping(ServerPacket & recvData)
+void RealmSocket::HandleUpdateMapping(ServerPacket & recvData)
 {
 	uint32 realm_id;
 	uint32 account_id;
@@ -396,7 +396,7 @@ void LogonCommServerSocket::HandleUpdateMapping(ServerPacket & recvData)
 	sRealmRegistry.getRealmLock().Release();
 }
 
-void LogonCommServerSocket::HandleTestConsoleLogin(ServerPacket & recvData)
+void RealmSocket::HandleTestConsoleLogin(ServerPacket & recvData)
 {
 	ServerPacket data(RSMSG_CONSOLE_LOGIN_RESULT, 8);
 	uint32 request;
@@ -435,7 +435,7 @@ void LogonCommServerSocket::HandleTestConsoleLogin(ServerPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandleDatabaseModify(ServerPacket & recvData)
+void RealmSocket::HandleDatabaseModify(ServerPacket & recvData)
 {
 	uint32 method;
 	recvData >> method;
@@ -533,7 +533,7 @@ void LogonCommServerSocket::HandleDatabaseModify(ServerPacket & recvData)
 	}
 }
 
-void LogonCommServerSocket::HandlePopulationRespond(ServerPacket & recvData)
+void RealmSocket::HandlePopulationRespond(ServerPacket & recvData)
 {
 	float population;
 	uint32 realmId;
@@ -541,7 +541,7 @@ void LogonCommServerSocket::HandlePopulationRespond(ServerPacket & recvData)
 	sRealmRegistry.UpdateRealmPop(realmId, population);
 }
 
-void LogonCommServerSocket::RefreshRealmsPop()
+void RealmSocket::RefreshRealmsPop()
 {
 	if(server_ids.empty())
 		return;

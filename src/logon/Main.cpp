@@ -418,7 +418,7 @@ void LogonServer::Run(int argc, char** argv)
 	new SocketGarbageCollector;
 
 	ListenSocket<AuthSocket> * cl = new ListenSocket<AuthSocket>(host.c_str(), cport);
-	ListenSocket<LogonCommServerSocket> * sl = new ListenSocket<LogonCommServerSocket>(shost.c_str(), sport);
+	ListenSocket<RealmSocket> * sl = new ListenSocket<RealmSocket>(shost.c_str(), sport);
 
 	sSocketMgr.SpawnWorkerThreads();
 
