@@ -3,7 +3,7 @@ PROJECT(shared)
 SET( prefix ${ROOT_PATH}/src/shared )
 SET( sources
     System/CrashHandler.cpp 
-    Log.cpp 
+    Logging/Log.cpp 
     Util/MersenneTwister.cpp 
     System/printStackTrace.cpp 
     Util/Util.cpp 
@@ -52,7 +52,7 @@ set( headers
 	Container/FastQueue.h
 	System/FindFiles.hpp
 	System/FindFilesResult.hpp
-	Log.h
+	Logging/Log.h
 	System/MapFile.h
 	System/MapFileEntry.h
 	Util/MersenneTwister.h

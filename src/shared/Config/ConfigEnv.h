@@ -25,6 +25,6 @@
 
 //! Our own includes.
 #include "Config.h"
-#include "Log.h"
+#include "Logging/Log.h"
 
 #endif

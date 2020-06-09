@@ -84,7 +84,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "Network/ServerPacket.h"
 typedef ServerPacket WorldPacket;
 
-#include "../shared/Log.h"
+#include "Logging/Log.h"
 #include "../shared/Config/ConfigEnv.h"
 #include "System/crc32.h"
 

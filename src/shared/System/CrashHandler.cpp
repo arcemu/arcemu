@@ -19,8 +19,8 @@
 
 #include "git_version.h"
 
-#include "CrashHandler.h"
-#include "Log.h"
+#include "System/CrashHandler.h"
+#include "Logging/Log.h"
 
 void OutputCrashLogLine(const char* format, ...)
 {

@@ -18,7 +18,7 @@
  */
 
 #include "DatabaseEnv.h"
-#include "../Log.h"
+#include "Logging/Log.h"
 
 #if defined(ENABLE_DATABASE_MYSQL)
 #include "MySQLDatabase.h"

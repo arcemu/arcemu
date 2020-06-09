@@ -23,7 +23,7 @@
 //! Other libs we depend on.
 #include "System/Platform.h"
 #include "Util/Singleton.h"
-#include "Log.h"
+#include "Logging/Log.h"
 #include "Threading/CThreads.h"
 
 //! Our own includes.

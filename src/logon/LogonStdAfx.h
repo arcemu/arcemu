@@ -29,7 +29,7 @@
 #include "System/Platform.h"
 #include <Network/Network.h>
 
-#include "../shared/Log.h"
+#include "Logging/Log.h"
 #include "Util/Util.h"
 #include "Container//ByteBuffer.h"
 #include "../shared/Config/ConfigEnv.h"
