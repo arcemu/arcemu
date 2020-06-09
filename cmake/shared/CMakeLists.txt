@@ -59,7 +59,6 @@ set( headers
 	PerformanceCounter.hpp
 	PreallocatedQueue.h
 	printStackTrace.h
-	RC4Engine.h
 	Singleton.h
 	StackWalker.h
 	StackTrace.h
@@ -73,6 +72,7 @@ set( headers
 	Crypto/BigNumber.h
 	Crypto/MD5.h
 	Crypto/Sha1.h
+	Crypto/RC4Engine.h
 	Config/Config.h
 	Config/ConfigEnv.h
 	Database/Database.h

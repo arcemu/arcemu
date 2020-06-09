@@ -22,7 +22,7 @@
 #define __LOGON_COMM_CLIENT_H
 
 #include "../logon/LogonOpcodes.h"
-#include <RC4Engine.h>
+#include <Crypto/RC4Engine.h>
 
 class LogonCommClientSocket : public Socket
 {

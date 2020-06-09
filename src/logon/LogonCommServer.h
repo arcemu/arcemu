@@ -20,7 +20,7 @@
 #ifndef __LOGON_COMM_SERVER_H
 #define __LOGON_COMM_SERVER_H
 
-#include <RC4Engine.h>
+#include <Crypto/RC4Engine.h>
 
 class WorldPacket;
 
