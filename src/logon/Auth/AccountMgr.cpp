@@ -19,21 +19,6 @@
 
 #include "LogonStdAfx.h"
 
-void reverse_array(uint8* pointer, size_t count)
-{
-	int i = 0;
-	int j = (int)( count - 1 );
-
-	while( j > i )
-	{
-		uint8 temp = pointer[ i ];
-		pointer[ i ] = pointer[ j ];
-		pointer[ j ] = temp;
-		++i;
-		--j;
-	}
-}
-
 initialiseSingleton(AccountMgr);
 
 void AccountMgr::ReloadAccounts(bool silent)
@@ -165,12 +150,12 @@ void AccountMgr::AddAccount(Field* field)
 				memcpy(acct->SrpHash, bn.AsByteArray(), bn.GetNumBytes());
 				for(int n = bn.GetNumBytes(); n <= 19; n++)
 					acct->SrpHash[n] = (uint8)0;
-				reverse_array(acct->SrpHash, 20);
+				Arcemu::Shared::Util::reverse_array<uint8>(acct->SrpHash, 20);
 			}
 			else
 			{
 				memcpy(acct->SrpHash, bn.AsByteArray(), 20);
-				reverse_array(acct->SrpHash, 20);
+				Arcemu::Shared::Util::reverse_array<uint8>(acct->SrpHash, 20);
 			}
 		}
 		else
@@ -251,12 +236,12 @@ void AccountMgr::UpdateAccount(Account* acct, Field* field)
 				memcpy(acct->SrpHash, bn.AsByteArray(), bn.GetNumBytes());
 				for(int n = bn.GetNumBytes(); n <= 19; n++)
 					acct->SrpHash[n] = (uint8)0;
-				reverse_array(acct->SrpHash, 20);
+				Arcemu::Shared::Util::reverse_array<uint8>(acct->SrpHash, 20);
 			}
 			else
 			{
 				memcpy(acct->SrpHash, bn.AsByteArray(), 20);
-				reverse_array(acct->SrpHash, 20);
+				Arcemu::Shared::Util::reverse_array<uint8>(acct->SrpHash, 20);
 			}
 		}
 		else

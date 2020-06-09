@@ -55,6 +55,8 @@ public:
 	bool testSwap32DoesNothingWithZero();
 	bool testSwap32SwapsCorrectly();
 
+	bool testReverseArray();
+
 	bool run();
 };
 
@@ -88,6 +90,8 @@ TESTCASE_REGISTRY_FOR( UtilTest )
 	TESTCASE( UtilTest, testCapitalizeStringCapitalized, "CapitalizeString leaves capitalized string capitalized" )
 	TESTCASE( UtilTest, testSwap32DoesNothingWithZero, "swap32 does nothing with zero" )
 	TESTCASE( UtilTest, testSwap32SwapsCorrectly, "swap32 swaps correctly" )
+
+	TESTCASE( UtilTest, testReverseArray, "reversing an array reverses the array elements" )
 TESTCASE_REGISTRY_END()
 
 bool UtilTest::testArcemuToLower()
@@ -381,6 +385,21 @@ bool UtilTest::testSwap32SwapsCorrectly()
 
 	Arcemu::Shared::Util::swap32( data );
 	TEST_EQ( expected, data );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testReverseArray()
+{
+	int arr[] = { 1, 2, 3, 4 };
+	int expected[] = { 4, 3, 2, 1 };
+
+	Arcemu::Shared::Util::reverse_array< int >( arr, 4 );
+
+	TEST_EQ( expected[ 0 ], arr[ 0 ] );
+	TEST_EQ( expected[ 1 ], arr[ 1 ] );
+	TEST_EQ( expected[ 2 ], arr[ 2 ] );
+	TEST_EQ( expected[ 3 ], arr[ 3 ] );
 
 	TESTCASE_END();
 }

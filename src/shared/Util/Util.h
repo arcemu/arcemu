@@ -41,6 +41,22 @@ namespace Arcemu
 		class SERVER_DECL Util
 		{
 		public:
+			template< typename T >
+			static void reverse_array(T* pointer, size_t count)
+			{
+				size_t i = 0;
+				size_t j = (int)( count - 1 );
+
+				while( j > i )
+				{
+					T temp = pointer[ i ];
+					pointer[ i ] = pointer[ j ];
+					pointer[ j ] = temp;
+					++i;
+					--j;
+				}
+			}
+
 			static void swap32(uint32 &data);
 
 			inline static uint32 secsToTimeBitFields(time_t secs)
