@@ -29,7 +29,7 @@ typedef struct
 
 static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
-LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262444)
+LogonSocket::LogonSocket(SOCKET fd) : Socket(fd, 724288, 262444)
 {
 	// do nothing
 	last_ping = last_pong = (uint32)UNIXTIME;
@@ -39,10 +39,10 @@ LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262
 	use_crypto = false;
 	authenticated = 0;
 
-	LOG_DEBUG("Created LogonCommClientSocket %u", m_fd);
+	LOG_DEBUG("Created LogonSocket %u", m_fd);
 }
 
-void LogonCommClientSocket::OnRead()
+void LogonSocket::OnRead()
 {
 	while(true)
 	{
@@ -91,29 +91,29 @@ void LogonCommClientSocket::OnRead()
 	}
 }
 
-void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
+void LogonSocket::HandlePacket(WorldPacket & recvData)
 {
 	static logonpacket_handler Handlers[RMSG_COUNT] =
 	{
 		NULL,												// RMSG_NULL
 		NULL,												// RCMSG_REGISTER_REALM
-		&LogonCommClientSocket::HandleRegister,				// RSMSG_REALM_REGISTERED
+		&LogonSocket::HandleRegister,				// RSMSG_REALM_REGISTERED
 		NULL,												// RCMSG_REQUEST_SESSION
-		&LogonCommClientSocket::HandleSessionInfo,			// RSMSG_SESSION_RESULT
+		&LogonSocket::HandleSessionInfo,			// RSMSG_SESSION_RESULT
 		NULL,												// RCMSG_PING
-		&LogonCommClientSocket::HandlePong,					// RSMSG_PONG
+		&LogonSocket::HandlePong,					// RSMSG_PONG
 		NULL,												// RCMSG_SQL_EXECUTE
 		NULL,												// RCMSG_RELOAD_ACCOUNTS
 		NULL,												// RCMSG_AUTH_CHALLENGE
-		&LogonCommClientSocket::HandleAuthResponse,			// RSMSG_AUTH_RESPONSE
-		&LogonCommClientSocket::HandleRequestAccountMapping,// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
+		&LogonSocket::HandleAuthResponse,			// RSMSG_AUTH_RESPONSE
+		&LogonSocket::HandleRequestAccountMapping,// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
 		NULL,												// RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
 		NULL,												// RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
-		&LogonCommClientSocket::HandleDisconnectAccount,	// RSMSG_DISCONNECT_ACCOUNT
+		&LogonSocket::HandleDisconnectAccount,	// RSMSG_DISCONNECT_ACCOUNT
 		NULL,												// RCMSG_TEST_CONSOLE_LOGIN
-		&LogonCommClientSocket::HandleConsoleAuthResult,	// RSMSG_CONSOLE_LOGIN_RESULT
+		&LogonSocket::HandleConsoleAuthResult,	// RSMSG_CONSOLE_LOGIN_RESULT
 		NULL,												// RCMSG_MODIFY_DATABASE
-		&LogonCommClientSocket::HandlePopulationRequest,	// RSMSG_REALM_POP_REQ
+		&LogonSocket::HandlePopulationRequest,	// RSMSG_REALM_POP_REQ
 		NULL,												// RCMSG_REALM_POP_RES
 	};
 
@@ -126,7 +126,7 @@ void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 	(this->*(Handlers[recvData.GetOpcode()]))(recvData);
 }
 
-void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
+void LogonSocket::HandleRegister(WorldPacket & recvData)
 {
 	uint32 realmlid;
 	uint32 error;
@@ -139,7 +139,7 @@ void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
 	realm_ids.insert(realmlid);
 }
 
-void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
+void LogonSocket::HandleSessionInfo(WorldPacket & recvData)
 {
 	uint32 request_id;
 	recvData >> request_id;
@@ -162,13 +162,13 @@ void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 	m.Release();
 }
 
-void LogonCommClientSocket::HandlePong(WorldPacket & recvData)
+void LogonSocket::HandlePong(WorldPacket & recvData)
 {
 	latency = Arcemu::Shared::Util::getMSTime() - pingtime;
 	last_pong = (uint32)UNIXTIME;
 }
 
-void LogonCommClientSocket::SendPing()
+void LogonSocket::SendPing()
 {
 	pingtime = Arcemu::Shared::Util::getMSTime();
 	WorldPacket data(RCMSG_PING, 4);
@@ -177,7 +177,7 @@ void LogonCommClientSocket::SendPing()
 	last_ping = (uint32)UNIXTIME;
 }
 
-void LogonCommClientSocket::SendPacket(WorldPacket* data, bool no_crypto)
+void LogonSocket::SendPacket(WorldPacket* data, bool no_crypto)
 {
 	logonpacket header;
 	bool rv;
@@ -209,7 +209,7 @@ void LogonCommClientSocket::SendPacket(WorldPacket* data, bool no_crypto)
 	BurstEnd();
 }
 
-void LogonCommClientSocket::OnDisconnect()
+void LogonSocket::OnDisconnect()
 {
 	if(_id != 0)
 	{
@@ -218,11 +218,11 @@ void LogonCommClientSocket::OnDisconnect()
 	}
 }
 
-LogonCommClientSocket::~LogonCommClientSocket()
+LogonSocket::~LogonSocket()
 {
 }
 
-void LogonCommClientSocket::SendChallenge()
+void LogonSocket::SendChallenge()
 {
 	uint8* key = sLogonCommHandler.sql_passhash;
 
@@ -237,7 +237,7 @@ void LogonCommClientSocket::SendChallenge()
 	SendPacket(&data, true);
 }
 
-void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
+void LogonSocket::HandleAuthResponse(WorldPacket & recvData)
 {
 	uint8 result;
 	recvData >> result;
@@ -251,7 +251,7 @@ void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
 	}
 }
 
-void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)
+void LogonSocket::UpdateAccountCount(uint32 account_id, uint8 add)
 {
 	WorldPacket data(RCMSG_UPDATE_CHARACTER_MAPPING_COUNT, 9);
 	set<uint32>::iterator itr = realm_ids.begin();
@@ -264,7 +264,7 @@ void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)
 	}
 }
 
-void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
+void LogonSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 {
 	uint32 t = Arcemu::Shared::Util::getMSTime();
 	uint32 realm_id;
@@ -330,7 +330,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", Arcemu::Shared::Util::getMSTime() - t, mapping_to_send.size());
 }
 
-void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
+void LogonSocket::CompressAndSend(ByteBuffer & uncompressed)
 {
 	// I still got no idea where this came from :p
 	size_t destsize = uncompressed.size() + uncompressed.size() / 10 + 16;
@@ -384,7 +384,7 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 	SendPacket(&data, false);
 }
 
-void LogonCommClientSocket::HandleDisconnectAccount(WorldPacket & recvData)
+void LogonSocket::HandleDisconnectAccount(WorldPacket & recvData)
 {
 	uint32 id;
 	recvData >> id;
@@ -395,14 +395,14 @@ void LogonCommClientSocket::HandleDisconnectAccount(WorldPacket & recvData)
 }
 
 void ConsoleAuthCallback(uint32 request, uint32 result);
-void LogonCommClientSocket::HandleConsoleAuthResult(WorldPacket & recvData)
+void LogonSocket::HandleConsoleAuthResult(WorldPacket & recvData)
 {
 	uint32 requestid, result;
 	recvData >> requestid >> result;
 
 	ConsoleAuthCallback(requestid, result);
 }
-void LogonCommClientSocket::HandlePopulationRequest(WorldPacket & recvData)
+void LogonSocket::HandlePopulationRequest(WorldPacket & recvData)
 {
 	uint32 realmId;
 	// Grab the realm id

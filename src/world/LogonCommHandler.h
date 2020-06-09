@@ -60,7 +60,7 @@ class LogonCommHandler : public Singleton<LogonCommHandler>
 #endif
 
 		ForcedPermissionMap forced_permissions;
-		map<LogonServer*, LogonCommClientSocket*> logons;
+		map<LogonServer*, LogonSocket*> logons;
 		map<uint32, WorldSocket*> pending_logons;
 		set<Realm*> realms;
 		set<LogonServer*> servers;
@@ -79,9 +79,9 @@ class LogonCommHandler : public Singleton<LogonCommHandler>
 		LogonCommHandler();
 		~LogonCommHandler();
 
-		LogonCommClientSocket* ConnectToLogon(string Address, uint32 Port);
+		LogonSocket* ConnectToLogon(string Address, uint32 Port);
 		void UpdateAccountCount(uint32 account_id, uint8 add);
-		void RequestAddition(LogonCommClientSocket* Socket);
+		void RequestAddition(LogonSocket* Socket);
 		void CheckAllServers();
 		void Startup();
 		void ConnectionDropped(uint32 ID);

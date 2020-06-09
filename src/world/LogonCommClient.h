@@ -24,15 +24,16 @@
 #include "../logon/RealmLogonLinkOpcodes.h"
 #include <Crypto/RC4Engine.h>
 
-class LogonCommClientSocket : public Socket
+/// Connects the Realm to the logonserver
+class LogonSocket : public Socket
 {
 		uint32 remaining;
 		uint16 opcode;
 		RC4Engine _sendCrypto;
 		RC4Engine _recvCrypto;
 	public:
-		LogonCommClientSocket(SOCKET fd);
-		~LogonCommClientSocket();
+		LogonSocket(SOCKET fd);
+		~LogonSocket();
 
 		void OnRead();
 		void SendPacket(WorldPacket* data, bool no_crypto);
@@ -63,7 +64,7 @@ class LogonCommClientSocket : public Socket
 		set<uint32> realm_ids;
 };
 
-typedef void (LogonCommClientSocket::*logonpacket_handler)(WorldPacket &);
+typedef void (LogonSocket::*logonpacket_handler)(WorldPacket &);
 
 #endif
 

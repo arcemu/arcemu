@@ -55,13 +55,13 @@ LogonCommHandler::~LogonCommHandler()
 		delete(*i);
 }
 
-LogonCommClientSocket* LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
+LogonSocket* LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
 {
-	LogonCommClientSocket* conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), static_cast<u_short>(Port));
+	LogonSocket* conn = ConnectTCPSocket<LogonSocket>(Address.c_str(), static_cast<u_short>(Port));
 	return conn;
 }
 
-void LogonCommHandler::RequestAddition(LogonCommClientSocket* Socket)
+void LogonCommHandler::RequestAddition(LogonSocket* Socket)
 {
 	set<Realm*>::iterator itr = realms.begin();
 
@@ -169,7 +169,7 @@ void LogonCommHandler::Connect(LogonServer* server)
 
 	server->RetryTime = (uint32)UNIXTIME + 10;
 	server->Registered = false;
-	LogonCommClientSocket* conn = ConnectToLogon(server->Address, server->Port);
+	LogonSocket* conn = ConnectToLogon(server->Address, server->Port);
 	logons[server] = conn;
 	if(conn == 0)
 	{
@@ -238,7 +238,7 @@ void LogonCommHandler::Connect(LogonServer* server)
 
 void LogonCommHandler::AdditionAck(uint32 ID, uint32 ServID)
 {
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	for(; itr != logons.end(); ++itr)
 	{
 		if(itr->first->ID == ID)
@@ -254,8 +254,8 @@ void LogonCommHandler::UpdateSockets()
 {
 	mapLock.Acquire();
 
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
-	LogonCommClientSocket* cs;
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
+	LogonSocket* cs;
 	uint32 t = (uint32)UNIXTIME;
 	for(; itr != logons.end(); ++itr)
 	{
@@ -302,7 +302,7 @@ void LogonCommHandler::UpdateSockets()
 void LogonCommHandler::ConnectionDropped(uint32 ID)
 {
 	mapLock.Acquire();
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	for(; itr != logons.end(); ++itr)
 	{
 		if(itr->first->ID == ID && itr->second != 0)
@@ -323,14 +323,14 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket* Socket
 	LOG_DEBUG(" >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
 
 	// Send request packet to server.
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0)
 	{
 		// No valid logonserver is connected.
 		return (uint32) - 1;
 	}
 
-	LogonCommClientSocket* s = itr->second;
+	LogonSocket* s = itr->second;
 	if(s == NULL)
 		return (uint32) - 1;
 
@@ -414,7 +414,7 @@ void LogonCommHandler::LoadRealmConfiguration()
 void LogonCommHandler::UpdateAccountCount(uint32 account_id, uint8 add)
 {
 	// Send request packet to server.
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
@@ -435,7 +435,7 @@ void LogonCommHandler::TestConsoleLogon(string & username, string & password, ui
 	srpstr = newuser + ":" + newpass;
 
 	// Send request packet to server.
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
@@ -457,7 +457,7 @@ void LogonCommHandler::TestConsoleLogon(string & username, string & password, ui
 // db funcs
 void LogonCommHandler::Account_SetBanned(const char* account, uint32 banned, const char* reason)
 {
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
@@ -474,7 +474,7 @@ void LogonCommHandler::Account_SetBanned(const char* account, uint32 banned, con
 
 void LogonCommHandler::Account_SetGM(const char* account, const char* flags)
 {
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
@@ -490,7 +490,7 @@ void LogonCommHandler::Account_SetGM(const char* account, const char* flags)
 
 void LogonCommHandler::Account_SetMute(const char* account, uint32 muted)
 {
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
@@ -506,7 +506,7 @@ void LogonCommHandler::Account_SetMute(const char* account, uint32 muted)
 
 void LogonCommHandler::IPBan_Add(const char* ip, uint32 duration, const char* reason)
 {
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
@@ -523,7 +523,7 @@ void LogonCommHandler::IPBan_Add(const char* ip, uint32 duration, const char* re
 
 void LogonCommHandler::IPBan_Remove(const char* ip)
 {
-	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
+	map<LogonServer*, LogonSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
 	{
 		// No valid logonserver is connected.
