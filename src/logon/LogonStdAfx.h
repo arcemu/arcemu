@@ -55,6 +55,7 @@
 #include "../logon/LogonCommServer.h"
 #include "../logon/LogonConsole.h"
 #include "RealmRegistry.h"
+#include "IPBanner.h"
 
 // database decl
 extern Database* sLogonSQL;

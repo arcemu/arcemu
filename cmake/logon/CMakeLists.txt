@@ -4,6 +4,7 @@ SET( sources
   AccountCache.cpp
   AuthSocket.cpp
   AutoPatcher.cpp
+  IPBanner.cpp
   LogonCommServer.cpp
   LogonConsole.cpp
   LogonOpcodes.cpp
@@ -17,6 +18,7 @@ SET( sources
 	AuthSocket.h
 	AuthStructs.h
 	AutoPatcher.h
+	IPBanner.h
 	LogonCommServer.h
 	LogonConfig.h
 	LogonConsole.h

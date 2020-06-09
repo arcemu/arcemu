@@ -75,36 +75,6 @@ struct Account
 
 };
 
-typedef struct
-{
-	unsigned int Mask;
-	unsigned char Bytes;
-	uint32 Expire;
-	string db_ip;
-} IPBan;
-
-enum BAN_STATUS
-{
-    BAN_STATUS_NOT_BANNED = 0,
-    BAN_STATUS_TIME_LEFT_ON_BAN = 1,
-    BAN_STATUS_PERMANENT_BAN = 2,
-};
-
-class IPBanner : public Singleton< IPBanner >
-{
-	public:
-		void Reload();
-
-		bool Add(const char* ip, uint32 dur);
-		bool Remove(const char* ip);
-
-		BAN_STATUS CalculateBanStatus(in_addr ip_address);
-
-	protected:
-		Mutex listBusy;
-		list<IPBan> banList;
-};
-
 class AccountMgr : public Singleton < AccountMgr >
 {
 	public:
@@ -153,7 +123,6 @@ class AccountMgr : public Singleton < AccountMgr >
 		Mutex setBusy;
 };
 
-#define sIPBanner IPBanner::getSingleton()
 #define sAccountMgr AccountMgr::getSingleton()
 
 #endif
