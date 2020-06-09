@@ -23,13 +23,13 @@
 #include "System/Platform.h"
 #include "ByteBuffer.h"
 
-class SERVER_DECL WorldPacket : public ByteBuffer
+class SERVER_DECL ServerPacket : public ByteBuffer
 {
 	public:
-		__inline WorldPacket() : ByteBuffer(), m_opcode(0) { }
-		__inline WorldPacket(uint16 opcode, size_t res) : ByteBuffer(res), m_opcode(opcode) {}
-		__inline WorldPacket(size_t res) : ByteBuffer(res), m_opcode(0) { }
-		__inline WorldPacket(const WorldPacket & packet) : ByteBuffer(packet), m_opcode(packet.m_opcode) {}
+		__inline ServerPacket() : ByteBuffer(), m_opcode(0) { }
+		__inline ServerPacket(uint16 opcode, size_t res) : ByteBuffer(res), m_opcode(opcode) {}
+		__inline ServerPacket(size_t res) : ByteBuffer(res), m_opcode(0) { }
+		__inline ServerPacket(const ServerPacket & packet) : ByteBuffer(packet), m_opcode(packet.m_opcode) {}
 
 		//! Clear packet and set opcode all in one mighty blow
 		__inline void Initialize(uint16 opcode)
@@ -44,5 +44,7 @@ class SERVER_DECL WorldPacket : public ByteBuffer
 	protected:
 		uint16 m_opcode;
 };
+
+typedef ServerPacket WorldPacket;
 
 #endif

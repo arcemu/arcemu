@@ -79,9 +79,9 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "System/Platform.h"
 #include "../shared/Util.h"
 #include "../shared/MersenneTwister.h"
+#include "../shared/ByteBuffer.h"
 #include "Network/ServerPacket.h"
 #include "../shared/Log.h"
-#include "../shared/ByteBuffer.h"
 #include "../shared/Config/ConfigEnv.h"
 #include "System/crc32.h"
 

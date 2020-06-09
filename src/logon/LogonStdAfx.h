@@ -40,6 +40,8 @@
 #include "../shared/Crypto/BigNumber.h"
 #include "../shared/Crypto/Sha1.h"
 
+#include "Network/ServerPacket.h"
+
 #include "LogonOpcodes.h"
 #include "../logon/Main.h"
 #include "../world/NameTables.h"
@@ -50,7 +52,6 @@
 #include "../logon/AuthStructs.h"
 #include "../logon/LogonCommServer.h"
 #include "../logon/LogonConsole.h"
-#include "Network/ServerPacket.h"
 
 // database decl
 extern Database* sLogonSQL;

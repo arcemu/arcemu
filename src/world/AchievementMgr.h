@@ -81,7 +81,6 @@ typedef HM_NAMESPACE::HM_HASH_MAP<uint32, time_t> CompletedAchievementMap;
 typedef std::set<uint32> AchievementSet;
 
 class Player;
-class WorldPacket;
 class ObjectMgr;
 
 /**

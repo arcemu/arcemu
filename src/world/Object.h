@@ -137,7 +137,6 @@ struct TransporterInfo{
 };
 
 
-class WorldPacket;
 class ByteBuffer;
 class WorldSession;
 class Player;

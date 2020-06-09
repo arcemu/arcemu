@@ -27,7 +27,6 @@
 #define __WORLDSESSION_H
 
 class Player;
-class WorldPacket;
 class WorldSocket;
 class WorldSession;
 class MapMgr;
