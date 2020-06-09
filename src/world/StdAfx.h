@@ -226,7 +226,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "ChannelMgr.h"
 #include "ArenaTeam.h"
 #include "Arenas.h"
-#include "LogonCommClient.h"
+#include "LogonSocket.h"
 #include "LogonCommHandler.h"
 #include "MainServerDefines.h"
 #include "WorldRunnable.h"
