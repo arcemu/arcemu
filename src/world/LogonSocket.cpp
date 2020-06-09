@@ -27,8 +27,6 @@ typedef struct
 } logonpacket;
 #pragma pack(pop)
 
-static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
-
 #define LOGONSOCKET_SENDBUFFER 724288
 #define LOGONSOCKET_RECVBUFFER 262444
 
@@ -66,7 +64,7 @@ void LogonSocket::OnRead()
 			}
 
 			// convert network byte order
-			swap32(&remaining);
+			Arcemu::Shared::Util::swap32(remaining);
 		}
 
 		// do we have a full packet?
@@ -192,7 +190,7 @@ void LogonSocket::SendPacket(WorldPacket* data, bool no_crypto)
 	header.opcode = data->GetOpcode();
 	//header.size   = ntohl((u_long)data->size());
 	header.size = (uint32)data->size();
-	swap32(&header.size);
+	Arcemu::Shared::Util::swap32(header.size);
 
 
 	if(use_crypto && !no_crypto)

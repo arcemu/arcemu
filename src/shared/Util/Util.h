@@ -41,6 +41,8 @@ namespace Arcemu
 		class SERVER_DECL Util
 		{
 		public:
+			static void swap32(uint32 &data);
+
 			inline static uint32 secsToTimeBitFields(time_t secs)
 			{
 				tm* lt = localtime(&secs);

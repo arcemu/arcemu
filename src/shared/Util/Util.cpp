@@ -53,6 +53,11 @@ namespace Arcemu
 {
 	namespace Shared
 	{
+		void Util::swap32(uint32 &data)
+		{
+			 data = ((data >> 24 & 0xff)) | ((data >> 8) & 0xff00) | ((data << 8) & 0xff0000) | (data << 24);
+		}
+
 		void Util::SetThreadName(const char* format, ...)
 		{
 			// This isn't supported on nix?

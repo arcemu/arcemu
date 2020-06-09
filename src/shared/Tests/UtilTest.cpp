@@ -52,6 +52,9 @@ public:
 	bool testCapitalizeStringLower();
 	bool testCapitalizeStringCapitalized();
 
+	bool testSwap32DoesNothingWithZero();
+	bool testSwap32SwapsCorrectly();
+
 	bool run();
 };
 
@@ -83,6 +86,8 @@ TESTCASE_REGISTRY_FOR( UtilTest )
 	TESTCASE( UtilTest, testCapitalizeStringUpper, "CapitalizeString transforms uppercase string correctly" )
 	TESTCASE( UtilTest, testCapitalizeStringLower, "CapitalizeString transforms lowercase string correctly" )
 	TESTCASE( UtilTest, testCapitalizeStringCapitalized, "CapitalizeString leaves capitalized string capitalized" )
+	TESTCASE( UtilTest, testSwap32DoesNothingWithZero, "swap32 does nothing with zero" )
+	TESTCASE( UtilTest, testSwap32SwapsCorrectly, "swap32 swaps correctly" )
 TESTCASE_REGISTRY_END()
 
 bool UtilTest::testArcemuToLower()
@@ -357,6 +362,26 @@ bool UtilTest::testCapitalizeStringCapitalized()
 	std::string string = "Capitalized";
 	Arcemu::Shared::Util::CapitalizeString( string );
 	TEST_EQ( "Capitalized", string );
+	TESTCASE_END();
+}
+
+bool UtilTest::testSwap32DoesNothingWithZero()
+{
+	uint32 data = 0;
+	Arcemu::Shared::Util::swap32( data );
+	TEST_EQ( 0, data );
+
+	TESTCASE_END();
+}
+
+bool UtilTest::testSwap32SwapsCorrectly()
+{
+	uint32 data = ( 0xA ) | ( 0xB << 8 ) | ( 0xC << 16 ) | ( 0xD << 24 );
+	uint32 expected = ( 0xD ) | ( 0xC << 8 ) | ( 0xB << 16 ) | ( 0xA << 24 );
+
+	Arcemu::Shared::Util::swap32( data );
+	TEST_EQ( expected, data );
+
 	TESTCASE_END();
 }
 

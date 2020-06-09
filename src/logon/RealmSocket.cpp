@@ -26,8 +26,6 @@ typedef struct
 } logonpacket;
 #pragma pack(pop)
 
-static void swap32(uint32* p) { *p = ((*p >> 24) & 0xff) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
-
 RealmSocket::RealmSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
 	// do nothing
@@ -96,7 +94,7 @@ void RealmSocket::OnRead()
 			}
 
 			/* reverse byte order */
-			swap32(&remaining);
+			Arcemu::Shared::Util::swap32(remaining);
 		}
 
 		// do we have a full packet?
@@ -273,7 +271,7 @@ void RealmSocket::SendPacket(ServerPacket* data)
 	header.opcode = data->GetOpcode();
 	//header.size   = ntohl((u_long)data->size());
 	header.size = (uint32)data->size();
-	swap32(&header.size);
+	Arcemu::Shared::Util::swap32(header.size);
 
 	if(use_crypto)
 		sendCrypto.Process((unsigned char*)&header, (unsigned char*)&header, 6);
