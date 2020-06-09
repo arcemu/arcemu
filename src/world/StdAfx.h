@@ -103,7 +103,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "../shared/Crypto/MD5.h"
 #include "../shared/Crypto/BigNumber.h"
 #include "../shared/Crypto/Sha1.h"
-#include "../shared/Crypto/WowCrypt.h"
+#include "WowCrypt.h"
 #include "../shared/FastQueue.h"
 #include "../shared/CircularQueue.h"
 #include "../shared/Threading/RWLock.h"
