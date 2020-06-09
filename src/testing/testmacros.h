@@ -48,7 +48,8 @@
 	const char *description = testEntries[ i ].description; \
 	TestMethod testMethod = testEntries[ i ].method; \
 	std::cout << "Testcase description: " << description << std::endl; \
-	if( ! (this->*(testMethod))() ) return false; \
+	if( ! (this->*(testMethod))() ){ std::cout << "FAILED" << std::endl; return false; } \
+	std::cout << "PASSED" << std::endl; \
 	std::cout << std::endl; \
 	} \
 	return true;
