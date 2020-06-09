@@ -45,6 +45,4 @@ class SERVER_DECL ServerPacket : public ByteBuffer
 		uint16 m_opcode;
 };
 
-typedef ServerPacket WorldPacket;
-
 #endif

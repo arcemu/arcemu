@@ -39,18 +39,18 @@ class LogonCommServerSocket : public Socket
 		void OnRead();
 		void OnDisconnect();
 		void OnConnect();
-		void SendPacket(WorldPacket* data);
-		void HandlePacket(WorldPacket & recvData);
+		void SendPacket(ServerPacket* data);
+		void HandlePacket(ServerPacket & recvData);
 
-		void HandleRegister(WorldPacket & recvData);
-		void HandlePing(WorldPacket & recvData);
-		void HandleSessionRequest(WorldPacket & recvData);
-		void HandleAuthChallenge(WorldPacket & recvData);
-		void HandleMappingReply(WorldPacket & recvData);
-		void HandleUpdateMapping(WorldPacket & recvData);
-		void HandleTestConsoleLogin(WorldPacket & recvData);
-		void HandleDatabaseModify(WorldPacket & recvData);
-		void HandlePopulationRespond(WorldPacket & recvData);
+		void HandleRegister(ServerPacket & recvData);
+		void HandlePing(ServerPacket & recvData);
+		void HandleSessionRequest(ServerPacket & recvData);
+		void HandleAuthChallenge(ServerPacket & recvData);
+		void HandleMappingReply(ServerPacket & recvData);
+		void HandleUpdateMapping(ServerPacket & recvData);
+		void HandleTestConsoleLogin(ServerPacket & recvData);
+		void HandleDatabaseModify(ServerPacket & recvData);
+		void HandlePopulationRespond(ServerPacket & recvData);
 
 		void RefreshRealmsPop();
 
@@ -59,6 +59,6 @@ class LogonCommServerSocket : public Socket
 		set<uint32> server_ids;
 };
 
-typedef void (LogonCommServerSocket::*logonpacket_handler)(WorldPacket &);
+typedef void (LogonCommServerSocket::*logonpacket_handler)(ServerPacket &);
 
 #endif

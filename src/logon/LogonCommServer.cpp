@@ -104,7 +104,7 @@ void LogonCommServerSocket::OnRead()
 			return;
 
 		// create the buffer
-		WorldPacket buff(opcode, remaining);
+		ServerPacket buff(opcode, remaining);
 		if(remaining)
 		{
 			buff.resize(remaining);
@@ -123,7 +123,7 @@ void LogonCommServerSocket::OnRead()
 	}
 }
 
-void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
+void LogonCommServerSocket::HandlePacket(ServerPacket & recvData)
 {
 	if(authenticated == 0 && recvData.GetOpcode() != RCMSG_AUTH_CHALLENGE)
 	{
@@ -165,7 +165,7 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 	(this->*(Handlers[recvData.GetOpcode()]))(recvData);
 }
 
-void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
+void LogonCommServerSocket::HandleRegister(ServerPacket & recvData)
 {
 	string Name;
 	int32 my_id;
@@ -208,7 +208,7 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	sInfoCore.AddRealm(my_id, realm);
 
 	// Send back response packet.
-	WorldPacket data(RSMSG_REALM_REGISTERED, 4);
+	ServerPacket data(RSMSG_REALM_REGISTERED, 4);
 	data << uint32(0);	  // Error
 	data << my_id;		  // Realm ID
 	data << realm->Name;
@@ -221,7 +221,7 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
+void LogonCommServerSocket::HandleSessionRequest(ServerPacket & recvData)
 {
 	uint32 request_id;
 	string account_name;
@@ -235,7 +235,7 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 		error = 1;		  // Unauthorized user.
 
 	// build response packet
-	WorldPacket data(RSMSG_SESSION_RESULT, 150);
+	ServerPacket data(RSMSG_SESSION_RESULT, 150);
 	data << request_id;
 	data << error;
 	if(!error)
@@ -257,14 +257,14 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandlePing(WorldPacket & recvData)
+void LogonCommServerSocket::HandlePing(ServerPacket & recvData)
 {
-	WorldPacket data(RSMSG_PONG, 4);
+	ServerPacket data(RSMSG_PONG, 4);
 	SendPacket(&data);
 	last_ping.SetVal((uint32)time(NULL));
 }
 
-void LogonCommServerSocket::SendPacket(WorldPacket* data)
+void LogonCommServerSocket::SendPacket(ServerPacket* data)
 {
 	bool rv;
 	BurstBegin();
@@ -292,7 +292,7 @@ void LogonCommServerSocket::SendPacket(WorldPacket* data)
 	BurstEnd();
 }
 
-void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
+void LogonCommServerSocket::HandleAuthChallenge(ServerPacket & recvData)
 {
 	unsigned char key[20];
 	uint32 result = 1;
@@ -321,7 +321,7 @@ void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
 	use_crypto = true;
 
 	/* send the response packet */
-	WorldPacket data(RSMSG_AUTH_RESPONSE, 1);
+	ServerPacket data(RSMSG_AUTH_RESPONSE, 1);
 	data << result;
 	SendPacket(&data);
 
@@ -329,7 +329,7 @@ void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
 	authenticated = result;
 }
 
-void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
+void LogonCommServerSocket::HandleMappingReply(ServerPacket & recvData)
 {
 	/* this packet is gzipped, whee! :D */
 	uint32 real_size;
@@ -373,7 +373,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 	sInfoCore.getRealmLock().Release();
 }
 
-void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
+void LogonCommServerSocket::HandleUpdateMapping(ServerPacket & recvData)
 {
 	uint32 realm_id;
 	uint32 account_id;
@@ -396,9 +396,9 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 	sInfoCore.getRealmLock().Release();
 }
 
-void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
+void LogonCommServerSocket::HandleTestConsoleLogin(ServerPacket & recvData)
 {
-	WorldPacket data(RSMSG_CONSOLE_LOGIN_RESULT, 8);
+	ServerPacket data(RSMSG_CONSOLE_LOGIN_RESULT, 8);
 	uint32 request;
 	string accountname;
 	uint8 key[20];
@@ -435,7 +435,7 @@ void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
 	SendPacket(&data);
 }
 
-void LogonCommServerSocket::HandleDatabaseModify(WorldPacket & recvData)
+void LogonCommServerSocket::HandleDatabaseModify(ServerPacket & recvData)
 {
 	uint32 method;
 	recvData >> method;
@@ -533,7 +533,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket & recvData)
 	}
 }
 
-void LogonCommServerSocket::HandlePopulationRespond(WorldPacket & recvData)
+void LogonCommServerSocket::HandlePopulationRespond(ServerPacket & recvData)
 {
 	float population;
 	uint32 realmId;
@@ -546,7 +546,7 @@ void LogonCommServerSocket::RefreshRealmsPop()
 	if(server_ids.empty())
 		return;
 
-	WorldPacket data(RSMSG_REALM_POP_REQ, 4);
+	ServerPacket data(RSMSG_REALM_POP_REQ, 4);
 	set<uint32>::iterator itr = server_ids.begin();
 	for(; itr != server_ids.end() ; itr++)
 	{
