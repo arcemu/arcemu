@@ -21,7 +21,7 @@
 #ifndef __LOGON_COMM_CLIENT_H
 #define __LOGON_COMM_CLIENT_H
 
-#include "../logon/LogonOpcodes.h"
+#include "../logon/RealmLogonLinkOpcodes.h"
 #include <Crypto/RC4Engine.h>
 
 class LogonCommClientSocket : public Socket

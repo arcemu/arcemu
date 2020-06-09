@@ -7,7 +7,7 @@ SET( sources
   IPBanner.cpp
   RealmSocket.cpp
   LogonConsole.cpp
-  LogonOpcodes.cpp
+  RealmLogonLinkOpcodes.cpp
   LogonStdAfx.cpp
   Main.cpp
   RealmRegistry.cpp
@@ -22,7 +22,7 @@ SET( sources
 	RealmSocket.h
 	LogonConfig.h
 	LogonConsole.h
-	LogonOpcodes.h
+	RealmLogonLinkOpcodes.h
 	LogonStdAfx.h
 	Main.h
 	PeriodicFunctionCall_Thread.h

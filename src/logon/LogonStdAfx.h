@@ -44,7 +44,7 @@
 
 #include "Network/ServerPacket.h"
 
-#include "LogonOpcodes.h"
+#include "RealmLogonLinkOpcodes.h"
 #include "../logon/Main.h"
 #include "../world/NameTables.h"
 #include "AccountMgr.h"
