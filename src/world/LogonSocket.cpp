@@ -29,7 +29,10 @@ typedef struct
 
 static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
-LogonSocket::LogonSocket(SOCKET fd) : Socket(fd, 724288, 262444)
+#define LOGONSOCKET_SENDBUFFER 724288
+#define LOGONSOCKET_RECVBUFFER 262444
+
+LogonSocket::LogonSocket(SOCKET fd) : Socket(fd, LOGONSOCKET_SENDBUFFER, LOGONSOCKET_RECVBUFFER)
 {
 	// do nothing
 	last_ping = last_pong = (uint32)UNIXTIME;
