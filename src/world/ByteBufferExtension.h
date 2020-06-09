@@ -20,7 +20,7 @@
 #ifndef BYTEBUFFER_EXTENSION_H_
 #define BYTEBUFFER_EXTENSION_H_
 
-#include "ByteBuffer.h"
+#include "Container/ByteBuffer.h"
 #include "WoWGuid.h"
 #include "LocationVector.h"
 

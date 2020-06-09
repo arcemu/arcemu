@@ -21,7 +21,7 @@
  *
  */
 
-#include "../Common.h"
+#include "System/Platform.h"
 #include "CircularBuffer.h"
 
 /** Constructor

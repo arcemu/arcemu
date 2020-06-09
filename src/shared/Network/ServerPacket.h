@@ -21,7 +21,7 @@
 #define WOWSERVER_WORLDPACKET_H
 
 #include "System/Platform.h"
-#include "ByteBuffer.h"
+#include "Container/ByteBuffer.h"
 
 class SERVER_DECL ServerPacket : public ByteBuffer
 {

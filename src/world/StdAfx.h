@@ -79,7 +79,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "System/Platform.h"
 #include "../shared/Util.h"
 #include "../shared/MersenneTwister.h"
-#include "../shared/ByteBuffer.h"
+#include "Container/ByteBuffer.h"
 
 #include "Network/ServerPacket.h"
 typedef ServerPacket WorldPacket;
@@ -107,8 +107,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "../shared/Crypto/BigNumber.h"
 #include "../shared/Crypto/Sha1.h"
 #include "WowCrypt.h"
-#include "../shared/FastQueue.h"
-#include "../shared/CircularQueue.h"
+#include "Container/FastQueue.h"
+#include "Container/CircularQueue.h"
 #include "../shared/Threading/RWLock.h"
 #include "../shared/Threading/CRefCounter.h"
 #include "../shared/arcemu_getopt.h"
