@@ -165,7 +165,8 @@ SET(sources
 	Rogue.cpp
 	Shaman.cpp
 	Warlock.cpp
-	Warrior.cpp )
+	Warrior.cpp
+	WowCrypt.cpp )
 
 SET( headers
 	AchievementMgr.h
@@ -292,6 +293,7 @@ SET( headers
 	WorldSocket.h
 	WorldStatesHandler.h
 	WorldStates.h
+	WowCrypt.h
 	WoWGuid.h
 	WUtil.h
 )
