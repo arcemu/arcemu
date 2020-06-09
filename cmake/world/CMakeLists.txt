@@ -65,7 +65,7 @@ SET(sources
 	LfgMgr.cpp 
 	LootMgr.cpp 
 	LocalizationMgr.cpp 
-	LogonCommClient.cpp 
+	LogonSocket.cpp 
 	LogonCommHandler.cpp 
 	MailMessage.cpp
 	MailBox.cpp
@@ -220,7 +220,7 @@ SET( headers
 	LfgMgr.h
 	LocalizationMgr.h
 	LocationVector.h
-	LogonCommClient.h
+	LogonSocket.h
 	LogonCommHandler.h
 	LootMgr.h
 	Mage.h
