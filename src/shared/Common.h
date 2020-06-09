@@ -360,7 +360,7 @@ Scripting system exports/imports
 #include "Threading/AtomicBoolean.h"
 #include "Threading/ConditionVariable.h"
 
-#include "Threading/CRefcounter.h"
+#include "Threading/CRefCounter.h"
 
 #include "MersenneTwister.h"
 

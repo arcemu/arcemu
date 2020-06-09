@@ -98,7 +98,7 @@ set( headers
 	Threading/AtomicULong.h
 	Threading/ConditionVariable.h
 	Threading/CThreads.h
-	Threading/CRefcounter.h
+	Threading/CRefCounter.h
 	Threading/Guard.h
 	Threading/LockedQueue.h
 	Threading/Mutex.h
