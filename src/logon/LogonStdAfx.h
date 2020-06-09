@@ -47,7 +47,7 @@
 #include "LogonOpcodes.h"
 #include "../logon/Main.h"
 #include "../world/NameTables.h"
-#include "AccountCache.h"
+#include "AccountMgr.h"
 #include "PeriodicFunctionCall_Thread.h"
 #include "../logon/AutoPatcher.h"
 #include "../logon/AuthSocket.h"

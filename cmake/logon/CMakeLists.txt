@@ -1,7 +1,7 @@
 PROJECT(logon CXX)
 SET( prefix ${ROOT_PATH}/src/logon)
 SET( sources
-  AccountCache.cpp
+  AccountMgr.cpp
   AuthSocket.cpp
   AutoPatcher.cpp
   IPBanner.cpp
@@ -14,7 +14,7 @@ SET( sources
 )
 
  SET( headers
-	AccountCache.h
+	AccountMgr.h
 	AuthSocket.h
 	AuthStructs.h
 	AutoPatcher.h
