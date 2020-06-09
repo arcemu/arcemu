@@ -227,7 +227,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "LogonCommHandler.h"
 #include "MainServerDefines.h"
 #include "WorldRunnable.h"
-#include "../shared/Storage.h"
+#include "Container/Storage.h"
 #include "ObjectStorage.h"
 #include "DatabaseCleaner.h"
 #include "DayWatcherThread.h"
