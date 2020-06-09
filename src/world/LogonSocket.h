@@ -21,7 +21,7 @@
 #ifndef __LOGON_COMM_CLIENT_H
 #define __LOGON_COMM_CLIENT_H
 
-#include "../logon/RealmLogonLinkOpcodes.h"
+#include "../logon/RealmList/RealmLogonLinkOpcodes.h"
 #include <Crypto/RC4Engine.h>
 
 /// Connects the Realm to the logonserver

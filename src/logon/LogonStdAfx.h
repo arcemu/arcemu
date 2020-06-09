@@ -47,15 +47,15 @@
 #include "RealmList/RealmLogonLinkOpcodes.h"
 #include "../logon/Main.h"
 #include "../world/NameTables.h"
-#include "AccountMgr.h"
+#include "Auth/AccountMgr.h"
 #include "PeriodicFunctionCall_Thread.h"
 #include "../logon/AutoPatcher.h"
-#include "../logon/AuthSocket.h"
-#include "../logon/AuthStructs.h"
+#include "Auth/AuthSocket.h"
+#include "Auth/AuthStructs.h"
 #include "RealmList/RealmSocket.h"
 #include "../logon/LogonConsole.h"
 #include "RealmList/RealmRegistry.h"
-#include "IPBanner.h"
+#include "Auth/IPBanner.h"
 
 // database decl
 extern Database* sLogonSQL;

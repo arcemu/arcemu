@@ -1,32 +1,32 @@
 PROJECT(logon CXX)
 SET( prefix ${ROOT_PATH}/src/logon)
 SET( sources
-  AccountMgr.cpp
-  AuthSocket.cpp
+  Auth/AccountMgr.cpp
+  Auth/AuthSocket.cpp
   AutoPatcher.cpp
-  IPBanner.cpp
-  RealmSocket.cpp
+  Auth/IPBanner.cpp
+  RealmList/RealmSocket.cpp
   LogonConsole.cpp
-  RealmLogonLinkOpcodes.cpp
+  RealmList/RealmLogonLinkOpcodes.cpp
   LogonStdAfx.cpp
   Main.cpp
-  RealmRegistry.cpp
+  RealmList/RealmRegistry.cpp
 )
 
  SET( headers
-	AccountMgr.h
-	AuthSocket.h
-	AuthStructs.h
+	Auth/AccountMgr.h
+	Auth/AuthSocket.h
+	Auth/AuthStructs.h
 	AutoPatcher.h
-	IPBanner.h
-	RealmSocket.h
+	Auth/IPBanner.h
+	RealmList/RealmSocket.h
 	LogonConfig.h
 	LogonConsole.h
-	RealmLogonLinkOpcodes.h
+	RealmList/RealmLogonLinkOpcodes.h
 	LogonStdAfx.h
 	Main.h
 	PeriodicFunctionCall_Thread.h
-	RealmRegistry.h
+	RealmList/RealmRegistry.h
 )
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
