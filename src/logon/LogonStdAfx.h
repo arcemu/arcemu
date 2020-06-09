@@ -50,7 +50,7 @@
 #include "../logon/AuthStructs.h"
 #include "../logon/LogonCommServer.h"
 #include "../logon/LogonConsole.h"
-#include "../shared/WorldPacket.h"
+#include "Network/ServerPacket.h"
 
 // database decl
 extern Database* sLogonSQL;

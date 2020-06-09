@@ -21,7 +21,6 @@
 // reading/writing of all packets.
 
 #include "StdAfx.h"
-#include "AuthCodes.h"
 
 /* echo send/received packets to console */
 //#define ECHO_PACKET_LOG_TO_CONSOLE 1

@@ -39,7 +39,7 @@ set( headers
 	arcemu_getopt.h
 	arcemuConfig.h
 	Array.h
-	AuthCodes.h
+	Network/AuthCodes.h
 	ByteBuffer.h
 	CallBack.h
 	CircularQueue.h
@@ -67,7 +67,7 @@ set( headers
 	System/TextFile.h
 	Tokenizer.h
 	Util.h
-	WorldPacket.h
+	Network/ServerPacket.h
 	Crypto/BigNumber.h
 	Crypto/MD5.h
 	Crypto/Sha1.h
