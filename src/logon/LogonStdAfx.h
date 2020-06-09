@@ -44,7 +44,7 @@
 
 #include "Network/ServerPacket.h"
 
-#include "RealmLogonLinkOpcodes.h"
+#include "RealmList/RealmLogonLinkOpcodes.h"
 #include "../logon/Main.h"
 #include "../world/NameTables.h"
 #include "AccountMgr.h"
@@ -52,9 +52,9 @@
 #include "../logon/AutoPatcher.h"
 #include "../logon/AuthSocket.h"
 #include "../logon/AuthStructs.h"
-#include "RealmSocket.h"
+#include "RealmList/RealmSocket.h"
 #include "../logon/LogonConsole.h"
-#include "RealmRegistry.h"
+#include "RealmList/RealmRegistry.h"
 #include "IPBanner.h"
 
 // database decl
