@@ -201,7 +201,7 @@ void LogonCommServerSocket::HandleRegister(ServerPacket & recvData)
 	sLog.outString("TEST FLAGS %u", realm->flags);
 
 
-//	uint32 my_id = sInfoCore.GenerateRealmID();
+//	uint32 my_id = sRealmRegistry.GenerateRealmID();
 //	sLog.outString("Registering realm `%s` under ID %u.", realm->Name.c_str(), my_id);
 
 	// Add to the main realm list

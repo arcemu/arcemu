@@ -153,70 +153,7 @@ class AccountMgr : public Singleton < AccountMgr >
 		Mutex setBusy;
 };
 
-typedef struct
-{
-	string Name;
-	string Address;
-	uint32 flags;
-	uint32 Icon;
-	uint32 TimeZone;
-	float Population;
-	uint8 Lock;
-	HM_NAMESPACE::HM_HASH_MAP<uint32, uint8> CharacterMap;
-} Realm;
-
-class AuthSocket;
-class LogonCommServerSocket;
-
-class RealmRegistry : public Singleton<RealmRegistry>
-{
-		map<uint32, Realm*>		  m_realms;
-		set<LogonCommServerSocket*> m_serverSockets;
-		Mutex serverSocketLock;
-		Mutex realmLock;
-
-		uint32 realmhigh;
-		bool usepings;
-
-	public:
-		~RealmRegistry();
-
-		ARCEMU_INLINE Mutex & getServerSocketLock() { return serverSocketLock; }
-		ARCEMU_INLINE Mutex & getRealmLock() { return realmLock; }
-
-		RealmRegistry()
-		{
-			realmhigh = 0;
-			usepings  = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
-			m_realms.clear();
-		}
-
-		// Packets
-		void		  SendRealms(AuthSocket* Socket);
-
-		// Realm management
-		uint32 GenerateRealmID()
-		{
-			return ++realmhigh;
-		}
-
-		Realm*		  AddRealm(uint32 realm_id, Realm* rlm);
-		Realm*        GetRealm(uint32 realm_id);
-		int32		  GetRealmIdByName(string Name);
-		void		  RemoveRealm(uint32 realm_id);
-		void SetRealmOffline(uint32 realm_id);
-		void UpdateRealmStatus(uint32 realm_id, uint8 flags);
-		void		  UpdateRealmPop(uint32 realm_id, float pop);
-
-		ARCEMU_INLINE void   AddServerSocket(LogonCommServerSocket* sock) { serverSocketLock.Acquire(); m_serverSockets.insert(sock); serverSocketLock.Release(); }
-		ARCEMU_INLINE void   RemoveServerSocket(LogonCommServerSocket* sock) { serverSocketLock.Acquire(); m_serverSockets.erase(sock); serverSocketLock.Release(); }
-
-		void		  TimeoutSockets();
-		void CheckServers();
-};
-
 #define sIPBanner IPBanner::getSingleton()
 #define sAccountMgr AccountMgr::getSingleton()
-#define sRealmRegistry RealmRegistry::getSingleton()
 
 #endif

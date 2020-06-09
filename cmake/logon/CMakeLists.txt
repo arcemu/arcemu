@@ -8,7 +8,9 @@ SET( sources
   LogonConsole.cpp
   LogonOpcodes.cpp
   LogonStdAfx.cpp
-  Main.cpp)
+  Main.cpp
+  RealmRegistry.cpp
+)
 
  SET( headers
 	AccountCache.h
@@ -22,6 +24,7 @@ SET( sources
 	LogonStdAfx.h
 	Main.h
 	PeriodicFunctionCall_Thread.h
+	RealmRegistry.h
 )
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )

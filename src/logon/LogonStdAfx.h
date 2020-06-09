@@ -54,6 +54,7 @@
 #include "../logon/AuthStructs.h"
 #include "../logon/LogonCommServer.h"
 #include "../logon/LogonConsole.h"
+#include "RealmRegistry.h"
 
 // database decl
 extern Database* sLogonSQL;
