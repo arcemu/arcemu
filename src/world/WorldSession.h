@@ -205,7 +205,6 @@ class MovementInfo
 };
 
 extern OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
-void CapitalizeString(string & arg);
 
 class SERVER_DECL WorldSession
 {

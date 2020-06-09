@@ -363,6 +363,14 @@ namespace Arcemu
 				str[i] = (char)toupper(str[i]);
 		}
 
+		void Util::CapitalizeString(std::string & arg)
+		{
+			if(arg.length() == 0) return;
+			arg[0] = static_cast<char>(toupper(arg[0]));
+			for(uint32 x = 1; x < arg.size(); ++x)
+				arg[x] = static_cast<char>(tolower(arg[x]));
+		}
+
 		bool Util::ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits)
 		{
 			// CIDR bans are a compacted form of IP / Submask

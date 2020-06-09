@@ -106,14 +106,6 @@ bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_ses
 	return true;
 }
 
-void CapitalizeString(string & arg)
-{
-	if(arg.length() == 0) return;
-	arg[0] = static_cast<char>(toupper(arg[0]));
-	for(uint32 x = 1; x < arg.size(); ++x)
-		arg[x] = static_cast<char>(tolower(arg[x]));
-}
-
 void WorldSession::CharacterEnumProc(QueryResult* result)
 {
 	struct player_item
@@ -625,7 +617,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	}
 
 	// correct capitalization
-	CapitalizeString(name);
+	Arcemu::Shared::Util::CapitalizeString(name);
 	objmgr.RenamePlayerInfo(pi, pi->name, name.c_str());
 
 	sPlrLog.writefromsession(this, "a rename was pending. renamed character %s (GUID: %u) to %s.", pi->name, pi->guid, name.c_str());

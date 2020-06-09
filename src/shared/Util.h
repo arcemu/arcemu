@@ -86,6 +86,8 @@ namespace Arcemu
 
 			static void arcemu_TOUPPER(std::string & str);
 
+			static void CapitalizeString(std::string & arg);
+
 			// returns true if the ip hits the mask, otherwise false
 			static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
 

@@ -47,6 +47,11 @@ public:
 	bool testStrSplitWhenWrongSeparator();
 	bool testStrSplit();
 
+	bool testCapitalizeStringEmpty();
+	bool testCapitalizeStringUpper();
+	bool testCapitalizeStringLower();
+	bool testCapitalizeStringCapitalized();
+
 	bool run();
 };
 
@@ -73,6 +78,11 @@ TESTCASE_REGISTRY_FOR( UtilTest )
 	TESTCASE( UtilTest, testStrSplitWhenEmptySeparator, "StrSplit returns the original string in a 1 length vector, when given an empty separator" )
 	TESTCASE( UtilTest, testStrSplitWhenWrongSeparator, "StrSplit returns the original string in a 1 length vector, when given a wrong separator" )
 	TESTCASE( UtilTest, testStrSplit, "StrSplit splits the string into a vector of string" )
+
+	TESTCASE( UtilTest, testCapitalizeStringEmpty, "CapitalizeString leaves an empty string empty" )
+	TESTCASE( UtilTest, testCapitalizeStringUpper, "CapitalizeString transforms uppercase string correctly" )
+	TESTCASE( UtilTest, testCapitalizeStringLower, "CapitalizeString transforms lowercase string correctly" )
+	TESTCASE( UtilTest, testCapitalizeStringCapitalized, "CapitalizeString leaves capitalized string capitalized" )
 TESTCASE_REGISTRY_END()
 
 bool UtilTest::testArcemuToLower()
@@ -315,6 +325,38 @@ bool UtilTest::testStrSplit()
 	TEST_EQ( "two", strings[ 1 ] );
 	TEST_EQ( "three", strings[ 2 ] );
 
+	TESTCASE_END();
+}
+
+bool UtilTest::testCapitalizeStringEmpty()
+{
+	std::string string = "";
+	Arcemu::Shared::Util::CapitalizeString( string );
+	TEST_EQ( string.size(), 0 );
+	TESTCASE_END();
+}
+
+bool UtilTest::testCapitalizeStringUpper()
+{
+	std::string string = "UPPER";
+	Arcemu::Shared::Util::CapitalizeString( string );
+	TEST_EQ( "Upper", string );
+	TESTCASE_END();
+}
+
+bool UtilTest::testCapitalizeStringLower()
+{
+	std::string string = "lower";
+	Arcemu::Shared::Util::CapitalizeString( string );
+	TEST_EQ( "Lower", string );
+	TESTCASE_END();
+}
+
+bool UtilTest::testCapitalizeStringCapitalized()
+{
+	std::string string = "Capitalized";
+	Arcemu::Shared::Util::CapitalizeString( string );
+	TEST_EQ( "Capitalized", string );
 	TESTCASE_END();
 }
 

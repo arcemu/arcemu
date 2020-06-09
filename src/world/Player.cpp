@@ -657,7 +657,7 @@ bool Player::Create(WorldPacket & data)
 	data >> m_name;
 
 	// correct capitalization
-	CapitalizeString(m_name);
+	Arcemu::Shared::Util::CapitalizeString(m_name);
 
 	data >> race >> class_ >> gender >> skin >> face;
 	data >> hairStyle >> hairColor >> facialHair >> outfitId;
