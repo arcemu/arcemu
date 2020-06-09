@@ -51,6 +51,7 @@ enum RealmType
     REALMTYPE_RPPVP  = 8,
 };
 
+/// Handles Logon <-> Realm communication
 class LogonCommHandler : public Singleton<LogonCommHandler>
 {
 #ifdef WIN32
