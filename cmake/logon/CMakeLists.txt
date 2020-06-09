@@ -5,7 +5,7 @@ SET( sources
   AuthSocket.cpp
   AutoPatcher.cpp
   IPBanner.cpp
-  LogonCommServer.cpp
+  RealmSocket.cpp
   LogonConsole.cpp
   LogonOpcodes.cpp
   LogonStdAfx.cpp
@@ -19,7 +19,7 @@ SET( sources
 	AuthStructs.h
 	AutoPatcher.h
 	IPBanner.h
-	LogonCommServer.h
+	RealmSocket.h
 	LogonConfig.h
 	LogonConsole.h
 	LogonOpcodes.h

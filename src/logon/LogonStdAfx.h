@@ -52,7 +52,7 @@
 #include "../logon/AutoPatcher.h"
 #include "../logon/AuthSocket.h"
 #include "../logon/AuthStructs.h"
-#include "../logon/LogonCommServer.h"
+#include "RealmSocket.h"
 #include "../logon/LogonConsole.h"
 #include "RealmRegistry.h"
 #include "IPBanner.h"
