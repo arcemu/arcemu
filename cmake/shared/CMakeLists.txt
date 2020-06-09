@@ -4,9 +4,9 @@ SET( prefix ${ROOT_PATH}/src/shared )
 SET( sources
     System/CrashHandler.cpp 
     Log.cpp 
-    MersenneTwister.cpp 
+    Util/MersenneTwister.cpp 
     System/printStackTrace.cpp 
-    Util.cpp 
+    Util/Util.cpp 
     System/crc32.cpp 
     System/MapFile.cpp
     System/MapFileEntry.cpp
@@ -24,7 +24,7 @@ SET( sources
     Threading/AtomicCounter.cpp 
     Threading/AtomicBoolean.cpp 
     Threading/ConditionVariable.cpp
-    arcemu_getopt.cpp 
+    Util/arcemu_getopt.cpp 
     Crypto/BigNumber.cpp 
     Crypto/MD5.cpp 
     Crypto/Sha1.cpp 
@@ -36,12 +36,12 @@ SET( sources
     Network/Socket.cpp  )
 	
 set( headers 
-	arcemu_getopt.h
+	Util/arcemu_getopt.h
 	arcemuConfig.h
 	Container/Array.h
 	Network/AuthCodes.h
 	Container/ByteBuffer.h
-	CallBack.h
+	Util/CallBack.h
 	Container/CircularQueue.h
 	System/Platform.h
 	System/CrashHandler.h
@@ -55,18 +55,18 @@ set( headers
 	Log.h
 	System/MapFile.h
 	System/MapFileEntry.h
-	MersenneTwister.h
+	Util/MersenneTwister.h
 	System/PerformanceCounter.hpp
 	Container/PreallocatedQueue.h
 	System/printStackTrace.h
-	Singleton.h
+	Util/Singleton.h
 	System/StackWalker.h
 	System/StackTrace.h
 	Container/Storage.h
 	System/SysInfo.hpp
 	System/TextFile.h
-	Tokenizer.h
-	Util.h
+	Util/Tokenizer.h
+	Util/Util.h
 	Network/ServerPacket.h
 	Crypto/BigNumber.h
 	Crypto/MD5.h

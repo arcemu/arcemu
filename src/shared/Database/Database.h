@@ -21,8 +21,8 @@
 #define _DATABASE_H
 
 #include <string>
-#include "../Threading/Queue.h"
-#include "../CallBack.h"
+#include "Threading/Queue.h"
+#include "Util/CallBack.h"
 
 using namespace std;
 class QueryResult;

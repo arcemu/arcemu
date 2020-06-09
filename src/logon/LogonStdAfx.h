@@ -30,7 +30,7 @@
 #include <Network/Network.h>
 
 #include "../shared/Log.h"
-#include "../shared/Util.h"
+#include "Util/Util.h"
 #include "Container//ByteBuffer.h"
 #include "../shared/Config/ConfigEnv.h"
 #include <zlib.h>

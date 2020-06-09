@@ -362,7 +362,7 @@ Scripting system exports/imports
 
 #include "Threading/CRefCounter.h"
 
-#include "MersenneTwister.h"
+#include "Util/MersenneTwister.h"
 
 #if COMPILER == COMPILER_MICROSOFT
 

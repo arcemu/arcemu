@@ -24,8 +24,8 @@
 // updated: Tuesday, June 16th 2009 - Hasbro
 //////////////////////////////////////////////
 
-#include "DatabaseEnv.h"
-#include "Util.h"
+#include "Database/DatabaseEnv.h"
+#include "Util/Util.h"
 
 SQLCallbackBase::~SQLCallbackBase()
 {

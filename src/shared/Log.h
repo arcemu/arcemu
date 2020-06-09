@@ -21,7 +21,7 @@
 #define WOWSERVER_LOG_H
 
 #include "System/Platform.h"
-#include "Singleton.h"
+#include "Util/Singleton.h"
 
 class WorldSession;
 

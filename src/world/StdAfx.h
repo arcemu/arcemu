@@ -77,8 +77,8 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "DetourAssert.h"
 
 #include "System/Platform.h"
-#include "../shared/Util.h"
-#include "../shared/MersenneTwister.h"
+#include "Util/Util.h"
+#include "Util/MersenneTwister.h"
 #include "Container/ByteBuffer.h"
 
 #include "Network/ServerPacket.h"
@@ -111,9 +111,9 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Container/CircularQueue.h"
 #include "../shared/Threading/RWLock.h"
 #include "../shared/Threading/CRefCounter.h"
-#include "../shared/arcemu_getopt.h"
-#include "../shared/Threading/TLSObject.h"
-#include "../shared/Tokenizer.h"
+#include "Util/arcemu_getopt.h"
+#include "Threading/TLSObject.h"
+#include "Util/Tokenizer.h"
 
 #ifdef WIN32
 #include "System/printStackTrace.h"
@@ -129,7 +129,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "UpdateMask.h"
 #include "Opcodes.h"
 #include "Network/AuthCodes.h"
-#include "../shared/CallBack.h"
+#include "Util/CallBack.h"
 #include "WordFilter.h"
 #include "Events.h"
 #include "EventMgr.h"

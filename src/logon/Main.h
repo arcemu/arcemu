@@ -17,7 +17,7 @@
  *
  */
 
-#include "../shared/Singleton.h"
+#include "Util/Singleton.h"
 
 enum RealmFlags
 {
