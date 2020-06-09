@@ -23,7 +23,7 @@
 //
 
 #include "StdAfx.h"
-#include <CrashHandler.h>
+#include "System/CrashHandler.h"
 
 #define WORLD_UPDATE_DELAY 50
 

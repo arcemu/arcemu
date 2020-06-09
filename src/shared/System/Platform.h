@@ -407,9 +407,9 @@ Scripting system exports/imports
 #define TRUE	1
 #endif
 
-#include "DynLib.hpp"
-#include "FindFiles.hpp"
-#include "SysInfo.hpp"
-#include "PerformanceCounter.hpp"
+#include "System/DynLib.hpp"
+#include "System/FindFiles.hpp"
+#include "System/SysInfo.hpp"
+#include "System/PerformanceCounter.hpp"
 
 #endif

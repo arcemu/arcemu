@@ -20,7 +20,7 @@
 #ifndef WOWSERVER_WORLDPACKET_H
 #define WOWSERVER_WORLDPACKET_H
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "ByteBuffer.h"
 
 class SERVER_DECL WorldPacket : public ByteBuffer

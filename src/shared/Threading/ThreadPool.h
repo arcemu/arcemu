@@ -17,7 +17,7 @@
  *
  */
 
-#include "../Common.h"
+#include "System/Platform.h"
 
 #ifndef __THREADPOOL_H
 #define __THREADPOOL_H

@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-#include <Common.h>
+#include "System/Platform.h"
 #include <Network/Network.h>
 #include <Config/ConfigEnv.h>
 #include <git_version.h>

@@ -20,7 +20,7 @@
 #ifndef _RANDOMGEN_H
 #define _RANDOMGEN_H
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "Singleton.h"
 
 SERVER_DECL void InitRandomNumberGenerators();

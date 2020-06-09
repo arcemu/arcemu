@@ -21,7 +21,7 @@
 #define _AUTH_SHA1_H
 
 #include <cstdlib>
-#include "Common.h"
+#include "System/Platform.h"
 #include <openssl/sha.h>
 #include "Crypto/BigNumber.h"
 

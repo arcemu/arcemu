@@ -9,7 +9,7 @@
 #ifndef SOCKET_DEFINES_H
 #define SOCKET_DEFINES_H
 
-#include "../Common.h"
+#include "System/Platform.h"
 using namespace std;
 
 /* Implementation Selection */

@@ -20,7 +20,7 @@
 #ifndef WOWSERVER_ERRORS_H
 #define WOWSERVER_ERRORS_H
 
-#include "printStackTrace.h"
+#include "System/printStackTrace.h"
 // TODO: handle errors better
 
 #if CODE_ANALYSIS

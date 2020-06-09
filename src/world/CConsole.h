@@ -21,7 +21,7 @@
 #ifndef __CConsole_H
 #define __CConsole_H
 
-#include "Common.h"
+#include "System/Platform.h"
 
 class ConsoleThread : public ThreadBase
 {

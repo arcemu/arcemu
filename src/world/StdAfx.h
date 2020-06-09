@@ -76,14 +76,14 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "DetourAlloc.h"
 #include "DetourAssert.h"
 
-#include "../shared/Common.h"
+#include "System/Platform.h"
 #include "../shared/Util.h"
 #include "../shared/MersenneTwister.h"
 #include "../shared/WorldPacket.h"
 #include "../shared/Log.h"
 #include "../shared/ByteBuffer.h"
 #include "../shared/Config/ConfigEnv.h"
-#include "../shared/crc32.h"
+#include "System/crc32.h"
 
 extern SERVER_DECL SessionLogWriter* Anticheat_Log;
 extern SERVER_DECL SessionLogWriter* GMCommand_Log;
@@ -113,7 +113,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "../shared/Tokenizer.h"
 
 #ifdef WIN32
-#include "printStackTrace.h"
+#include "System/printStackTrace.h"
 #endif
 
 #include "LocationVector.h"

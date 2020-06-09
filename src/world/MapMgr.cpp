@@ -23,7 +23,7 @@
 //
 
 #include "StdAfx.h"
-#include "CrashHandler.h"
+#include "System/CrashHandler.h"
 #include "UpdateBuilder.h"
 
 Arcemu::Utility::TLSObject<MapMgr*> t_currentMapContext;

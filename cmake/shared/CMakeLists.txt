@@ -2,19 +2,19 @@ PROJECT(shared)
 
 SET( prefix ${ROOT_PATH}/src/shared )
 SET( sources
-    CrashHandler.cpp 
+    System/CrashHandler.cpp 
     Log.cpp 
     MersenneTwister.cpp 
-    printStackTrace.cpp 
+    System/printStackTrace.cpp 
     Util.cpp 
-    crc32.cpp 
-    MapFile.cpp
-    MapFileEntry.cpp
-    TextFile.cpp
-    FindFiles.cpp
-    DynLib.cpp
-    SysInfo.cpp
-    PerformanceCounter.cpp
+    System/crc32.cpp 
+    System/MapFile.cpp
+    System/MapFileEntry.cpp
+    System/TextFile.cpp
+    System/FindFiles.cpp
+    System/DynLib.cpp
+    System/SysInfo.cpp
+    System/PerformanceCounter.cpp
     Threading/CThreads.cpp 
     Threading/Mutex.cpp
     Threading/Threading.h  
@@ -43,28 +43,28 @@ set( headers
 	ByteBuffer.h
 	CallBack.h
 	CircularQueue.h
-	Common.h
-	CrashHandler.h
-	crc32.h
+	System/Platform.h
+	System/CrashHandler.h
+	System/crc32.h
 	Database/DatabaseEnv.h
-	DynLib.hpp
-	Errors.h
+	System/DynLib.hpp
+	System/Errors.h
 	FastQueue.h
-	FindFiles.hpp
-	FindFilesResult.hpp
+	System/FindFiles.hpp
+	System/FindFilesResult.hpp
 	Log.h
-	MapFile.h
-	MapFileEntry.h
+	System/MapFile.h
+	System/MapFileEntry.h
 	MersenneTwister.h
-	PerformanceCounter.hpp
+	System/PerformanceCounter.hpp
 	PreallocatedQueue.h
-	printStackTrace.h
+	System/printStackTrace.h
 	Singleton.h
-	StackWalker.h
-	StackTrace.h
+	System/StackWalker.h
+	System/StackTrace.h
 	Storage.h
-	SysInfo.hpp
-	TextFile.h
+	System/SysInfo.hpp
+	System/TextFile.h
 	Tokenizer.h
 	Util.h
 	WorldPacket.h
@@ -108,7 +108,7 @@ set( headers
 )
 
 IF(WIN32)
-	SET( sources ${sources} Network/SocketMgrWin32.cpp  Network/SocketOpsWin32.cpp  Network/SocketWin32.cpp StackWalker.cpp StackTrace.cpp )
+	SET( sources ${sources} Network/SocketMgrWin32.cpp  Network/SocketOpsWin32.cpp  Network/SocketWin32.cpp System/StackWalker.cpp System/StackTrace.cpp )
 ELSEIF(IS_FREEBSD OR APPLE)
 	SET( sources ${sources}  Network/SocketMgrFreeBSD.cpp  Network/SocketFreeBSD.cpp  Network/SocketOpsFreeBSD.cpp )
 ELSE(WIN32)

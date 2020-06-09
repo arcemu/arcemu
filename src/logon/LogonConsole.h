@@ -20,7 +20,7 @@
 #ifndef __LOGONCONSOLE_H
 #define __LOGONCONSOLE_H
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "Threading/CThreads.h"
 
 class LogonConsoleThread : public ThreadBase

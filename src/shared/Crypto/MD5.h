@@ -22,7 +22,7 @@
 
 #include <cstdlib>
 #include <openssl/md5.h>
-#include "Common.h"
+#include "System/Platform.h"
 
 class MD5Hash
 {

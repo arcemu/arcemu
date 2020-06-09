@@ -20,7 +20,7 @@
 #ifndef _UTIL_H
 #define _UTIL_H
 
-#include "Common.h"
+#include "System/Platform.h"
 
 #ifdef WIN32
 

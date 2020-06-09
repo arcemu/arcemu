@@ -20,7 +20,7 @@
 #ifndef __ACCOUNTCACHE_H
 #define __ACCOUNTCACHE_H
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "../shared/Database/DatabaseEnv.h"
 
 struct Account

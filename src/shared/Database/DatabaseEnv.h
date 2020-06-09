@@ -21,7 +21,7 @@
 #define DATABASEENV_H
 
 //! Other libs we depend on.
-#include "Common.h"
+#include "System/Platform.h"
 #include "Singleton.h"
 #include "Log.h"
 #include "Threading/CThreads.h"

@@ -20,7 +20,7 @@
 #ifndef _AUTH_BIGNUMBER_H
 #define _AUTH_BIGNUMBER_H
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "ByteBuffer.h"
 
 //#include "openssl/bn.h"

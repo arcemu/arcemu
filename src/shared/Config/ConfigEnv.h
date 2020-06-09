@@ -21,7 +21,7 @@
 #define CONFIGENVIRONMENT_H
 
 //! Other libs we depend on.
-#include "Common.h"
+#include "System/Platform.h"
 
 //! Our own includes.
 #include "Config.h"

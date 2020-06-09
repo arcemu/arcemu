@@ -20,7 +20,7 @@
 */
 #pragma once
 
-#include "Common.h"
+#include "System/Platform.h"
 using namespace std;
 namespace Arcemu
 {

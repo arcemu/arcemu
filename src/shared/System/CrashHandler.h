@@ -29,7 +29,7 @@
 bool HookCrashReporter(bool logon);
 void OutputCrashLogLine(const char* format, ...);
 
-#include "Common.h"
+#include "System/Platform.h"
 
 #ifdef WIN32
 

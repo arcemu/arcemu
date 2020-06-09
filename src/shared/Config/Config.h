@@ -19,7 +19,7 @@
 
 #if !defined (CONFIG_H)
 #define CONFIG_H
-#include "Common.h"
+#include "System/Platform.h"
 
 #ifndef EOL
 #ifdef WIN32

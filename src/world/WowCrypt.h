@@ -21,7 +21,7 @@
 #define _WOWCRYPT_H
 
 #include <cstdlib>
-#include "../shared/Common.h"
+#include "System/Platform.h"
 #include "../shared/Crypto/BigNumber.h"
 #include <vector>
 #include <openssl/sha.h>

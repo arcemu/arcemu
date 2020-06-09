@@ -20,7 +20,7 @@
 #ifndef WOWSERVER_LOG_H
 #define WOWSERVER_LOG_H
 
-#include "Common.h"
+#include "System/Platform.h"
 #include "Singleton.h"
 
 class WorldSession;

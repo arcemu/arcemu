@@ -20,7 +20,7 @@
 #ifndef _BYTEBUFFER_H
 #define _BYTEBUFFER_H
 
-#include "Common.h"
+#include "System/Platform.h"
 
 class SERVER_DECL ByteBuffer
 {

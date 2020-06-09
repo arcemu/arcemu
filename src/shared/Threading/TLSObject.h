@@ -18,7 +18,7 @@
  */
 
 #pragma once
-#include "Common.h"
+#include "System/Platform.h"
 
 namespace Arcemu
 {
