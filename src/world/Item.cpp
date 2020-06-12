@@ -1253,6 +1253,10 @@ void Item::RemoveFromRefundableMap()
 
 uint32 Item::RepairItemCost()
 {
+	uint32 durabilityLoss = GetDurabilityMax() - GetDurability();
+	if(durabilityLoss == 0)
+		return 0;
+
 	DurabilityCostsEntry* dcosts = dbcDurabilityCosts.LookupEntryForced(m_itemProto->ItemLevel);
 	if(dcosts == NULL)
 	{
@@ -1268,7 +1272,7 @@ uint32 Item::RepairItemCost()
 	}
 
 	uint32 dmodifier = dcosts->modifier[ m_itemProto->Class == ITEM_CLASS_WEAPON ? m_itemProto->SubClass : m_itemProto->SubClass + 21 ];
-	uint32 cost = uint32((GetDurabilityMax() - GetDurability()) * dmodifier * double(dquality->quality_modifier));
+	uint32 cost = (uint32)ceil(durabilityLoss * dmodifier * double(dquality->quality_modifier));
 	return cost;
 }
 
