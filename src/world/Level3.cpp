@@ -2976,6 +2976,62 @@ bool ChatHandler::HandleRemoveItemCommand(const char* args, WorldSession* m_sess
 	return true;
 }
 
+bool ChatHandler::HandleRenameCommand(const char* args, WorldSession* m_session)
+{
+	// prevent buffer overflow
+	if(strlen(args) > 100)
+		return false;
+
+	char name1[100];
+	char name2[100];
+
+	if(sscanf(args, "%s %s", name1, name2) != 2)
+		return false;
+
+	if(Arcemu::Util::VerifyName(name2, strlen(name2)) != E_CHAR_NAME_SUCCESS)
+	{
+		RedSystemMessage(m_session, "That name is invalid or contains invalid characters.");
+		return true;
+	}
+
+	string new_name = name2;
+	PlayerInfo* pi = objmgr.GetPlayerInfoByName(name1);
+	if(pi == 0)
+	{
+		RedSystemMessage(m_session, "Player not found with this name.");
+		return true;
+	}
+
+	if(objmgr.GetPlayerInfoByName(new_name.c_str()) != NULL)
+	{
+		RedSystemMessage(m_session, "Player found with this name in use already.");
+		return true;
+	}
+
+	objmgr.RenamePlayerInfo(pi, pi->name, new_name.c_str());
+
+	free(pi->name);
+	pi->name = strdup(new_name.c_str());
+
+	// look in world for him
+	Player* plr = objmgr.GetPlayer(pi->guid);
+	if(plr != 0)
+	{
+		plr->SetName(new_name);
+		BlueSystemMessageToPlr(plr, "%s changed your name to '%s'.", m_session->GetPlayer()->GetName(), new_name.c_str());
+		plr->SaveToDB(false);
+	}
+	else
+	{
+		CharacterDatabase.WaitExecute("UPDATE characters SET name = '%s' WHERE guid = %u", CharacterDatabase.EscapeString(new_name).c_str(), (uint32)pi->guid);
+	}
+
+	GreenSystemMessage(m_session, "Changed name of '%s' to '%s'.", name1, name2);
+	sGMLog.writefromsession(m_session, "renamed character %s (GUID: %u) to %s", name1, pi->guid, name2);
+	sPlrLog.writefromsession(m_session, "GM renamed character %s (GUID: %u) to %s", name1, pi->guid, name2);
+	return true;
+}
+
 bool ChatHandler::HandleForceRenameCommand(const char* args, WorldSession* m_session)
 {
 	// prevent buffer overflow
@@ -4057,6 +4113,41 @@ bool ChatHandler::HandleGetDeathState(const char* args, WorldSession* m_session)
 	return true;
 }
 
+bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_session)
+{
+	uint32 uCount = 0;
+	uint32 ts = Arcemu::Shared::Util::getMSTime();
+	QueryResult* result = CharacterDatabase.Query("SELECT guid, name FROM characters");
+	if(result)
+	{
+		do
+		{
+			uint32 uGuid = result->Fetch()[0].GetUInt32();
+			const char* pName = result->Fetch()[1].GetString();
+			size_t szLen = strlen(pName);
+
+			if(Arcemu::Util::VerifyName(pName, szLen) != E_CHAR_NAME_SUCCESS)
+			{
+				LOG_DEBUG("renaming character %s, %u", pName, uGuid);
+				Player* pPlayer = objmgr.GetPlayer(uGuid);
+				if(pPlayer != NULL)
+				{
+					pPlayer->rename_pending = true;
+					pPlayer->GetSession()->SystemMessage("Your character has had a force rename set, you will be prompted to rename your character at next login in conformance with server rules.");
+				}
+
+				CharacterDatabase.WaitExecute("UPDATE characters SET forced_rename_pending = 1 WHERE guid = %u", uGuid);
+				++uCount;
+			}
+
+		}
+		while(result->NextRow());
+		delete result;
+	}
+
+	SystemMessage(m_session, "Procedure completed in %u ms. %u character(s) forced to rename.", Arcemu::Shared::Util::getMSTime() - ts, uCount);
+	return true;
+}
 
 bool ChatHandler::HandleCollisionGetHeight(const char* args, WorldSession* m_session)
 {
