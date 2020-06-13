@@ -8,21 +8,23 @@ SET(sources
 	DayWatcherThread.cpp 
 	CommonScheduleThread.cpp 
 	ArenaTeam.cpp 
+	PacketHandlers/ArenaTeamHandler.cpp 
 	DatabaseCleaner.cpp 
 	ObjectStorage.cpp  
 	AddonMgr.cpp 
 	AIInterface.cpp 
 	AIEvents.cpp
-	AreaTrigger.cpp 
+	PacketHandlers/AreaTrigger.cpp 
 	Arenas.cpp 
 	AuctionHouse.cpp 
+	PacketHandlers/AuctionHouseHandler.cpp
 	AuctionMgr.cpp 
 	Battleground.cpp
 	BattlegroundCommands.cpp 
-	BattlegroundHandler.cpp 
+	PacketHandlers/BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
 	Channel.cpp 
-	ChannelHandler.cpp 
+	PacketHandlers/ChannelHandler.cpp 
 	CharacterHandler.cpp 
 	Chat.cpp 
 	ChatHandler.cpp 
