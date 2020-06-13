@@ -20,3 +20,7 @@ IF( BUILD_TOOLS_VMAPS )
 	add_subdirectory( vmap_tools )
 ENDIF( BUILD_TOOLS_VMAPS )
 
+IF(NOT WIN32)
+	add_subdirectory(crashreport)
+ENDIF()
+

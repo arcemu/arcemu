@@ -1,6 +1,6 @@
 PROJECT(crashreport)
 
-SET( prefix ${ROOT_PATH}/src/${PROJECT_NAME} )
+SET( prefix ${ROOT_PATH}/src/tools/${PROJECT_NAME} )
 SET( SRCS
  ${prefix}/Main.c )
 
