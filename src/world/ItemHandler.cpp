@@ -1713,9 +1713,12 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 			if(dDurability)
 			{
 				uint32 cDurability = item->GetDurability();
-				//only apply item mods if they are on char equipped
-				if(item->RepairItem(_player) && cDurability == 0 && searchres->ContainerSlot == static_cast<int8>(INVALID_BACKPACK_SLOT) && searchres->Slot < static_cast<int8>(INVENTORY_SLOT_BAG_END))
-					_player->ApplyItemMods(item, searchres->Slot, true);
+				if( item->RepairItem(_player) )
+				{
+					//only apply item mods if they are on char equipped
+					if(cDurability == 0 && searchres->ContainerSlot == static_cast<int8>(INVALID_BACKPACK_SLOT) && searchres->Slot < static_cast<int8>(INVENTORY_SLOT_BAG_END))
+						_player->ApplyItemMods(item, searchres->Slot, true);
+				}
 			}
 		}
 	}
