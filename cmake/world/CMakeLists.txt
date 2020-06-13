@@ -53,7 +53,7 @@ SET(sources
 	Group.cpp 
 	PacketHandlers/GroupHandler.cpp 
 	Guild.cpp 
-	GuildHandler.cpp 
+	PacketHandlers/GuildHandler.cpp 
 	HonorHandler.cpp 
 	InstanceCommands.cpp 
 	Entities/Item.cpp
