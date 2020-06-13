@@ -54,7 +54,8 @@ SET(sources
 	GuildHandler.cpp 
 	HonorHandler.cpp 
 	InstanceCommands.cpp 
-	Item.cpp 
+	Item.cpp
+	ItemCommands.cpp
 	ItemHandler.cpp 
 	ItemInterface.cpp 
 	Level0.cpp 
@@ -215,6 +216,7 @@ SET( headers
 	HonorHandler.h
 	Hunter.h
 	Item.h
+	ItemCommands.h
 	ItemInterface.h
 	ItemIterator.h
 	ItemPrototype.h

@@ -1640,9 +1640,6 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 
 	uint64 npcguid;
 	uint64 itemguid;
-	Item* pItem;
-	Container* pContainer;
-	uint32 j, i;
 	bool guildmoney;
 
 	recvPacket >> npcguid >> itemguid >> guildmoney;
@@ -1671,57 +1668,15 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 			return;//can't repair with guild money if player is not in guild.
 	}
 
-	if(!itemguid)
+	if(itemguid == 0)
 	{
-		int32 totalcost = 0;
-		for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
-		{
-			pItem = _player->GetItemInterface()->GetInventoryItem(static_cast<int16>(i));
-			if(pItem != NULL)
-			{
-				if(pItem->IsContainer())
-				{
-					pContainer = TO< Container* >(pItem);
-					for(j = 0; j < pContainer->GetProto()->ContainerSlots; ++j)
-					{
-						pItem = pContainer->GetItem(static_cast<int16>(j));
-						if(pItem != NULL)
-							pItem->RepairItem(_player, guildmoney, &totalcost);
-					}
-				}
-				else
-				{
-					uint32 cDurability = pItem->GetDurability();
-					if(pItem->RepairItem(_player, guildmoney, &totalcost))
-					{
-						if( i < INVENTORY_SLOT_BAG_END && cDurability == 0 )
-							_player->ApplyItemMods(pItem, static_cast<int16>(i), true);
-					}
-				}
-			}
-		}
-		if(totalcost > 0)  //we already checked if it's in guild in RepairItem()
-			_player->GetGuild()->LogGuildBankActionMoney(GUILD_BANK_LOG_EVENT_REPAIR, _player->GetLowGUID(), totalcost);
+		RepairAllItemsCommand cmd(_player, guildmoney);
+		cmd.execute();
 	}
 	else
 	{
-		Item* item = _player->GetItemInterface()->GetItemByGUID(itemguid);
-		if(item)
-		{
-			SlotResult* searchres = _player->GetItemInterface()->LastSearchResult(); //this never gets null since we get a pointer to the inteface internal var
-			uint32 dDurability = item->GetDurabilityMax() - item->GetDurability();
-
-			if(dDurability)
-			{
-				uint32 cDurability = item->GetDurability();
-				if( item->RepairItem(_player) )
-				{
-					//only apply item mods if they are on char equipped
-					if(cDurability == 0 && searchres->ContainerSlot == static_cast<int8>(INVALID_BACKPACK_SLOT) && searchres->Slot < static_cast<int8>(INVENTORY_SLOT_BAG_END))
-						_player->ApplyItemMods(item, searchres->Slot, true);
-				}
-			}
-		}
+		RepairItemCommand cmd(_player, itemguid);
+		cmd.execute();
 	}
 	LOG_DEBUG("Received CMSG_REPAIR_ITEM %d", itemguid);
 }
