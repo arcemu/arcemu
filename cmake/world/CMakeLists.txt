@@ -216,6 +216,7 @@ SET( headers
 	Hunter.h
 	Item.h
 	ItemInterface.h
+	ItemIterator.h
 	ItemPrototype.h
 	LfgMgr.h
 	LocalizationMgr.h
