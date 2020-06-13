@@ -18,7 +18,7 @@
  */
 
 #include "StdAfx.h"
-#include "../../../shared/git_version.h"
+#include "../../shared/git_version.h"
 
 #define SKIP_ALLOCATOR_SHARING 1
 #include <ScriptSetup.h>
