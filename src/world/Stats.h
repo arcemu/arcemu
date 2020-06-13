@@ -21,7 +21,7 @@
 #ifndef __STATS_H
 #define __STATS_H
 
-#include "Unit.h"
+#include "Entities/Unit.h"
 #include "UpdateMask.h"
 #include "ItemInterface.h"
 

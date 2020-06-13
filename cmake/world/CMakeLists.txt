@@ -27,9 +27,9 @@ SET(sources
 	Chat.cpp 
 	ChatHandler.cpp 
 	CombatHandler.cpp 
-	Container.cpp 
-	Corpse.cpp 
-	Creature.cpp 
+	Entities/Container.cpp 
+	Entities/Corpse.cpp 
+	Entities/Creature.cpp 
 	CreatureCommands.cpp
 	Entities/Summons/Summon.cpp
 	Entities/Summons/CompanionSummon.cpp
@@ -39,12 +39,12 @@ SET(sources
 	Entities/Summons/WildSummon.cpp
 	debugcmds.cpp 
 	DuelHandler.cpp 
-	DynamicObject.cpp 
+	Entities/DynamicObject.cpp 
 	EquipmentSetMgr.cpp
 	EventableObject.cpp 
 	EventMgr.cpp 
 	faction.cpp 
-	GameObject.cpp 
+	Entities/GameObject.cpp 
 	GMTicket.cpp 
 	GMTicketCommands.cpp
 	Gossip.cpp
@@ -54,7 +54,7 @@ SET(sources
 	GuildHandler.cpp 
 	HonorHandler.cpp 
 	InstanceCommands.cpp 
-	Item.cpp
+	Entities/Item.cpp
 	ItemCommands.cpp
 	ItemHandler.cpp 
 	ItemInterface.cpp 
@@ -81,15 +81,15 @@ SET(sources
 	MiscHandler.cpp 
 	MovementHandler.cpp 
 	NPCHandler.cpp 
-	Object.cpp 
+	Entities/Object.cpp 
 	ObjectMgr.cpp 
 	Opcodes.cpp 
-	Pet.cpp 
+	Entities/Pet.cpp 
 	PetHandler.cpp 
-	Player.cpp 
+	Entities/Player.cpp 
 	PlayerCommands.cpp
 	PlayerMessenger.cpp
-	PlayerPacketWrapper.cpp 
+	Entities/PlayerPacketWrapper.cpp 
 	QueryHandler.cpp 
 	Quest.cpp 
 	QuestHandler.cpp 
@@ -115,7 +115,7 @@ SET(sources
 	TerrainMgr.cpp 
 	TradeHandler.cpp 
 	TransporterHandler.cpp 
-	Unit.cpp 
+	Entities/Unit.cpp 
 	UpdateBuilder.cpp
 	Vehicle.cpp 
 	VehicleHandler.cpp
@@ -157,16 +157,16 @@ SET(sources
 	Spell_Shaman.cpp
 	Spell_Warlock.cpp
 	Spell_Warrior.cpp
-	DeathKnight.cpp
-	Druid.cpp
-	Hunter.cpp
-	Mage.cpp
-	Paladin.cpp
-	Priest.cpp
-	Rogue.cpp
-	Shaman.cpp
-	Warlock.cpp
-	Warrior.cpp
+	Entities/DeathKnight.cpp
+	Entities/Druid.cpp
+	Entities/Hunter.cpp
+	Entities/Mage.cpp
+	Entities/Paladin.cpp
+	Entities/Priest.cpp
+	Entities/Rogue.cpp
+	Entities/Shaman.cpp
+	Entities/Warlock.cpp
+	Entities/Warrior.cpp
 	WowCrypt.cpp )
 
 SET( headers
@@ -192,30 +192,30 @@ SET( headers
 	CommonScheduleThread.h
 	Entities/Summons/CompanionSummon.h
 	ConsoleCommands.h
-	Container.h
-	Corpse.h
-	Creature.h
+	Entities/Container.h
+	Entities/Corpse.h
+	Entities/Creature.h
 	CreatureCommands.h
 	DatabaseCleaner.h
 	DayWatcherThread.h
 	DBC/DBCStores.h
-	DeathKnight.h
+	Entities/DeathKnight.h
 	Definitions.h
-	Druid.h
-	DynamicObject.h
+	Entities/Druid.h
+	Entities/DynamicObject.h
 	EquipmentSetMgr.h
 	Events.h
 	EventableObject.h
 	EventMgr.h
 	faction.h
-	GameObject.h
+	Entities/GameObject.h
 	Gossip.h
 	Group.h
 	Entities/Summons/GuardianSummon.h
 	Guild.h
 	HonorHandler.h
-	Hunter.h
-	Item.h
+	Entities/Hunter.h
+	Entities/Item.h
 	ItemCommands.h
 	ItemInterface.h
 	ItemIterator.h
@@ -226,7 +226,7 @@ SET( headers
 	LogonSocket.h
 	LogonCommHandler.h
 	LootMgr.h
-	Mage.h
+	Entities/Mage.h
 	MailMessage.h
 	MailBox.h
 	MailSystem.h
@@ -241,24 +241,24 @@ SET( headers
 	MiscHandler.h
 	NameTables.h
 	NPCHandler.h
-	Object.h
+	Entities/Object.h
 	ObjectMgr.h
 	ObjectStorage.h
 	Opcodes.h
-	Paladin.h
-	Pet.h
-	Player.h
-	PlayerCache.h
+	Entities/Paladin.h
+	Entities/Pet.h
+	Entities/Player.h
+	Entities/PlayerCache.h
 	PlayerCommands.h
 	PlayerMessenger.h
 	Entities/Summons/PossessedSummon.h
-	Priest.h
+	Entities/Priest.h
 	Quest.h
 	QuestMgr.h
-	Rogue.h
+	Entities/Rogue.h
 	ScriptMgr.h
 	ScriptSetup.h
-	Shaman.h
+	Entities/Shaman.h
 	Skill.h
 	SkillNameMgr.h
 	SpawnTimedEmotes.h
@@ -278,13 +278,13 @@ SET( headers
 	TerrainMgr.h
 	Entities/Summons/TotemSummon.h
 	TransporterHandler.h
-	Unit.h
+	Entities/Unit.h
 	UpdateBuilder.h
 	UpdateFields.h
 	UpdateMask.h
 	Vehicle.h
-	Warlock.h
-	Warrior.h
+	Entities/Warlock.h
+	Entities/Warrior.h
 	Waypoint.h
 	WeatherMgr.h
 	Entities/Summons/WildSummon.h
