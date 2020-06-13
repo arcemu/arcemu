@@ -113,8 +113,8 @@ SET(sources
 	TaxiHandler.cpp 
 	TaxiMgr.cpp 
 	TerrainMgr.cpp 
-	TradeHandler.cpp 
-	TransporterHandler.cpp 
+	TradeHandler.cpp
+	Entities/Transporter.cpp
 	Entities/Unit.cpp 
 	UpdateBuilder.cpp
 	Vehicle.cpp 
@@ -277,7 +277,7 @@ SET( headers
 	TaxiMgr.h
 	TerrainMgr.h
 	Entities/Summons/TotemSummon.h
-	TransporterHandler.h
+	Entities/Transporter.h
 	Entities/Unit.h
 	UpdateBuilder.h
 	UpdateFields.h

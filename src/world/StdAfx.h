@@ -212,7 +212,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "SpellMgr.h"
 #include "SpellAuras.h"
 #include "TaxiMgr.h"
-#include "TransporterHandler.h"
+#include "Entities/Transporter.h"
 #include "WeatherMgr.h"
 #include "World.h"
 #include "EquipmentSetMgr.h"
