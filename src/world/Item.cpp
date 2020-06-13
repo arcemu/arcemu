@@ -1295,7 +1295,7 @@ bool Item::RepairItem(Player* pPlayer, bool guildmoney, int32* pCost)   //pCost 
 
 		pPlayer->ModGold(-cost);
 	}
-	SetDurabilityToMax();
+	resetDurability();
 	m_isDirty = true;
 	return true;
 }

@@ -4137,7 +4137,7 @@ class LuaUnit
 							pItem = pContainer->GetItem(j);
 							if(pItem != NULL)
 							{
-								pItem->SetDurabilityToMax();
+								pItem->resetDurability();
 							}
 						}
 					}
@@ -4145,12 +4145,12 @@ class LuaUnit
 					{
 						if(pItem->GetProto()->MaxDurability > 0 && i < INVENTORY_SLOT_BAG_END && pItem->GetDurability() <= 0)
 						{
-							pItem->SetDurabilityToMax();
+							pItem->resetDurability();
 							plr->ApplyItemMods(pItem, i, true);
 						}
 						else
 						{
-							pItem->SetDurabilityToMax();
+							pItem->resetDurability();
 						}
 					}
 				}

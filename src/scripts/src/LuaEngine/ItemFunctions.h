@@ -287,7 +287,7 @@ namespace luaItem
 	{
 		if(!ptr)
 			return 0;
-		ptr->SetDurabilityToMax();
+		ptr->resetDurability();
 		return 1;
 	}
 
