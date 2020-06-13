@@ -37,6 +37,7 @@ namespace Arcemu
 			static uint64 MAKE_ITEM_GUID(uint32 lowGUID);
 			static uint32 MAKE_UNIT_ACTION_BUTTON( uint32 spell, uint32 unk );
 			static uint32 MAKE_GAME_TIME();
+			static LoginErrorCode VerifyName(const char* name, size_t nlen);
 	};
 }
 #define ARCEMU_ASSERT( EXPR ) Arcemu::Util::ArcemuAssert( EXPR ); ANALYSIS_ASSUME( EXPR )

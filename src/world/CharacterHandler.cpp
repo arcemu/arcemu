@@ -24,52 +24,6 @@
 
 #define BUGTRACKER "https://github.com/arcemu/arcemu/issues"
 
-LoginErrorCode VerifyName(const char* name, size_t nlen)
-{
-	const char* p;
-	size_t i;
-
-	static const char* bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\? <>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
-	static const char* allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-	if(sWorld.m_limitedNames)
-	{
-		if(nlen == 0)
-			return E_CHAR_NAME_NO_NAME;
-		else if(nlen < 2)
-			return E_CHAR_NAME_TOO_SHORT;
-		else if(nlen > 12)
-			return E_CHAR_NAME_TOO_LONG;
-
-		for(i = 0; i < nlen; ++i)
-		{
-			p = allowedCharacters;
-			for(; *p != 0; ++p)
-			{
-				if(name[i] == *p)
-					goto cont;
-			}
-			return E_CHAR_NAME_INVALID_CHARACTER;
-		cont:
-			continue;
-		}
-	}
-	else
-	{
-		for(i = 0; i < nlen; ++i)
-		{
-			p = bannedCharacters;
-			while(*p != 0 && name[i] != *p && name[i] != 0)
-				++p;
-
-			if(*p != 0)
-				return E_CHAR_NAME_INVALID_CHARACTER;
-		}
-	}
-
-	return E_CHAR_NAME_SUCCESS;
-}
-
 bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_session)
 {
 	uint32 uCount = 0;
@@ -83,7 +37,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char* args, WorldSession* m_ses
 			const char* pName = result->Fetch()[1].GetString();
 			size_t szLen = strlen(pName);
 
-			if(VerifyName(pName, szLen) != E_CHAR_NAME_SUCCESS)
+			if(Arcemu::Util::VerifyName(pName, szLen) != E_CHAR_NAME_SUCCESS)
 			{
 				LOG_DEBUG("renaming character %s, %u", pName, uGuid);
 				Player* pPlayer = objmgr.GetPlayer(uGuid);
@@ -325,7 +279,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPacket & recv_data)
 	recv_data >> name >> race >> class_;
 	recv_data.rpos(0);
 
-	LoginErrorCode res = VerifyName(name.c_str(), name.length());
+	LoginErrorCode res = Arcemu::Util::VerifyName(name.c_str(), name.length());
 	if(res != E_CHAR_NAME_SUCCESS)
 	{
 		OutPacket(SMSG_CHAR_CREATE, 1, &res);
@@ -585,7 +539,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 
 	// Check name for rule violation.
 
-	LoginErrorCode err = VerifyName(name.c_str(), name.length());
+	LoginErrorCode err = Arcemu::Util::VerifyName(name.c_str(), name.length());
 	if(err != E_CHAR_NAME_SUCCESS)
 	{
 		data << uint8(err);
@@ -1051,7 +1005,7 @@ bool ChatHandler::HandleRenameCommand(const char* args, WorldSession* m_session)
 	if(sscanf(args, "%s %s", name1, name2) != 2)
 		return false;
 
-	if(VerifyName(name2, strlen(name2)) != E_CHAR_NAME_SUCCESS)
+	if(Arcemu::Util::VerifyName(name2, strlen(name2)) != E_CHAR_NAME_SUCCESS)
 	{
 		RedSystemMessage(m_session, "That name is invalid or contains invalid characters.");
 		return true;

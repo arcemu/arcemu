@@ -127,11 +127,12 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 
 #include "Waypoint.h"
 
+#include "Network/AuthCodes.h"
+
 #include "WUtil.h"
 #include "UpdateFields.h"
 #include "UpdateMask.h"
 #include "Opcodes.h"
-#include "Network/AuthCodes.h"
 #include "Util/CallBack.h"
 #include "WordFilter.h"
 #include "Events.h"
