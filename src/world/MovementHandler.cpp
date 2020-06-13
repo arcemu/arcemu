@@ -24,50 +24,6 @@
 #define SWIMMING_TOLERANCE_LEVEL -0.08f
 #define MOVEMENT_PACKET_TIME_DELAY 500
 
-#ifdef WIN32
-
-#include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
-#define DELTA_EPOCH_IN_USEC  11644473600000000ULL
-uint32 TimeStamp()
-{
-	//return timeGetTime();
-
-	FILETIME ft;
-	uint64 t;
-	GetSystemTimeAsFileTime(&ft);
-
-	t = (uint64)ft.dwHighDateTime << 32;
-	t |= ft.dwLowDateTime;
-	t /= 10;
-	t -= DELTA_EPOCH_IN_USEC;
-
-	return uint32(((t / 1000000L) * 1000) + ((t % 1000000L) / 1000));
-}
-
-uint32 mTimeStamp()
-{
-	return timeGetTime();
-}
-
-#else
-
-uint32 TimeStamp()
-{
-	struct timeval tp;
-	gettimeofday(&tp, NULL);
-	return (tp.tv_sec * 1000) + (tp.tv_usec / 1000);
-}
-
-uint32 mTimeStamp()
-{
-	struct timeval tp;
-	gettimeofday(&tp, NULL);
-	return (tp.tv_sec * 1000) + (tp.tv_usec / 1000);
-}
-
-#endif
-
 void WorldSession::HandleMoveWorldportAckOpcode(WorldPacket & recv_data)
 {
 	GetPlayer()->SetPlayerStatus(NONE);
@@ -503,7 +459,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 	/* Calculate the timestamp of the packet we have to send out            */
 	/************************************************************************/
 	size_t pos = (size_t)m_MoverWoWGuid.GetNewGuidLen() + 1;
-	uint32 mstime = mTimeStamp();
+	uint32 mstime = Arcemu::Shared::Util::getMSTime();
 	int32 move_time;
 	if(m_clientTimeDelay == 0)
 		m_clientTimeDelay = mstime - movement_info.time;

@@ -315,7 +315,6 @@ WaypointIterator Transporter::GetNextWaypoint()
 	return iter;
 }
 
-uint32 TimeStamp();
 void Transporter::UpdatePosition()
 {
 	if(m_WayPoints.size() <= 1)
