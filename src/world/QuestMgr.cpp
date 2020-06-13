@@ -20,6 +20,8 @@
 
 #include "StdAfx.h"
 
+initialiseSingleton(QuestMgr);
+
 uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation* qst)
 {
 	return CalcQuestStatus(quest_giver, plr, qst->qst, qst->type, false);

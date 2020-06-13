@@ -19,7 +19,6 @@
  */
 
 #include "StdAfx.h"
-initialiseSingleton(QuestMgr);
 
 void WorldSession::HandleQuestgiverStatusQueryOpcode(WorldPacket & recv_data)
 {
