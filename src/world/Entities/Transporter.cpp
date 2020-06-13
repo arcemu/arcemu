@@ -459,49 +459,6 @@ Transporter::~Transporter()
 
 }
 
-void ObjectMgr::LoadTransporters()
-{
-	Log.Success("ObjectMgr", "Loading Transports...");
-	QueryResult* QR = WorldDatabase.Query("SELECT * FROM transport_data");
-	if(!QR) return;
-
-	int64 total = QR->GetRowCount();
-	TransportersCount = total;
-	do
-	{
-		uint32 entry = QR->Fetch()[0].GetUInt32();
-		int32 period = QR->Fetch()[2].GetInt32();
-
-		Transporter* pTransporter = new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | entry);
-		if(!pTransporter->CreateAsTransporter(entry, "", period))
-		{
-			LOG_ERROR("Transporter %s failed creation for some reason.", QR->Fetch()[1].GetString());
-			delete pTransporter;
-		}
-		else
-		{
-			AddTransport(pTransporter);
-
-			QueryResult* result2 = WorldDatabase.Query("SELECT * FROM transport_creatures WHERE transport_entry = %u", entry);
-			if(result2)
-			{
-				do
-				{
-					pTransporter->AddNPC(result2->Fetch()[1].GetUInt32(), result2->Fetch()[2].GetFloat(),
-					                     result2->Fetch()[3].GetFloat(), result2->Fetch()[4].GetFloat(),
-					                     result2->Fetch()[5].GetFloat());
-
-				}
-				while(result2->NextRow());
-				delete result2;
-			}
-		}
-
-	}
-	while(QR->NextRow());
-	delete QR;
-}
-
 void Transporter::OnPushToWorld()
 {
 	// Create waypoint event
