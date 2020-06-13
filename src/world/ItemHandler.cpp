@@ -1694,7 +1694,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 					uint32 cDurability = pItem->GetDurability();
 					if(pItem->RepairItem(_player, guildmoney, &totalcost))
 					{
-						if(cDurability == 0 )
+						if( i < INVENTORY_SLOT_BAG_END && cDurability == 0 )
 							_player->ApplyItemMods(pItem, static_cast<int16>(i), true);
 					}
 				}
