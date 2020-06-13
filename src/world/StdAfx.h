@@ -138,6 +138,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Events.h"
 #include "EventMgr.h"
 #include "EventableObject.h"
+#include "Entities/ObjectConstants.h"
 #include "Entities/Object.h"
 #include "LootMgr.h"
 #include "Spell/SpellProc.h"

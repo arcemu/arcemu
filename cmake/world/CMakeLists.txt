@@ -243,6 +243,7 @@ SET( headers
 	MiscHandler.h
 	NameTables.h
 	NPCHandler.h
+	Entities/ObjectConstants.h
 	Entities/Object.h
 	ObjectMgr.h
 	ObjectStorage.h
@@ -327,7 +328,13 @@ add_dependencies( ${PROJECT_NAME} shared g3dlite vmaplib detour recast)
 target_link_libraries( ${PROJECT_NAME} shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 
+ENABLE_TESTING()
 
+ADD_EXECUTABLE( WorldUtilTest ${prefix}/Tests/UtilTest.cpp )
+ADD_DEPENDENCIES( WorldUtilTest ${PROJECT_NAME} )
+TARGET_LINK_LIBRARIES( WorldUtilTest shared ${PROJECT_NAME} )
+ADD_TEST( NAME WorldUtilTest COMMAND WorldUtilTest )
 
-
-
+IF( WIN32 )
+	FILE( COPY ${INSTALLED_DEPENDENCIES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
+ENDIF( WIN32 )

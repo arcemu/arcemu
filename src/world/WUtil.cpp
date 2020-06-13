@@ -62,10 +62,8 @@ uint64 Arcemu::Util::MAKE_ITEM_GUID(uint32 lowguid)
 {
 	uint64 GUID = 0;
 
-	uint32* u = reinterpret_cast< uint32* >(&GUID);
-
-	u[ 0 ] = lowguid;
-	u[ 1 ] = HIGHGUID_TYPE_ITEM;
+	GUID = uint64( HIGHGUID_TYPE_ITEM ) << 32;
+	GUID = GUID | lowguid;
 
 	return GUID;
 }
