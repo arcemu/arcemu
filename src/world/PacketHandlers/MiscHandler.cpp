@@ -2570,3 +2570,22 @@ void WorldSession::HandleSetVisibleRankOpcode(WorldPacket & recv_data)
 	else if(_player->HasTitle(static_cast< RankTitles >(ChosenRank)))
 		_player->SetChosenTitle(ChosenRank);
 }
+
+void WorldSession::HandleSetFactionInactiveOpcode(WorldPacket & recv_data)
+{
+	CHECK_INWORLD_RETURN
+	uint32 id;
+	uint8 inactive;
+	recv_data >> id >> inactive;
+
+	_player->SetFactionInactive(id, (inactive == 1));
+}
+
+void WorldSession::HandleSetAtWarOpcode(WorldPacket & recv_data)
+{
+	uint32 id;
+	uint8 state;
+	recv_data >> id >> state;
+
+	_player->SetAtWar(id, (state == 1));
+}

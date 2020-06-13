@@ -95,14 +95,14 @@ SET(sources
 	Entities/PlayerPacketWrapper.cpp 
 	PacketHandlers/QueryHandler.cpp 
 	Quest.cpp 
-	QuestHandler.cpp 
+	PacketHandlers/QuestHandler.cpp 
 	QuestMgr.cpp 
 	QuestCommands.cpp 
-	RaidHandler.cpp 
+	PacketHandlers/RaidHandler.cpp 
 	RecallCommands.cpp 
 	ReputationHandler.cpp 
 	ScriptMgr.cpp 
-	SocialHandler.cpp 
+	PacketHandlers/SocialHandler.cpp 
 	SpeedDetector.cpp 
 	Spell/SpellAuras.cpp 
 	Spell/SpellTarget.cpp 
@@ -110,18 +110,18 @@ SET(sources
 	StdAfx.cpp
 	SummonHandler.cpp
 	Spell/SpellEffects.cpp 
-	Spell/SpellHandler.cpp 
+	PacketHandlers/SpellHandler.cpp 
 	HackFixes.cpp 
 	Stats.cpp 
-	TaxiHandler.cpp 
+	PacketHandlers/TaxiHandler.cpp 
 	TaxiMgr.cpp 
 	TerrainMgr.cpp 
-	TradeHandler.cpp
+	PacketHandlers/TradeHandler.cpp
 	Entities/Transporter.cpp
 	Entities/Unit.cpp 
 	UpdateBuilder.cpp
 	Vehicle.cpp 
-	VehicleHandler.cpp
+	PacketHandlers/VehicleHandler.cpp
 	WayPoints.cpp 
 	WeatherMgr.cpp 
 	World.cpp 
