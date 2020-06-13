@@ -82,6 +82,7 @@ SET(sources
 	Messenger.cpp
 	PacketHandlers/MiscHandler.cpp 
 	MovementHandler.cpp 
+	MovementInfo.cpp
 	NPCHandler.cpp 
 	Entities/Object.cpp 
 	ObjectMgr.cpp 
@@ -240,6 +241,7 @@ SET( headers
 	Master.h
 	MessageRouter.h
 	Messenger.h
+	MovementInfo.h
 	PacketHandlers/MiscHandler.h
 	NameTables.h
 	NPCHandler.h

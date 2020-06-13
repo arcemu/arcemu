@@ -178,31 +178,6 @@ typedef struct Cords
 } Cords;
 
 
-class MovementInfo
-{
-	public:
-		uint32 time;
-		float pitch;// -1.55=looking down, 0=looking forward, +1.55=looking up
-		float redirectSin;//on slip 8 is zero, on jump some other number
-		float redirectCos, redirect2DSpeed;//9,10 changes if you are not on foot
-		uint32 unk11, unk12;
-		uint8 unk13;
-		uint32 unklast;//something related to collision
-		uint16 unk_230;
-
-		float x, y, z, orientation;
-		uint32 flags;
-		float redirectVelocity;
-		WoWGuid transGuid;
-		float transX, transY, transZ, transO, transUnk;
-		uint8 transUnk_2;
-
-		MovementInfo();
-
-		void init(WorldPacket & data);
-		void write(WorldPacket & data);
-};
-
 extern OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
 class SERVER_DECL WorldSession

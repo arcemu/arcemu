@@ -201,6 +201,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "NPCHandler.h"
 #include "Entities/Pet.h"
 #include "WorldSocket.h"
+#include "MovementInfo.h"
 #include "WorldSession.h"
 #include "WorldStatesHandler.h"
 #include "MapMgr.h"
