@@ -1652,3 +1652,129 @@ void Guild::SendGuildInfo(WorldSession* pClient)
 
 	pClient->SendPacket(&data);
 }
+
+void Guild::SendGuildBankInfo(WorldSession* pClient)
+{
+	GuildMember* pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
+
+	if(pMember == NULL)
+		return;
+
+	WorldPacket data(SMSG_GUILD_BANK_LIST, 500);
+	data << uint64(m_bankBalance);
+	data << uint8(0);
+	data << uint32(0);
+	data << uint8(1);
+	data << GetBankTabCount();
+
+	for(uint8 i = 0; i < GetBankTabCount(); ++i)
+	{
+		GuildBankTab* pTab = GetBankTab(i);
+		if(pTab == NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, i))
+		{
+			data << uint16(0);		// shouldn't happen
+			continue;
+		}
+
+		if(pTab->szTabName)
+			data << pTab->szTabName;
+		else
+			data << uint8(0);
+
+		if(pTab->szTabIcon)
+			data << pTab->szTabIcon;
+		else
+			data << uint8(0);
+	}
+
+	data << uint8(0);
+	pClient->SendPacket(&data);
+}
+
+void Guild::SendGuildBank(WorldSession* pClient, GuildBankTab* pTab, int8 updated_slot1 /* = -1 */, int8 updated_slot2 /* = -1 */)
+{
+	size_t pos;
+	uint32 count = 0;
+	WorldPacket data(SMSG_GUILD_BANK_LIST, 1300);
+	GuildMember* pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
+
+	if(pMember == NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, pTab->iTabId))
+		return;
+
+	//Log.Debug("SendGuildBank", "sending tab %u to client.", pTab->iTabId);
+
+	data << uint64(m_bankBalance);	// amount you have deposited
+	data << uint8(pTab->iTabId);
+	data << uint32(pMember->CalculateAllowedItemWithdraws(pTab->iTabId));		// remaining stacks for this day
+	data << uint8(0);	// Packet type: 0-tab content, 1-tab info,
+
+	// no need to send tab names here..
+
+	pos = data.wpos();
+	data << uint8(0);	// number of items, will be filled later
+
+	for(int32 j = 0; j < MAX_GUILD_BANK_SLOTS; ++j)
+	{
+		if(pTab->pSlots[j] != NULL)
+		{
+			if(updated_slot1 >= 0 && j == updated_slot1)
+				updated_slot1 = -1;
+
+			if(updated_slot2 >= 0 && j == updated_slot2)
+				updated_slot2 = -1;
+
+			++count;
+
+			data << uint8(j);			// slot
+			data << pTab->pSlots[j]->GetEntry();
+			data << uint32(0);			// 3.3.0 (0x8000, 0x8020) from MaNGOS
+			data << (uint32)pTab->pSlots[j]->GetItemRandomPropertyId();
+
+			if(pTab->pSlots[j]->GetItemRandomPropertyId())
+				data << (uint32)pTab->pSlots[j]->GetItemRandomSuffixFactor();
+
+			data << uint32(pTab->pSlots[j]->GetStackCount());
+			data << uint32(0);			// unknown value
+			data << uint8(0);			// unknown 2.4.2
+			uint32 Enchant0 = 0;
+			EnchantmentInstance* ei = pTab->pSlots[j]->GetEnchantment(PERM_ENCHANTMENT_SLOT);
+			if(ei != NULL)
+				Enchant0 = ei->Enchantment->Id;
+			if(Enchant0)
+			{
+				data << uint8(1);			// number of enchants
+				data << uint8(0);			// enchantment slot
+				data << uint32(Enchant0);	// enchantment id
+			}
+			else
+				data << uint8(0);		// no enchantment
+		}
+	}
+
+	// send the forced update slots
+	if(updated_slot1 >= 0)
+	{
+		// this should only be hit if the items null though..
+		if(pTab->pSlots[updated_slot1] == NULL)
+		{
+			++count;
+			data << uint8(updated_slot1);
+			data << uint32(0);
+		}
+	}
+
+	if(updated_slot2 >= 0)
+	{
+		// this should only be hit if the items null though..
+		if(pTab->pSlots[updated_slot2] == NULL)
+		{
+			++count;
+			data << uint8(updated_slot2);
+			data << uint32(0);
+		}
+	}
+
+	*(uint8*)&data.contents()[pos] = (uint8)count; // push number of items
+	pClient->SendPacket(&data);
+}
+
