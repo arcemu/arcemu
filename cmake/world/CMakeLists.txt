@@ -101,13 +101,13 @@ SET(sources
 	ScriptMgr.cpp 
 	SocialHandler.cpp 
 	SpeedDetector.cpp 
-	SpellAuras.cpp 
-	SpellTarget.cpp 
-	Spell.cpp 
+	Spell/SpellAuras.cpp 
+	Spell/SpellTarget.cpp 
+	Spell/Spell.cpp 
 	StdAfx.cpp
 	SummonHandler.cpp
-	SpellEffects.cpp 
-	SpellHandler.cpp 
+	Spell/SpellEffects.cpp 
+	Spell/SpellHandler.cpp 
 	HackFixes.cpp 
 	Stats.cpp 
 	TaxiHandler.cpp 
@@ -134,29 +134,29 @@ SET(sources
 	ConsoleCommands.cpp 
 	ConsoleListener.cpp 
 	WUtil.cpp 
-	SpellProc.cpp
-	SpellProc_DeathKnight.cpp
-	SpellProc_Druid.cpp
-	SpellProc_Hunter.cpp
-	SpellProc_Items.cpp
-	SpellProc_Mage.cpp
-	SpellProc_Paladin.cpp
-	SpellProc_Priest.cpp
-	SpellProc_Rogue.cpp
-	SpellProc_Shaman.cpp
-	SpellProc_Warlock.cpp
-	SpellProc_Warrior.cpp
-	SpellMgr.cpp
-	Spell_DeathKnight.cpp
-	Spell_Druid.cpp
-	Spell_Hunter.cpp
-	Spell_Mage.cpp
-	Spell_Paladin.cpp
-	Spell_Priest.cpp
-	Spell_Rogue.cpp
-	Spell_Shaman.cpp
-	Spell_Warlock.cpp
-	Spell_Warrior.cpp
+	Spell/SpellProc.cpp
+	Spell/SpellProc_DeathKnight.cpp
+	Spell/SpellProc_Druid.cpp
+	Spell/SpellProc_Hunter.cpp
+	Spell/SpellProc_Items.cpp
+	Spell/SpellProc_Mage.cpp
+	Spell/SpellProc_Paladin.cpp
+	Spell/SpellProc_Priest.cpp
+	Spell/SpellProc_Rogue.cpp
+	Spell/SpellProc_Shaman.cpp
+	Spell/SpellProc_Warlock.cpp
+	Spell/SpellProc_Warrior.cpp
+	Spell/SpellMgr.cpp
+	Spell/Spell_DeathKnight.cpp
+	Spell/Spell_Druid.cpp
+	Spell/Spell_Hunter.cpp
+	Spell/Spell_Mage.cpp
+	Spell/Spell_Paladin.cpp
+	Spell/Spell_Priest.cpp
+	Spell/Spell_Rogue.cpp
+	Spell/Spell_Shaman.cpp
+	Spell/Spell_Warlock.cpp
+	Spell/Spell_Warrior.cpp
 	Entities/DeathKnight.cpp
 	Entities/Druid.cpp
 	Entities/Hunter.cpp
@@ -263,13 +263,13 @@ SET( headers
 	SkillNameMgr.h
 	SpawnTimedEmotes.h
 	SpeedDetector.h
-	Spell.h
-	SpellAuras.h
-	SpellFailure.h
-	SpellMgr.h
-	SpellNameHashes.h
-	SpellProc.h
-	SpellTarget.h
+	Spell/Spell.h
+	Spell/SpellAuras.h
+	Spell/SpellFailure.h
+	Spell/SpellMgr.h
+	Spell/SpellNameHashes.h
+	Spell/SpellProc.h
+	Spell/SpellTarget.h
 	Stats.h
 	StdAfx.h
 	Entities/Summons/Summon.h
