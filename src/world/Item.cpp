@@ -1251,7 +1251,7 @@ void Item::RemoveFromRefundableMap()
 		owner->GetItemInterface()->RemoveRefundable(GUID);
 }
 
-uint32 Item::RepairItemCost()
+uint32 Item::getRepairCost()
 {
 	uint32 durabilityLoss = GetDurabilityMax() - GetDurability();
 	if(durabilityLoss == 0)
@@ -1278,8 +1278,7 @@ uint32 Item::RepairItemCost()
 
 bool Item::RepairItem(Player* pPlayer, bool guildmoney, int32* pCost)   //pCost is needed for the guild log
 {
-	//int32 cost = (int32)pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) - (int32)pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
-	int32 cost = RepairItemCost();
+	int32 cost = getRepairCost();
 	if(cost <= 0)
 		return false;
 	if(guildmoney && pPlayer->IsInGuild())

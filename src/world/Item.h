@@ -398,7 +398,7 @@ class SERVER_DECL Item : public Object
 		void EventRemoveItem();
 		void RemoveFromRefundableMap();
 		bool RepairItem(Player* pPlayer, bool guildmoney = false, int32* pCost = NULL);
-		uint32 RepairItemCost();
+		uint32 getRepairCost();
 
 		uint32 GetOnUseSpellID(uint32 index) { return OnUseSpellIDs[ index ]; }
 		bool HasOnUseSpellID(uint32 id)
