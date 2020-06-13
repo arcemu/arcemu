@@ -58,13 +58,13 @@ SET(sources
 	InstanceCommands.cpp 
 	Entities/Item.cpp
 	ItemCommands.cpp
-	ItemHandler.cpp 
+	PacketHandlers/ItemHandler.cpp 
 	ItemInterface.cpp 
 	Level0.cpp 
 	Level1.cpp 
 	Level2.cpp 
 	Level3.cpp 
-	LfgHandler.cpp 
+	PacketHandlers/LfgHandler.cpp 
 	LfgMgr.cpp 
 	LootMgr.cpp 
 	LocalizationMgr.cpp 
@@ -72,7 +72,7 @@ SET(sources
 	LogonCommHandler.cpp 
 	MailMessage.cpp
 	MailBox.cpp
-	MailHandler.cpp
+	PacketHandlers/MailHandler.cpp
 	MailSystem.cpp 
 	MapCell.cpp 
 	Map.cpp 
@@ -80,7 +80,7 @@ SET(sources
 	MapMgr.cpp 
 	MessageRouter.cpp
 	Messenger.cpp
-	MiscHandler.cpp 
+	PacketHandlers/MiscHandler.cpp 
 	MovementHandler.cpp 
 	NPCHandler.cpp 
 	Entities/Object.cpp 
@@ -240,7 +240,7 @@ SET( headers
 	Master.h
 	MessageRouter.h
 	Messenger.h
-	MiscHandler.h
+	PacketHandlers/MiscHandler.h
 	NameTables.h
 	NPCHandler.h
 	Entities/ObjectConstants.h
