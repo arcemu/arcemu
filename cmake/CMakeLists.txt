@@ -235,7 +235,8 @@ add_subdirectory(battlegrounds)
 IF(NOT WIN32)
 	add_subdirectory(crashreport)
 ENDIF()
-add_subdirectory(scripts)
+
+add_subdirectory(plugins)
 
 IF( BUILD_TOOLS )
 	add_subdirectory(tools)

@@ -1,6 +1,6 @@
 PROJECT(Battlegrounds)
 
-SET( prefix ${ROOT_PATH}/src/scripts/src/${PROJECT_NAME} )
+SET( prefix ${ROOT_PATH}/src/plugins/${PROJECT_NAME} )
 
 #sources -contains source files for our library.
 SET( sources
