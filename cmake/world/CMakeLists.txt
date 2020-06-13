@@ -25,10 +25,10 @@ SET(sources
 	BattlegroundMgr.cpp 
 	Channel.cpp 
 	PacketHandlers/ChannelHandler.cpp 
-	CharacterHandler.cpp 
+	PacketHandlers/CharacterHandler.cpp 
 	Chat.cpp 
-	ChatHandler.cpp 
-	CombatHandler.cpp 
+	PacketHandlers/ChatHandler.cpp 
+	PacketHandlers/CombatHandler.cpp 
 	Entities/Container.cpp 
 	Entities/Corpse.cpp 
 	Entities/Creature.cpp 
@@ -40,18 +40,18 @@ SET(sources
 	Entities/Summons/TotemSummon.cpp
 	Entities/Summons/WildSummon.cpp
 	debugcmds.cpp 
-	DuelHandler.cpp 
+	PacketHandlers/DuelHandler.cpp 
 	Entities/DynamicObject.cpp 
 	EquipmentSetMgr.cpp
 	EventableObject.cpp 
 	EventMgr.cpp 
 	faction.cpp 
 	Entities/GameObject.cpp 
-	GMTicket.cpp 
+	PacketHandlers/GMTicketHandler.cpp 
 	GMTicketCommands.cpp
 	Gossip.cpp
 	Group.cpp 
-	GroupHandler.cpp 
+	PacketHandlers/GroupHandler.cpp 
 	Guild.cpp 
 	GuildHandler.cpp 
 	HonorHandler.cpp 
