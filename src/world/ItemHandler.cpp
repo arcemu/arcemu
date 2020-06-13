@@ -1674,7 +1674,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 	if(!itemguid)
 	{
 		int32 totalcost = 0;
-		for(i = 0; i < MAX_INVENTORY_SLOT; i++)
+		for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
 		{
 			pItem = _player->GetItemInterface()->GetInventoryItem(static_cast<int16>(i));
 			if(pItem != NULL)
@@ -1691,13 +1691,11 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 				}
 				else
 				{
-					if(i < INVENTORY_SLOT_BAG_END)
-					{
-						if(pItem->GetDurability() == 0 && pItem->RepairItem(_player, guildmoney, &totalcost))
-							_player->ApplyItemMods(pItem, static_cast<int16>(i), true);
-						else
-							pItem->RepairItem(_player, guildmoney, &totalcost);
-					}
+
+					if(pItem->GetDurability() == 0 && pItem->RepairItem(_player, guildmoney, &totalcost))
+						_player->ApplyItemMods(pItem, static_cast<int16>(i), true);
+					else
+						pItem->RepairItem(_player, guildmoney, &totalcost);
 				}
 			}
 		}
