@@ -1691,11 +1691,12 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket & recvPacket)
 				}
 				else
 				{
-
-					if(pItem->GetDurability() == 0 && pItem->RepairItem(_player, guildmoney, &totalcost))
-						_player->ApplyItemMods(pItem, static_cast<int16>(i), true);
-					else
-						pItem->RepairItem(_player, guildmoney, &totalcost);
+					uint32 cDurability = pItem->GetDurability();
+					if(pItem->RepairItem(_player, guildmoney, &totalcost))
+					{
+						if(cDurability == 0 )
+							_player->ApplyItemMods(pItem, static_cast<int16>(i), true);
+					}
 				}
 			}
 		}
