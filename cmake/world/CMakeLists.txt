@@ -81,19 +81,19 @@ SET(sources
 	MessageRouter.cpp
 	Messenger.cpp
 	PacketHandlers/MiscHandler.cpp 
-	MovementHandler.cpp 
+	PacketHandlers/MovementHandler.cpp 
 	MovementInfo.cpp
-	NPCHandler.cpp 
+	PacketHandlers/NPCHandler.cpp 
 	Entities/Object.cpp 
 	ObjectMgr.cpp 
 	Opcodes.cpp 
 	Entities/Pet.cpp 
-	PetHandler.cpp 
+	PacketHandlers/PetHandler.cpp 
 	Entities/Player.cpp 
 	PlayerCommands.cpp
 	PlayerMessenger.cpp
 	Entities/PlayerPacketWrapper.cpp 
-	QueryHandler.cpp 
+	PacketHandlers/QueryHandler.cpp 
 	Quest.cpp 
 	QuestHandler.cpp 
 	QuestMgr.cpp 
@@ -244,7 +244,7 @@ SET( headers
 	MovementInfo.h
 	PacketHandlers/MiscHandler.h
 	NameTables.h
-	NPCHandler.h
+	PacketHandlers/NPCHandler.h
 	Entities/ObjectConstants.h
 	Entities/Object.h
 	ObjectMgr.h

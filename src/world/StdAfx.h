@@ -198,7 +198,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "TerrainMgr.h"
 #include "PacketHandlers/MiscHandler.h"
 #include "NameTables.h"
-#include "NPCHandler.h"
+#include "PacketHandlers/NPCHandler.h"
 #include "Entities/Pet.h"
 #include "WorldSocket.h"
 #include "MovementInfo.h"
