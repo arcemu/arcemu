@@ -560,6 +560,8 @@ void WorldSocket::OnRead()
 		sWorldLog.LogPacket(mSize, static_cast<uint16>(mOpcode), mSize ? Packet->contents() : NULL, 0, (mSession ? mSession->GetAccountId() : 0));
 		mRemaining = mSize = mOpcode = 0;
 
+		LOG_DEBUG( "Received %s", LookupName(Packet->GetOpcode(), g_worldOpcodeNames) );
+
 		// Check for packets that we handle
 		switch(Packet->GetOpcode())
 		{
