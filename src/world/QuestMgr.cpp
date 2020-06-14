@@ -639,27 +639,8 @@ void QuestMgr::BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr,
 				tmp_map.insert(std::map<uint32, uint8>::value_type((*it)->qst->id, 1));
 				LocalizedQuest* lq = (language > 0) ? sLocalizationMgr.GetLocalizedQuest((*it)->qst->id, language) : NULL;
 
-				*data << (*it)->qst->id;
-				/**data << sQuestMgr.CalcQuestStatus(qst_giver, plr, *it);
-				*data << uint32(0);*/
-
-				switch(status)
-				{
-					case QMGR_QUEST_NOT_FINISHED:
-						*data << uint32(4);
-						break;
-
-					case QMGR_QUEST_FINISHED:
-						*data << uint32(4);
-						break;
-
-					case QMGR_QUEST_CHAT:
-						*data << uint32(QMGR_QUEST_AVAILABLE);
-						break;
-
-					default:
-						*data << status;
-				}
+				*data << uint32( (*it)->qst->id );
+				*data << uint32( status );
 				*data << int32((*it)->qst->questlevel);
 				*data << uint32((*it)->qst->quest_flags);
 				*data << uint8( (*it)->qst->is_repeatable );
