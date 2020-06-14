@@ -21,7 +21,6 @@
 #ifndef WOWSERVER_CREATURE_H
 #define WOWSERVER_CREATURE_H
 
-class CreatureTemplate;
 class GossipScript;
 
 #define MAX_CREATURE_INV_ITEMS 150
@@ -589,7 +588,6 @@ class SERVER_DECL Creature : public Unit
 
 		// Serialization
 		void SaveToDB();
-		void LoadAIAgents(CreatureTemplate* t);
 		void DeleteFromDB();
 
 		void OnJustDied();
