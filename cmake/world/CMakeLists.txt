@@ -74,10 +74,10 @@ SET(sources
 	MailBox.cpp
 	PacketHandlers/MailHandler.cpp
 	MailSystem.cpp 
-	MapCell.cpp 
-	Map.cpp 
-	MapScriptInterface.cpp 
-	MapMgr.cpp 
+	Map/MapCell.cpp 
+	Map/Map.cpp 
+	Map/MapScriptInterface.cpp 
+	Map/MapMgr.cpp 
 	MessageRouter.cpp
 	Messenger.cpp
 	PacketHandlers/MiscHandler.cpp 
@@ -115,7 +115,7 @@ SET(sources
 	Stats.cpp 
 	PacketHandlers/TaxiHandler.cpp 
 	TaxiMgr.cpp 
-	TerrainMgr.cpp 
+	Map/TerrainMgr.cpp 
 	PacketHandlers/TradeHandler.cpp
 	Entities/Transporter.cpp
 	Entities/Unit.cpp 
@@ -187,7 +187,7 @@ SET( headers
 	BattlegroundMgr.h
 	ByteBufferExtension.h
 	CConsole.h
-	CellHandler.h
+	Map/CellHandler.h
 	Chat/Channel.h
 	Chat/ChannelMgr.h
 	Chat/Chat.h
@@ -234,10 +234,10 @@ SET( headers
 	MailBox.h
 	MailSystem.h
 	MainServerDefines.h
-	Map.h
-	MapCell.h
-	MapMgr.h
-	MapScriptInterface.h
+	Map/Map.h
+	Map/MapCell.h
+	Map/MapMgr.h
+	Map/MapScriptInterface.h
 	Master.h
 	MessageRouter.h
 	Messenger.h
@@ -280,7 +280,7 @@ SET( headers
 	Entities/Summons/Summon.h
 	SummonHandler.h
 	TaxiMgr.h
-	TerrainMgr.h
+	Map/TerrainMgr.h
 	Entities/Summons/TotemSummon.h
 	Entities/Transporter.h
 	Entities/Unit.h

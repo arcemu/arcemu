@@ -29,7 +29,7 @@ class GossipScript;
 #define MAX_CREATURE_PROTO_SPELLS 8
 #define MAX_PET_SPELL 4
 #define VENDOR_ITEMS_UPDATE_TIME 3600000
-#include "Map.h"
+#include "Map/Map.h"
 
 enum creatureguardtype
 {
