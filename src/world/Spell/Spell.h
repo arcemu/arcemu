@@ -1663,7 +1663,7 @@ class SERVER_DECL Spell : public EventableObject
 		// Prepares the spell that's going to cast to targets
 		uint8 prepare(SpellCastTargets* targets);
 		// Cancels the current spell
-		void cancel();
+		void cancel(bool sendInterrupted = true);
 		// Update spell state based on time difference
 		void update(uint32 difftime);
 		// Casts the spell

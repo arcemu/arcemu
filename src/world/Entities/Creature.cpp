@@ -2111,7 +2111,7 @@ void Creature::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 		if(attacker->GetCurrentSpell() != NULL)
 		{
 			if(attacker->GetCurrentSpell()->m_targets.m_unitTarget == GetGUID())
-				attacker->GetCurrentSpell()->cancel();
+				attacker->GetCurrentSpell()->cancel(false);
 		}
 	}
 

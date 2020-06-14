@@ -1059,13 +1059,16 @@ uint8 Spell::prepare(SpellCastTargets* targets)
 	return ccr;
 }
 
-void Spell::cancel()
+void Spell::cancel(bool sendInterrupted)
 {
 	if(m_spellState == SPELL_STATE_FINISHED)
 		return;
 
-	SendInterrupted(0);
-	SendCastResult(SPELL_FAILED_INTERRUPTED);
+	if( sendInterrupted )
+	{
+		SendInterrupted(0);
+		SendCastResult(SPELL_FAILED_INTERRUPTED);
+	}
 
 	if(m_spellState == SPELL_STATE_CASTING)
 	{
