@@ -90,7 +90,6 @@ class SERVER_DECL WorldSocket : public Socket
 		WowCrypt _crypt;
 		uint32 _latency;
 		bool mQueued;
-		bool m_nagleEanbled;
 		string* m_fullAccountName;
 };
 

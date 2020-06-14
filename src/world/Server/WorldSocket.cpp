@@ -52,10 +52,8 @@ WorldSocket::WorldSocket(SOCKET fd)
 	pAuthenticationPacket(NULL),
 	_latency(0),
 	mQueued(false),
-	m_nagleEanbled(false),
 	m_fullAccountName(NULL)
 {
-
 }
 
 WorldSocket::~WorldSocket()
@@ -512,30 +510,6 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 	}
 
 	OutPacket(SMSG_PONG, 4, &ping);
-
-#ifdef WIN32
-	// Dynamically change nagle buffering status based on latency.
-	//if(_latency >= 250)
-	// I think 350 is better, in a MMO 350 latency isn't that big that we need to worry about reducing the number of packets being sent.
-	if(_latency >= 350)
-	{
-		if(!m_nagleEanbled)
-		{
-			u_long arg = 0;
-			setsockopt(GetFd(), 0x6, 0x1, (const char*)&arg, sizeof(arg));
-			m_nagleEanbled = true;
-		}
-	}
-	else
-	{
-		if(m_nagleEanbled)
-		{
-			u_long arg = 1;
-			setsockopt(GetFd(), 0x6, 0x1, (const char*)&arg, sizeof(arg));
-			m_nagleEanbled = false;
-		}
-	}
-#endif
 }
 
 void WorldSocket::OnRead()
