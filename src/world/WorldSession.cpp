@@ -24,6 +24,19 @@
 
 #include "StdAfx.h"
 
+//////////////// New style handlers ///////////////////////////////////
+#include "PacketHandlers/NewHandlers/PlayerPacketHandlers.h"
+
+struct PacketHandler
+{
+	uint16 status;
+	void (*handler)(WorldSession &session, WorldPacket &data);
+};
+
+static PacketHandler PacketHandlers[NUM_MSG_TYPES];
+
+///////////////////////////////////////////////////////////////////////
+
 OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
 WorldSession::WorldSession(uint32 id, string Name, WorldSocket* sock):
@@ -102,6 +115,8 @@ int WorldSession::Update(uint32 InstanceID)
 	WorldPacket* packet;
 	OpcodeHandler* Handler;
 
+	PacketHandler* packetHandler = NULL;
+
 	if(InstanceID != instanceId)
 	{
 		// We're being updated by the wrong thread.
@@ -144,6 +159,8 @@ int WorldSession::Update(uint32 InstanceID)
 		else
 		{
 			Handler = &WorldPacketHandlers[packet->GetOpcode()];
+			packetHandler = &PacketHandlers[packet->GetOpcode()];
+
 			if(Handler->status == STATUS_LOGGEDIN && !_player
 			        && Handler->handler != 0)
 			{
@@ -155,7 +172,7 @@ int WorldSession::Update(uint32 InstanceID)
 			else
 			{
 				// Valid Packet :>
-				if(Handler->handler == 0)
+				if(Handler->handler == 0 && packetHandler->handler == NULL)
 				{
 					LOG_DETAIL
 					("[Session] Received unhandled packet with opcode %s (0x%.4X)",
@@ -164,7 +181,15 @@ int WorldSession::Update(uint32 InstanceID)
 				}
 				else
 				{
-					(this->*Handler->handler)(*packet);
+					// Prefer the new style packet handler
+					if( packetHandler->handler != NULL )
+					{
+						packetHandler->handler( *this, *packet );
+					}
+					else
+					{
+						(this->*Handler->handler)(*packet);
+					}
 				}
 			}
 		}
@@ -528,7 +553,20 @@ void WorldSession::InitPacketHandlerTable()
 	{
 		WorldPacketHandlers[i].status = STATUS_LOGGEDIN;
 		WorldPacketHandlers[i].handler = 0;
+		
+		///// New style packet handlers ////////////
+		PacketHandlers[i].status = STATUS_LOGGEDIN;
+		PacketHandlers[i].handler = NULL;
+		///////////////////////////////////////////
 	}
+
+	///////////////////////////////////////// New style packet handlers //////////////////////////////////////////////////
+	
+	PacketHandlers[CMSG_LEARN_TALENT].handler = &LearnTalentPacketHandler::handlePacket;
+	PacketHandlers[CMSG_UNLEARN_TALENTS].handler = &UnlearnTalentsPacketHandler::handlePacket;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	// Login
 	WorldPacketHandlers[CMSG_CHAR_ENUM].handler =
 	    &WorldSession::HandleCharEnumOpcode;
@@ -963,15 +1001,9 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_CANCEL_AUTO_REPEAT_SPELL].handler =
 	    &WorldSession::HandleCancelAutoRepeatSpellOpcode;
 	WorldPacketHandlers[CMSG_TOTEM_DESTROYED].handler =
-	    &WorldSession::HandleCancelTotem;
-	WorldPacketHandlers[CMSG_LEARN_TALENT].handler =
-	    &WorldSession::HandleLearnTalentOpcode;
+	    &WorldSession::HandleCancelTotem;	
 	WorldPacketHandlers[CMSG_LEARN_TALENTS_MULTIPLE].handler =
 	    &WorldSession::HandleLearnMultipleTalentsOpcode;
-	WorldPacketHandlers[CMSG_UNLEARN_TALENTS].handler =
-	    &WorldSession::HandleUnlearnTalents;
-	WorldPacketHandlers[MSG_TALENT_WIPE_CONFIRM].handler =
-	    &WorldSession::HandleUnlearnTalents;
 
 	// Combat / Duel
 	WorldPacketHandlers[CMSG_ATTACKSWING].handler =
@@ -1604,29 +1636,6 @@ void WorldSession::SendAccountDataTimes(uint32 mask)
 			data << uint32(0);
 		}
 	SendPacket(&data);
-}
-
-
-void WorldSession::HandleLearnTalentOpcode(WorldPacket & recv_data)
-{
-	CHECK_INWORLD_RETURN uint32 talent_id, requested_rank, unk;
-	recv_data >> talent_id >> requested_rank >> unk;
-
-	_player->LearnTalent(talent_id, requested_rank);
-
-}
-
-void WorldSession::HandleUnlearnTalents(WorldPacket & recv_data)
-{
-	CHECK_INWORLD_RETURN
-	uint32 price =
-	    GetPlayer()->CalcTalentResetCost(GetPlayer()->GetTalentResetTimes());
-	if(!GetPlayer()->HasGold(price))
-		return;
-
-	GetPlayer()->SetTalentResetTimes(GetPlayer()->GetTalentResetTimes() + 1);
-	GetPlayer()->ModGold(-(int32) price);
-	GetPlayer()->Reset_Talents();
 }
 
 void WorldSession::HandleUnlearnSkillOpcode(WorldPacket & recv_data)

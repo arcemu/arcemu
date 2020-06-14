@@ -170,7 +170,9 @@ SET(sources
 	Entities/Shaman.cpp
 	Entities/Warlock.cpp
 	Entities/Warrior.cpp
-	Server/WowCrypt.cpp )
+	Server/WowCrypt.cpp
+	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp 
+)
 
 SET( headers
 	AchievementMgr.h
@@ -305,6 +307,7 @@ SET( headers
 	Server/WowCrypt.h
 	WoWGuid.h
 	WUtil.h
+	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 )
 	
 
