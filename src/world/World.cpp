@@ -799,9 +799,9 @@ void World::UpdateSessions(uint32 diff)
 			continue;
 		}
 
-		if((result = session->Update(0)) != 0)
+		if((result = session->Update(0)) != WORLDSESSION_UPDATE_RESULT_OK)
 		{
-			if(result == 1)
+			if(result == WORLDSESSION_UPDATE_RESULT_DELETED)
 			{
 				// complete deletion after relinquishing SessionMutex!
 				// Otherwise Valgrind (probably falsely) reports a possible deadlock!

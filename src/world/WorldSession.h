@@ -180,6 +180,13 @@ typedef struct Cords
 
 extern OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
+enum WorldSessionUpdateResult
+{
+	WORLDSESSION_UPDATE_RESULT_OK = 0,
+	WORLDSESSION_UPDATE_RESULT_DELETED = 1,
+	WORLDSESSION_UPDATE_RESULT_CONTEXT_CHANGED = 2
+};
+
 class SERVER_DECL WorldSession
 {
 		friend class WorldSocket;

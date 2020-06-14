@@ -1554,9 +1554,9 @@ void MapMgr::_PerformObjectDuties()
 				continue;
 			}
 
-			if((result = session->Update(m_instanceID)) != 0)
+			if((result = session->Update(m_instanceID)) != WORLDSESSION_UPDATE_RESULT_OK)
 			{
-				if(result == 1)
+				if(result == WORLDSESSION_UPDATE_RESULT_DELETED)
 				{
 					// complete deletion
 					sWorld.DeleteSession(session);

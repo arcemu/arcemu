@@ -106,7 +106,7 @@ int WorldSession::Update(uint32 InstanceID)
 	{
 		// We're being updated by the wrong thread.
 		// "Remove us!" - 2
-		return 2;
+		return WORLDSESSION_UPDATE_RESULT_CONTEXT_CHANGED;
 	}
 
 	// Socket disconnection.
@@ -118,7 +118,7 @@ int WorldSession::Update(uint32 InstanceID)
 		if(_player && _player->m_beingPushed)
 		{
 			// Abort..
-			return 0;
+			return WORLDSESSION_UPDATE_RESULT_OK;
 		}
 
 		if(!_logoutTime)
@@ -174,19 +174,19 @@ int WorldSession::Update(uint32 InstanceID)
 		if(InstanceID != instanceId)
 		{
 			// If we hit this -> means a packet has changed our map.
-			return 2;
+			return WORLDSESSION_UPDATE_RESULT_CONTEXT_CHANGED;
 		}
 
 		if(bDeleted)
 		{
-			return 1;
+			return WORLDSESSION_UPDATE_RESULT_DELETED;
 		}
 	}
 
 	if(InstanceID != instanceId)
 	{
 		// If we hit this -> means a packet has changed our map.
-		return 2;
+		return WORLDSESSION_UPDATE_RESULT_CONTEXT_CHANGED;
 	}
 
 	if(_logoutTime && (m_currMsTime >= _logoutTime)
@@ -198,14 +198,14 @@ int WorldSession::Update(uint32 InstanceID)
 		if(_player && _player->m_beingPushed)
 		{
 			// Abort..
-			return 0;
+			return WORLDSESSION_UPDATE_RESULT_OK;
 		}
 
 		if(_socket == NULL)
 		{
 			bDeleted = true;
 			LogoutPlayer(true);
-			return 1;
+			return WORLDSESSION_UPDATE_RESULT_DELETED;
 		}
 		else
 			LogoutPlayer(true);
@@ -219,7 +219,7 @@ int WorldSession::Update(uint32 InstanceID)
 		if(_player && _player->m_beingPushed)
 		{
 			// Abort..
-			return 0;
+			return WORLDSESSION_UPDATE_RESULT_OK;
 		}
 
 		// ping timeout!
@@ -235,7 +235,7 @@ int WorldSession::Update(uint32 InstanceID)
 			_logoutTime = m_currMsTime + PLAYER_LOGOUT_DELAY;
 	}
 
-	return 0;
+	return WORLDSESSION_UPDATE_RESULT_OK;
 }
 
 
