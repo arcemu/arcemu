@@ -221,7 +221,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "EquipmentSetMgr.h"
 #include "ItemInterface.h"
 #include "ItemIterator.h"
-#include "ItemCommands.h"
+#include "Game/Commands/ItemCommands.h"
 #include "Stats.h"
 #include "WorldCreator.h"
 #include "ObjectMgr.h"
@@ -257,5 +257,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Entities/Mage.h"
 #include "Entities/Hunter.h"
 #include "Entities/Shaman.h"
+#include "Game/Commands/PlayerCommands.h"
+#include "Game/Commands/CreatureCommands.h"
+#include "PlayerMessenger.h"
 
 #endif

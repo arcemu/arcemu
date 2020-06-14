@@ -32,7 +32,7 @@ SET(sources
 	Entities/Container.cpp 
 	Entities/Corpse.cpp 
 	Entities/Creature.cpp 
-	CreatureCommands.cpp
+	Game/Commands/CreatureCommands.cpp
 	Entities/Summons/Summon.cpp
 	Entities/Summons/CompanionSummon.cpp
 	Entities/Summons/GuardianSummon.cpp
@@ -57,7 +57,7 @@ SET(sources
 	HonorHandler.cpp 
 	Chat/InstanceCommands.cpp 
 	Entities/Item.cpp
-	ItemCommands.cpp
+	Game/Commands/ItemCommands.cpp
 	PacketHandlers/ItemHandler.cpp 
 	ItemInterface.cpp 
 	Chat/Level0.cpp 
@@ -90,7 +90,7 @@ SET(sources
 	Entities/Pet.cpp 
 	PacketHandlers/PetHandler.cpp 
 	Entities/Player.cpp 
-	PlayerCommands.cpp
+	Game/Commands/PlayerCommands.cpp
 	PlayerMessenger.cpp
 	Entities/PlayerPacketWrapper.cpp 
 	PacketHandlers/QueryHandler.cpp 
@@ -198,7 +198,7 @@ SET( headers
 	Entities/Container.h
 	Entities/Corpse.h
 	Entities/Creature.h
-	CreatureCommands.h
+	Game/Commands/CreatureCommands.h
 	DatabaseCleaner.h
 	DayWatcherThread.h
 	DBC/DBCStores.h
@@ -219,7 +219,7 @@ SET( headers
 	HonorHandler.h
 	Entities/Hunter.h
 	Entities/Item.h
-	ItemCommands.h
+	Game/Commands/ItemCommands.h
 	ItemInterface.h
 	ItemIterator.h
 	ItemPrototype.h
@@ -254,7 +254,7 @@ SET( headers
 	Entities/Pet.h
 	Entities/Player.h
 	Entities/PlayerCache.h
-	PlayerCommands.h
+	Game/Commands/PlayerCommands.h
 	PlayerMessenger.h
 	Entities/Summons/PossessedSummon.h
 	Entities/Priest.h

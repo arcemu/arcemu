@@ -20,9 +20,6 @@
 #ifndef UNITFUNCTIONS_H
 #define UNITFUNCTIONS_H
 
-#include "CreatureCommands.h"
-#include "PlayerCommands.h"
-
 class LuaUnit
 {
 	public:

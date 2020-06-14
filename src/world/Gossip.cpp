@@ -18,9 +18,6 @@
  */
 
 #include "StdAfx.h"
-#include "PlayerCommands.h"
-#include "PlayerMessenger.h"
-
 using namespace Arcemu;
 
 Gossip::Item::Item(size_t itemid, uint8 icon)
