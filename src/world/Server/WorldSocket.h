@@ -65,7 +65,7 @@ class SERVER_DECL WorldSocket : public Socket
 		ARCEMU_INLINE WorldSession* GetSession() { return mSession; }
 		bool Authed;
 
-		void UpdateQueuedPackets();
+		void SendQueuedPackets();
 
 	protected:
 

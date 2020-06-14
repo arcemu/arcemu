@@ -127,7 +127,7 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	}
 }
 
-void WorldSocket::UpdateQueuedPackets()
+void WorldSocket::SendQueuedPackets()
 {
 	queueLock.Acquire();
 	if(!_queue.HasItems())

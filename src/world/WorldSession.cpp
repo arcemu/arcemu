@@ -97,7 +97,7 @@ int WorldSession::Update(uint32 InstanceID)
 	m_currMsTime = Arcemu::Shared::Util::getMSTime();
 
 	if(!((++_updatecount) % 2) && _socket)
-		_socket->UpdateQueuedPackets();
+		_socket->SendQueuedPackets();
 
 	WorldPacket* packet;
 	OpcodeHandler* Handler;
