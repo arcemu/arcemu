@@ -4,7 +4,7 @@ SET(sources
   DBC/DBCStores.cpp
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
-	VoiceChatHandler.cpp 
+	PacketHandlers/VoiceChatHandler.cpp 
 	DayWatcherThread.cpp 
 	CommonScheduleThread.cpp 
 	ArenaTeam.cpp 
@@ -20,13 +20,13 @@ SET(sources
 	PacketHandlers/AuctionHouseHandler.cpp
 	AuctionMgr.cpp 
 	Battleground.cpp
-	BattlegroundCommands.cpp 
+	Chat/BattlegroundCommands.cpp 
 	PacketHandlers/BattlegroundHandler.cpp 
 	BattlegroundMgr.cpp 
-	Channel.cpp 
+	Chat/Channel.cpp 
 	PacketHandlers/ChannelHandler.cpp 
 	PacketHandlers/CharacterHandler.cpp 
-	Chat.cpp 
+	Chat/Chat.cpp 
 	PacketHandlers/ChatHandler.cpp 
 	PacketHandlers/CombatHandler.cpp 
 	Entities/Container.cpp 
@@ -39,7 +39,7 @@ SET(sources
 	Entities/Summons/PossessedSummon.cpp
 	Entities/Summons/TotemSummon.cpp
 	Entities/Summons/WildSummon.cpp
-	debugcmds.cpp 
+	Chat/DebugCommands.cpp 
 	PacketHandlers/DuelHandler.cpp 
 	Entities/DynamicObject.cpp 
 	EquipmentSetMgr.cpp
@@ -48,22 +48,22 @@ SET(sources
 	faction.cpp 
 	Entities/GameObject.cpp 
 	PacketHandlers/GMTicketHandler.cpp 
-	GMTicketCommands.cpp
+	Chat/GMTicketCommands.cpp
 	Gossip.cpp
 	Group.cpp 
 	PacketHandlers/GroupHandler.cpp 
 	Guild.cpp 
 	PacketHandlers/GuildHandler.cpp 
 	HonorHandler.cpp 
-	InstanceCommands.cpp 
+	Chat/InstanceCommands.cpp 
 	Entities/Item.cpp
 	ItemCommands.cpp
 	PacketHandlers/ItemHandler.cpp 
 	ItemInterface.cpp 
-	Level0.cpp 
-	Level1.cpp 
-	Level2.cpp 
-	Level3.cpp 
+	Chat/Level0.cpp 
+	Chat/Level1.cpp 
+	Chat/Level2.cpp 
+	Chat/Level3.cpp 
 	PacketHandlers/LfgHandler.cpp 
 	LfgMgr.cpp 
 	LootMgr.cpp 
@@ -97,9 +97,9 @@ SET(sources
 	Quest.cpp 
 	PacketHandlers/QuestHandler.cpp 
 	QuestMgr.cpp 
-	QuestCommands.cpp 
+	Chat/QuestCommands.cpp 
 	PacketHandlers/RaidHandler.cpp 
-	RecallCommands.cpp 
+	Chat/RecallCommands.cpp 
 	ReputationHandler.cpp 
 	ScriptMgr.cpp 
 	PacketHandlers/SocialHandler.cpp 
@@ -111,7 +111,7 @@ SET(sources
 	SummonHandler.cpp
 	Spell/SpellEffects.cpp 
 	PacketHandlers/SpellHandler.cpp 
-	HackFixes.cpp 
+	Spell/HackFixes.cpp 
 	Stats.cpp 
 	PacketHandlers/TaxiHandler.cpp 
 	TaxiMgr.cpp 
@@ -120,9 +120,9 @@ SET(sources
 	Entities/Transporter.cpp
 	Entities/Unit.cpp 
 	UpdateBuilder.cpp
-	Vehicle.cpp 
+	Entities/Vehicle.cpp 
 	PacketHandlers/VehicleHandler.cpp
-	WayPoints.cpp 
+	Chat/WayPoints.cpp 
 	WeatherMgr.cpp 
 	World.cpp 
 	WorldCreator.cpp 
@@ -188,9 +188,9 @@ SET( headers
 	ByteBufferExtension.h
 	CConsole.h
 	CellHandler.h
-	Channel.h
-	ChannelMgr.h
-	Chat.h
+	Chat/Channel.h
+	Chat/ChannelMgr.h
+	Chat/Chat.h
 	CollideInterface.h
 	CommonScheduleThread.h
 	Entities/Summons/CompanionSummon.h
@@ -287,7 +287,7 @@ SET( headers
 	UpdateBuilder.h
 	UpdateFields.h
 	UpdateMask.h
-	Vehicle.h
+	Entities/Vehicle.h
 	Entities/Warlock.h
 	Entities/Warrior.h
 	Waypoint.h
