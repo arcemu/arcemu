@@ -23,8 +23,6 @@
 //
 
 #include "StdAfx.h"
-#include "ObjectMgr.h"
-#include "Master.h"
 
 void ParseBanArgs(char* args, char** BanDuration, char** BanReason)
 {

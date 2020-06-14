@@ -68,8 +68,8 @@ SET(sources
 	LfgMgr.cpp 
 	LootMgr.cpp 
 	LocalizationMgr.cpp 
-	LogonSocket.cpp 
-	LogonCommHandler.cpp 
+	Server/LogonSocket.cpp 
+	Server/LogonCommHandler.cpp 
 	MailMessage.cpp
 	MailBox.cpp
 	PacketHandlers/MailHandler.cpp
@@ -127,15 +127,15 @@ SET(sources
 	World.cpp 
 	WorldCreator.cpp 
 	WorldSession.cpp 
-	WorldSocket.cpp 
+	Server/WorldSocket.cpp 
 	WorldStatesHandler.cpp
 	WorldRunnable.cpp 
 	WordFilter.cpp 
-	Main.cpp 
-	Master.cpp 
-	CConsole.cpp 
-	ConsoleCommands.cpp 
-	ConsoleListener.cpp 
+	Server/Main.cpp 
+	Server/Master.cpp 
+	Server/CConsole.cpp 
+	Server/ConsoleCommands.cpp 
+	Server/ConsoleListener.cpp 
 	WUtil.cpp 
 	Spell/SpellProc.cpp
 	Spell/SpellProc_DeathKnight.cpp
@@ -170,7 +170,7 @@ SET(sources
 	Entities/Shaman.cpp
 	Entities/Warlock.cpp
 	Entities/Warrior.cpp
-	WowCrypt.cpp )
+	Server/WowCrypt.cpp )
 
 SET( headers
 	AchievementMgr.h
@@ -182,11 +182,11 @@ SET( headers
 	ArenaTeam.h
 	AuctionHouse.h
 	AuctionMgr.h
-	BaseConsole.h
+	Server/BaseConsole.h
 	Battleground.h
 	BattlegroundMgr.h
 	ByteBufferExtension.h
-	CConsole.h
+	Server/CConsole.h
 	Map/CellHandler.h
 	Chat/Channel.h
 	Chat/ChannelMgr.h
@@ -194,7 +194,7 @@ SET( headers
 	CollideInterface.h
 	CommonScheduleThread.h
 	Entities/Summons/CompanionSummon.h
-	ConsoleCommands.h
+	Server/ConsoleCommands.h
 	Entities/Container.h
 	Entities/Corpse.h
 	Entities/Creature.h
@@ -226,19 +226,19 @@ SET( headers
 	LfgMgr.h
 	LocalizationMgr.h
 	LocationVector.h
-	LogonSocket.h
-	LogonCommHandler.h
+	Server/LogonSocket.h
+	Server/LogonCommHandler.h
 	LootMgr.h
 	Entities/Mage.h
 	MailMessage.h
 	MailBox.h
 	MailSystem.h
-	MainServerDefines.h
+	Server/MainServerDefines.h
 	Map/Map.h
 	Map/MapCell.h
 	Map/MapMgr.h
 	Map/MapScriptInterface.h
-	Master.h
+	Server/Master.h
 	MessageRouter.h
 	Messenger.h
 	MovementInfo.h
@@ -299,10 +299,10 @@ SET( headers
 	WorldCreator.h
 	WorldRunnable.h
 	WorldSession.h
-	WorldSocket.h
+	Server/WorldSocket.h
 	WorldStatesHandler.h
 	WorldStates.h
-	WowCrypt.h
+	Server/WowCrypt.h
 	WoWGuid.h
 	WUtil.h
 )
