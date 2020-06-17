@@ -522,7 +522,6 @@ class SERVER_DECL WorldSession
 
 		/// Skill opcodes (SkillHandler.spp)
 		//void HandleSkillLevelUpOpcode(WorldPacket& recvPacket);
-		void HandleLearnMultipleTalentsOpcode(WorldPacket & recvPacket);
 
 		/// Quest opcodes (QuestHandler.cpp)
 		void HandleQuestgiverStatusQueryOpcode(WorldPacket & recvPacket);
@@ -537,7 +536,6 @@ class SERVER_DECL WorldSession
 		void HandleQuestlogRemoveQuestOpcode(WorldPacket & recvPacket);
 		void HandlePushQuestToPartyOpcode(WorldPacket & recvPacket);
 		void HandleQuestPushResult(WorldPacket & recvPacket);
-		void HandleQuestPOIQueryOpcode(WorldPacket & recv_data);
 	
 	void HandleDismissVehicle( WorldPacket &recv_data );
 	void HandleChangeVehicleSeat( WorldPacket &recv_data );
@@ -653,7 +651,6 @@ class SERVER_DECL WorldSession
 		void HandlePetSpellAutocast(WorldPacket & recv_data);
 		void HandlePetCancelAura(WorldPacket & recv_data);
 		void HandlePetLearnTalent(WorldPacket & recv_data);
-		void HandleDismissCritter(WorldPacket & recv_data);
 
 		// Battleground
 		void HandleBattlefieldPortOpcode(WorldPacket & recv_data);
@@ -688,7 +685,6 @@ class SERVER_DECL WorldSession
 		void HandleMountSpecialAnimOpcode(WorldPacket & recv_data);
 
 		void HandleSelfResurrectOpcode(WorldPacket & recv_data);
-		void HandleUnlearnSkillOpcode(WorldPacket & recv_data);
 		void HandleRandomRollOpcode(WorldPacket & recv_data);
 		void HandleOpenItemOpcode(WorldPacket & recv_data);
 
@@ -741,7 +737,6 @@ class SERVER_DECL WorldSession
 		//MISC
 		void HandleWorldStateUITimerUpdate(WorldPacket & recv_data);
 		void HandleSetTaxiBenchmarkOpcode(WorldPacket & recv_data);
-		void HandleMirrorImageOpcode(WorldPacket & recv_data);
 
 	public:
 

@@ -21,6 +21,18 @@
 #ifndef PLAYERPACKETHANDLERS_H_
 #define PLAYERPACKETHANDLERS_H_
 
+class UnlearnSkillPacketHandler
+{
+public:
+	static void handlePacket( WorldSession &session, WorldPacket & recv_data );
+};
+
+class LearnMultipleTalentsPacketHandler
+{
+public:
+	static void handlePacket( WorldSession &session, WorldPacket & recv_data );
+};
+
 class LearnTalentPacketHandler
 {
 public:
@@ -32,5 +44,27 @@ class UnlearnTalentsPacketHandler
 public:
 	static void handlePacket( WorldSession &session, WorldPacket & recv_data );
 };
+
+class DissmissCritterPacketHandler
+{
+public:
+	static void handlePacket( WorldSession &session, WorldPacket & recv_data );
+};
+
+#define DEFINE_PACKET_HANDLER_CLASS( CLASS ) \
+	class CLASS \
+	{ \
+	public: \
+		static void handlePacket( WorldSession &session, WorldPacket &recv_data ); \
+	};
+
+#define DEFINE_PACKET_HANDLER_METHOD( CLASS ) \
+	void CLASS::handlePacket(  WorldSession &session, WorldPacket &recv_data  )
+
+#define REGISTER_PACKETHANDLER_CLASS( OPCODE, CLASS ); \
+	PacketHandlers[OPCODE].handler = &CLASS::handlePacket;
+
+DEFINE_PACKET_HANDLER_CLASS( QueryQuestPOIPacketHandler )
+DEFINE_PACKET_HANDLER_CLASS( MirrorImagePacketHandler )
 
 #endif
