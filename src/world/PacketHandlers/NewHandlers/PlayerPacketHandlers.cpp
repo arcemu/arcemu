@@ -21,7 +21,7 @@
 #include "StdAfx.h"
 #include "PlayerPacketHandlers.h"
 
-void UnlearnSkillPacketHandler::handlePacket( WorldSession &session, WorldPacket &recv_data )
+DEFINE_PACKET_HANDLER_METHOD( UnlearnSkillPacketHandler )
 {
 	Player *_player = session.GetPlayer();
 	CHECK_INWORLD_RETURN
@@ -52,7 +52,7 @@ void UnlearnSkillPacketHandler::handlePacket( WorldSession &session, WorldPacket
 	}
 }
 
-void LearnMultipleTalentsPacketHandler::handlePacket( WorldSession &session, WorldPacket &recvPacket )
+DEFINE_PACKET_HANDLER_METHOD( LearnMultipleTalentsPacketHandler )
 {
 	Player *_player = session.GetPlayer();
 	CHECK_INWORLD_RETURN
@@ -62,18 +62,18 @@ void LearnMultipleTalentsPacketHandler::handlePacket( WorldSession &session, Wor
 
 	LOG_DEBUG("Recieved packet CMSG_LEARN_TALENTS_MULTIPLE.");
 
-	recvPacket >> talentcount;
+	recv_data >> talentcount;
 
 	for(uint32 i = 0; i < talentcount; ++i)
 	{
-		recvPacket >> talentid;
-		recvPacket >> rank;
+		recv_data >> talentid;
+		recv_data >> rank;
 
 		_player->LearnTalent(talentid, rank, true);
 	}
 }
 
-void LearnTalentPacketHandler::handlePacket( WorldSession &session, WorldPacket &recv_data )
+DEFINE_PACKET_HANDLER_METHOD( LearnTalentPacketHandler )
 {
 	Player *_player = session.GetPlayer();
 	CHECK_INWORLD_RETURN
@@ -83,7 +83,7 @@ void LearnTalentPacketHandler::handlePacket( WorldSession &session, WorldPacket 
 	_player->LearnTalent(talent_id, requested_rank);
 }
 
-void UnlearnTalentsPacketHandler::handlePacket( WorldSession &session, WorldPacket &recv_data )
+DEFINE_PACKET_HANDLER_METHOD( UnlearnTalentsPacketHandler )
 {
 	Player *_player = session.GetPlayer();
 	CHECK_INWORLD_RETURN
@@ -96,7 +96,7 @@ void UnlearnTalentsPacketHandler::handlePacket( WorldSession &session, WorldPack
 	_player->Reset_Talents();
 }
 
-void DissmissCritterPacketHandler::handlePacket( WorldSession &session, WorldPacket &recv_data )
+DEFINE_PACKET_HANDLER_METHOD( DissmissCritterPacketHandler )
 {
 	Player *_player = session.GetPlayer();
 	CHECK_INWORLD_RETURN

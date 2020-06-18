@@ -562,12 +562,11 @@ void WorldSession::InitPacketHandlerTable()
 
 	///////////////////////////////////////// New style packet handlers //////////////////////////////////////////////////
 	
-	PacketHandlers[CMSG_LEARN_TALENT].handler = &LearnTalentPacketHandler::handlePacket;
-	PacketHandlers[CMSG_UNLEARN_TALENTS].handler = &UnlearnTalentsPacketHandler::handlePacket;
-	PacketHandlers[CMSG_DISMISS_CRITTER].handler = &DissmissCritterPacketHandler::handlePacket;
-	PacketHandlers[CMSG_UNLEARN_SKILL].handler = &UnlearnSkillPacketHandler::handlePacket;
-	PacketHandlers[CMSG_LEARN_TALENTS_MULTIPLE].handler = &LearnMultipleTalentsPacketHandler::handlePacket;
-
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LEARN_TALENT, LearnTalentPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_UNLEARN_TALENTS, UnlearnTalentsPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_DISMISS_CRITTER, DissmissCritterPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_UNLEARN_SKILL, UnlearnSkillPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LEARN_TALENTS_MULTIPLE, LearnMultipleTalentsPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_QUEST_POI_QUERY, QueryQuestPOIPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_GET_MIRRORIMAGE_DATA, MirrorImagePacketHandler );
 
