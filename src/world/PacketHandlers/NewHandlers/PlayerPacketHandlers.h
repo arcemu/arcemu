@@ -41,5 +41,8 @@ DEFINE_PACKET_HANDLER_CLASS( UnlearnTalentsPacketHandler )
 DEFINE_PACKET_HANDLER_CLASS( DissmissCritterPacketHandler )
 DEFINE_PACKET_HANDLER_CLASS( QueryQuestPOIPacketHandler )
 DEFINE_PACKET_HANDLER_CLASS( MirrorImagePacketHandler )
+DEFINE_PACKET_HANDLER_CLASS( UseEquipmentSetPacketHandler )
+DEFINE_PACKET_HANDLER_CLASS( SaveEquipmentSetPacketHandler )
+DEFINE_PACKET_HANDLER_CLASS( DeleteEquipmentSetPacketHandler )
 
 #endif
