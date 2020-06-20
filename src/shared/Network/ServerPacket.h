@@ -23,13 +23,13 @@
 #include "System/Platform.h"
 #include "Container/ByteBuffer.h"
 
-class SERVER_DECL ServerPacket : public ByteBuffer
+class SERVER_DECL PacketBuffer : public ByteBuffer
 {
 	public:
-		__inline ServerPacket() : ByteBuffer(), m_opcode(0) { }
-		__inline ServerPacket(uint16 opcode, size_t res) : ByteBuffer(res), m_opcode(opcode) {}
-		__inline ServerPacket(size_t res) : ByteBuffer(res), m_opcode(0) { }
-		__inline ServerPacket(const ServerPacket & packet) : ByteBuffer(packet), m_opcode(packet.m_opcode) {}
+		__inline PacketBuffer() : ByteBuffer(), m_opcode(0) { }
+		__inline PacketBuffer(uint16 opcode, size_t res) : ByteBuffer(res), m_opcode(opcode) {}
+		__inline PacketBuffer(size_t res) : ByteBuffer(res), m_opcode(0) { }
+		__inline PacketBuffer(const PacketBuffer & packet) : ByteBuffer(packet), m_opcode(packet.m_opcode) {}
 
 		//! Clear packet and set opcode all in one mighty blow
 		__inline void Initialize(uint16 opcode)

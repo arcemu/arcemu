@@ -102,7 +102,7 @@ void RealmSocket::OnRead()
 			return;
 
 		// create the buffer
-		ServerPacket buff(opcode, remaining);
+		PacketBuffer buff(opcode, remaining);
 		if(remaining)
 		{
 			buff.resize(remaining);
@@ -121,7 +121,7 @@ void RealmSocket::OnRead()
 	}
 }
 
-void RealmSocket::HandlePacket(ServerPacket & recvData)
+void RealmSocket::HandlePacket(PacketBuffer & recvData)
 {
 	if(authenticated == 0 && recvData.GetOpcode() != RCMSG_AUTH_CHALLENGE)
 	{
@@ -163,7 +163,7 @@ void RealmSocket::HandlePacket(ServerPacket & recvData)
 	(this->*(Handlers[recvData.GetOpcode()]))(recvData);
 }
 
-void RealmSocket::HandleRegister(ServerPacket & recvData)
+void RealmSocket::HandleRegister(PacketBuffer & recvData)
 {
 	string Name;
 	int32 my_id;
@@ -206,7 +206,7 @@ void RealmSocket::HandleRegister(ServerPacket & recvData)
 	sRealmRegistry.AddRealm(my_id, realm);
 
 	// Send back response packet.
-	ServerPacket data(RSMSG_REALM_REGISTERED, 4);
+	PacketBuffer data(RSMSG_REALM_REGISTERED, 4);
 	data << uint32(0);	  // Error
 	data << my_id;		  // Realm ID
 	data << realm->Name;
@@ -219,7 +219,7 @@ void RealmSocket::HandleRegister(ServerPacket & recvData)
 	SendPacket(&data);
 }
 
-void RealmSocket::HandleSessionRequest(ServerPacket & recvData)
+void RealmSocket::HandleSessionRequest(PacketBuffer & recvData)
 {
 	uint32 request_id;
 	string account_name;
@@ -233,7 +233,7 @@ void RealmSocket::HandleSessionRequest(ServerPacket & recvData)
 		error = 1;		  // Unauthorized user.
 
 	// build response packet
-	ServerPacket data(RSMSG_SESSION_RESULT, 150);
+	PacketBuffer data(RSMSG_SESSION_RESULT, 150);
 	data << request_id;
 	data << error;
 	if(!error)
@@ -255,14 +255,14 @@ void RealmSocket::HandleSessionRequest(ServerPacket & recvData)
 	SendPacket(&data);
 }
 
-void RealmSocket::HandlePing(ServerPacket & recvData)
+void RealmSocket::HandlePing(PacketBuffer & recvData)
 {
-	ServerPacket data(RSMSG_PONG, 4);
+	PacketBuffer data(RSMSG_PONG, 4);
 	SendPacket(&data);
 	last_ping.SetVal((uint32)time(NULL));
 }
 
-void RealmSocket::SendPacket(ServerPacket* data)
+void RealmSocket::SendPacket(PacketBuffer* data)
 {
 	bool rv;
 	BurstBegin();
@@ -290,7 +290,7 @@ void RealmSocket::SendPacket(ServerPacket* data)
 	BurstEnd();
 }
 
-void RealmSocket::HandleAuthChallenge(ServerPacket & recvData)
+void RealmSocket::HandleAuthChallenge(PacketBuffer & recvData)
 {
 	unsigned char key[20];
 	uint32 result = 1;
@@ -319,7 +319,7 @@ void RealmSocket::HandleAuthChallenge(ServerPacket & recvData)
 	use_crypto = true;
 
 	/* send the response packet */
-	ServerPacket data(RSMSG_AUTH_RESPONSE, 1);
+	PacketBuffer data(RSMSG_AUTH_RESPONSE, 1);
 	data << result;
 	SendPacket(&data);
 
@@ -327,7 +327,7 @@ void RealmSocket::HandleAuthChallenge(ServerPacket & recvData)
 	authenticated = result;
 }
 
-void RealmSocket::HandleMappingReply(ServerPacket & recvData)
+void RealmSocket::HandleMappingReply(PacketBuffer & recvData)
 {
 	/* this packet is gzipped, whee! :D */
 	uint32 real_size;
@@ -371,7 +371,7 @@ void RealmSocket::HandleMappingReply(ServerPacket & recvData)
 	sRealmRegistry.getRealmLock().Release();
 }
 
-void RealmSocket::HandleUpdateMapping(ServerPacket & recvData)
+void RealmSocket::HandleUpdateMapping(PacketBuffer & recvData)
 {
 	uint32 realm_id;
 	uint32 account_id;
@@ -394,9 +394,9 @@ void RealmSocket::HandleUpdateMapping(ServerPacket & recvData)
 	sRealmRegistry.getRealmLock().Release();
 }
 
-void RealmSocket::HandleTestConsoleLogin(ServerPacket & recvData)
+void RealmSocket::HandleTestConsoleLogin(PacketBuffer & recvData)
 {
-	ServerPacket data(RSMSG_CONSOLE_LOGIN_RESULT, 8);
+	PacketBuffer data(RSMSG_CONSOLE_LOGIN_RESULT, 8);
 	uint32 request;
 	string accountname;
 	uint8 key[20];
@@ -433,7 +433,7 @@ void RealmSocket::HandleTestConsoleLogin(ServerPacket & recvData)
 	SendPacket(&data);
 }
 
-void RealmSocket::HandleDatabaseModify(ServerPacket & recvData)
+void RealmSocket::HandleDatabaseModify(PacketBuffer & recvData)
 {
 	uint32 method;
 	recvData >> method;
@@ -531,7 +531,7 @@ void RealmSocket::HandleDatabaseModify(ServerPacket & recvData)
 	}
 }
 
-void RealmSocket::HandlePopulationRespond(ServerPacket & recvData)
+void RealmSocket::HandlePopulationRespond(PacketBuffer & recvData)
 {
 	float population;
 	uint32 realmId;
@@ -544,7 +544,7 @@ void RealmSocket::RefreshRealmsPop()
 	if(server_ids.empty())
 		return;
 
-	ServerPacket data(RSMSG_REALM_POP_REQ, 4);
+	PacketBuffer data(RSMSG_REALM_POP_REQ, 4);
 	set<uint32>::iterator itr = server_ids.begin();
 	for(; itr != server_ids.end() ; itr++)
 	{

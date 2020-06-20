@@ -39,18 +39,18 @@ class RealmSocket : public Socket
 		void OnRead();
 		void OnDisconnect();
 		void OnConnect();
-		void SendPacket(ServerPacket* data);
-		void HandlePacket(ServerPacket & recvData);
+		void SendPacket(PacketBuffer* data);
+		void HandlePacket(PacketBuffer & recvData);
 
-		void HandleRegister(ServerPacket & recvData);
-		void HandlePing(ServerPacket & recvData);
-		void HandleSessionRequest(ServerPacket & recvData);
-		void HandleAuthChallenge(ServerPacket & recvData);
-		void HandleMappingReply(ServerPacket & recvData);
-		void HandleUpdateMapping(ServerPacket & recvData);
-		void HandleTestConsoleLogin(ServerPacket & recvData);
-		void HandleDatabaseModify(ServerPacket & recvData);
-		void HandlePopulationRespond(ServerPacket & recvData);
+		void HandleRegister(PacketBuffer & recvData);
+		void HandlePing(PacketBuffer & recvData);
+		void HandleSessionRequest(PacketBuffer & recvData);
+		void HandleAuthChallenge(PacketBuffer & recvData);
+		void HandleMappingReply(PacketBuffer & recvData);
+		void HandleUpdateMapping(PacketBuffer & recvData);
+		void HandleTestConsoleLogin(PacketBuffer & recvData);
+		void HandleDatabaseModify(PacketBuffer & recvData);
+		void HandlePopulationRespond(PacketBuffer & recvData);
 
 		void RefreshRealmsPop();
 
@@ -59,6 +59,6 @@ class RealmSocket : public Socket
 		set<uint32> server_ids;
 };
 
-typedef void (RealmSocket::*logonpacket_handler)(ServerPacket &);
+typedef void (RealmSocket::*logonpacket_handler)(PacketBuffer &);
 
 #endif
