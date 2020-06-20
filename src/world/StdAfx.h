@@ -84,7 +84,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "Util/MersenneTwister.h"
 #include "Container/ByteBuffer.h"
 
-#include "Network/ServerPacket.h"
+#include "Network/PacketBuffer.h"
 typedef PacketBuffer WorldPacket;
 
 #include "Logging/Log.h"

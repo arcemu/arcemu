@@ -42,7 +42,7 @@
 #include "../shared/Crypto/BigNumber.h"
 #include "../shared/Crypto/Sha1.h"
 
-#include "Network/ServerPacket.h"
+#include "Network/PacketBuffer.h"
 
 #include "RealmList/RealmLogonLinkOpcodes.h"
 #include "../logon/Main.h"

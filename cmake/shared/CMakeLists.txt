@@ -66,7 +66,7 @@ set( headers
 	System/TextFile.h
 	Util/Tokenizer.h
 	Util/Util.h
-	Network/ServerPacket.h
+	Network/PacketBuffer.h
 	Crypto/BigNumber.h
 	Crypto/MD5.h
 	Crypto/Sha1.h
