@@ -207,8 +207,6 @@ class SERVER_DECL WorldSession
 				_socket->OutPacket(opcode, 0, NULL);
 		}
 
-		void Delete();
-
 		void SendChatPacket(WorldPacket* data, uint32 langpos, int32 lang, WorldSession* originator);
 
 		uint32 m_currMsTime;

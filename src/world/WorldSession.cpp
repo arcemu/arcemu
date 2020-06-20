@@ -1444,11 +1444,6 @@ void WorldSession::SendChatPacket(WorldPacket* data, uint32 langpos,
 	SendPacket(data);
 }
 
-void WorldSession::Delete()
-{
-	delete this;
-}
-
 /*
    2008/10/04 MultiLanguages on each player session. LocalizedWorldSrv
    translating core message from sql. LocalizedMapName translating MAP Title
