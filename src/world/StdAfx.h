@@ -85,6 +85,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "Container/ByteBuffer.h"
 
 #include "Network/PacketBuffer.h"
+#include "Network/Packet.h"
 typedef PacketBuffer WorldPacket;
 
 #include "Logging/Log.h"
@@ -259,6 +260,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Entities/Shaman.h"
 #include "Game/Commands/PlayerCommands.h"
 #include "Game/Commands/CreatureCommands.h"
+#include "Game/Commands/AccountCommands.h"
 #include "PlayerMessenger.h"
+#include "Game/Network/AccountPackets.h"
 
 #endif

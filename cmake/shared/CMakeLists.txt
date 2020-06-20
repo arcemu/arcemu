@@ -82,6 +82,7 @@ set( headers
 	Network/ListenSocketLinux.h
 	Network/ListenSocketWin32.h
 	Network/Network.h
+	Network/Packet.h
 	Network/Socket.h
 	Network/SocketMgrFreeBSD.h
 	Network/SocketMgrLinux.h

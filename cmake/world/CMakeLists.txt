@@ -2,6 +2,8 @@ PROJECT(world)
 SET( prefix ${ROOT_PATH}/src/world )
 SET(sources
   DBC/DBCStores.cpp
+	Game/Commands/AccountCommands.cpp
+	Game/Network/AccountPackets.cpp
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
 	PacketHandlers/VoiceChatHandler.cpp 
@@ -175,6 +177,8 @@ SET(sources
 )
 
 SET( headers
+	Game/Commands/AccountCommands.h
+	Game/Network/AccountPackets.h
 	AchievementMgr.h
 	AddonMgr.h
 	AIInterface.h

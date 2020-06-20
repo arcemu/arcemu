@@ -795,7 +795,8 @@ void WorldSession::FullLogin(Player* plr)
 	info->m_loggedInPlayer = plr;
 
 	// account data == UI config
-	SendAccountDataTimes(PER_CHARACTER_CACHE_MASK);
+	SendAccountDataTimesCommand cmd( this, PER_CHARACTER_CACHE_MASK );
+	cmd.execute();
 
 	// Set TIME OF LOGIN
 	CharacterDatabase.Execute("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());

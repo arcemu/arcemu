@@ -211,7 +211,8 @@ void World::AddSession(WorldSession* s)
 	if(m_sessions.size() >  PeakSessionCount)
 		PeakSessionCount = (uint32)m_sessions.size();
 
-	s->SendAccountDataTimes(GLOBAL_CACHE_MASK);
+	SendAccountDataTimesCommand cmd( s, GLOBAL_CACHE_MASK );
+	cmd.execute();
 
 	m_sessionlock.ReleaseWriteLock();
 }

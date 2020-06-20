@@ -743,7 +743,6 @@ class SERVER_DECL WorldSession
 		void SendTabardHelp(Creature* pCreature);
 		void SendAuctionList(Creature* pCreature);
 		void SendSpiritHealerRequest(Creature* pCreature);
-		void SendAccountDataTimes(uint32 mask);
 		void SendStabledPetList(uint64 npcguid);
 		void FullLogin(Player* plr);
 
