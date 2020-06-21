@@ -17,8 +17,6 @@
  *
  */
 
-#define SCRIPTLIB
-
 #include "../../testing/testmacros.h"
 
 #include "../../shared/Network/AuthCodes.h"
@@ -28,6 +26,11 @@
 #include "../WUtil.h"
 
 #include <iostream>
+
+void OnCrash( bool b )
+{
+	std::cout << "CRASH!" << std::endl;
+}
 
 class WorldUtilTest
 {

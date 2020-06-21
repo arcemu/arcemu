@@ -259,6 +259,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Entities/Mage.h"
 #include "Entities/Hunter.h"
 #include "Entities/Shaman.h"
+#include "Messenger.h"
 #include "Game/Commands/PlayerCommands.h"
 #include "Game/Commands/CreatureCommands.h"
 #include "Game/Commands/AccountCommands.h"

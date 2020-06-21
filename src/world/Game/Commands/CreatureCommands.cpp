@@ -18,23 +18,3 @@
  *
  */
 
-#include "StdAfx.h"
-#include "CreatureCommands.h"
-#include "Messenger.h"
-
-
-CreatureSendChatMessageToPlayerCommand::CreatureSendChatMessageToPlayerCommand( Creature *creature, Player *player )
-{
-	this->creature = creature;
-	this->player = player;
-}
-
-void CreatureSendChatMessageToPlayerCommand::execute()
-{
-	Messenger::SendChatMessageToPlayer( creature,
-					    player,
-					    emote,
-					    language,
-					    string( creature->GetCreatureInfo()->Name ),
-					    string( message ) );
-}

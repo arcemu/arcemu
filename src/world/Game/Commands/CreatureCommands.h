@@ -32,13 +32,25 @@ private:
 	string message;
 
 public:
-	CreatureSendChatMessageToPlayerCommand( Creature* creature, Player *player );
+	CreatureSendChatMessageToPlayerCommand( Creature* creature, Player *player )
+	{
+		this->creature = creature;
+		this->player = player;
+	}
 
 	void setEmote( uint8 emote ){ this->emote = emote; }
 	void setLanguage( uint32 language ){ this->language = language; }
 	void setMessage( string message ){ this->message = message; }
 
-	void execute();
+	void execute()
+	{
+		Messenger::SendChatMessageToPlayer( creature,
+					    player,
+					    emote,
+					    language,
+					    string( creature->GetCreatureInfo()->Name ),
+					    string( message ) );
+	}
 };
 
 #endif

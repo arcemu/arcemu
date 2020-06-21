@@ -1,4 +1,7 @@
 PROJECT(world)
+
+# The idea here is fairly simple: build a lib, and build an executable, then link the lib to the executable.
+
 SET( prefix ${ROOT_PATH}/src/world )
 SET(sources
   DBC/DBCStores.cpp
@@ -134,9 +137,7 @@ SET(sources
 	WorldStatesHandler.cpp
 	WorldRunnable.cpp 
 	WordFilter.cpp 
-	Server/Main.cpp 
 	Server/MainServerDefines.cpp
-	Server/Master.cpp 
 	Server/CConsole.cpp 
 	Server/ConsoleCommands.cpp 
 	Server/ConsoleListener.cpp 
@@ -248,7 +249,6 @@ SET( headers
 	Map/MapCell.h
 	Map/MapMgr.h
 	Map/MapScriptInterface.h
-	Server/Master.h
 	MessageRouter.h
 	Messenger.h
 	MovementInfo.h
@@ -319,7 +319,6 @@ SET( headers
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h
 )
-	
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
@@ -328,56 +327,54 @@ foreach(src IN ITEMS ${headers} )
   SET( HEADERS ${HEADERS} ${prefix}/${src} )
 endforeach(src)
 
+SET( exe_sources
+	Server/Main.cpp
+	Server/Master.cpp
+)
+
+SET( exe_headers
+	Server/Master.h
+)
+
+foreach(src IN ITEMS ${exe_sources} )
+  SET( EXE_SRCS ${EXE_SRCS} ${prefix}/${src} )
+endforeach(src)
+foreach(src IN ITEMS ${exe_headers} )
+  SET( EXE_HEADERS ${EXE_HEADERS} ${prefix}/${src} )
+endforeach(src)
+
 include(PCHSupport)
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${DEPENDENCY_LIBS} ${EXTRA_LIBS_PATH} )
 
-# On Linux we cannot link to the executable, so we need to build an object library
-# then link an executable, and a static library from that.
-# After that we can finally link the test executable to the static library
+add_library( ${PROJECT_NAME}lib ${SRCS} ${HEADERS} )
+add_executable( ${PROJECT_NAME} ${EXE_SRCS} ${EXE_HEADERS} )
 
 IF( WIN32 )
-    add_executable( ${PROJECT_NAME} ${SRCS} ${HEADERS} )
-
     IF( CMAKE_GENERATOR MATCHES Visual*)
-	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME} StdAfx.h ${prefix}/StdAfx.cpp)
+	ADD_NATIVE_PRECOMPILED_HEADER(${PROJECT_NAME}lib StdAfx.h ${prefix}/StdAfx.cpp)
     ENDIF()
-
-    set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
-
-    add_dependencies( ${PROJECT_NAME} shared g3dlite vmaplib detour recast)
-
-    target_link_libraries( ${PROJECT_NAME} shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
-
-ELSE( WIN32 )
-    add_library( worldobjlib OBJECT ${SRCS} ${HEADERS} )
-    add_executable( ${PROJECT_NAME} $<TARGET_OBJECTS:worldobjlib> )
-    add_library( ${PROJECT_NAME}lib $<TARGET_OBJECTS:worldobjlib> )
-
-    set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
-    set_target_properties(${PROJECT_NAME}lib PROPERTIES ENABLE_EXPORTS TRUE)
-
-    add_dependencies( ${PROJECT_NAME} shared g3dlite vmaplib detour recast)
-    add_dependencies( ${PROJECT_NAME}lib shared g3dlite vmaplib detour recast)
-
-    target_link_libraries( ${PROJECT_NAME} shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
-    target_link_libraries( ${PROJECT_NAME}lib shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
 ENDIF( WIN32 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES ENABLE_EXPORTS TRUE)
+set_target_properties(${PROJECT_NAME}lib PROPERTIES ENABLE_EXPORTS TRUE)
+
+add_dependencies( ${PROJECT_NAME}lib shared g3dlite vmaplib detour recast)
+add_dependencies( ${PROJECT_NAME} ${PROJECT_NAME}lib shared g3dlite vmaplib detour recast)
+
+target_link_libraries( ${PROJECT_NAME}lib shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}lib shared  g3dlite vmaplib detour recast ${PCRE_LIBRARIES} )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
+
+############################################################### Tests ######################################################################
 
 ENABLE_TESTING()
 
 ADD_EXECUTABLE( WorldUtilTest ${prefix}/Tests/UtilTest.cpp )
 
-IF( WIN32 )
-    ADD_DEPENDENCIES( WorldUtilTest ${PROJECT_NAME} )
-    TARGET_LINK_LIBRARIES( WorldUtilTest shared ${PROJECT_NAME} )
-ELSE( WIN32 )
-    ADD_DEPENDENCIES( WorldUtilTest ${PROJECT_NAME}lib )
-    TARGET_LINK_LIBRARIES( WorldUtilTest shared ${PROJECT_NAME}lib )
-ENDIF( WIN32 )
+ADD_DEPENDENCIES( WorldUtilTest ${PROJECT_NAME}lib )
+TARGET_LINK_LIBRARIES( WorldUtilTest shared ${PROJECT_NAME}lib )
 
 ADD_TEST( NAME WorldUtilTest COMMAND WorldUtilTest )
 
