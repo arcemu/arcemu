@@ -240,17 +240,15 @@ bool HandleShutDownCommand(BaseConsole* pConsole, int argc, const char* argv[])
 		}
 	}
 
-	sMaster.m_ShutdownTimer = delay * 1000;
-	sMaster.m_ShutdownEvent = true;
+	sMaster.controller.scheduleShutdown( delay * 1000 );
 	pConsole->Write("Shutdown has initiated.\r\n");
 	return true;
 }
 
 bool HandleCancelCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
+	sMaster.controller.cancelShutdown();
 	pConsole->Write("Shutdown has been canceled.\r\n");
-	sMaster.m_ShutdownTimer = 5000;
-	sMaster.m_ShutdownEvent = false;
 	return true;
 }
 

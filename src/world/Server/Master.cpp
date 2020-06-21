@@ -64,9 +64,6 @@ void Master::_OnSignal(int s)
 
 Master::Master()
 {
-	m_ShutdownTimer = 0;
-	m_ShutdownEvent = false;
-	m_restartEvent = false;
 }
 
 Master::~Master()
@@ -406,30 +403,32 @@ bool Master::Run(int argc, char** argv)
 		/* UPDATE */
 		last_time = Arcemu::Shared::Util::getMSTime();
 		etime = last_time - start;
-		if(m_ShutdownEvent)
+		Arcemu::Shared::ServerControlInfo serverControlInfo = controller.getServerControlInfo();
+
+		if(serverControlInfo.shutdownEvent)
 		{
 			if(Arcemu::Shared::Util::getMSTime() >= next_printout)
 			{
-				if(m_ShutdownTimer > 60000.0f)
+				if(serverControlInfo.timer > 60000.0f)
 				{
-					if(!((int)(m_ShutdownTimer) % 60000))
-						Log.Notice("Server", "Shutdown in %i minutes.", (int)(m_ShutdownTimer / 60000.0f));
+					if(!((int)(serverControlInfo.timer) % 60000))
+						Log.Notice("Server", "Shutdown in %i minutes.", (int)(serverControlInfo.timer / 60000.0f));
 				}
 				else
-					Log.Notice("Server", "Shutdown in %i seconds.", (int)(m_ShutdownTimer / 1000.0f));
+					Log.Notice("Server", "Shutdown in %i seconds.", (int)(serverControlInfo.timer / 1000.0f));
 
 				next_printout = Arcemu::Shared::Util::getMSTime() + 500;
 			}
 
 			if(Arcemu::Shared::Util::getMSTime() >= next_send)
 			{
-				int time = m_ShutdownTimer / 1000;
+				int time = serverControlInfo.timer / 1000;
 				if((time % 30 == 0) || time < 10)
 				{
 					// broadcast packet.
 					WorldPacket data(20);
 					data.SetOpcode(SMSG_SERVER_MESSAGE);
-					if(m_restartEvent)
+					if(serverControlInfo.restartEvent)
 						data << uint32(SERVER_MSG_RESTART_TIME);
 					else
 						data << uint32(SERVER_MSG_SHUTDOWN_TIME);
@@ -450,10 +449,10 @@ bool Master::Run(int argc, char** argv)
 				}
 				next_send = Arcemu::Shared::Util::getMSTime() + 1000;
 			}
-			if(diff >= m_ShutdownTimer)
+			if(diff >= serverControlInfo.timer)
 				break;
 			else
-				m_ShutdownTimer -= diff;
+				controller.setTimer( serverControlInfo.timer - diff );
 		}
 
 		if(50 > etime)

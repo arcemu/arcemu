@@ -45,11 +45,10 @@ class Master : public Singleton<Master>
 		Master();
 		~Master();
 		bool Run(int argc, char** argv);
-		bool m_ShutdownEvent;
-		uint32 m_ShutdownTimer;
+		
+		Arcemu::Shared::ServerController controller;
 
 		static volatile bool m_stopEvent;
-		bool m_restartEvent;
 
 	private:
 		bool _StartDB();

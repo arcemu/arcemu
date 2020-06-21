@@ -119,6 +119,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Threading/TLSObject.h"
 #include "Util/Tokenizer.h"
 
+#include "../shared/Server/ServerController.h"
+
 #ifdef WIN32
 #include "System/printStackTrace.h"
 #endif

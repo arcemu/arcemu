@@ -164,7 +164,8 @@ const string* LogonCommHandler::GetForcedPermissions(string & username)
 
 void LogonCommHandler::Connect(LogonServer* server)
 {
-	if(sMaster.m_ShutdownEvent == true && sMaster.m_ShutdownTimer <= 120000) // 2minutes
+	Arcemu::Shared::ServerControlInfo info = sMaster.controller.getServerControlInfo();
+	if(info.shutdownEvent && info.timer <= 120000) // 2minutes
 		return;
 
 	server->RetryTime = (uint32)UNIXTIME + 10;

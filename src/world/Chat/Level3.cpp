@@ -2052,9 +2052,7 @@ bool ChatHandler::HandleShutdownCommand(const char* args, WorldSession* m_sessio
 	sWorld.SendWorldText(msg);
 	sGMLog.writefromsession(m_session, "initiated server shutdown timer %u sec", shutdowntime);
 	shutdowntime *= 1000;
-	sMaster.m_ShutdownTimer = shutdowntime;
-	sMaster.m_ShutdownEvent = true;
-	sMaster.m_restartEvent = false;
+	sMaster.controller.scheduleShutdown(shutdowntime);
 	return true;
 }
 
@@ -2073,23 +2071,21 @@ bool ChatHandler::HandleShutdownRestartCommand(const char* args, WorldSession* m
 	sGMLog.writefromsession(m_session, "initiated server restart timer %u sec", shutdowntime);
 	sWorld.SendWorldText(msg);
 	shutdowntime *= 1000;
-	sMaster.m_ShutdownTimer = shutdowntime;
-	sMaster.m_ShutdownEvent = true;
-	sMaster.m_restartEvent = true;
+	sMaster.controller.scheduleRestart(shutdowntime);
 	return true;
 }
 
 bool ChatHandler::HandleCancelShutdownCommand(const char* args, WorldSession* m_session)
 {
-	if(sMaster.m_ShutdownEvent == false)
+	Arcemu::Shared::ServerControlInfo info = sMaster.controller.getServerControlInfo();
+	if(info.shutdownEvent == false)
 		return false;
+
 	char msg[500];
-	snprintf(msg, 500, "%sServer %s cancelled by %s.", MSG_COLOR_LIGHTBLUE, (sMaster.m_restartEvent ? "Restart" : "Shutdown"), m_session->GetPlayer()->GetName());
+	snprintf(msg, 500, "%sServer %s cancelled by %s.", MSG_COLOR_LIGHTBLUE, (info.restartEvent ? "Restart" : "Shutdown"), m_session->GetPlayer()->GetName());
 	sWorld.SendWorldText(msg);
 
-	sMaster.m_ShutdownTimer = 5000;
-	sMaster.m_ShutdownEvent = false;
-	sMaster.m_restartEvent = false;
+	sMaster.controller.cancelShutdown();
 	return true;
 
 }

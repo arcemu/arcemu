@@ -15,6 +15,7 @@ SET( sources
     System/DynLib.cpp
     System/SysInfo.cpp
     System/PerformanceCounter.cpp
+	Server/ServerController.cpp
     Threading/CThreads.cpp 
     Threading/Mutex.cpp
     Threading/Threading.h  
@@ -105,6 +106,7 @@ set( headers
 	Threading/ThreadPool.h
 	Threading/ThreadBase.h
 	Threading/TLSObject.h
+	Server/ServerController.h
 )
 
 IF(WIN32)
@@ -140,3 +142,6 @@ ADD_EXECUTABLE( UtilTest ${prefix}/Tests/UtilTest.cpp )
 TARGET_LINK_LIBRARIES( UtilTest ${PROJECT_NAME} )
 ADD_TEST( NAME UtilTest COMMAND UtilTest )
 
+ADD_EXECUTABLE( ServerControllerTest ${prefix}/Tests/ServerControllerTest.cpp )
+TARGET_LINK_LIBRARIES( ServerControllerTest ${PROJECT_NAME} )
+ADD_TEST( NAME ServerControllerTest COMMAND ServerControllerTest )
