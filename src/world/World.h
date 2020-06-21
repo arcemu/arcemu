@@ -711,6 +711,8 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 
 		uint32	m_KickAFKPlayers;//don't lag the server if you are useless anyway :P
 	public:
+		Arcemu::Shared::ServerController controller;
+
 		std::string GmClientChannel;
 		bool m_reqGmForCommands;
 		bool m_lfgForNonLfg;

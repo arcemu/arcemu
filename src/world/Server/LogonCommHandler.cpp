@@ -164,7 +164,7 @@ const string* LogonCommHandler::GetForcedPermissions(string & username)
 
 void LogonCommHandler::Connect(LogonServer* server)
 {
-	Arcemu::Shared::ServerControlInfo info = sMaster.controller.getServerControlInfo();
+	Arcemu::Shared::ServerControlInfo info = sWorld.controller.getServerControlInfo();
 	if(info.shutdownEvent && info.timer <= 120000) // 2minutes
 		return;
 

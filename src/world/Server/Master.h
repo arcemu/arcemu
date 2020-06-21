@@ -45,8 +45,6 @@ class Master : public Singleton<Master>
 		Master();
 		~Master();
 		bool Run(int argc, char** argv);
-		
-		Arcemu::Shared::ServerController controller;
 
 		static volatile bool m_stopEvent;
 

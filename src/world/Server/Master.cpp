@@ -403,7 +403,7 @@ bool Master::Run(int argc, char** argv)
 		/* UPDATE */
 		last_time = Arcemu::Shared::Util::getMSTime();
 		etime = last_time - start;
-		Arcemu::Shared::ServerControlInfo serverControlInfo = controller.getServerControlInfo();
+		Arcemu::Shared::ServerControlInfo serverControlInfo = sWorld.controller.getServerControlInfo();
 
 		if(serverControlInfo.shutdownEvent)
 		{
@@ -452,7 +452,7 @@ bool Master::Run(int argc, char** argv)
 			if(diff >= serverControlInfo.timer)
 				break;
 			else
-				controller.setTimer( serverControlInfo.timer - diff );
+				sWorld.controller.setTimer( serverControlInfo.timer - diff );
 		}
 
 		if(50 > etime)

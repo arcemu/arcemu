@@ -240,14 +240,14 @@ bool HandleShutDownCommand(BaseConsole* pConsole, int argc, const char* argv[])
 		}
 	}
 
-	sMaster.controller.scheduleShutdown( delay * 1000 );
+	sWorld.controller.scheduleShutdown( delay * 1000 );
 	pConsole->Write("Shutdown has initiated.\r\n");
 	return true;
 }
 
 bool HandleCancelCommand(BaseConsole* pConsole, int argc, const char* argv[])
 {
-	sMaster.controller.cancelShutdown();
+	sWorld.controller.cancelShutdown();
 	pConsole->Write("Shutdown has been canceled.\r\n");
 	return true;
 }
