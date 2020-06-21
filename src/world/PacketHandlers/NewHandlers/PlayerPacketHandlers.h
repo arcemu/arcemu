@@ -21,18 +21,7 @@
 #ifndef PLAYERPACKETHANDLERS_H_
 #define PLAYERPACKETHANDLERS_H_
 
-#define DEFINE_PACKET_HANDLER_CLASS( CLASS ) \
-	class CLASS \
-	{ \
-	public: \
-		static void handlePacket( WorldSession &session, WorldPacket &recv_data ); \
-	};
-
-#define DEFINE_PACKET_HANDLER_METHOD( CLASS ) \
-	void CLASS::handlePacket(  WorldSession &session, WorldPacket &recv_data  )
-
-#define REGISTER_PACKETHANDLER_CLASS( OPCODE, CLASS ); \
-	PacketHandlers[OPCODE].handler = &CLASS::handlePacket;
+#include "PacketHandlerMacros.h"
 
 DEFINE_PACKET_HANDLER_CLASS( UnlearnSkillPacketHandler )
 DEFINE_PACKET_HANDLER_CLASS( LearnMultipleTalentsPacketHandler )

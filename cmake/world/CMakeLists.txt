@@ -314,6 +314,7 @@ SET( headers
 	WoWGuid.h
 	WUtil.h
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
+	PacketHandlers/NewHandlers/PacketHandlerMacros.h
 )
 	
 
