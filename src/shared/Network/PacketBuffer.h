@@ -26,7 +26,10 @@
 class SERVER_DECL PacketBuffer : public ByteBuffer
 {
 	public:
-		__inline PacketBuffer() : ByteBuffer(), m_opcode(0) { }
+		static const uint32 DEFAULT_PACKET_SIZE = 128u;
+
+	public:
+		__inline PacketBuffer() : ByteBuffer(DEFAULT_PACKET_SIZE), m_opcode(0) { }
 		__inline PacketBuffer(uint16 opcode, size_t res) : ByteBuffer(res), m_opcode(opcode) {}
 		__inline PacketBuffer(size_t res) : ByteBuffer(res), m_opcode(0) { }
 		__inline PacketBuffer(const PacketBuffer & packet) : ByteBuffer(packet), m_opcode(packet.m_opcode) {}
