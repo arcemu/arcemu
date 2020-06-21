@@ -135,6 +135,7 @@ SET(sources
 	WorldRunnable.cpp 
 	WordFilter.cpp 
 	Server/Main.cpp 
+	Server/MainServerDefines.cpp
 	Server/Master.cpp 
 	Server/CConsole.cpp 
 	Server/ConsoleCommands.cpp 

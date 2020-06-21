@@ -36,15 +36,6 @@ bool bLogChat;
 
 volatile bool Master::m_stopEvent = false;
 
-// Database defines.
-SERVER_DECL Database* Database_Character;
-SERVER_DECL Database* Database_World;
-
-// mainserv defines
-SERVER_DECL SessionLogWriter* GMCommand_Log;
-SERVER_DECL SessionLogWriter* Anticheat_Log;
-SERVER_DECL SessionLogWriter* Player_Log;
-
 // threads
 extern DayWatcherThread* dw;
 extern CommonScheduleThread* cs;
@@ -98,7 +89,7 @@ static const char* default_config_file = CONFDIR "/world.conf";
 static const char* default_optional_config_file = CONFDIR "/optional.conf";
 static const char* default_realm_config_file = CONFDIR "/realms.conf";
 
-bool bServerShutdown = false;
+extern bool bServerShutdown;
 bool StartConsoleListener();
 void CloseConsoleListener();
 ThreadBase* GetConsoleListener();
