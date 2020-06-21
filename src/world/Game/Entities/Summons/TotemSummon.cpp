@@ -18,7 +18,7 @@
  *
  */
 
-#include "../../StdAfx.h"
+#include "StdAfx.h"
 
 TotemSummon::TotemSummon(uint64 GUID) : Summon(GUID)
 {

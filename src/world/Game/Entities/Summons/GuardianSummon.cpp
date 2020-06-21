@@ -18,41 +18,43 @@
  *
  */
 
+#include "StdAfx.h"
 
-#include "../../StdAfx.h"
-
-CompanionSummon::CompanionSummon(uint64 GUID) : Summon(GUID)
+GuardianSummon::GuardianSummon(uint64 GUID) : Summon(GUID)
 {
 }
 
-CompanionSummon::~CompanionSummon()
+GuardianSummon::~GuardianSummon()
 {
 }
 
-void CompanionSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+void GuardianSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
 {
 	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	SetFaction(35);
-	setLevel(1);
-	m_aiInterface->Init(this, AITYPE_PET, MOVEMENTTYPE_NONE, owner);
-	m_aiInterface->SetUnitToFollow(owner);
-	m_aiInterface->SetUnitToFollowAngle(-M_PI_FLOAT / 2);
-	m_aiInterface->SetFollowDistance(3.0f);
-	m_aiInterface->disable_melee = true;
-	bInvincible = true;
+	SetPowerType(POWER_TYPE_MANA);
+	SetMaxPower(POWER_TYPE_MANA, GetMaxPower(POWER_TYPE_MANA) + 28 + 10 * getLevel());
+	SetPower(POWER_TYPE_MANA, GetPower(POWER_TYPE_MANA) + 28 + 10 * getLevel());
+	setLevel(owner->getLevel());
+	SetMaxHealth(GetMaxHealth() + 28 + 30 * getLevel());
+	SetHealth(GetMaxHealth());
+	SetType(CREATURE_TYPE_GUARDIAN);
 
-	RemovePvPFlag();
-	RemoveFFAPvPFlag();
+	m_aiInterface->Init(this, AITYPE_PET , MOVEMENTTYPE_NONE, owner);
+	m_aiInterface->SetUnitToFollow(owner);
+	m_aiInterface->SetFollowDistance(3.0f);
+
+	m_noRespawn = true;
 }
 
-void CompanionSummon::OnPushToWorld()
+void GuardianSummon::OnPushToWorld()
 {
 	Summon::OnPushToWorld();
 }
 
-void CompanionSummon::OnPreRemoveFromWorld()
+void GuardianSummon::OnPreRemoveFromWorld()
 {
 	Summon::OnPreRemoveFromWorld();
 }
+
 

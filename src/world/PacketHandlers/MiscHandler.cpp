@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Entities/Update/UpdateBuilder.h"
+#include "Game/Entities/Update/UpdateBuilder.h"
 #include "Messenger.h"
 
 void WorldSession::HandleRepopRequestOpcode(WorldPacket & recv_data)

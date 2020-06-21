@@ -22,7 +22,7 @@
 #include "../../shared/Network/AuthCodes.h"
 #include "../../shared/System/Platform.h"
 
-#include "../Entities/ObjectConstants.h"
+#include "Game/Entities/ObjectConstants.h"
 #include "../WUtil.h"
 
 #include <iostream>

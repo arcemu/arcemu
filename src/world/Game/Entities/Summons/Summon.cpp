@@ -18,7 +18,7 @@
  *
  */
 
-#include "../../StdAfx.h"
+#include "StdAfx.h"
 #include "Messenger.h"
 
 Summon::Summon(uint64 GUID) : Creature(GUID)

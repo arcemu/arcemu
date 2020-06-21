@@ -34,24 +34,24 @@ SET(sources
 	Chat/Chat.cpp 
 	PacketHandlers/ChatHandler.cpp 
 	PacketHandlers/CombatHandler.cpp 
-	Entities/Container.cpp 
-	Entities/Corpse.cpp 
-	Entities/Creature.cpp 
+	Game/Entities/Container.cpp 
+	Game/Entities/Corpse.cpp 
+	Game/Entities/Creature.cpp 
 	Game/Commands/CreatureCommands.cpp
-	Entities/Summons/Summon.cpp
-	Entities/Summons/CompanionSummon.cpp
-	Entities/Summons/GuardianSummon.cpp
-	Entities/Summons/PossessedSummon.cpp
-	Entities/Summons/TotemSummon.cpp
-	Entities/Summons/WildSummon.cpp
+	Game/Entities/Summons/Summon.cpp
+	Game/Entities/Summons/CompanionSummon.cpp
+	Game/Entities/Summons/GuardianSummon.cpp
+	Game/Entities/Summons/PossessedSummon.cpp
+	Game/Entities/Summons/TotemSummon.cpp
+	Game/Entities/Summons/WildSummon.cpp
 	Chat/DebugCommands.cpp 
 	PacketHandlers/DuelHandler.cpp 
-	Entities/DynamicObject.cpp 
+	Game/Entities/DynamicObject.cpp 
 	EquipmentSetMgr.cpp
 	EventableObject.cpp 
 	EventMgr.cpp 
 	faction.cpp 
-	Entities/GameObject.cpp 
+	Game/Entities/GameObject.cpp 
 	PacketHandlers/GMTicketHandler.cpp 
 	Chat/GMTicketCommands.cpp
 	Gossip.cpp
@@ -61,7 +61,7 @@ SET(sources
 	PacketHandlers/GuildHandler.cpp 
 	HonorHandler.cpp 
 	Chat/InstanceCommands.cpp 
-	Entities/Item.cpp
+	Game/Entities/Item.cpp
 	Game/Commands/ItemCommands.cpp
 	PacketHandlers/ItemHandler.cpp 
 	Game/Item/ItemInterface.cpp 
@@ -89,16 +89,16 @@ SET(sources
 	PacketHandlers/MovementHandler.cpp 
 	MovementInfo.cpp
 	PacketHandlers/NPCHandler.cpp 
-	Entities/Object.cpp 
+	Game/Entities/Object.cpp 
 	Game/Storage/ObjectMgr.cpp
 	Game/Storage/ObjectStorage.cpp
 	Opcodes.cpp 
-	Entities/Pet.cpp 
+	Game/Entities/Pet.cpp 
 	PacketHandlers/PetHandler.cpp 
-	Entities/Player.cpp 
+	Game/Entities/Player.cpp 
 	Game/Commands/PlayerCommands.cpp
 	PlayerMessenger.cpp
-	Entities/PlayerPacketWrapper.cpp 
+	Game/Entities/PlayerPacketWrapper.cpp 
 	PacketHandlers/QueryHandler.cpp 
 	Game/Quest/Quest.cpp 
 	PacketHandlers/QuestHandler.cpp 
@@ -110,23 +110,23 @@ SET(sources
 	ScriptMgr.cpp 
 	PacketHandlers/SocialHandler.cpp 
 	SpeedDetector.cpp 
-	Spell/SpellAuras.cpp 
-	Spell/SpellTarget.cpp 
-	Spell/Spell.cpp 
+	Game/Spell/SpellAuras.cpp 
+	Game/Spell/SpellTarget.cpp 
+	Game/Spell/Spell.cpp 
 	StdAfx.cpp
 	SummonHandler.cpp
-	Spell/SpellEffects.cpp 
+	Game/Spell/SpellEffects.cpp 
 	PacketHandlers/SpellHandler.cpp 
-	Spell/HackFixes.cpp 
+	Game/Spell/HackFixes.cpp 
 	Stats.cpp 
 	PacketHandlers/TaxiHandler.cpp 
 	TaxiMgr.cpp 
 	Map/TerrainMgr.cpp 
 	PacketHandlers/TradeHandler.cpp
-	Entities/Transporter.cpp
-	Entities/Unit.cpp 
-	Entities/Update/UpdateBuilder.cpp
-	Entities/Vehicle.cpp 
+	Game/Entities/Transporter.cpp
+	Game/Entities/Unit.cpp 
+	Game/Entities/Update/UpdateBuilder.cpp
+	Game/Entities/Vehicle.cpp 
 	PacketHandlers/VehicleHandler.cpp
 	Chat/WayPoints.cpp 
 	WeatherMgr.cpp 
@@ -142,39 +142,39 @@ SET(sources
 	Server/ConsoleCommands.cpp 
 	Server/ConsoleListener.cpp 
 	WUtil.cpp 
-	Spell/SpellProc.cpp
-	Spell/SpellProc_DeathKnight.cpp
-	Spell/SpellProc_Druid.cpp
-	Spell/SpellProc_Hunter.cpp
-	Spell/SpellProc_Items.cpp
-	Spell/SpellProc_Mage.cpp
-	Spell/SpellProc_Paladin.cpp
-	Spell/SpellProc_Priest.cpp
-	Spell/SpellProc_Rogue.cpp
-	Spell/SpellProc_Shaman.cpp
-	Spell/SpellProc_Warlock.cpp
-	Spell/SpellProc_Warrior.cpp
-	Spell/SpellMgr.cpp
-	Spell/Spell_DeathKnight.cpp
-	Spell/Spell_Druid.cpp
-	Spell/Spell_Hunter.cpp
-	Spell/Spell_Mage.cpp
-	Spell/Spell_Paladin.cpp
-	Spell/Spell_Priest.cpp
-	Spell/Spell_Rogue.cpp
-	Spell/Spell_Shaman.cpp
-	Spell/Spell_Warlock.cpp
-	Spell/Spell_Warrior.cpp
-	Entities/DeathKnight.cpp
-	Entities/Druid.cpp
-	Entities/Hunter.cpp
-	Entities/Mage.cpp
-	Entities/Paladin.cpp
-	Entities/Priest.cpp
-	Entities/Rogue.cpp
-	Entities/Shaman.cpp
-	Entities/Warlock.cpp
-	Entities/Warrior.cpp
+	Game/Spell/SpellProc.cpp
+	Game/Spell/SpellProc_DeathKnight.cpp
+	Game/Spell/SpellProc_Druid.cpp
+	Game/Spell/SpellProc_Hunter.cpp
+	Game/Spell/SpellProc_Items.cpp
+	Game/Spell/SpellProc_Mage.cpp
+	Game/Spell/SpellProc_Paladin.cpp
+	Game/Spell/SpellProc_Priest.cpp
+	Game/Spell/SpellProc_Rogue.cpp
+	Game/Spell/SpellProc_Shaman.cpp
+	Game/Spell/SpellProc_Warlock.cpp
+	Game/Spell/SpellProc_Warrior.cpp
+	Game/Spell/SpellMgr.cpp
+	Game/Spell/Spell_DeathKnight.cpp
+	Game/Spell/Spell_Druid.cpp
+	Game/Spell/Spell_Hunter.cpp
+	Game/Spell/Spell_Mage.cpp
+	Game/Spell/Spell_Paladin.cpp
+	Game/Spell/Spell_Priest.cpp
+	Game/Spell/Spell_Rogue.cpp
+	Game/Spell/Spell_Shaman.cpp
+	Game/Spell/Spell_Warlock.cpp
+	Game/Spell/Spell_Warrior.cpp
+	Game/Entities/DeathKnight.cpp
+	Game/Entities/Druid.cpp
+	Game/Entities/Hunter.cpp
+	Game/Entities/Mage.cpp
+	Game/Entities/Paladin.cpp
+	Game/Entities/Priest.cpp
+	Game/Entities/Rogue.cpp
+	Game/Entities/Shaman.cpp
+	Game/Entities/Warlock.cpp
+	Game/Entities/Warrior.cpp
 	Server/WowCrypt.cpp
 	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp 
@@ -204,32 +204,32 @@ SET( headers
 	Chat/Chat.h
 	CollideInterface.h
 	CommonScheduleThread.h
-	Entities/Summons/CompanionSummon.h
+	Game/Entities/Summons/CompanionSummon.h
 	Server/ConsoleCommands.h
-	Entities/Container.h
-	Entities/Corpse.h
-	Entities/Creature.h
+	Game/Entities/Container.h
+	Game/Entities/Corpse.h
+	Game/Entities/Creature.h
 	Game/Commands/CreatureCommands.h
 	DatabaseCleaner.h
 	DayWatcherThread.h
 	DBC/DBCStores.h
-	Entities/DeathKnight.h
+	Game/Entities/DeathKnight.h
 	Definitions.h
-	Entities/Druid.h
-	Entities/DynamicObject.h
+	Game/Entities/Druid.h
+	Game/Entities/DynamicObject.h
 	EquipmentSetMgr.h
 	Events.h
 	EventableObject.h
 	EventMgr.h
 	faction.h
-	Entities/GameObject.h
+	Game/Entities/GameObject.h
 	Gossip.h
 	Group.h
-	Entities/Summons/GuardianSummon.h
+	Game/Entities/Summons/GuardianSummon.h
 	Guild.h
 	HonorHandler.h
-	Entities/Hunter.h
-	Entities/Item.h
+	Game/Entities/Hunter.h
+	Game/Entities/Item.h
 	Game/Commands/ItemCommands.h
 	Game/Item/ItemInterface.h
 	Game/Item/ItemIterator.h
@@ -240,7 +240,7 @@ SET( headers
 	Server/LogonSocket.h
 	Server/LogonCommHandler.h
 	LootMgr.h
-	Entities/Mage.h
+	Game/Entities/Mage.h
 	Game/Mail/MailMessage.h
 	Game/Mail/MailBox.h
 	Game/Mail/MailSystem.h
@@ -255,54 +255,54 @@ SET( headers
 	PacketHandlers/MiscHandler.h
 	NameTables.h
 	PacketHandlers/NPCHandler.h
-	Entities/ObjectConstants.h
-	Entities/Object.h
+	Game/Entities/ObjectConstants.h
+	Game/Entities/Object.h
 	Game/Storage/ObjectMgr.h
 	Game/Storage/ObjectStorage.h
 	Opcodes.h
-	Entities/Paladin.h
-	Entities/Pet.h
-	Entities/Player.h
-	Entities/PlayerCache.h
+	Game/Entities/Paladin.h
+	Game/Entities/Pet.h
+	Game/Entities/Player.h
+	Game/Entities/PlayerCache.h
 	Game/Commands/PlayerCommands.h
 	PlayerMessenger.h
-	Entities/Summons/PossessedSummon.h
-	Entities/Priest.h
+	Game/Entities/Summons/PossessedSummon.h
+	Game/Entities/Priest.h
 	Game/Quest/Quest.h
 	Game/Quest/QuestMgr.h
-	Entities/Rogue.h
+	Game/Entities/Rogue.h
 	ScriptMgr.h
 	ScriptSetup.h
-	Entities/Shaman.h
+	Game/Entities/Shaman.h
 	Skill.h
 	SkillNameMgr.h
 	SpawnTimedEmotes.h
 	SpeedDetector.h
-	Spell/Spell.h
-	Spell/SpellAuras.h
-	Spell/SpellFailure.h
-	Spell/SpellMgr.h
-	Spell/SpellNameHashes.h
-	Spell/SpellProc.h
-	Spell/SpellTarget.h
+	Game/Spell/Spell.h
+	Game/Spell/SpellAuras.h
+	Game/Spell/SpellFailure.h
+	Game/Spell/SpellMgr.h
+	Game/Spell/SpellNameHashes.h
+	Game/Spell/SpellProc.h
+	Game/Spell/SpellTarget.h
 	Stats.h
 	StdAfx.h
-	Entities/Summons/Summon.h
+	Game/Entities/Summons/Summon.h
 	SummonHandler.h
 	TaxiMgr.h
 	Map/TerrainMgr.h
-	Entities/Summons/TotemSummon.h
-	Entities/Transporter.h
-	Entities/Unit.h
-	Entities/Update/UpdateBuilder.h
-	Entities/Update/UpdateFields.h
-	Entities/Update/UpdateMask.h
-	Entities/Vehicle.h
-	Entities/Warlock.h
-	Entities/Warrior.h
+	Game/Entities/Summons/TotemSummon.h
+	Game/Entities/Transporter.h
+	Game/Entities/Unit.h
+	Game/Entities/Update/UpdateBuilder.h
+	Game/Entities/Update/UpdateFields.h
+	Game/Entities/Update/UpdateMask.h
+	Game/Entities/Vehicle.h
+	Game/Entities/Warlock.h
+	Game/Entities/Warrior.h
 	Waypoint.h
 	WeatherMgr.h
-	Entities/Summons/WildSummon.h
+	Game/Entities/Summons/WildSummon.h
 	WordFilter.h
 	World.h
 	WorldConfig.h

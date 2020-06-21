@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Entities/Update/UpdateBuilder.h"
+#include "Game/Entities/Update/UpdateBuilder.h"
 
 Container::Container(uint32 high, uint32 low) : Item()
 {

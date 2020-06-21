@@ -18,7 +18,7 @@
  *
  */
 
-#include "../../StdAfx.h"
+#include "StdAfx.h"
 
 WildSummon::WildSummon(uint64 GUID) : Summon(GUID)
 {

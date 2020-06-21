@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Entities/Update/UpdateBuilder.h"
+#include "Game/Entities/Update/UpdateBuilder.h"
 
 void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask, Object *object, Player* target )
 {

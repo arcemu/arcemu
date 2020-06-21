@@ -18,33 +18,41 @@
  *
  */
 
-#include "../../StdAfx.h"
 
-PossessedSummon::PossessedSummon(uint64 GUID) : Summon(GUID)
+#include "StdAfx.h"
+
+CompanionSummon::CompanionSummon(uint64 GUID) : Summon(GUID)
 {
 }
 
-PossessedSummon::~PossessedSummon()
+CompanionSummon::~CompanionSummon()
 {
 }
 
-void PossessedSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+void CompanionSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
 {
 	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	setLevel(owner->getLevel());
-	setAItoUse(false);
-	m_aiInterface->StopMovement(0);
+	SetFaction(35);
+	setLevel(1);
+	m_aiInterface->Init(this, AITYPE_PET, MOVEMENTTYPE_NONE, owner);
+	m_aiInterface->SetUnitToFollow(owner);
+	m_aiInterface->SetUnitToFollowAngle(-M_PI_FLOAT / 2);
+	m_aiInterface->SetFollowDistance(3.0f);
+	m_aiInterface->disable_melee = true;
+	bInvincible = true;
+
+	RemovePvPFlag();
+	RemoveFFAPvPFlag();
 }
 
-void PossessedSummon::OnPushToWorld()
+void CompanionSummon::OnPushToWorld()
 {
 	Summon::OnPushToWorld();
 }
 
-void PossessedSummon::OnPreRemoveFromWorld()
+void CompanionSummon::OnPreRemoveFromWorld()
 {
 	Summon::OnPreRemoveFromWorld();
 }
-
 

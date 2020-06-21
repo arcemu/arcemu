@@ -18,7 +18,7 @@
  */
 
 #include "StdAfx.h"
-#include "Entities/Update/UpdateBuilder.h"
+#include "Game/Entities/Update/UpdateBuilder.h"
 #include "Messenger.h"
 
 #define ARCEMU_NORMAL_GAMESPEED 0.0166666669777748f

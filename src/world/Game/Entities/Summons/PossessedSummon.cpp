@@ -18,41 +18,31 @@
  *
  */
 
-#include "../../StdAfx.h"
+#include "StdAfx.h"
 
-GuardianSummon::GuardianSummon(uint64 GUID) : Summon(GUID)
+PossessedSummon::PossessedSummon(uint64 GUID) : Summon(GUID)
 {
 }
 
-GuardianSummon::~GuardianSummon()
+PossessedSummon::~PossessedSummon()
 {
 }
 
-void GuardianSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
+void PossessedSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & position, uint32 spellid, int32 summonslot)
 {
 	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	SetPowerType(POWER_TYPE_MANA);
-	SetMaxPower(POWER_TYPE_MANA, GetMaxPower(POWER_TYPE_MANA) + 28 + 10 * getLevel());
-	SetPower(POWER_TYPE_MANA, GetPower(POWER_TYPE_MANA) + 28 + 10 * getLevel());
 	setLevel(owner->getLevel());
-	SetMaxHealth(GetMaxHealth() + 28 + 30 * getLevel());
-	SetHealth(GetMaxHealth());
-	SetType(CREATURE_TYPE_GUARDIAN);
-
-	m_aiInterface->Init(this, AITYPE_PET , MOVEMENTTYPE_NONE, owner);
-	m_aiInterface->SetUnitToFollow(owner);
-	m_aiInterface->SetFollowDistance(3.0f);
-
-	m_noRespawn = true;
+	setAItoUse(false);
+	m_aiInterface->StopMovement(0);
 }
 
-void GuardianSummon::OnPushToWorld()
+void PossessedSummon::OnPushToWorld()
 {
 	Summon::OnPushToWorld();
 }
 
-void GuardianSummon::OnPreRemoveFromWorld()
+void PossessedSummon::OnPreRemoveFromWorld()
 {
 	Summon::OnPreRemoveFromWorld();
 }

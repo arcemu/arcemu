@@ -24,7 +24,7 @@
 
 #include "StdAfx.h"
 #include "System/CrashHandler.h"
-#include "Entities/Update/UpdateBuilder.h"
+#include "Game/Entities/Update/UpdateBuilder.h"
 
 Arcemu::Utility::TLSObject<MapMgr*> t_currentMapContext;
 

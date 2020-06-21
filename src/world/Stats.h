@@ -21,8 +21,8 @@
 #ifndef __STATS_H
 #define __STATS_H
 
-#include "Entities/Unit.h"
-#include "Entities/Update/UpdateMask.h"
+#include "Game/Entities/Unit.h"
+#include "Game/Entities/Update/UpdateMask.h"
 #include "Game/Item/ItemInterface.h"
 
 enum Stats
