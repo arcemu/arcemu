@@ -26,22 +26,6 @@
 #include "Database/DatabaseEnv.h"
 #include "MainServerDefines.h"
 
-#ifndef _VERSION
-# define _VERSION "3.3.5a"
-#endif
-
-#if PLATFORM == PLATFORM_WIN32
-# define _FULLVERSION _VERSION "-SVN (Win32)"
-#else
-# define _FULLVERSION _VERSION "-SVN (Unix)"
-#endif
-
-#ifdef _DEBUG
-#define BUILDTYPE "Debug"
-#else
-#define BUILDTYPE "Release"
-#endif
-
 #define DEFAULT_LOOP_TIME 0 /* 0 milliseconds - instant */
 #define DEFAULT_LOG_LEVEL 0
 #define DEFAULT_PLAYER_LIMIT 100
