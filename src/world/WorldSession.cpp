@@ -574,6 +574,7 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_USE, UseEquipmentSetPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_DELETE, DeleteEquipmentSetPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDINFO, ItemRefundInfoPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDREQUEST, ItemRefundRequestPacketHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -983,8 +984,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleInsertGemOpcode;
 	WorldPacketHandlers[CMSG_WRAP_ITEM].handler =
 	    &WorldSession::HandleWrapItemOpcode;
-	WorldPacketHandlers[CMSG_ITEMREFUNDREQUEST].handler =
-	    &WorldSession::HandleItemRefundRequestOpcode;
 
 	// Spell System / Talent System
 	WorldPacketHandlers[CMSG_USE_ITEM].handler =

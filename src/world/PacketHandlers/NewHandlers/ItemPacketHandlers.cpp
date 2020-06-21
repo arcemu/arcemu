@@ -78,3 +78,87 @@ DEFINE_PACKET_HANDLER_METHOD( ItemRefundInfoPacketHandler )
 		LOG_DEBUG("Sent SMSG_ITEMREFUNDINFO.");
 	}
 }
+
+DEFINE_PACKET_HANDLER_METHOD( ItemRefundRequestPacketHandler )
+{
+	LOG_DEBUG("Recieved CMSG_ITEMREFUNDREQUEST.");
+	Player *_player = session.GetPlayer();		
+
+	CHECK_INWORLD_RETURN
+
+	uint32 error = 1;
+	Item* itm = NULL;
+	std::pair< time_t, uint32 > RefundEntry;
+	ItemExtendedCostEntry* ex = NULL;
+	ItemPrototype* proto = NULL;
+
+	Arcemu::GamePackets::Items::CItemRefundRequest request;
+	request.deserialize( recv_data );
+
+	itm = _player->GetItemInterface()->GetItemByGUID(request.guid);
+
+	if( ( itm != NULL ) && itm->IsEligibleForRefund() )
+	{
+		RefundEntry.first = 0;
+		RefundEntry.second = 0;
+
+		RefundEntry = _player->GetItemInterface()->LookupRefundable(request.guid);
+
+		// If the item is refundable we look up the extendedcost
+		if(RefundEntry.first != 0 && RefundEntry.second != 0)
+		{
+			/// Are we within the allowed time?
+			uint32* played = _player->GetPlayedtime();			
+			if(played[1] < (RefundEntry.first + 60 * 60 * 2))
+				ex = dbcItemExtendedCost.LookupEntry(RefundEntry.second);
+		}
+
+		if(ex != NULL)
+		{
+			proto = itm->GetProto();
+
+////////////////////////////////// Magic! Remove the item item and refund the cost //////////////////////////////////
+
+			for(int i = 0; i < Arcemu::GamePackets::Items::SItemRefundRequest::MAX_ITEM_COUNT; ++i)
+			{
+				_player->GetItemInterface()->AddItemById(ex->item[i], ex->count[i], 0);
+			}
+
+			_player->GetItemInterface()->AddItemById(43308, ex->honor, 0);
+			_player->GetItemInterface()->AddItemById(43307, ex->arena, 0);
+			_player->ModGold(proto->BuyPrice);
+
+			_player->GetItemInterface()->RemoveItemAmtByGuid(request.guid, 1);
+
+			_player->GetItemInterface()->RemoveRefundable(request.guid);
+
+			// Great success!
+			error = 0;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
+	}
+
+	Arcemu::GamePackets::Items::SItemRefundRequest response;
+	response.guid = request.guid;
+	response.error = 0;
+
+	if( error == 0 )
+	{
+		response.buyprice = proto->BuyPrice;
+		response.honor = ex->honor;
+		response.arena = ex->arena;
+
+		for( int i = 0; i < Arcemu::GamePackets::Items::SItemRefundRequest::MAX_ITEM_COUNT; i++ )
+		{
+			response.item[ i ] = ex->item[ i ];
+			response.item_count[ i ] = ex->count[ i ];
+		}
+	}
+
+	PacketBuffer buffer;
+	response.serialize( buffer );
+	session.SendPacket( &buffer );
+
+	LOG_DEBUG("Sent SMSG_ITEMREFUNDREQUEST.");
+}
+

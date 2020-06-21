@@ -27,6 +27,7 @@ namespace Arcemu
 		{
 			void CItemRefundInfo::serialize( PacketBuffer &buffer ) const
 			{
+				buffer.Initialize( CMSG_ITEMREFUNDINFO );
 				buffer << uint64( guid );
 			}
 
@@ -69,6 +70,56 @@ namespace Arcemu
 
 				buffer >> unk1;
 				buffer >> remaining_time;
+			}
+
+			void CItemRefundRequest::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( CMSG_ITEMREFUNDREQUEST );
+				buffer << guid;
+			}
+
+			void CItemRefundRequest::deserialize( PacketBuffer &buffer )
+			{
+				buffer >> guid;
+			}
+
+			void SItemRefundRequest::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_ITEMREFUNDREQUEST );
+				buffer << uint64( guid );
+				buffer << uint32( error );
+				
+				if( error == 0 )
+				{
+					buffer << uint32( buyprice );
+					buffer << uint32( honor );
+					buffer << uint32( arena );
+					
+					for( int i = 0; i < MAX_ITEM_COUNT; i++ )
+					{
+						buffer << uint32( item[i] );
+						buffer << uint32( item_count[i] );
+					}
+				}
+			}
+
+			void SItemRefundRequest::deserialize( PacketBuffer &buffer )
+			{
+				buffer >> guid;
+				buffer >> error;
+
+				if( error == 0 )
+				{
+					buffer >> buyprice;
+					buffer >> honor;
+					buffer >> arena;
+
+					for( int i = 0; i < MAX_ITEM_COUNT; i++ )
+					{
+						buffer >> item[ i ];
+						buffer >> item_count[ i ];
+					}
+				}
 			}
 		}
 	}

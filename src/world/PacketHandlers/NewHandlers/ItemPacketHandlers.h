@@ -23,5 +23,6 @@
 #include "PacketHandlerMacros.h"
 
 DEFINE_PACKET_HANDLER_CLASS( ItemRefundInfoPacketHandler )
+DEFINE_PACKET_HANDLER_CLASS( ItemRefundRequestPacketHandler )
 
 #endif

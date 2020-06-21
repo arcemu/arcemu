@@ -44,6 +44,7 @@ namespace Arcemu
 			public:
 				static const uint32 MAX_ITEM_COUNT = 5;
 
+			public:
 				uint64 guid;
 				uint32 buyprice;
 				uint32 honor;
@@ -55,6 +56,39 @@ namespace Arcemu
 
 			public:
 				SItemRefundInfo(){}
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
+
+			/// Client requests the refund of the item
+			class CItemRefundRequest : public Arcemu::Shared::Packet
+			{
+			public:
+				uint64 guid;
+
+			public:
+				CItemRefundRequest(){}
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
+
+			/// Server responds to refund request
+			class SItemRefundRequest : public Arcemu::Shared::Packet
+			{
+			public:
+				static const uint32 MAX_ITEM_COUNT = 5;
+
+			public:
+				uint64 guid;
+				uint32 error;
+				uint32 buyprice;
+				uint32 honor;
+				uint32 arena;
+				uint32 item[ MAX_ITEM_COUNT ];
+				uint32 item_count[ MAX_ITEM_COUNT ];
+
+			public:
+				SItemRefundRequest(){}
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
