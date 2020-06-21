@@ -27,11 +27,6 @@
 
 #include <iostream>
 
-void OnCrash( bool b )
-{
-	std::cout << "CRASH!" << std::endl;
-}
-
 class WorldUtilTest
 {
 public:

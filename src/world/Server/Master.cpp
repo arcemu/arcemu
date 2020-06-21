@@ -25,6 +25,8 @@
 
 #ifndef WIN32
 #include <sched.h>
+#else
+#include "System/CrashHandler.h"
 #endif
 
 #include "git_version.h"
@@ -60,14 +62,6 @@ void Master::_OnSignal(int s)
 	}
 
 	signal(s, _OnSignal);
-}
-
-Master::Master()
-{
-}
-
-Master::~Master()
-{
 }
 
 struct Addr
@@ -755,6 +749,17 @@ void OnCrash(bool Terminate)
 		TerminateProcess(pH, 1);
 		CloseHandle(pH);
 	}
+}
+
+Master::Master()
+{
+#ifdef WIN32
+	setCrashHandlerFunction( OnCrash );
+#endif
+}
+
+Master::~Master()
+{
 }
 
 #endif

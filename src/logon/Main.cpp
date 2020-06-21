@@ -29,6 +29,8 @@
 
 #ifndef WIN32
 #include <sched.h>
+#else
+#include "System/CrashHandler.h"
 #endif
 
 // Database impl
@@ -64,6 +66,10 @@ void _OnSignal(int s)
 	signal(s, _OnSignal);
 }
 
+void OnCrash(bool Terminate)
+{
+}
+
 int main(int argc, char** argv)
 {
 #ifndef WIN32
@@ -76,6 +82,8 @@ int main(int argc, char** argv)
 		if(setrlimit(RLIMIT_CORE, &rl) == -1)
 			printf("setrlimit failed. Server may not save core.dump files.\n");
 	}
+#else
+	setCrashHandlerFunction( OnCrash );
 #endif
 
 	new LogonServer;
@@ -528,11 +536,6 @@ void LogonServer::Run(int argc, char** argv)
 	delete sl;
 	LOG_BASIC("Shutdown complete.");
 	sLog.Close();
-}
-
-void OnCrash(bool Terminate)
-{
-
 }
 
 void LogonServer::CheckForDeadSockets()

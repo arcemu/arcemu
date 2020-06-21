@@ -265,6 +265,12 @@ void CStackWalker::OnOutput(LPCSTR szText)
 
 bool died = false;
 
+static CrashHandler crashHandler = NULL;
+
+void setCrashHandlerFunction( CrashHandler handler )
+{
+	crashHandler = handler;
+}
 
 int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 {
@@ -345,7 +351,15 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 	}
 
 	SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
-	OnCrash(!ON_CRASH_BREAK_DEBUGGER);
+
+	if( crashHandler != NULL )
+	{
+		crashHandler(!ON_CRASH_BREAK_DEBUGGER);
+	}
+	else
+	{
+		sLog.outError( "No crashhandler function defined. Set it with setCrashHandlerFunction(bool) (defined in CrashHandler.h)!" );
+	}
 
 	sLog.Close();
 	return EXCEPTION_CONTINUE_SEARCH;

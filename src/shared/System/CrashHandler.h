@@ -50,7 +50,9 @@ class SERVER_DECL CStackWalker : public StackWalker
 };
 
 void StartCrashHandler();
-void OnCrash(bool Terminate);
+
+typedef void (*CrashHandler)(bool);
+extern void setCrashHandlerFunction( CrashHandler handler );
 
 typedef struct _EXCEPTION_POINTERS EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
 int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs);
