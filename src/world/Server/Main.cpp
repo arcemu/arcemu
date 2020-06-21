@@ -40,7 +40,8 @@ int unix_main(int argc, char** argv)
 			printf("setrlimit failed. Server may not save core.dump files.\n");
 	}
 
-	if(!sMaster.Run(argc, argv))
+	Master master;
+	if(!master.Run(argc, argv))
 		exit(-1);
 	else
 		exit(0);
@@ -49,6 +50,13 @@ int unix_main(int argc, char** argv)
 }
 
 #else
+
+bool run(int argc, char **argv)
+{
+	Master master;
+	bool retval = master.Run(argc, argv);
+	return retval;
+}
 
 int win32_main(int argc, char** argv)
 {
@@ -61,7 +69,7 @@ int win32_main(int argc, char** argv)
 	HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg));
 
 	THREAD_TRY_EXECUTION
-	sMaster.Run(argc, argv);
+	run(argc, argv);
 	THREAD_HANDLE_CRASH
 
 	exit(0);

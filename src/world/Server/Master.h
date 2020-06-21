@@ -39,7 +39,7 @@
 #define DEFAULT_QUEST_XP_RATE 1
 #define DEFAULT_SAVE_RATE 300000	// 5mins
 
-class Master : public Singleton<Master>
+class Master
 {
 	public:
 		Master();
@@ -58,7 +58,5 @@ class Master : public Singleton<Master>
 
 		static void _OnSignal(int s);
 };
-
-#define sMaster Master::getSingleton()
 
 #endif
