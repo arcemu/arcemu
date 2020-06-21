@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "UpdateBuilder.h"
+#include "Entities/Update/UpdateBuilder.h"
 #include "Messenger.h"
 #include "PlayerMessenger.h"
 

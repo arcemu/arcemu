@@ -19,8 +19,8 @@
  */
 
 #include "StdAfx.h"
-#include "Unit.h"
-#include "UpdateBuilder.h"
+#include "Entities/Unit.h"
+#include "Entities/Update/UpdateBuilder.h"
 #include "Messenger.h"
 #include "MessageRouter.h"
 

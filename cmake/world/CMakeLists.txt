@@ -13,22 +13,21 @@ SET(sources
 	PacketHandlers/VoiceChatHandler.cpp 
 	DayWatcherThread.cpp 
 	CommonScheduleThread.cpp 
-	ArenaTeam.cpp 
+	Game/Arena/ArenaTeam.cpp 
 	PacketHandlers/ArenaTeamHandler.cpp 
 	DatabaseCleaner.cpp 
-	ObjectStorage.cpp  
 	AddonMgr.cpp 
-	AIInterface.cpp 
-	AIEvents.cpp
+	Game/AI/AIInterface.cpp 
+	Game/AI/AIEvents.cpp
 	PacketHandlers/AreaTrigger.cpp 
-	Arenas.cpp 
-	AuctionHouse.cpp 
+	Game/Arena/Arenas.cpp 
+	Game/Auction/AuctionHouse.cpp 
 	PacketHandlers/AuctionHouseHandler.cpp
-	AuctionMgr.cpp 
-	Battleground.cpp
+	Game/Auction/AuctionMgr.cpp 
+	Game/BattleGround/Battleground.cpp
 	Chat/BattlegroundCommands.cpp 
 	PacketHandlers/BattlegroundHandler.cpp 
-	BattlegroundMgr.cpp 
+	Game/BattleGround/BattlegroundMgr.cpp 
 	Chat/Channel.cpp 
 	PacketHandlers/ChannelHandler.cpp 
 	PacketHandlers/CharacterHandler.cpp 
@@ -65,7 +64,7 @@ SET(sources
 	Entities/Item.cpp
 	Game/Commands/ItemCommands.cpp
 	PacketHandlers/ItemHandler.cpp 
-	ItemInterface.cpp 
+	Game/Item/ItemInterface.cpp 
 	Chat/Level0.cpp 
 	Chat/Level1.cpp 
 	Chat/Level2.cpp 
@@ -76,10 +75,10 @@ SET(sources
 	LocalizationMgr.cpp 
 	Server/LogonSocket.cpp 
 	Server/LogonCommHandler.cpp 
-	MailMessage.cpp
-	MailBox.cpp
+	Game/Mail/MailMessage.cpp
+	Game/Mail/MailBox.cpp
 	PacketHandlers/MailHandler.cpp
-	MailSystem.cpp 
+	Game/Mail/MailSystem.cpp 
 	Map/MapCell.cpp 
 	Map/Map.cpp 
 	Map/MapScriptInterface.cpp 
@@ -91,7 +90,8 @@ SET(sources
 	MovementInfo.cpp
 	PacketHandlers/NPCHandler.cpp 
 	Entities/Object.cpp 
-	ObjectMgr.cpp 
+	Game/Storage/ObjectMgr.cpp
+	Game/Storage/ObjectStorage.cpp
 	Opcodes.cpp 
 	Entities/Pet.cpp 
 	PacketHandlers/PetHandler.cpp 
@@ -100,9 +100,9 @@ SET(sources
 	PlayerMessenger.cpp
 	Entities/PlayerPacketWrapper.cpp 
 	PacketHandlers/QueryHandler.cpp 
-	Quest.cpp 
+	Game/Quest/Quest.cpp 
 	PacketHandlers/QuestHandler.cpp 
-	QuestMgr.cpp 
+	Game/Quest/QuestMgr.cpp 
 	Chat/QuestCommands.cpp 
 	PacketHandlers/RaidHandler.cpp 
 	Chat/RecallCommands.cpp 
@@ -125,7 +125,7 @@ SET(sources
 	PacketHandlers/TradeHandler.cpp
 	Entities/Transporter.cpp
 	Entities/Unit.cpp 
-	UpdateBuilder.cpp
+	Entities/Update/UpdateBuilder.cpp
 	Entities/Vehicle.cpp 
 	PacketHandlers/VehicleHandler.cpp
 	Chat/WayPoints.cpp 
@@ -134,7 +134,7 @@ SET(sources
 	WorldCreator.cpp 
 	WorldSession.cpp 
 	Server/WorldSocket.cpp 
-	WorldStatesHandler.cpp
+	Game/WorldStates/WorldStatesHandler.cpp
 	WorldRunnable.cpp 
 	WordFilter.cpp 
 	Server/MainServerDefines.cpp
@@ -186,16 +186,16 @@ SET( headers
 	Game/Network/ItemPackets.h
 	AchievementMgr.h
 	AddonMgr.h
-	AIInterface.h
-	AIEvents.h
+	Game/AI/AIInterface.h
+	Game/AI/AIEvents.h
 	AreaTrigger.h
-	Arenas.h
-	ArenaTeam.h
-	AuctionHouse.h
-	AuctionMgr.h
+	Game/Arena/Arenas.h
+	Game/Arena/ArenaTeam.h
+	Game/Auction/AuctionHouse.h
+	Game/Auction/AuctionMgr.h
 	Server/BaseConsole.h
-	Battleground.h
-	BattlegroundMgr.h
+	Game/BattleGround/Battleground.h
+	Game/BattleGround/BattlegroundMgr.h
 	ByteBufferExtension.h
 	Server/CConsole.h
 	Map/CellHandler.h
@@ -231,9 +231,9 @@ SET( headers
 	Entities/Hunter.h
 	Entities/Item.h
 	Game/Commands/ItemCommands.h
-	ItemInterface.h
-	ItemIterator.h
-	ItemPrototype.h
+	Game/Item/ItemInterface.h
+	Game/Item/ItemIterator.h
+	Game/Item/ItemPrototype.h
 	LfgMgr.h
 	LocalizationMgr.h
 	LocationVector.h
@@ -241,9 +241,9 @@ SET( headers
 	Server/LogonCommHandler.h
 	LootMgr.h
 	Entities/Mage.h
-	MailMessage.h
-	MailBox.h
-	MailSystem.h
+	Game/Mail/MailMessage.h
+	Game/Mail/MailBox.h
+	Game/Mail/MailSystem.h
 	Server/MainServerDefines.h
 	Map/Map.h
 	Map/MapCell.h
@@ -257,8 +257,8 @@ SET( headers
 	PacketHandlers/NPCHandler.h
 	Entities/ObjectConstants.h
 	Entities/Object.h
-	ObjectMgr.h
-	ObjectStorage.h
+	Game/Storage/ObjectMgr.h
+	Game/Storage/ObjectStorage.h
 	Opcodes.h
 	Entities/Paladin.h
 	Entities/Pet.h
@@ -268,8 +268,8 @@ SET( headers
 	PlayerMessenger.h
 	Entities/Summons/PossessedSummon.h
 	Entities/Priest.h
-	Quest.h
-	QuestMgr.h
+	Game/Quest/Quest.h
+	Game/Quest/QuestMgr.h
 	Entities/Rogue.h
 	ScriptMgr.h
 	ScriptSetup.h
@@ -294,9 +294,9 @@ SET( headers
 	Entities/Summons/TotemSummon.h
 	Entities/Transporter.h
 	Entities/Unit.h
-	UpdateBuilder.h
-	UpdateFields.h
-	UpdateMask.h
+	Entities/Update/UpdateBuilder.h
+	Entities/Update/UpdateFields.h
+	Entities/Update/UpdateMask.h
 	Entities/Vehicle.h
 	Entities/Warlock.h
 	Entities/Warrior.h
@@ -310,8 +310,8 @@ SET( headers
 	WorldRunnable.h
 	WorldSession.h
 	Server/WorldSocket.h
-	WorldStatesHandler.h
-	WorldStates.h
+	Game/WorldStates/WorldStatesHandler.h
+	Game/WorldStates/WorldStates.h
 	Server/WowCrypt.h
 	WoWGuid.h
 	WUtil.h
