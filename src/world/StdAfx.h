@@ -169,7 +169,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/AI/AIInterface.h"
 #include "AreaTrigger.h"
 #include "Game/BattleGround/BattlegroundMgr.h"
-#include "Game/Battleground/Battleground.h"
+#include "Game/BattleGround/Battleground.h"
 #include "Map/CellHandler.h"
 #include "Chat/Chat.h"
 #include "Game/Entities/Corpse.h"
