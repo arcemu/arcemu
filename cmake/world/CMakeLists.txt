@@ -4,6 +4,7 @@ SET(sources
   DBC/DBCStores.cpp
 	Game/Commands/AccountCommands.cpp
 	Game/Network/AccountPackets.cpp
+	Game/Network/ItemPackets.cpp
 	AchievementMgr.cpp 
 	CollideInterface.cpp  
 	PacketHandlers/VoiceChatHandler.cpp 
@@ -179,6 +180,7 @@ SET(sources
 SET( headers
 	Game/Commands/AccountCommands.h
 	Game/Network/AccountPackets.h
+	Game/Network/ItemPackets.h
 	AchievementMgr.h
 	AddonMgr.h
 	AIInterface.h

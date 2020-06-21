@@ -295,7 +295,6 @@ class SERVER_DECL WorldSession
 		void SendSellItem(uint64 vendorguid, uint64 itemid, uint8 error);
 		void SendNotification(const char* message, ...);
 		void SendAuctionPlaceBidResultPacket(uint32 itemId, uint32 error);
-		void SendRefundInfo(uint64 GUID);
 		void SendNotInArenaTeamPacket(uint8 type);
 
 		void SetInstance(uint32 Instance) { instanceId = Instance; }

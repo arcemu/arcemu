@@ -263,5 +263,6 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Commands/AccountCommands.h"
 #include "PlayerMessenger.h"
 #include "Game/Network/AccountPackets.h"
+#include "Game/Network/ItemPackets.h"
 
 #endif

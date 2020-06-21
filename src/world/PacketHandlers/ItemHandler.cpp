@@ -2132,22 +2132,56 @@ void WorldSession::HandleItemRefundInfoOpcode(WorldPacket & recvPacket)
 
 	LOG_DEBUG("Recieved CMSG_ITEMREFUNDINFO.");
 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//  As of 3.2.0a the client sends this packet to request refund info on an item
-	//
-	//	{CLIENT} Packet: (0x04B3) UNKNOWN PacketSize = 8 TimeStamp = 265984125
-	//	E6 EE 09 18 02 00 00 42
-	//
-	//
-	//
-	//  Structure:
-	//  uint64 GUID
-	//////////////////////////////////////////////////////////////////////////////////////////
+	Arcemu::GamePackets::Items::CItemRefundInfo cRefundInfo;
+	cRefundInfo.deserialize( recvPacket );
 
-	uint64 GUID;
-	recvPacket >> GUID;
+	Item* itm = _player->GetItemInterface()->GetItemByGUID(cRefundInfo.guid);
+	if(itm == NULL)
+		return;
 
-	this->SendRefundInfo(GUID);
+	if(itm->IsEligibleForRefund())
+	{
+		std::pair < time_t, uint32 > RefundEntry;
+
+		RefundEntry = _player->GetItemInterface()->LookupRefundable(cRefundInfo.guid);
+
+		if(RefundEntry.first == 0 || RefundEntry.second == 0)
+			return;
+
+		ItemExtendedCostEntry* ex =
+		    dbcItemExtendedCost.LookupEntryForced(RefundEntry.second);
+		if(ex == NULL)
+			return;
+
+		ItemPrototype* proto = itm->GetProto();
+
+		Arcemu::GamePackets::Items::SItemRefundInfo sRefundInfo;
+		sRefundInfo.guid = uint64(cRefundInfo.guid);
+		sRefundInfo.buyprice = uint32(proto->BuyPrice);
+		sRefundInfo.honor = uint32(ex->honor);
+		sRefundInfo.arena = uint32(ex->arena);
+
+		for(int i = 0; i < 5; ++i)
+		{
+			sRefundInfo.item[ i ] = uint32(ex->item[i]);
+			sRefundInfo.item_count[ i ] = uint32(ex->count[i]);
+		}
+
+		sRefundInfo.unk1 = uint32(0);	// always seems to be 0
+
+		uint32* played = _player->GetPlayedtime();
+
+		if(played[1] > (RefundEntry.first + 60 * 60 * 2))
+			sRefundInfo.remaining_time = uint32(0);
+		else
+			sRefundInfo.remaining_time = uint32(RefundEntry.first);
+
+		WorldPacket packet;
+		sRefundInfo.serialize( packet );
+		SendPacket(&packet);
+
+		LOG_DEBUG("Sent SMSG_ITEMREFUNDINFO.");
+	}
 
 }
 
