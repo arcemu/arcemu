@@ -751,6 +751,8 @@ void OnCrash(bool Terminate)
 	}
 }
 
+#endif
+
 Master::Master()
 {
 #ifdef WIN32
@@ -762,4 +764,3 @@ Master::~Master()
 {
 }
 
-#endif
