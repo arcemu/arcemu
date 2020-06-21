@@ -46,7 +46,6 @@
 
 #include "RealmList/RealmLogonLinkOpcodes.h"
 #include "Server/Main.h"
-#include "../world/NameTables.h"
 #include "Auth/AccountMgr.h"
 #include "Server/PeriodicFunctionCall_Thread.h"
 #include "Patcher/AutoPatcher.h"
