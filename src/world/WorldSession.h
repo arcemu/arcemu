@@ -494,7 +494,6 @@ class SERVER_DECL WorldSession
 		void HandleAutoStoreBankItemOpcode(WorldPacket & recvPacket);
 		void HandleCancelTemporaryEnchantmentOpcode(WorldPacket & recvPacket);
 		void HandleInsertGemOpcode(WorldPacket & recvPacket);
-		void HandleItemRefundInfoOpcode(WorldPacket & recvPacket);
 		void HandleItemRefundRequestOpcode(WorldPacket & recvPacket);
 
 		/// Combat opcodes (CombatHandler.cpp)

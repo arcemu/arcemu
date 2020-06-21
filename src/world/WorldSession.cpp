@@ -25,6 +25,7 @@
 #include "StdAfx.h"
 
 //////////////// New style handlers ///////////////////////////////////
+#include "PacketHandlers/NewHandlers/ItemPacketHandlers.h"
 #include "PacketHandlers/NewHandlers/PlayerPacketHandlers.h"
 
 struct PacketHandler
@@ -572,6 +573,7 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_SAVE, SaveEquipmentSetPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_USE, UseEquipmentSetPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_DELETE, DeleteEquipmentSetPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDINFO, ItemRefundInfoPacketHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -981,8 +983,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleInsertGemOpcode;
 	WorldPacketHandlers[CMSG_WRAP_ITEM].handler =
 	    &WorldSession::HandleWrapItemOpcode;
-	WorldPacketHandlers[CMSG_ITEMREFUNDINFO].handler =
-	    &WorldSession::HandleItemRefundInfoOpcode;
 	WorldPacketHandlers[CMSG_ITEMREFUNDREQUEST].handler =
 	    &WorldSession::HandleItemRefundRequestOpcode;
 

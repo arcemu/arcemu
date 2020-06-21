@@ -174,6 +174,7 @@ SET(sources
 	Entities/Warlock.cpp
 	Entities/Warrior.cpp
 	Server/WowCrypt.cpp
+	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp 
 )
 
@@ -313,6 +314,7 @@ SET( headers
 	Server/WowCrypt.h
 	WoWGuid.h
 	WUtil.h
+	PacketHandlers/NewHandlers/ItemPacketHandlers.h
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h
 )
