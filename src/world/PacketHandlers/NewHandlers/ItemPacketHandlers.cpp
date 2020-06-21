@@ -17,8 +17,8 @@
  *
  */
 
-#include "ItemPacketHandlers.h"
 #include "StdAfx.h"
+#include "ItemPacketHandlers.h"
 
 DEFINE_PACKET_HANDLER_METHOD( ItemRefundInfoPacketHandler )
 {
