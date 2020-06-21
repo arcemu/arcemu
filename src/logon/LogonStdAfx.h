@@ -26,7 +26,7 @@
 #include <sstream>
 #include <string>
 
-#include "LogonConfig.h"
+#include "Server/LogonConfig.h"
 
 #include "System/Platform.h"
 #include <Network/Network.h>
@@ -45,15 +45,15 @@
 #include "Network/PacketBuffer.h"
 
 #include "RealmList/RealmLogonLinkOpcodes.h"
-#include "../logon/Main.h"
+#include "Server/Main.h"
 #include "../world/NameTables.h"
 #include "Auth/AccountMgr.h"
-#include "PeriodicFunctionCall_Thread.h"
-#include "../logon/AutoPatcher.h"
+#include "Server/PeriodicFunctionCall_Thread.h"
+#include "Patcher/AutoPatcher.h"
 #include "Auth/AuthSocket.h"
 #include "Auth/AuthStructs.h"
 #include "RealmList/RealmSocket.h"
-#include "../logon/LogonConsole.h"
+#include "Server/LogonConsole.h"
 #include "RealmList/RealmRegistry.h"
 #include "Auth/IPBanner.h"
 

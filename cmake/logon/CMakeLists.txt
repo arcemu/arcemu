@@ -3,13 +3,13 @@ SET( prefix ${ROOT_PATH}/src/logon)
 SET( sources
   Auth/AccountMgr.cpp
   Auth/AuthSocket.cpp
-  AutoPatcher.cpp
+  Patcher/AutoPatcher.cpp
   Auth/IPBanner.cpp
   RealmList/RealmSocket.cpp
-  LogonConsole.cpp
+  Server/LogonConsole.cpp
   RealmList/RealmLogonLinkOpcodes.cpp
   LogonStdAfx.cpp
-  Main.cpp
+  Server/Main.cpp
   RealmList/RealmRegistry.cpp
 )
 
@@ -17,15 +17,15 @@ SET( sources
 	Auth/AccountMgr.h
 	Auth/AuthSocket.h
 	Auth/AuthStructs.h
-	AutoPatcher.h
+	Patcher/AutoPatcher.h
 	Auth/IPBanner.h
 	RealmList/RealmSocket.h
-	LogonConfig.h
-	LogonConsole.h
+	Server/LogonConfig.h
+	Server/LogonConsole.h
 	RealmList/RealmLogonLinkOpcodes.h
 	LogonStdAfx.h
-	Main.h
-	PeriodicFunctionCall_Thread.h
+	Server/Main.h
+	Server/PeriodicFunctionCall_Thread.h
 	RealmList/RealmRegistry.h
 )
 foreach(src IN ITEMS ${sources} )
