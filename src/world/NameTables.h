@@ -43,6 +43,5 @@ static inline const char* LookupName(uint32 id, NameTableEntry* table)
 }
 
 extern NameTableEntry g_worldOpcodeNames[];
-extern NameTableEntry g_logonOpcodeNames[];
 
 #endif
