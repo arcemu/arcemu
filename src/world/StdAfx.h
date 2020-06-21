@@ -245,7 +245,6 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "CommonScheduleThread.h"
 #include "LocalizationMgr.h"
 #include "CollideInterface.h"
-#include "Server/Master.h"
 #include "Server/BaseConsole.h"
 #include "Server/CConsole.h"
 #include "SpeedDetector.h"

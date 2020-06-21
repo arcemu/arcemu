@@ -19,6 +19,7 @@
  */
 
 #include "StdAfx.h"
+#include "Master.h"
 
 #define BANNER "ArcEmu %s %s/%s-%s-%s (%s@%s):: World Server"
 
@@ -30,7 +31,6 @@
 
 #include <signal.h>
 
-createFileSingleton(Master);
 std::string LogFileName;
 bool bLogChat;
 

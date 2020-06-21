@@ -18,14 +18,12 @@
  *
  */
 
-#include "StdAfx.h"
+#include "Master.h"
 
 #ifndef WIN32
 #include <sys/resource.h>
 #endif
 #include "System/CrashHandler.h"
-
-uint8 loglevel = DEFAULT_LOG_LEVEL;
 
 #ifndef WIN32
 int unix_main(int argc, char** argv)
