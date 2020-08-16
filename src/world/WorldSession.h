@@ -417,6 +417,8 @@ class SERVER_DECL WorldSession
 		void HandleGroupPromote(WorldPacket & recv_data);
 
 		// LFG opcodes
+		void HandleLFGPlayerInfo(WorldPacket & recvPacket);
+		void HandleLFGPartyInfo(WorldPacket & recvPacket);
 		void HandleEnableAutoJoin(WorldPacket & recvPacket);
 		void HandleDisableAutoJoin(WorldPacket & recvPacket);
 		void HandleEnableAutoAddMembers(WorldPacket & recvPacket);

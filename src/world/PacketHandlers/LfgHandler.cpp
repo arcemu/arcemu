@@ -32,6 +32,29 @@ void WorldSession::HandleSetLookingForGroupComment(WorldPacket & recvPacket)
 	GetPlayer()->Lfgcomment = comment;
 }
 
+void WorldSession::HandleLFGPlayerInfo(WorldPacket & recvPacket)
+{
+	LOG_DEBUG( "Received LFG player info request." );
+
+	PacketBuffer response( SMSG_LFG_UPDATE_QUEUED, 5 );
+	response << uint8( 0 );
+	response << uint32( 0 );
+	SendPacket( &response );
+
+	LOG_DEBUG( "Sent LFG player info response." );
+}
+
+void WorldSession::HandleLFGPartyInfo(WorldPacket & recvPacket)
+{
+	LOG_DEBUG( "Received LFG party info request." );
+
+	PacketBuffer response( SMSG_LFG_PENDING_MATCH_DONE, 1 );
+	response << uint8( 0 );
+	SendPacket( &response );
+
+	LOG_DEBUG( "Sent LFG party info response." );
+}
+
 void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
