@@ -32,6 +32,8 @@ namespace Arcemu
 			virtual void serialize( PacketBuffer &buffer ) const{}
 
 			virtual void deserialize( PacketBuffer& buffer ){}
+
+			virtual size_t maxSize() const{ return 128U; }
 		};
 	}
 }

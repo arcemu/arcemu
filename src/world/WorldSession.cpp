@@ -458,14 +458,6 @@ void WorldSession::SendBuyFailed(uint64 guid, uint32 itemid, uint8 error)
 	SendPacket(&data);
 }
 
-void WorldSession::SendSellItem(uint64 vendorguid, uint64 itemid, uint8 error)
-{
-	WorldPacket data(17);
-	data.SetOpcode(SMSG_SELL_ITEM);
-	data << vendorguid << itemid << error;
-	SendPacket(&data);
-}
-
 void WorldSession::LoadSecurity(std::string securitystring)
 {
 	std::list < char >tmp;

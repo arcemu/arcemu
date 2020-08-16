@@ -121,6 +121,21 @@ namespace Arcemu
 					}
 				}
 			}
+
+			void SSellItem::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_SELL_ITEM );
+				buffer << uint64( vendorGuid );
+				buffer << uint64( itemGuid );
+				buffer << uint8( result );
+			}
+
+			void SSellItem::deserialize( PacketBuffer &buffer )
+			{
+				buffer >> vendorGuid;
+				buffer >> itemGuid;
+				buffer >> result;
+			}
 		}
 	}
 }

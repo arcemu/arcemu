@@ -37,7 +37,7 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
-			
+
 			/// Server sends the refund information on the item with the provided GUID
 			class SItemRefundInfo : public Arcemu::Shared::Packet
 			{
@@ -91,6 +91,21 @@ namespace Arcemu
 				SItemRefundRequest(){}
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
+			};
+
+			class SSellItem : public Arcemu::Shared::Packet
+			{
+			public:
+				uint64 vendorGuid;
+				uint64 itemGuid;
+				uint8 result;
+
+			public:
+				SSellItem(){}
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+
+				size_t maxSize() const{ return 17U; }
 			};
 		}
 	}

@@ -934,10 +934,17 @@ void WorldSession::HandleSellItemOpcode(WorldPacket & recv_data)
 	if(_player->IsCasting())
 		_player->InterruptSpell();
 
+	Arcemu::GamePackets::Items::SSellItem response;
+	response.vendorGuid = vendorguid;
+	response.itemGuid = itemguid;
+	PacketBuffer buffer( response.maxSize() );
+
 	// Check if item exists
 	if(!itemguid)
 	{
-		SendSellItem(vendorguid, itemguid, 1);
+		response.result = 1;
+		response.serialize( buffer );
+		SendPacket(&buffer);
 		return;
 	}
 
@@ -945,29 +952,39 @@ void WorldSession::HandleSellItemOpcode(WorldPacket & recv_data)
 	// Check if Vendor exists
 	if(unit == NULL)
 	{
-		SendSellItem(vendorguid, itemguid, 3);
+		response.result = 3;
+		response.serialize( buffer );
+		SendPacket(&buffer);
 		return;
 	}
 
+	// Check if player has the item
 	Item* item = _player->GetItemInterface()->GetItemByGUID(itemguid);
 	if(!item)
 	{
-		SendSellItem(vendorguid, itemguid, 1);
-		return; //our player doesn't have this item
+		response.result = 1;
+		response.serialize( buffer );
+		SendPacket(&buffer);
+		return;
 	}
 
 	ItemPrototype* it = item->GetProto();
 
+	/// check if item is a non-empty container
 	if(item->IsContainer() && TO< Container* >(item)->HasItems())
 	{
-		SendSellItem(vendorguid, itemguid, 6);
+		response.result = 6;
+		response.serialize( buffer );
+		SendPacket(&buffer);
 		return;
 	}
 
 	// Check if item can be sold
 	if(it->SellPrice == 0 || item->wrapped_item_id != 0)
 	{
-		SendSellItem(vendorguid, itemguid, 2);
+		response.result = 2;
+		response.serialize( buffer );
+		SendPacket(&buffer);
 		return;
 	}
 
@@ -1015,11 +1032,11 @@ void WorldSession::HandleSellItemOpcode(WorldPacket & recv_data)
 		}
 	}
 
-	WorldPacket data(SMSG_SELL_ITEM, 12);
-	data << vendorguid << itemguid << uint8(0);
-	SendPacket(&data);
 
-	LOG_DETAIL("WORLD: Sent SMSG_SELL_ITEM");
+
+	response.result = 0;
+	response.serialize( buffer );
+	SendPacket(&buffer);
 }
 
 void WorldSession::HandleBuyItemInSlotOpcode(WorldPacket & recv_data)   // drag & drop
