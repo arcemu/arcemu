@@ -36,9 +36,13 @@ void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	uint32 i;
+	Arcemu::GamePackets::LFG::CLFGAutoJoin packet;
+	packet.deserialize( recvPacket );
+
+	LOG_DEBUG( "Received LFG join request." );
 
 	// make sure they're not queued in any invalid cases
+	/*
 	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
 	{
 		if(_player->LfgDungeonId[i] != 0)
@@ -49,8 +53,10 @@ void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 			}
 		}
 	}
+	*/
 
 	// enable autojoin, join any groups if possible.
+	/*
 	_player->m_Autojoin = true;
 
 	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
@@ -61,6 +67,7 @@ void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 			sLfgMgr.UpdateLfgQueue(_player->LfgDungeonId[i]);
 		}
 	}
+	*/
 }
 
 void WorldSession::HandleDisableAutoJoin(WorldPacket & recvPacket)
