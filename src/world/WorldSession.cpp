@@ -450,14 +450,6 @@ void WorldSession::LogoutPlayer(bool Save)
 	SetLogoutTimer(0);
 }
 
-void WorldSession::SendBuyFailed(uint64 guid, uint32 itemid, uint8 error)
-{
-	WorldPacket data(13);
-	data.SetOpcode(SMSG_BUY_FAILED);
-	data << guid << itemid << error;
-	SendPacket(&data);
-}
-
 void WorldSession::LoadSecurity(std::string securitystring)
 {
 	std::list < char >tmp;
