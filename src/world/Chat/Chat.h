@@ -303,6 +303,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleDebugSendMOTDCommand( const char *args, WorldSession *session );
 		bool HandleDebugSendLFGJoinResultCommand( const char *args, WorldSession *session );
 		bool HandleDebugSendLFGPlayerUpdateCommand( const char *args, WorldSession *session );
+		bool HandleDebugSendLFGProposalUpdateCommand( const char *args, WorldSession *session );
 
 		// WayPoint Commands
 		bool HandleWPAddCommand(const char* args, WorldSession* m_session);

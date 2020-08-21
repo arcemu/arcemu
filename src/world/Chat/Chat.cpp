@@ -324,6 +324,7 @@ void CommandTableStorage::Init()
 		{ "sendmotd", 'd', &ChatHandler::HandleDebugSendMOTDCommand, "Sends an MOTD message to the player.",												NULL, 0, 0, 0 },
 		{ "sendlfgjoinresult", 'd', &ChatHandler::HandleDebugSendLFGJoinResultCommand, "Send an LFG join result message to the player's client", NULL, 0, 0, 0 },
 		{ "sendlfgplayerupdate", 'd', &ChatHandler::HandleDebugSendLFGPlayerUpdateCommand, "Send an LFG player update message to the player's client", NULL, 0, 0, 0 },
+		{ "sendlfgproposalupdate", 'd', &ChatHandler::HandleDebugSendLFGProposalUpdateCommand, "Send an LFG proposal update message to the player's client", NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);

@@ -1298,3 +1298,69 @@ bool ChatHandler::HandleDebugSendLFGPlayerUpdateCommand( const char *args, World
 	return true;
 }
 
+bool ChatHandler::HandleDebugSendLFGProposalUpdateCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+
+	uint32 dungeon = 0;
+	uint32 state = 0;
+	uint32 encounters = 0;
+	uint32 silent = 0;
+
+	int count = sscanf( args, "%u %u %u %u", &dungeon, &state, &encounters, &silent );
+	if( count != 4 )
+	{
+		RedSystemMessage( session, "Usage: sendlfgproposalupdate <dungeon> <state> <encounters> <silent>" );
+		return true;
+	}
+
+	PacketBuffer buffer( SMSG_LFG_PROPOSAL_UPDATE, 512 );
+
+	buffer << uint32( dungeon ); //dungeon
+	buffer << uint8( state ); // proposal state?
+	buffer << uint32( 123 ); // proposal id
+	buffer << uint32( encounters ); // bosses down, bitfield
+	buffer << uint8( silent ); // silent?
+
+	buffer << uint8( 5 ); // playercount
+
+	buffer << uint32( 1 | 2 ); // role
+	buffer << uint8( 1 ); // is it me?
+	buffer << uint8( silent ); // in dungeon?
+	buffer << uint8( 0 ); // in same group?
+	buffer << uint8( 0 ); // has answered?
+	buffer << uint8( 0 ); // has accepted?
+
+	buffer << uint32( 4 ); // role
+	buffer << uint8( 0 ); // is it me?
+	buffer << uint8( 0 ); // in dungeon?
+	buffer << uint8( 0 ); // in same group?
+	buffer << uint8( 1 ); // has answered?
+	buffer << uint8( 1 ); // has accepted?
+
+	buffer << uint32( 8 ); // role
+	buffer << uint8( 0 ); // is it me?
+	buffer << uint8( 0 ); // in dungeon?
+	buffer << uint8( 0 ); // in same group?
+	buffer << uint8( 1 ); // has answered?
+	buffer << uint8( 1 ); // has accepted?
+
+	buffer << uint32( 8 ); // role
+	buffer << uint8( 0 ); // is it me?
+	buffer << uint8( 0 ); // in dungeon?
+	buffer << uint8( 0 ); // in same group?
+	buffer << uint8( 1 ); // has answered?
+	buffer << uint8( 1 ); // has accepted?
+
+	buffer << uint32( 8 ); // role
+	buffer << uint8( 0 ); // is it me?
+	buffer << uint8( 0 ); // in dungeon?
+	buffer << uint8( 0 ); // in same group?
+	buffer << uint8( 0 ); // has answered?
+	buffer << uint8( 0 ); // has accepted?
+
+	player->SendPacket( &buffer );
+
+	return true;
+}
+
