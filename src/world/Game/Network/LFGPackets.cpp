@@ -71,6 +71,19 @@ namespace Arcemu
 				buffer >> unk6;
 				buffer >> comment;
 			}
+
+			void SLFGJoinResult::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.SetOpcode( SMSG_LFG_JOIN_RESULT );
+				buffer << uint32( result );
+				buffer << uint32( state );
+			}
+			
+			void SLFGJoinResult::deserialize( PacketBuffer& buffer )
+			{
+				buffer >> result;
+				buffer >> state;
+			}
 		}
 	}
 }

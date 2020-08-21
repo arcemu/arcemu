@@ -1238,3 +1238,25 @@ bool ChatHandler::HandleDebugSendMOTDCommand( const char *args, WorldSession *se
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugSendLFGJoinResultCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint32 result;
+	uint32 state;
+
+	if( sscanf( args, "%u %u", &result, &state ) != 2 )
+	{
+		RedSystemMessage( session, "Usage: sendlfgjoinresult <result> <state>" );
+		return true;
+	}
+
+	PacketBuffer buffer;
+	Arcemu::GamePackets::LFG::SLFGJoinResult packet;
+	packet.result = result;
+	packet.state = state;
+	packet.serialize( buffer );
+	player->SendPacket( &buffer );
+
+	return true;
+}

@@ -895,7 +895,7 @@ enum Opcodes
     CMSG_DECLINE_LFG_MATCH                          = 0x361,	/// TODO: implement
     CMSG_CANCEL_PENDING_LFG                         = 0x362,	/// TODO: implement
     CMSG_CLEAR_LOOKING_FOR_GROUP                    = 0x363,	// implemented
-    CMSG_CLEAR_LOOKING_FOR_MORE                     = 0x364,	/// TODO: implement
+    SMSG_LFG_JOIN_RESULT                            = 0x364,	/// TODO: implement
     CMSG_SET_LOOKING_FOR_MORE                       = 0x365,	// implemented
     CMSG_SET_LFG_COMMENT                            = 0x366,	// implemented
     SMSG_LFG_TIMEDOUT                               = 0x367,	/// TODO: implement

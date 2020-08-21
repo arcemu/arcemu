@@ -55,6 +55,43 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+
+			/// Response to joining the dungeon or raid finder queue
+			class SLFGJoinResult : public Arcemu::Shared::Packet
+			{
+			public:
+				enum LFGJoinResult
+				{
+					LFG_JOIN_OK = 0,
+					LFG_JOIN_ROLECHECK_FAILED = 1,
+					LFG_JOIN_GROUP_IS_FULL = 2,
+					LFG_JOIN_INTERNAL_ERROR = 4,
+					LFG_JOIN_DO_NOT_MEET_REQUIREMENTS = 5,
+					LFG_JOIN_PARTY_DOES_NOT_MEET_REQUIREMENETS = 6,
+					LFG_JOIN_CANT_MIX_DUNGEON_RAID_RANDOM = 7,
+					LFG_JOIN_DUNGEON_DOESNT_SUPPORT_MULTIREALM = 8,
+					LFG_JOIN_DISCONNECTED_OR_PENDING = 9,
+					LFG_JOIN_COULDNT_RETRIEVE_PARTY_INFO = 10,
+					LFG_JOIN_INVALID_DUNGEON = 11,
+					LFG_JOIN_DESERTER_DEBUFF = 12,
+					LFG_JOIN_DESERTER_IN_PARTY = 13,
+					LFG_JOIN_RANDOM_COOLDOWN = 14,
+					LFG_JOIN_RANDOM_COOLDOWN_IN_PARTY = 15,
+					LFG_JOIN_TOO_MANY_MEMBERS = 16,
+					LFG_JOIN_IN_BG = 17
+				};
+
+			public:
+				uint32 result;
+				uint32 state;
+
+			public:
+				SLFGJoinResult(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }
