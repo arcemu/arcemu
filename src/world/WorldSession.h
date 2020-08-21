@@ -419,8 +419,8 @@ class SERVER_DECL WorldSession
 		// LFG opcodes
 		void HandleLFGPlayerInfo(WorldPacket & recvPacket);
 		void HandleLFGPartyInfo(WorldPacket & recvPacket);
-		void HandleEnableAutoJoin(WorldPacket & recvPacket);
-		void HandleDisableAutoJoin(WorldPacket & recvPacket);
+		void HandleLFGJoin(WorldPacket & recvPacket);
+		void HandleLFGLeave(WorldPacket & recvPacket);
 		void HandleEnableAutoAddMembers(WorldPacket & recvPacket);
 		void HandleDisableAutoAddMembers(WorldPacket & recvPacket);
 		void HandleSetLookingForGroupComment(WorldPacket & recvPacket);

@@ -27,7 +27,7 @@ namespace Arcemu
 		namespace LFG
 		{
 			/// join queue on raid browser or dungeon finder
-			class CLFGAutoJoin : public Arcemu::Shared::Packet
+			class CLFGJoin : public Arcemu::Shared::Packet
 			{
 			public:
 				struct LFGDungeon
@@ -50,7 +50,7 @@ namespace Arcemu
 				std::string comment;
 
 			public:
-				CLFGAutoJoin(){}
+				CLFGJoin(){}
 
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );

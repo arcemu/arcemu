@@ -887,8 +887,8 @@ enum Opcodes
     MSG_MOVE_START_ASCEND                           = 0x359,	// implemented
     MSG_MOVE_STOP_ASCEND                            = 0x35A,	// implemented
     SMSG_ARENA_TEAM_STATS                           = 0x35B,	// implemented
-    CMSG_LFG_SET_AUTOJOIN                           = 0x35C,	// implemented
-    CMSG_LFG_CLEAR_AUTOJOIN                         = 0x35D,	// implemented
+    CMSG_LFG_JOIN                                   = 0x35C,	// implemented
+    CMSG_LFG_LEAVE                                  = 0x35D,	// implemented
     CMSG_LFM_SET_AUTOFILL                           = 0x35E,	// implemented
     CMSG_LFM_CLEAR_AUTOFILL                         = 0x35F,	// implemented
     CMSG_ACCEPT_LFG_MATCH                           = 0x360,	/// TODO: implement

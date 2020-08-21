@@ -55,11 +55,11 @@ void WorldSession::HandleLFGPartyInfo(WorldPacket & recvPacket)
 	LOG_DEBUG( "Sent LFG party info response." );
 }
 
-void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
+void WorldSession::HandleLFGJoin(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	Arcemu::GamePackets::LFG::CLFGAutoJoin packet;
+	Arcemu::GamePackets::LFG::CLFGJoin packet;
 	packet.deserialize( recvPacket );
 
 	LOG_DEBUG( "Received LFG join request." );
@@ -74,21 +74,11 @@ void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 	LOG_DEBUG( "Sent LFG join result" );
 }
 
-void WorldSession::HandleDisableAutoJoin(WorldPacket & recvPacket)
+void WorldSession::HandleLFGLeave(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 
-	uint32 i;
-	_player->m_Autojoin = false;
-
-	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-	{
-		if(_player->LfgDungeonId[i] != 0)
-		{
-			if(LfgDungeonTypes[_player->LfgDungeonId[i]] == LFG_INSTANCE || LfgDungeonTypes[_player->LfgDungeonId[i]] == LFG_HEROIC_DUNGEON)
-				Messenger::SendMeetingStoneSetQueue( _player, _player->LfgDungeonId[i], 0);
-		}
-	}
+	LOG_DEBUG( "Received LFG leave request." );
 }
 
 void WorldSession::HandleEnableAutoAddMembers(WorldPacket & recvPacket)

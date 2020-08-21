@@ -25,7 +25,7 @@ namespace Arcemu
 	{
 		namespace LFG
 		{
-			void CLFGAutoJoin::serialize( PacketBuffer &buffer ) const
+			void CLFGJoin::serialize( PacketBuffer &buffer ) const
 			{
 				buffer << uint32( roles );
 				buffer << uint8( unk1 );
@@ -47,7 +47,7 @@ namespace Arcemu
 				buffer << comment;
 			}
 
-			void CLFGAutoJoin::deserialize( PacketBuffer& buffer )
+			void CLFGJoin::deserialize( PacketBuffer& buffer )
 			{
 				buffer >> roles;
 				buffer >> unk1;

@@ -876,10 +876,10 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleSetLookingForGroup;
 	WorldPacketHandlers[CMSG_SET_LOOKING_FOR_MORE].handler =
 	    &WorldSession::HandleSetLookingForMore;
-	WorldPacketHandlers[CMSG_LFG_SET_AUTOJOIN].handler =
-	    &WorldSession::HandleEnableAutoJoin;
-	WorldPacketHandlers[CMSG_LFG_CLEAR_AUTOJOIN].handler =
-	    &WorldSession::HandleDisableAutoJoin;
+	WorldPacketHandlers[CMSG_LFG_JOIN].handler =
+	    &WorldSession::HandleLFGJoin;
+	WorldPacketHandlers[CMSG_LFG_LEAVE].handler =
+	    &WorldSession::HandleLFGLeave;
 	WorldPacketHandlers[CMSG_LFM_SET_AUTOFILL].handler =
 	    &WorldSession::HandleEnableAutoAddMembers;
 	WorldPacketHandlers[CMSG_LFM_CLEAR_AUTOFILL].handler =
