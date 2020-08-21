@@ -64,33 +64,14 @@ void WorldSession::HandleEnableAutoJoin(WorldPacket & recvPacket)
 
 	LOG_DEBUG( "Received LFG join request." );
 
-	// make sure they're not queued in any invalid cases
-	/*
-	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-	{
-		if(_player->LfgDungeonId[i] != 0)
-		{
-			if(LfgDungeonTypes[_player->LfgDungeonId[i]] != LFG_INSTANCE && LfgDungeonTypes[_player->LfgDungeonId[i]] != LFG_HEROIC_DUNGEON)
-			{
-				return;
-			}
-		}
-	}
-	*/
+	PacketBuffer buffer;
+	Arcemu::GamePackets::LFG::SLFGJoinResult response;
+	response.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_INTERNAL_ERROR;
+	response.state = 0;
+	response.serialize( buffer );
+	SendPacket( &buffer );
 
-	// enable autojoin, join any groups if possible.
-	/*
-	_player->m_Autojoin = true;
-
-	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-	{
-		if(_player->LfgDungeonId[i] != 0)
-		{
-			Messenger::SendMeetingStoneSetQueue( _player, _player->LfgDungeonId[i], 1 );
-			sLfgMgr.UpdateLfgQueue(_player->LfgDungeonId[i]);
-		}
-	}
-	*/
+	LOG_DEBUG( "Sent LFG join result" );
 }
 
 void WorldSession::HandleDisableAutoJoin(WorldPacket & recvPacket)
