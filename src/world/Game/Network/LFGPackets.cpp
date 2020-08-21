@@ -84,6 +84,58 @@ namespace Arcemu
 				buffer >> result;
 				buffer >> state;
 			}
+
+			void SLFGUpdatePlayer::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_LFG_UPDATE_PLAYER );
+				buffer << uint8( updateType );
+
+				if( dungeons.size() > 0 )
+					buffer << uint8( 1 );
+				else
+					buffer << uint8( 0 );
+				
+				if( dungeons.size() > 0 )
+				{
+					buffer << uint8( queued );
+					buffer << uint8( unk1 );
+					buffer << uint8( unk2 );
+					buffer << uint8( dungeons.size() );
+
+					for( int i = 0; i < dungeons.size(); i++ )
+					{
+						buffer << uint32( dungeons[ i ] );
+					}
+
+					buffer << comment;
+				}
+			}
+
+			void SLFGUpdatePlayer::deserialize( PacketBuffer& buffer )
+			{
+				uint8 joined = 0;
+				uint8 dungeonCount = 0;
+
+				buffer >> uint8( updateType );
+				buffer >> joined;
+
+				if( joined )
+				{
+					buffer >> queued;
+					buffer >> unk1;
+					buffer >> unk2;
+					buffer >> dungeonCount;
+
+					for( int i = 0; i < dungeonCount; i++ )
+					{
+						uint32 dungeon;
+						buffer >> dungeon;
+						dungeons.push_back( dungeon );
+					}
+
+					buffer >> comment;
+				}
+			}
 		}
 	}
 }

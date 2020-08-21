@@ -1260,3 +1260,41 @@ bool ChatHandler::HandleDebugSendLFGJoinResultCommand( const char *args, WorldSe
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugSendLFGPlayerUpdateCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint32 type = 0;
+	uint32 queued = 0;
+	uint32 dungeon = 0;
+	char comment[ 500 ];
+
+	int count = sscanf( args, "%u %u %u %s", &type, &queued, &dungeon, comment );
+	if( count < 2 )
+	{
+		RedSystemMessage( session, "Usage: sendlfgplayerupdate <type> <queued> <dungeon> <comment>" );
+		RedSystemMessage( session, "type and queued parameters are mandatory." );
+		return true;
+	}
+
+	PacketBuffer buffer;
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer packet;
+	packet.updateType = static_cast< uint8 >( type );
+	packet.queued = static_cast< uint8 >( queued );
+
+	if( count >= 3 )
+	{
+		packet.dungeons.push_back( dungeon );
+	}
+
+	if( count == 4 )
+	{
+		packet.comment.assign( comment );
+	}
+
+	packet.serialize( buffer );
+	player->SendPacket( &buffer );
+
+	return true;
+}
+

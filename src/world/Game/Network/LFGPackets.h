@@ -92,6 +92,24 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			/// Updates the client about queue status (in queue, or removed from queue, etc)
+			class SLFGUpdatePlayer : public Arcemu::Shared::Packet
+			{
+			public:
+				uint8 updateType;
+				uint8 queued;
+				uint8 unk1;
+				uint8 unk2;
+				std::vector< uint32 > dungeons;
+				std::string comment;
+
+			public:
+				SLFGUpdatePlayer(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }
