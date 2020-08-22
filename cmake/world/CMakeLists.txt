@@ -178,7 +178,8 @@ SET(sources
 	Game/Entities/Warrior.cpp
 	Server/WowCrypt.cpp
 	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
-	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp 
+	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp
+	PacketHandlers/NewHandlers/LFGPacketHandlers.cpp
 )
 
 SET( headers
@@ -320,6 +321,7 @@ SET( headers
 	PacketHandlers/NewHandlers/ItemPacketHandlers.h
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h
+	PacketHandlers/NewHandlers/LFGPacketHandlers.h
 )
 
 foreach(src IN ITEMS ${sources} )

@@ -147,6 +147,19 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			class CLFGProposalResult : public Arcemu::Shared::Packet
+			{
+			public:
+				uint32 proposalId;
+				uint8 result;
+
+			public:
+				CLFGProposalResult(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }

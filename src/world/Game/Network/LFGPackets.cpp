@@ -183,6 +183,19 @@ namespace Arcemu
 					entries.push_back( entry );
 				}
 			}
+
+			void CLFGProposalResult::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( CMSG_LFG_PROPOSAL_RESULT );
+				buffer << uint32( proposalId );
+				buffer << uint8( result );
+			}
+
+			void CLFGProposalResult::deserialize( PacketBuffer& buffer )
+			{
+				buffer >> proposalId;
+				buffer >> result;
+			}
 		}
 	}
 }

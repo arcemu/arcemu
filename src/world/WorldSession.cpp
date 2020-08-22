@@ -27,6 +27,7 @@
 //////////////// New style handlers ///////////////////////////////////
 #include "PacketHandlers/NewHandlers/ItemPacketHandlers.h"
 #include "PacketHandlers/NewHandlers/PlayerPacketHandlers.h"
+#include "PacketHandlers/NewHandlers/LFGPacketHandlers.h"
 
 struct PacketHandler
 {
@@ -559,6 +560,7 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_DELETE, DeleteEquipmentSetPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDINFO, ItemRefundInfoPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDREQUEST, ItemRefundRequestPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PROPOSAL_RESULT, LFGProposalResultPacketHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -893,7 +893,7 @@ enum Opcodes
     CMSG_LFM_CLEAR_AUTOFILL                         = 0x35F,	// implemented
     CMSG_ACCEPT_LFG_MATCH                           = 0x360,	/// TODO: implement
     SMSG_LFG_PROPOSAL_UPDATE                        = 0x361,	/// TODO: implement
-    CMSG_CANCEL_PENDING_LFG                         = 0x362,	/// TODO: implement
+    CMSG_LFG_PROPOSAL_RESULT                        = 0x362,	/// TODO: implement
     CMSG_CLEAR_LOOKING_FOR_GROUP                    = 0x363,	// implemented
     SMSG_LFG_JOIN_RESULT                            = 0x364,	/// TODO: implement
     CMSG_SET_LOOKING_FOR_MORE                       = 0x365,	// implemented
