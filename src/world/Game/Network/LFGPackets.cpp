@@ -116,7 +116,7 @@ namespace Arcemu
 				uint8 joined = 0;
 				uint8 dungeonCount = 0;
 
-				buffer >> uint8( updateType );
+				buffer >> updateType;
 				buffer >> joined;
 
 				if( joined )
