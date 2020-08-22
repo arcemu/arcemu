@@ -879,9 +879,9 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleLFGJoin;
 	WorldPacketHandlers[CMSG_LFG_LEAVE].handler =
 	    &WorldSession::HandleLFGLeave;
-	WorldPacketHandlers[CMSG_LFM_SET_AUTOFILL].handler =
+	WorldPacketHandlers[CMSG_LFG_JOIN_SEARCH].handler =
 	    &WorldSession::HandleEnableAutoAddMembers;
-	WorldPacketHandlers[CMSG_LFM_CLEAR_AUTOFILL].handler =
+	WorldPacketHandlers[CMSG_LFG_LEAVE_SEARCH].handler =
 	    &WorldSession::HandleDisableAutoAddMembers;
 	WorldPacketHandlers[CMSG_CLEAR_LOOKING_FOR_GROUP].handler =
 	    &WorldSession::HandleLfgClear;

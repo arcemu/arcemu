@@ -889,8 +889,8 @@ enum Opcodes
     SMSG_ARENA_TEAM_STATS                           = 0x35B,	// implemented
     CMSG_LFG_JOIN                                   = 0x35C,	// implemented
     CMSG_LFG_LEAVE                                  = 0x35D,	// implemented
-    CMSG_LFM_SET_AUTOFILL                           = 0x35E,	// implemented
-    CMSG_LFM_CLEAR_AUTOFILL                         = 0x35F,	// implemented
+    CMSG_LFG_JOIN_SEARCH                            = 0x35E,	// implemented
+    CMSG_LFG_LEAVE_SEARCH                           = 0x35F,	// implemented
     CMSG_ACCEPT_LFG_MATCH                           = 0x360,	/// TODO: implement
     SMSG_LFG_PROPOSAL_UPDATE                        = 0x361,	/// TODO: implement
     CMSG_LFG_PROPOSAL_RESULT                        = 0x362,	/// TODO: implement
