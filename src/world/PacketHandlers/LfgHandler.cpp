@@ -20,31 +20,6 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleLFGJoin(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-
-	Arcemu::GamePackets::LFG::CLFGJoin packet;
-	packet.deserialize( recvPacket );
-
-	LOG_DEBUG( "Received LFG join request." );
-
-	// If experimental LFG is not enabled, just send an internal LFG error message
-	if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "lfg", false ) )
-	{
-		PacketBuffer buffer;
-		Arcemu::GamePackets::LFG::SLFGJoinResult response;
-		response.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_INTERNAL_ERROR;
-		response.state = 0;
-		response.serialize( buffer );
-		SendPacket( &buffer );
-		
-		LOG_DEBUG( "Sent LFG join result" );
-
-		return;
-	}
-}
-
 void WorldSession::HandleLFGLeave(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN

@@ -72,3 +72,29 @@ DEFINE_PACKET_HANDLER_METHOD( LFGPartyInfoHandler )
 
 	LOG_DEBUG( "Sent (empty) LFG party info response." );
 }
+
+DEFINE_PACKET_HANDLER_METHOD( LFGJoinHandler )
+{
+	Player *_player = session.GetPlayer();
+	CHECK_INWORLD_RETURN
+
+	Arcemu::GamePackets::LFG::CLFGJoin packet;
+	packet.deserialize( recv_data );
+
+	LOG_DEBUG( "Received LFG join request." );
+
+	// If experimental LFG is not enabled, just send an internal LFG error message
+	if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "lfg", false ) )
+	{
+		PacketBuffer buffer;
+		Arcemu::GamePackets::LFG::SLFGJoinResult response;
+		response.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_INTERNAL_ERROR;
+		response.state = 0;
+		response.serialize( buffer );
+		_player->SendPacket( &buffer );
+		
+		LOG_DEBUG( "Sent LFG join result" );
+
+		return;
+	}
+}
