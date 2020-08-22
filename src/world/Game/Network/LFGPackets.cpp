@@ -54,7 +54,7 @@ namespace Arcemu
 				buffer >> unk2;
 				buffer >> count;
 				
-				for( int i = 0; i < count; i++ )
+				for( uint8 i = 0; i < count; i++ )
 				{
 					LFGDungeon d;
 					buffer >> d.dungeon;
@@ -102,7 +102,7 @@ namespace Arcemu
 					buffer << uint8( unk2 );
 					buffer << uint8( dungeons.size() );
 
-					for( int i = 0; i < dungeons.size(); i++ )
+					for( size_t i = 0; i < dungeons.size(); i++ )
 					{
 						buffer << uint32( dungeons[ i ] );
 					}
