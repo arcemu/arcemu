@@ -51,13 +51,3 @@ void WorldSession::HandleLFGLeave(WorldPacket & recvPacket)
 
 	LOG_DEBUG( "Received LFG leave request." );
 }
-
-void WorldSession::HandleEnableAutoAddMembers(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}
-
-void WorldSession::HandleDisableAutoAddMembers(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}

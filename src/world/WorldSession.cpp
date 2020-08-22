@@ -875,10 +875,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleLFGJoin;
 	WorldPacketHandlers[CMSG_LFG_LEAVE].handler =
 	    &WorldSession::HandleLFGLeave;
-	WorldPacketHandlers[CMSG_LFG_JOIN_SEARCH].handler =
-	    &WorldSession::HandleEnableAutoAddMembers;
-	WorldPacketHandlers[CMSG_LFG_LEAVE_SEARCH].handler =
-	    &WorldSession::HandleDisableAutoAddMembers;
 
 	// Taxi / NPC Interaction
 	WorldPacketHandlers[CMSG_ENABLETAXI].handler =

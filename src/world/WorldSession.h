@@ -419,8 +419,6 @@ class SERVER_DECL WorldSession
 		// LFG opcodes
 		void HandleLFGJoin(WorldPacket & recvPacket);
 		void HandleLFGLeave(WorldPacket & recvPacket);
-		void HandleEnableAutoAddMembers(WorldPacket & recvPacket);
-		void HandleDisableAutoAddMembers(WorldPacket & recvPacket);
 
 		/// Taxi opcodes (TaxiHandler.cpp)
 		void HandleTaxiNodeStatusQueryOpcode(WorldPacket & recvPacket);
