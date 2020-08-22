@@ -20,17 +20,6 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleLFGPartyInfo(WorldPacket & recvPacket)
-{
-	LOG_DEBUG( "Received LFG party info request." );
-
-	PacketBuffer response( SMSG_LFG_PARTY_INFO, 1 );
-	response << uint8( 0 );
-	SendPacket( &response );
-
-	LOG_DEBUG( "Sent LFG party info response." );
-}
-
 void WorldSession::HandleLFGJoin(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN

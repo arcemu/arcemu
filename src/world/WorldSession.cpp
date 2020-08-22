@@ -561,6 +561,7 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PROPOSAL_RESULT, LFGProposalResultPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_SET_COMMENT, LFGSetCommentHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PLAYER_INFO, LFGPlayerInfoHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PARTY_INFO, LFGPartyInfoHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -878,8 +879,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleEnableAutoAddMembers;
 	WorldPacketHandlers[CMSG_LFG_LEAVE_SEARCH].handler =
 	    &WorldSession::HandleDisableAutoAddMembers;
-	WorldPacketHandlers[CMSG_LFG_PARTY_INFO].handler =
-		&WorldSession::HandleLFGPartyInfo;
 
 	// Taxi / NPC Interaction
 	WorldPacketHandlers[CMSG_ENABLETAXI].handler =

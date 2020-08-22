@@ -56,5 +56,19 @@ DEFINE_PACKET_HANDLER_METHOD( LFGPlayerInfoHandler )
 	response << uint32( 0 );
 	_player->SendPacket( &response );
 
-	LOG_DEBUG( "Sent LFG player info response." );
+	LOG_DEBUG( "Sent (empty) LFG player info response." );
+}
+
+DEFINE_PACKET_HANDLER_METHOD( LFGPartyInfoHandler )
+{
+	Player *_player = session.GetPlayer();
+	CHECK_INWORLD_RETURN
+
+	LOG_DEBUG( "Received LFG party info request." );
+
+	PacketBuffer response( SMSG_LFG_PARTY_INFO, 1 );
+	response << uint8( 0 );
+	_player->SendPacket( &response );
+
+	LOG_DEBUG( "Sent (empty) LFG party info response." );
 }
