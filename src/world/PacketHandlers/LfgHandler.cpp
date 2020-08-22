@@ -36,7 +36,7 @@ void WorldSession::HandleLFGPlayerInfo(WorldPacket & recvPacket)
 {
 	LOG_DEBUG( "Received LFG player info request." );
 
-	PacketBuffer response( SMSG_LFG_UPDATE_QUEUED, 5 );
+	PacketBuffer response( SMSG_LFG_PLAYER_INFO, 5 );
 	response << uint8( 0 );
 	response << uint32( 0 );
 	SendPacket( &response );
@@ -48,7 +48,7 @@ void WorldSession::HandleLFGPartyInfo(WorldPacket & recvPacket)
 {
 	LOG_DEBUG( "Received LFG party info request." );
 
-	PacketBuffer response( SMSG_LFG_PENDING_MATCH_DONE, 1 );
+	PacketBuffer response( SMSG_LFG_PARTY_INFO, 1 );
 	response << uint8( 0 );
 	SendPacket( &response );
 

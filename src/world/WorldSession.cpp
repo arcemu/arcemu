@@ -891,10 +891,9 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_MEETINGSTONE_INFO].handler =
 	    &WorldSession::HandleMeetingStoneInfo;
 
-	/// These two opcodes seem to be misnamed
-	WorldPacketHandlers[SMSG_LFG_UPDATE_LFG].handler =
+	WorldPacketHandlers[CMSG_LFG_PLAYER_INFO].handler =
 		&WorldSession::HandleLFGPlayerInfo;
-	WorldPacketHandlers[SMSG_LFG_PENDING_MATCH].handler =
+	WorldPacketHandlers[CMSG_LFG_PARTY_INFO].handler =
 		&WorldSession::HandleLFGPartyInfo;
 
 	// Taxi / NPC Interaction

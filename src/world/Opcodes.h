@@ -905,11 +905,11 @@ enum Opcodes
     SMSG_LFG_LEADER_IS_LFM                          = 0x36B,	/// TODO: implement
     SMSG_LFG_UPDATE                                 = 0x36C,	/// TODO: implement
     SMSG_LFG_UPDATE_LFM                             = 0x36D,	/// TODO: implement
-    SMSG_LFG_UPDATE_LFG                             = 0x36E,	/// TODO: implement
-    SMSG_LFG_UPDATE_QUEUED                          = 0x36F,	/// TODO: implement
+    CMSG_LFG_PLAYER_INFO                            = 0x36E,	/// TODO: implement
+    SMSG_LFG_PLAYER_INFO                            = 0x36F,	/// TODO: implement
     SMSG_LFG_PENDING_INVITE                         = 0x370,	/// TODO: implement
-    SMSG_LFG_PENDING_MATCH                          = 0x371,	/// TODO: implement
-    SMSG_LFG_PENDING_MATCH_DONE                     = 0x372,	/// TODO: implement
+    CMSG_LFG_PARTY_INFO                             = 0x371,	/// TODO: implement
+    SMSG_LFG_PARTY_INFO                             = 0x372,	/// TODO: implement
     SMSG_TITLE_EARNED                               = 0x373,	// implemented
     CMSG_SET_TITLE                                  = 0x374,	// implemented
     CMSG_CANCEL_MOUNT_AURA                          = 0x375,	// implemented
