@@ -32,10 +32,9 @@ namespace Arcemu
 			public:
 				struct LFGDungeon
 				{
-					uint8 dungeon;
-					uint8 unk1; /// on some raids this is set to 1
-					uint8 unk2;
-					uint8 unk3; /// type? 1 = normal, 2 = raid, 5 = heroic, or so it seems
+					uint16 dungeon;
+					uint8 unk1;
+					uint8 unk2; /// type? 1 = normal, 2 = raid, 5 = heroic, or so it seems
 				};
 				
 				uint32 roles; // flags: 1 = leader, 2 = tank, 4 = healer, 8 = dps

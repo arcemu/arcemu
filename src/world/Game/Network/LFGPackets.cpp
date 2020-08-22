@@ -34,10 +34,9 @@ namespace Arcemu
 
 				for( int i = 0; i < count; i++ )
 				{
-					buffer << uint8( dungeons[ i ].dungeon );
+					buffer << uint16( dungeons[ i ].dungeon );
 					buffer << uint8( dungeons[ i ].unk1 );
 					buffer << uint8( dungeons[ i ].unk2 );
-					buffer << uint8( dungeons[ i ].unk3 );
 				}
 
 				buffer << unk3;
@@ -60,7 +59,6 @@ namespace Arcemu
 					buffer >> d.dungeon;
 					buffer >> d.unk1;
 					buffer >> d.unk2;
-					buffer >> d.unk3;
 					
 					dungeons.push_back( d );
 				}
