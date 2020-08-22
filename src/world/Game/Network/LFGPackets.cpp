@@ -196,6 +196,17 @@ namespace Arcemu
 				buffer >> proposalId;
 				buffer >> result;
 			}
+
+			void CLFGSetComment::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( CMSG_LFG_SET_COMMENT );
+				buffer << comment;
+			}
+
+			void CLFGSetComment::deserialize( PacketBuffer& buffer )
+			{
+				buffer >> comment;
+			}
 		}
 	}
 }

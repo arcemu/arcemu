@@ -559,6 +559,7 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDINFO, ItemRefundInfoPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDREQUEST, ItemRefundRequestPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PROPOSAL_RESULT, LFGProposalResultPacketHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_SET_COMMENT, LFGSetCommentHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -868,8 +869,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleGroupPromote;
 
 	// LFG System
-	WorldPacketHandlers[CMSG_SET_LFG_COMMENT].handler =
-	    &WorldSession::HandleSetLookingForGroupComment;
 	WorldPacketHandlers[MSG_LOOKING_FOR_GROUP].handler =
 	    &WorldSession::HandleMsgLookingForGroup;
 	WorldPacketHandlers[CMSG_SET_LOOKING_FOR_GROUP].handler =

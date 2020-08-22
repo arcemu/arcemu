@@ -160,6 +160,18 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			class CLFGSetComment : public Arcemu::Shared::Packet
+			{
+			public:
+				std::string comment;
+
+			public:
+				CLFGSetComment(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }

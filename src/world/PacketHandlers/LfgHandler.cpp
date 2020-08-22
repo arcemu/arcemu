@@ -19,18 +19,6 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
-
-void WorldSession::HandleSetLookingForGroupComment(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-
-	std::string comment;
-
-	recvPacket >> comment;
-
-	GetPlayer()->Lfgcomment = comment;
-}
 
 void WorldSession::HandleLFGPlayerInfo(WorldPacket & recvPacket)
 {

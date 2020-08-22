@@ -423,7 +423,6 @@ class SERVER_DECL WorldSession
 		void HandleLFGLeave(WorldPacket & recvPacket);
 		void HandleEnableAutoAddMembers(WorldPacket & recvPacket);
 		void HandleDisableAutoAddMembers(WorldPacket & recvPacket);
-		void HandleSetLookingForGroupComment(WorldPacket & recvPacket);
 		void HandleMsgLookingForGroup(WorldPacket & recvPacket);
 		void HandleSetLookingForGroup(WorldPacket & recvPacket);
 		void HandleSetLookingForMore(WorldPacket & recvPacket);

@@ -23,5 +23,6 @@
 #include "PacketHandlerMacros.h"
 
 DEFINE_PACKET_HANDLER_CLASS( LFGProposalResultPacketHandler )
+DEFINE_PACKET_HANDLER_CLASS( LFGSetCommentHandler );
 
 #endif

@@ -30,3 +30,16 @@ DEFINE_PACKET_HANDLER_METHOD( LFGProposalResultPacketHandler )
 
 	LOG_DEBUG( "Received proposal result" );
 }
+
+DEFINE_PACKET_HANDLER_METHOD( LFGSetCommentHandler )
+{
+	Player *_player = session.GetPlayer();
+	CHECK_INWORLD_RETURN
+
+	Arcemu::GamePackets::LFG::CLFGSetComment packet;
+	packet.deserialize( recv_data );
+
+	_player->Lfgcomment = packet.comment;
+
+	LOG_DEBUG( "Received set comment message" );
+}
