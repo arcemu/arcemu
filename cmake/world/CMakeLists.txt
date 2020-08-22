@@ -70,7 +70,6 @@ SET(sources
 	Chat/Level1.cpp 
 	Chat/Level2.cpp 
 	Chat/Level3.cpp 
-	PacketHandlers/LfgHandler.cpp 
 	LfgMgr.cpp 
 	LootMgr.cpp 
 	LocalizationMgr.cpp 

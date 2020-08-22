@@ -416,9 +416,6 @@ class SERVER_DECL WorldSession
 		void HandleReadyCheckOpcode(WorldPacket & recv_data);
 		void HandleGroupPromote(WorldPacket & recv_data);
 
-		// LFG opcodes
-		void HandleLFGLeave(WorldPacket & recvPacket);
-
 		/// Taxi opcodes (TaxiHandler.cpp)
 		void HandleTaxiNodeStatusQueryOpcode(WorldPacket & recvPacket);
 		void HandleTaxiQueryAvaibleNodesOpcode(WorldPacket & recvPacket);

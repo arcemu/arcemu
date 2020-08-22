@@ -558,11 +558,14 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_EQUIPMENT_SET_DELETE, DeleteEquipmentSetPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDINFO, ItemRefundInfoPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_ITEMREFUNDREQUEST, ItemRefundRequestPacketHandler );
+
+	/// LFG handlers
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PROPOSAL_RESULT, LFGProposalResultPacketHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_SET_COMMENT, LFGSetCommentHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PLAYER_INFO, LFGPlayerInfoHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PARTY_INFO, LFGPartyInfoHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_JOIN, LFGJoinHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_LEAVE, LFGLeaveHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -870,10 +873,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandlePartyMemberStatsOpcode;
 	WorldPacketHandlers[MSG_PARTY_ASSIGNMENT].handler =
 	    &WorldSession::HandleGroupPromote;
-
-	// LFG System
-	WorldPacketHandlers[CMSG_LFG_LEAVE].handler =
-	    &WorldSession::HandleLFGLeave;
 
 	// Taxi / NPC Interaction
 	WorldPacketHandlers[CMSG_ENABLETAXI].handler =

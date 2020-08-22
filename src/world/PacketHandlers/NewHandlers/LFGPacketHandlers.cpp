@@ -98,3 +98,11 @@ DEFINE_PACKET_HANDLER_METHOD( LFGJoinHandler )
 		return;
 	}
 }
+
+DEFINE_PACKET_HANDLER_METHOD( LFGLeaveHandler )
+{
+	Player *_player = session.GetPlayer();
+	CHECK_INWORLD_RETURN
+
+	LOG_DEBUG( "Received LFG leave request." );
+}
