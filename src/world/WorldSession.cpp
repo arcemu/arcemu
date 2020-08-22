@@ -368,8 +368,6 @@ void WorldSession::LogoutPlayer(bool Save)
 		_player->GetItemInterface()->EmptyBuyBack();
 		_player->GetItemInterface()->removeLootableItems();
 
-		sLfgMgr.RemovePlayerFromLfgQueues(_player);
-
 		// Save HP/Mana
 		_player->load_health = _player->GetUInt32Value(UNIT_FIELD_HEALTH);
 		_player->load_mana = _player->GetPower(POWER_TYPE_MANA);

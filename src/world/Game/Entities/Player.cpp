@@ -137,10 +137,6 @@ Player::Player(uint32 guid)
 	PowerCheat(false),
 	FlyCheat(false),
 	Lfgcomment(""),
-	LfmDungeonId(0),
-	LfmType(0),
-	m_Autojoin(false),
-	m_AutoAddMem(false),
 	m_UnderwaterMaxTime(180000),
 	m_UnderwaterLastDmg(Arcemu::Shared::Util::getMSTime()),
 	m_resurrectHealth(0),
@@ -233,12 +229,6 @@ Player::Player(uint32 guid)
 	SetFloatValue(PLAYER_RUNE_REGEN_1 + 1, 0.100000f);
 	SetFloatValue(PLAYER_RUNE_REGEN_1 + 2, 0.100000f);
 	SetFloatValue(PLAYER_RUNE_REGEN_1 + 3, 0.100000f);
-
-	for(i = 0; i < 3; i++)
-	{
-		LfgType[i] = 0;
-		LfgDungeonId[i] = 0;
-	}
 
 	for(i = 0; i < 28; i++)
 	{
@@ -422,8 +412,6 @@ Player::Player(uint32 guid)
 	m_CurrentTaxiPath = NULL;
 	m_setflycheat = false;
 	m_fallDisabledUntil = 0;
-	m_lfgMatch = NULL;
-	m_lfgInviterGuid = 0;
 	m_indoorCheckTimer = 0;
 	m_taxiMapChangeNode = 0;
 	this->OnLogin();
@@ -10459,26 +10447,6 @@ PlayerInfo::~PlayerInfo()
 {
 	if(m_Group != NULL)
 		m_Group->RemovePlayer(this);
-}
-
-void Player::PartLFGChannel()
-{
-	Channel* pChannel = channelmgr.GetChannel("LookingForGroup", this);
-	if(pChannel == NULL)
-		return;
-
-	/*for(list<Channel*>::iterator itr = m_channels.begin(); itr != m_channels.end(); ++itr)
-	{
-		if( (*itr) == pChannel )
-		{
-			pChannel->Part(this);
-			return;
-		}
-	}*/
-	if(m_channels.find(pChannel) == m_channels.end())
-		return;
-
-	pChannel->Part(this);
 }
 
 //if we charmed or simply summoned a pet, this function should get called

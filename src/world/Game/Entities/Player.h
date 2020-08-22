@@ -859,11 +859,6 @@ class SERVER_DECL Player : public Unit
 
 		void RecalculateHonor();
 
-		LfgMatch* m_lfgMatch;
-		uint32 m_lfgInviterGuid;
-
-		void EventTimeoutLfgInviter();
-
 		// Summon and Appear Blocking
 		void DisableSummon(bool disable) { disableSummon = disable; }
 		bool IsSummonDisabled() { return disableSummon; }
@@ -1834,12 +1829,7 @@ class SERVER_DECL Player : public Unit
 	public:
 
 		std::string Lfgcomment;
-		uint16 LfgDungeonId[3];
-		uint8 LfgType[3];
-		uint16 LfmDungeonId;
-		uint8 LfmType;
-		bool m_Autojoin;
-		bool m_AutoAddMem;
+
 		void StopMirrorTimer(uint32 Type);
 		BGScore m_bgScore;
 		uint32 m_bgTeam;
