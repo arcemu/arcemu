@@ -20,18 +20,6 @@
 
 #include "StdAfx.h"
 
-void WorldSession::HandleLFGPlayerInfo(WorldPacket & recvPacket)
-{
-	LOG_DEBUG( "Received LFG player info request." );
-
-	PacketBuffer response( SMSG_LFG_PLAYER_INFO, 5 );
-	response << uint8( 0 );
-	response << uint32( 0 );
-	SendPacket( &response );
-
-	LOG_DEBUG( "Sent LFG player info response." );
-}
-
 void WorldSession::HandleLFGPartyInfo(WorldPacket & recvPacket)
 {
 	LOG_DEBUG( "Received LFG party info request." );

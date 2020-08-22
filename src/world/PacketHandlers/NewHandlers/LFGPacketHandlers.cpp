@@ -43,3 +43,18 @@ DEFINE_PACKET_HANDLER_METHOD( LFGSetCommentHandler )
 
 	LOG_DEBUG( "Received set comment message" );
 }
+
+DEFINE_PACKET_HANDLER_METHOD( LFGPlayerInfoHandler )
+{
+	Player *_player = session.GetPlayer();
+	CHECK_INWORLD_RETURN
+
+	LOG_DEBUG( "Received LFG player info request." );
+
+	PacketBuffer response( SMSG_LFG_PLAYER_INFO, 5 );
+	response << uint8( 0 );
+	response << uint32( 0 );
+	_player->SendPacket( &response );
+
+	LOG_DEBUG( "Sent LFG player info response." );
+}
