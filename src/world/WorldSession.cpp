@@ -869,12 +869,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleGroupPromote;
 
 	// LFG System
-	WorldPacketHandlers[MSG_LOOKING_FOR_GROUP].handler =
-	    &WorldSession::HandleMsgLookingForGroup;
-	WorldPacketHandlers[CMSG_SET_LOOKING_FOR_GROUP].handler =
-	    &WorldSession::HandleSetLookingForGroup;
-	WorldPacketHandlers[CMSG_SET_LOOKING_FOR_MORE].handler =
-	    &WorldSession::HandleSetLookingForMore;
 	WorldPacketHandlers[CMSG_LFG_JOIN].handler =
 	    &WorldSession::HandleLFGJoin;
 	WorldPacketHandlers[CMSG_LFG_LEAVE].handler =
@@ -883,11 +877,6 @@ void WorldSession::InitPacketHandlerTable()
 	    &WorldSession::HandleEnableAutoAddMembers;
 	WorldPacketHandlers[CMSG_LFG_LEAVE_SEARCH].handler =
 	    &WorldSession::HandleDisableAutoAddMembers;
-	WorldPacketHandlers[CMSG_CLEAR_LOOKING_FOR_GROUP].handler =
-	    &WorldSession::HandleLfgClear;
-	WorldPacketHandlers[CMSG_MEETINGSTONE_INFO].handler =
-	    &WorldSession::HandleMeetingStoneInfo;
-
 	WorldPacketHandlers[CMSG_LFG_PLAYER_INFO].handler =
 		&WorldSession::HandleLFGPlayerInfo;
 	WorldPacketHandlers[CMSG_LFG_PARTY_INFO].handler =

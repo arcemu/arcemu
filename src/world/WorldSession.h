@@ -423,14 +423,6 @@ class SERVER_DECL WorldSession
 		void HandleLFGLeave(WorldPacket & recvPacket);
 		void HandleEnableAutoAddMembers(WorldPacket & recvPacket);
 		void HandleDisableAutoAddMembers(WorldPacket & recvPacket);
-		void HandleMsgLookingForGroup(WorldPacket & recvPacket);
-		void HandleSetLookingForGroup(WorldPacket & recvPacket);
-		void HandleSetLookingForMore(WorldPacket & recvPacket);
-		void HandleSetLookingForNone(WorldPacket & recvPacket);
-		void HandleLfgClear(WorldPacket & recvPacket);
-		void HandleMeetingStoneInfo(WorldPacket & recvPacket);
-		void HandleLfgInviteAccept(WorldPacket & recvPacket);
-		void HandleLfgInviteDeny(WorldPacket & recvPacket);
 
 		/// Taxi opcodes (TaxiHandler.cpp)
 		void HandleTaxiNodeStatusQueryOpcode(WorldPacket & recvPacket);

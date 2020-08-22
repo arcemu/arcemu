@@ -78,33 +78,3 @@ void WorldSession::HandleDisableAutoAddMembers(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN
 }
-
-void WorldSession::HandleMsgLookingForGroup(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}
-
-void WorldSession::HandleSetLookingForGroup(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}
-
-void WorldSession::HandleSetLookingForMore(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}
-
-void WorldSession::HandleLfgClear(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}
-
-void WorldSession::HandleMeetingStoneInfo(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN
-}
-
-void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
-{
-	CHECK_INWORLD_RETURN;
-}
