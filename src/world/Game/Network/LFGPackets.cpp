@@ -136,6 +136,53 @@ namespace Arcemu
 					buffer >> comment;
 				}
 			}
+
+			void SLFGProposalUpdate::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_LFG_PROPOSAL_UPDATE );
+				buffer << uint32( dungeonId );
+				buffer << uint8( proposalState );
+				buffer << uint32( proposalId );
+				buffer << uint32( encountersFinishedMask );
+				buffer << uint8( silent );
+				buffer << uint8( entries.size() );
+
+				for( size_t i = 0; i < entries.size(); i++ )
+				{
+					const LFGProposalEntry &entry = entries[ i ];
+					buffer << uint32( entry.roleMask );
+					buffer << uint8( entry.isCurrentPlayer );
+					buffer << uint8( entry.inDungeon );
+					buffer << uint8( entry.inSameGroup );
+					buffer << uint8( entry.hasAnswered );
+					buffer << uint8( entry.hasAccepted );
+				}
+			}
+
+			void SLFGProposalUpdate::deserialize( PacketBuffer& buffer )
+			{
+				buffer >> dungeonId;
+				buffer >> proposalState;
+				buffer >> proposalId;
+				buffer >> encountersFinishedMask;
+				buffer >> silent;
+
+				uint8 entryCount;
+				buffer >> entryCount;
+
+				for( uint8 i = 0; i < entryCount; i++ )
+				{
+					LFGProposalEntry entry;
+					buffer >> entry.roleMask;
+					buffer >> entry.isCurrentPlayer;
+					buffer >> entry.inDungeon;
+					buffer >> entry.inSameGroup;
+					buffer >> entry.hasAnswered;
+					buffer >> entry.hasAccepted;
+
+					entries.push_back( entry );
+				}
+			}
 		}
 	}
 }

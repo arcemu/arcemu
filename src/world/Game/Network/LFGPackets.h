@@ -110,6 +110,43 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			/// Shows LFG group proposal, readyness check in the client
+			class SLFGProposalUpdate
+			{
+			public:
+				struct LFGProposalEntry
+				{
+					uint32 roleMask;
+					uint8 isCurrentPlayer;
+					uint8 inDungeon;
+					uint8 inSameGroup;
+					uint8 hasAnswered;
+					uint8 hasAccepted;
+				};
+				enum LFGRole
+				{
+					LFG_ROLE_NONE = 0,
+					LFG_ROLE_LEADER = 1,
+					LFG_ROLE_TANK = 2,
+					LFG_ROLE_HEALER = 4,
+					LFG_ROLE_DPS = 8
+				};
+
+			public:
+				uint32 dungeonId;
+				uint8 proposalState;
+				uint32 proposalId;
+				uint32 encountersFinishedMask;
+				uint8 silent; // don't show popup
+				std::vector< LFGProposalEntry > entries;
+
+			public:
+				SLFGProposalUpdate(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }

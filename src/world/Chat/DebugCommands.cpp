@@ -1316,49 +1316,55 @@ bool ChatHandler::HandleDebugSendLFGProposalUpdateCommand( const char *args, Wor
 
 	PacketBuffer buffer( SMSG_LFG_PROPOSAL_UPDATE, 512 );
 
-	buffer << uint32( dungeon ); //dungeon
-	buffer << uint8( state ); // proposal state?
-	buffer << uint32( 123 ); // proposal id
-	buffer << uint32( encounters ); // bosses down, bitfield
-	buffer << uint8( silent ); // silent?
+	Arcemu::GamePackets::LFG::SLFGProposalUpdate packet;
+	packet.dungeonId = dungeon;
+	packet.proposalState = state;
+	packet.proposalId = 123;
+	packet.encountersFinishedMask = encounters;
+	packet.silent = silent;
 
-	buffer << uint8( 5 ); // playercount
+	Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFGProposalEntry entry;
+	entry.roleMask = Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFG_ROLE_LEADER | Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFG_ROLE_TANK;
+	entry.isCurrentPlayer = 1;
+	entry.inDungeon = 0;
+	entry.inSameGroup = 0;
+	entry.hasAnswered = 0;
+	entry.hasAccepted = 0;
+	packet.entries.push_back( entry );
 
-	buffer << uint32( 1 | 2 ); // role
-	buffer << uint8( 1 ); // is it me?
-	buffer << uint8( silent ); // in dungeon?
-	buffer << uint8( 0 ); // in same group?
-	buffer << uint8( 0 ); // has answered?
-	buffer << uint8( 0 ); // has accepted?
+	entry.roleMask = Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFG_ROLE_HEALER;
+	entry.isCurrentPlayer = 0;
+	entry.inDungeon = 0;
+	entry.inSameGroup = 0;
+	entry.hasAnswered = 1;
+	entry.hasAccepted = 1;
+	packet.entries.push_back( entry );
 
-	buffer << uint32( 4 ); // role
-	buffer << uint8( 0 ); // is it me?
-	buffer << uint8( 0 ); // in dungeon?
-	buffer << uint8( 0 ); // in same group?
-	buffer << uint8( 1 ); // has answered?
-	buffer << uint8( 1 ); // has accepted?
+	entry.roleMask = Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFG_ROLE_DPS;
+	entry.isCurrentPlayer = 0;
+	entry.inDungeon = 0;
+	entry.inSameGroup = 0;
+	entry.hasAnswered = 1;
+	entry.hasAccepted = 1;
+	packet.entries.push_back( entry );
 
-	buffer << uint32( 8 ); // role
-	buffer << uint8( 0 ); // is it me?
-	buffer << uint8( 0 ); // in dungeon?
-	buffer << uint8( 0 ); // in same group?
-	buffer << uint8( 1 ); // has answered?
-	buffer << uint8( 1 ); // has accepted?
+	entry.roleMask = Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFG_ROLE_DPS;
+	entry.isCurrentPlayer = 0;
+	entry.inDungeon = 0;
+	entry.inSameGroup = 0;
+	entry.hasAnswered = 1;
+	entry.hasAccepted = 1;
+	packet.entries.push_back( entry );
 
-	buffer << uint32( 8 ); // role
-	buffer << uint8( 0 ); // is it me?
-	buffer << uint8( 0 ); // in dungeon?
-	buffer << uint8( 0 ); // in same group?
-	buffer << uint8( 1 ); // has answered?
-	buffer << uint8( 1 ); // has accepted?
+	entry.roleMask = Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFG_ROLE_DPS;
+	entry.isCurrentPlayer = 0;
+	entry.inDungeon = 0;
+	entry.inSameGroup = 0;
+	entry.hasAnswered = 1;
+	entry.hasAccepted = 1;
+	packet.entries.push_back( entry );
 
-	buffer << uint32( 8 ); // role
-	buffer << uint8( 0 ); // is it me?
-	buffer << uint8( 0 ); // in dungeon?
-	buffer << uint8( 0 ); // in same group?
-	buffer << uint8( 0 ); // has answered?
-	buffer << uint8( 0 ); // has accepted?
-
+	packet.serialize( buffer );
 	player->SendPacket( &buffer );
 
 	return true;
