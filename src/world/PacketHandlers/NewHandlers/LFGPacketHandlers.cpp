@@ -81,7 +81,13 @@ DEFINE_PACKET_HANDLER_METHOD( LFGJoinHandler )
 	Arcemu::GamePackets::LFG::CLFGJoin packet;
 	packet.deserialize( recv_data );
 
-	LOG_DEBUG( "Received LFG join request." );
+	if( packet.dungeons.size() == 0 )
+	{
+		LOG_DEBUG( "Received LFG join request without dungeons." );
+		return;
+	}
+
+	LOG_DEBUG( "Received LFG join request. Roles: %u Dungeon1: %u Type1: %u", packet.roles, packet.dungeons[ 0 ].dungeon, packet.dungeons[ 0 ].unk2 );
 
 	// If experimental LFG is not enabled, just send an internal LFG error message
 	if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "lfg", false ) )
