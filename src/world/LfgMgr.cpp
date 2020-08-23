@@ -137,7 +137,7 @@ void LfgMgr::removePlayer( uint32 guid )
 	Player *player = objmgr.GetPlayer( guid );
 
 	/// Do we even have this player?
-	HM_NAMESPACE::hash_map< uint32, std::vector< uint32 > >::iterator mapItr = playerToDungeons.find( guid );
+	HM_NAMESPACE::HM_HASH_MAP< uint32, std::vector< uint32 > >::iterator mapItr = playerToDungeons.find( guid );
 	if( mapItr == playerToDungeons.end() )
 	{
 		return;
