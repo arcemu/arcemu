@@ -58,7 +58,7 @@ private:
 
 	std::deque< LFGQueueEntry >* queues[ LFGMGR_MAX_DUNGEONS + 1 ];
 
-	HM_NAMESPACE::hash_map< uint32, std::vector< uint32 > > playerToDungeons;
+	HM_NAMESPACE::HM_HASH_MAP< uint32, std::vector< uint32 > > playerToDungeons;
 };
 
 #define sLfgMgr LfgMgr::getSingleton()
