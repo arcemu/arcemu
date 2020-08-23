@@ -18,11 +18,47 @@
  *
  */
 
+class LFGQueueEntry
+{
+public:
+	uint32 guid;
+	uint32 roles;
+	uint32 team;
+};
+
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
-	public:
-		LfgMgr();
-		~LfgMgr();
+public:
+	enum LFGMgrConstants
+	{
+		LFGMGR_MAX_DUNGEONS = 294
+	};
+
+	enum LFGDungeonTypes
+	{
+		LFG_DUNGEON_TYPE_RAID = 2,
+		LFG_DUNGEON_TYPE_RANDOM = 6
+	};
+
+public:
+	LfgMgr();
+	~LfgMgr();
+	
+	/// Adds the player to the LFG system
+	void addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeons );
+
+	/// Removes the player from the LFG system
+	void removePlayer( uint32 guid );
+
+	/// Updates the LFG system.
+	void update();
+
+private:
+	Mutex lock;
+
+	std::deque< LFGQueueEntry >* queues[ LFGMGR_MAX_DUNGEONS + 1 ];
+
+	HM_NAMESPACE::hash_map< uint32, std::vector< uint32 > > playerToDungeons;
 };
 
 #define sLfgMgr LfgMgr::getSingleton()

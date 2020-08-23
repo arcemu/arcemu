@@ -103,6 +103,16 @@ DEFINE_PACKET_HANDLER_METHOD( LFGJoinHandler )
 
 		return;
 	}
+
+	std::vector< uint32 > dungeons;
+	std::vector< Arcemu::GamePackets::LFG::CLFGJoin::LFGDungeon >::const_iterator itr = packet.dungeons.begin();
+	while( itr != packet.dungeons.end() )
+	{
+		dungeons.push_back( itr->dungeon );
+		++itr;
+	}
+
+	sLfgMgr.addPlayer( _player->GetLowGUID(), packet.roles, dungeons );
 }
 
 DEFINE_PACKET_HANDLER_METHOD( LFGLeaveHandler )
@@ -111,4 +121,12 @@ DEFINE_PACKET_HANDLER_METHOD( LFGLeaveHandler )
 	CHECK_INWORLD_RETURN
 
 	LOG_DEBUG( "Received LFG leave request." );
+
+	/// If experimental LFG is not enabled, don't do anything
+	if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "lfg", false ) )
+	{
+		return;
+	}
+
+	sLfgMgr.removePlayer( _player->GetLowGUID() );
 }

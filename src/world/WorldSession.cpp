@@ -277,6 +277,8 @@ void WorldSession::LogoutPlayer(bool Save)
 
 	if(_player != NULL)
 	{
+		sLfgMgr.removePlayer( _player->GetLowGUID() );
+
 		_player->SetFaction( _player->GetInitialFactionId() );
 
 		objmgr.RemovePlayer(_player);
