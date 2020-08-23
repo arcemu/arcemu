@@ -18,6 +18,75 @@
  *
  */
 
+enum LFGRoles
+{
+	LFG_ROLE_LEADER = 1,
+	LFG_ROLE_TANK = 2,
+	LFG_ROLE_HEALER = 4,
+	LFG_ROLE_DPS = 8
+};
+
+class LFGProposalEntry
+{
+public:
+	uint32 guid;
+	uint32 team;
+	uint32 selectedRoles;
+	uint32 answered;
+	uint32 accepted;
+
+	LFGProposalEntry()
+	{
+		guid = 0;
+		team = 0;
+		selectedRoles = 0;
+		answered = 0;
+		accepted = 0;
+	}
+};
+
+class LFGProposal
+{
+public:
+	uint32 id;
+	uint32 dungeon;
+	std::vector< LFGProposalEntry > players;
+};
+
+class LFGQueueGroupRequirements
+{
+public:
+	bool needLeader;
+	uint8 tanksNeeded;
+	uint8 healersNeeded;
+	uint8 dpsNeeded;
+
+	LFGQueueGroupRequirements()
+	{
+		needLeader = true;
+		tanksNeeded = 1;
+		healersNeeded = 1;
+		dpsNeeded = 3;
+	}
+
+	bool met() const
+	{
+		if( needLeader )
+			return false;
+
+		if( tanksNeeded > 0 )
+			return false;
+
+		if( healersNeeded > 0 )
+			return false;
+
+		if( dpsNeeded > 0 )
+			return false;
+
+		return true;
+	}
+};
+
 class LFGQueueEntry
 {
 public:
@@ -29,7 +98,7 @@ public:
 class LFGQueue
 {
 public:
-	LFGQueue();
+	LFGQueue( const LFGQueueGroupRequirements &requirements );
 	~LFGQueue();
 
 	/// Add player to queue
@@ -38,8 +107,13 @@ public:
 	/// Remove player from queue
 	void removePlayer( uint32 guid );
 
+	/// Find next match
+	LFGProposal* findMatch( uint32 team, bool force );
+
 private:
 	std::deque< LFGQueueEntry > queue;
+
+	const LFGQueueGroupRequirements groupRequirements;
 };
 
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
@@ -68,9 +142,18 @@ public:
 	void removePlayer( uint32 guid );
 
 	/// Updates the LFG system.
-	void update();
+	void update( bool force );
 
 private:
+	/// Removes player from the queues, not protected by the lock
+	void removePlayerInternal( uint32 guid );
+
+	/// Sends the proposal to players
+	void sendProposal( LFGProposal *proposal );
+
+	/// Sends the proposal to a specific player
+	void sendProposalToPlayer( uint32 guid, LFGProposal *proposal );
+
 	Mutex lock;
 
 	LFGQueue* queues[ LFGMGR_QUEUE_COUNT ];

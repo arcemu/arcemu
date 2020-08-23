@@ -1374,9 +1374,20 @@ bool ChatHandler::HandleDebugLFGUpdateCommand( const char *args, WorldSession *s
 {
 	Player *player = session->GetPlayer();
 
-	BlueSystemMessage( session, "Triggering an LFG update" );
+	uint32 force = 0;
 
-	sLfgMgr.update();
+	sscanf( args, "%u", &force );
+
+	if( force == 1 )
+	{
+		BlueSystemMessage( session, "Triggering an LFG update with force" );
+		sLfgMgr.update(true);
+	}
+	else
+	{
+		BlueSystemMessage( session, "Triggering an LFG update" );
+		sLfgMgr.update(false);
+	}	
 
 	BlueSystemMessage( session, "Done" );
 

@@ -20,7 +20,8 @@
 
 #include "StdAfx.h"
 
-LFGQueue::LFGQueue()
+LFGQueue::LFGQueue( const LFGQueueGroupRequirements &requirements ) :
+groupRequirements( requirements )
 {
 }
 
@@ -53,11 +54,86 @@ void LFGQueue::removePlayer( uint32 guid )
 	queue.erase( itr );
 }
 
+LFGProposal* LFGQueue::findMatch( uint32 team, bool force )
+{
+	if( queue.empty() )
+		return NULL;
+
+	LFGQueueGroupRequirements requirements = groupRequirements;
+	LFGProposal *proposal = new LFGProposal();
+
+	std::deque< LFGQueueEntry >::iterator itr = queue.begin();
+	while( !requirements.met() && ( itr != queue.end() ) )
+	{
+		const LFGQueueEntry &entry = *itr;
+		uint32 selectedRole = 0;
+
+		if( entry.team == team )
+		{
+			// Select the player for some role if we can
+			if( requirements.tanksNeeded > 0 && ( ( entry.roles & LFG_ROLE_TANK ) != 0 ) )
+			{
+				selectedRole = LFG_ROLE_TANK;
+				requirements.tanksNeeded--;
+			}
+			else
+			if( requirements.healersNeeded > 0 && ( ( entry.roles & LFG_ROLE_HEALER ) != 0 ) )
+			{
+				selectedRole = LFG_ROLE_HEALER;
+				requirements.healersNeeded--;
+			}
+			else
+			if( requirements.dpsNeeded > 0 && ( ( entry.roles & LFG_ROLE_DPS ) != 0 ) )
+			{
+				selectedRole = LFG_ROLE_DPS;
+				requirements.dpsNeeded--;
+			}
+
+			// We have selected this player
+			if( selectedRole != 0 )
+			{
+
+				// If they want to be the leader, let them be
+				if( requirements.needLeader && ( ( entry.roles & LFG_ROLE_LEADER ) != 0 ) )
+				{
+					selectedRole |= LFG_ROLE_LEADER;
+					requirements.needLeader = false;
+				}
+
+				LFGProposalEntry proposalEntry;
+				proposalEntry.guid = entry.guid;
+				proposalEntry.team = team;
+				proposalEntry.selectedRoles = selectedRole;
+				proposal->players.push_back( proposalEntry );
+			}
+		}
+
+		++itr;
+	}
+
+	/// There was no leader, so let's make the first player one
+	if( requirements.needLeader )
+	{
+		proposal->players[ 0 ].selectedRoles |= LFG_ROLE_LEADER;
+		requirements.needLeader = false;
+	}
+
+	/// If we don't have enough for a group proposal, discard, unless forced
+	if( !force && !requirements.met() )
+	{
+		proposal->players.clear();
+		delete proposal;
+		proposal = NULL;
+	}
+
+	return proposal;
+}
+
 initialiseSingleton(LfgMgr);
 
 LfgMgr::LfgMgr()
 {
-	for( int i = 0; i < LFGMGR_MAX_DUNGEONS; i++ )
+	for( int i = 0; i < LFGMGR_QUEUE_COUNT; i++ )
 	{
 		queues[ i ] = NULL;
 	}
@@ -67,7 +143,7 @@ LfgMgr::~LfgMgr()
 {
 	playerToDungeons.clear();
 
-	for( int i = 0; i < LFGMGR_MAX_DUNGEONS; i++ )
+	for( int i = 0; i < LFGMGR_QUEUE_COUNT; i++ )
 	{
 		delete queues[ i ];
 		queues[ i ] = NULL;
@@ -133,7 +209,7 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 
 		if( queues[ dungeon ] == NULL )
 		{
-			queues[ dungeon ] = new LFGQueue();
+			queues[ dungeon ] = new LFGQueue( LFGQueueGroupRequirements() );
 		}
 		
 		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles );
@@ -167,6 +243,11 @@ void LfgMgr::removePlayer( uint32 guid )
 {
 	Guard guard( lock );
 
+	removePlayerInternal( guid );
+}
+
+void LfgMgr::removePlayerInternal( uint32 guid )
+{
 	/// Packethandler checks if we are in world, which means player must exist
 	Player *player = objmgr.GetPlayer( guid );
 
@@ -201,9 +282,99 @@ void LfgMgr::removePlayer( uint32 guid )
 	player->SendPacket( &buffer );
 }
 
-void LfgMgr::update()
+void LfgMgr::update( bool force )
 {
 	Guard guard( lock );
+
+	for( int dungeon = 1; dungeon < LFGMGR_QUEUE_COUNT; dungeon++ )
+	{
+		LFGQueue *queue = queues[ dungeon ];
+		if( queue == NULL )
+		{
+			continue;
+		}
+		
+		for( uint32 i = TEAM_ALLIANCE; i <= TEAM_HORDE; i++ )
+		{
+			/// Let's see if we can find a group to propose for this faction
+			LFGProposal *proposal = queue->findMatch( 0, force );
+			if( proposal != NULL )
+			{
+				proposal->dungeon = dungeon;
+
+				/// We don't want these players to be part of further matchmaking
+				std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+				while( itr != proposal->players.end() )
+				{
+					removePlayerInternal( itr->guid );
+					++itr;
+				}
+
+				/// Notify players
+				sendProposal( proposal );
+			}
+		}
+	}
 }
 
+void LfgMgr::sendProposal( LFGProposal *proposal )
+{
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{		
+		sendProposalToPlayer( itr->guid, proposal );
+		++itr;
+	}
+}
+
+void LfgMgr::sendProposalToPlayer( uint32 guid, LFGProposal *proposal )
+{
+	Player *player = objmgr.GetPlayer( guid );
+
+	Arcemu::GamePackets::LFG::SLFGProposalUpdate update;
+	update.dungeonId = proposal->dungeon;
+	update.proposalId = 1;
+	update.proposalState = 0;
+	update.encountersFinishedMask = 0;
+	update.silent = 0;
+
+	for( size_t i = 0; i < proposal->players.size(); i++ )
+	{
+		Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFGProposalEntry e;
+		e.roleMask = proposal->players[ i ].selectedRoles;
+
+		if( guid == proposal->players[ i ].guid )
+			e.isCurrentPlayer = 1;
+		else
+			e.isCurrentPlayer = 0;
+
+		e.inDungeon = 0;
+		e.inSameGroup = 0;
+		e.hasAnswered = 0;
+		e.hasAccepted = 0;
+		update.entries.push_back( e );
+	}
+
+	/// Forced proposed group, need to fill in some dummies, otherwise we get a nice interface Lua error in the client
+	if( update.entries.size() < 5 )
+	{
+		uint32 needed = 5 - update.entries.size();
+		while( needed > 0 )
+		{
+			Arcemu::GamePackets::LFG::SLFGProposalUpdate::LFGProposalEntry e;
+			e.roleMask = 8;
+			e.isCurrentPlayer = 0;
+			e.inDungeon = 0;
+			e.inSameGroup = 0;
+			e.hasAnswered = 1;
+			e.hasAccepted = 1;
+			update.entries.push_back( e );
+			needed--;
+		}
+	}
+
+	PacketBuffer buffer;
+	update.serialize( buffer );
+	player->SendPacket( &buffer );
+}
 
