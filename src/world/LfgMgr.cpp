@@ -294,10 +294,10 @@ void LfgMgr::update( bool force )
 			continue;
 		}
 		
-		for( uint32 i = TEAM_ALLIANCE; i <= TEAM_HORDE; i++ )
+		for( uint32 team = TEAM_ALLIANCE; team <= TEAM_HORDE; team++ )
 		{
 			/// Let's see if we can find a group to propose for this faction
-			LFGProposal *proposal = queue->findMatch( 0, force );
+			LFGProposal *proposal = queue->findMatch( team, force );
 			if( proposal != NULL )
 			{
 				proposal->dungeon = dungeon;
