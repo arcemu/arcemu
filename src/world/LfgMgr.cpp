@@ -112,7 +112,7 @@ LFGProposal* LFGQueue::findMatch( uint32 team, bool force )
 	}
 
 	/// There was no leader, so let's make the first player one
-	if( requirements.needLeader )
+	if( requirements.needLeader && proposal->players.size() > 0 )
 	{
 		proposal->players[ 0 ].selectedRoles |= LFG_ROLE_LEADER;
 		requirements.needLeader = false;
