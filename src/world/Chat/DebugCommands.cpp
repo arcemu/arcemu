@@ -1370,3 +1370,15 @@ bool ChatHandler::HandleDebugSendLFGProposalUpdateCommand( const char *args, Wor
 	return true;
 }
 
+bool ChatHandler::HandleDebugLFGUpdateCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+
+	BlueSystemMessage( session, "Triggering an LFG update" );
+
+	sLfgMgr.update();
+
+	BlueSystemMessage( session, "Done" );
+
+	return true;
+}
