@@ -26,12 +26,29 @@ public:
 	uint32 team;
 };
 
+class LFGQueue
+{
+public:
+	LFGQueue();
+	~LFGQueue();
+
+	/// Add player to queue
+	void addPlayer( uint32 guid, uint32 team, uint32 roles );
+
+	/// Remove player from queue
+	void removePlayer( uint32 guid );
+
+private:
+	std::deque< LFGQueueEntry > queue;
+};
+
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
 public:
 	enum LFGMgrConstants
 	{
-		LFGMGR_MAX_DUNGEONS = 294
+		LFGMGR_MAX_DUNGEONS = 294,
+		LFGMGR_QUEUE_COUNT = LFGMGR_MAX_DUNGEONS + 1
 	};
 
 	enum LFGDungeonTypes
@@ -56,7 +73,7 @@ public:
 private:
 	Mutex lock;
 
-	std::deque< LFGQueueEntry >* queues[ LFGMGR_MAX_DUNGEONS + 1 ];
+	LFGQueue* queues[ LFGMGR_QUEUE_COUNT ];
 
 	HM_NAMESPACE::HM_HASH_MAP< uint32, std::vector< uint32 > > playerToDungeons;
 };

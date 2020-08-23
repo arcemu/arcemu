@@ -20,6 +20,39 @@
 
 #include "StdAfx.h"
 
+LFGQueue::LFGQueue()
+{
+}
+
+LFGQueue::~LFGQueue()
+{
+	queue.clear();
+}
+
+void LFGQueue::addPlayer( uint32 guid, uint32 team, uint32 roles )
+{
+	LFGQueueEntry entry;
+	entry.guid = guid;
+	entry.team = team;
+	entry.roles = roles;
+
+	queue.push_back( entry );	
+}
+
+void LFGQueue::removePlayer( uint32 guid )
+{
+	std::deque< LFGQueueEntry >::iterator itr = queue.begin();
+	while( itr != queue.end() )
+	{
+		const LFGQueueEntry &entry = *itr;
+		if( entry.guid == guid )
+			break;
+		++itr;
+	}
+
+	queue.erase( itr );
+}
+
 initialiseSingleton(LfgMgr);
 
 LfgMgr::LfgMgr()
@@ -36,7 +69,6 @@ LfgMgr::~LfgMgr()
 
 	for( int i = 0; i < LFGMGR_MAX_DUNGEONS; i++ )
 	{
-		queues[ i ]->clear();
 		delete queues[ i ];
 		queues[ i ] = NULL;
 	}
@@ -45,6 +77,13 @@ LfgMgr::~LfgMgr()
 void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeons )
 {
 	Guard guard( lock );
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, std::vector< uint32 > >::const_iterator itr = playerToDungeons.find( guid );
+	if( itr != playerToDungeons.end() )
+	{
+		LOG_DEBUG( "Tried to add a player who is already in the LFG system" );
+		return;
+	}
 
 	// Packethandler checks if we're in world, which means player must exist
 	Player *player = objmgr.GetPlayer( guid );
@@ -94,15 +133,10 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 
 		if( queues[ dungeon ] == NULL )
 		{
-			queues[ dungeon ] = new std::deque< LFGQueueEntry >();
+			queues[ dungeon ] = new LFGQueue();
 		}
 		
-		LFGQueueEntry entry;
-		entry.guid = guid;
-		entry.team = player->GetTeam();
-		entry.roles = roles;
-
-		queues[ dungeon ]->push_back( entry );
+		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles );
 	}
 
 	/// Add player to player to dungeon map
@@ -148,19 +182,8 @@ void LfgMgr::removePlayer( uint32 guid )
 	for( std::vector< uint32 >::const_iterator dungeonItr = dungeons.begin(); dungeonItr != dungeons.end(); ++dungeonItr )
 	{
 		uint32 dungeon = *dungeonItr;
-		std::deque< LFGQueueEntry > *queue = queues[ dungeon ];
-		std::deque< LFGQueueEntry >::iterator queueItr = queue->begin();
-		while( queueItr != queue->end() )
-		{
-			const LFGQueueEntry &entry = *queueItr;
-			if( entry.guid == guid )
-			{
-				break;
-			}
-			++queueItr;
-		}
-
-		queue->erase( queueItr );
+		LFGQueue *queue = queues[ dungeon ];
+		queue->removePlayer( guid );
 	}
 
 	/// Then remove from the map as well
