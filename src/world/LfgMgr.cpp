@@ -20,6 +20,49 @@
 
 #include "StdAfx.h"
 
+LFGProposalStore::LFGProposalStore()
+{
+	lastId = 0;
+}
+
+LFGProposalStore::~LFGProposalStore()
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGProposal* >::iterator itr = proposals.begin();
+	while( itr != proposals.end() )
+	{
+		LFGProposal *proposal = itr->second;
+		delete proposal;
+		++itr;
+	}
+
+	proposals.clear();
+}
+
+uint32 LFGProposalStore::addProposal( LFGProposal *proposal )
+{
+	uint32 id = ++lastId;
+	proposals[ id ] = proposal;
+	return id;
+}
+
+LFGProposal* LFGProposalStore::getProposal( uint32 id )
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGProposal* >::iterator itr = proposals.find( id );
+	if( itr == proposals.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+
+void LFGProposalStore::removeProposal( uint32 id )
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGProposal* >::iterator itr = proposals.find( id );
+	if( itr == proposals.end() )
+		return;
+	else
+		proposals.erase( itr );
+}
+
 LFGQueue::LFGQueue( const LFGQueueGroupRequirements &requirements ) :
 groupRequirements( requirements )
 {
@@ -246,6 +289,40 @@ void LfgMgr::removePlayer( uint32 guid )
 	removePlayerInternal( guid );
 }
 
+void LfgMgr::updateProposal( uint32 id, uint32 guid, uint8 result )
+{
+	Guard guard( lock );
+
+	LFGProposal *proposal = proposals.getProposal( id );
+	if( proposal == NULL )
+	{
+		LOG_DEBUG( "Tried to update invalid proposal" );
+		return;
+	}
+
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		LFGProposalEntry &entry = *itr;
+		if( entry.guid == guid )
+		{
+			entry.answered = 1;
+			entry.accepted = result;
+			break;
+		}
+		++itr;
+	}
+
+	if( itr == proposal->players.end() )
+	{
+		LOG_DEBUG( "Player not found in proposal being updated." );
+		return;
+	}
+
+	/// Update players about the update
+	sendProposal( proposal );
+}
+
 void LfgMgr::removePlayerInternal( uint32 guid )
 {
 	/// Packethandler checks if we are in world, which means player must exist
@@ -310,6 +387,10 @@ void LfgMgr::update( bool force )
 					++itr;
 				}
 
+				/// Store the proposal
+				uint32 id = proposals.addProposal( proposal );
+				proposal->id = id;
+
 				/// Notify players
 				sendProposal( proposal );
 			}
@@ -333,7 +414,7 @@ void LfgMgr::sendProposalToPlayer( uint32 guid, LFGProposal *proposal )
 
 	Arcemu::GamePackets::LFG::SLFGProposalUpdate update;
 	update.dungeonId = proposal->dungeon;
-	update.proposalId = 1;
+	update.proposalId = proposal->id;
 	update.proposalState = 0;
 	update.encountersFinishedMask = 0;
 	update.silent = 0;
@@ -350,8 +431,8 @@ void LfgMgr::sendProposalToPlayer( uint32 guid, LFGProposal *proposal )
 
 		e.inDungeon = 0;
 		e.inSameGroup = 0;
-		e.hasAnswered = 0;
-		e.hasAccepted = 0;
+		e.hasAnswered = proposal->players[ i ].answered;
+		e.hasAccepted = proposal->players[ i ].accepted;
 		update.entries.push_back( e );
 	}
 

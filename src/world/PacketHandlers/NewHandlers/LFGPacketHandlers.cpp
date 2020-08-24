@@ -29,6 +29,14 @@ DEFINE_PACKET_HANDLER_METHOD( LFGProposalResultPacketHandler )
 	result.deserialize( recv_data );
 
 	LOG_DEBUG( "Received proposal result" );
+
+	/// If experimental LFG is not enabled, don't do anything
+	if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "lfg", false ) )
+	{
+		return;
+	}
+
+	sLfgMgr.updateProposal( result.proposalId, _player->GetLowGUID(), result.result );
 }
 
 DEFINE_PACKET_HANDLER_METHOD( LFGSetCommentHandler )

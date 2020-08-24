@@ -53,6 +53,29 @@ public:
 	std::vector< LFGProposalEntry > players;
 };
 
+/// Generates proposal Id and maintains proposals
+class LFGProposalStore
+{
+public:
+	LFGProposalStore();
+	~LFGProposalStore();
+
+	/// Generate an Id for and add proposal to the store
+	uint32 addProposal( LFGProposal *proposal );
+
+	/// Look up and return proposal, or NULL
+	LFGProposal* getProposal( uint32 id );
+
+	/// Remove proposal from the store
+	void removeProposal( uint32 id );
+
+private:
+	/// The last generated proposal Id
+	uint32 lastId;
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGProposal* > proposals;
+};
+
 class LFGQueueGroupRequirements
 {
 public:
@@ -141,6 +164,9 @@ public:
 	/// Removes the player from the LFG system
 	void removePlayer( uint32 guid );
 
+	/// Updates the specified proposal with the player's answer
+	void updateProposal( uint32 id, uint32 guid, uint8 result );
+
 	/// Updates the LFG system.
 	void update( bool force );
 
@@ -159,6 +185,8 @@ private:
 	LFGQueue* queues[ LFGMGR_QUEUE_COUNT ];
 
 	HM_NAMESPACE::HM_HASH_MAP< uint32, std::vector< uint32 > > playerToDungeons;
+
+	LFGProposalStore proposals;
 };
 
 #define sLfgMgr LfgMgr::getSingleton()
