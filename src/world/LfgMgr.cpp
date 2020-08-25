@@ -20,6 +20,39 @@
 
 #include "StdAfx.h"
 
+bool LFGProposal::updateProposalAnswer( uint32 guid, uint8 answer )
+{
+	std::vector< LFGProposalEntry >::iterator itr = players.begin();
+	while( itr != players.end() )
+	{
+		LFGProposalEntry &entry = *itr;
+
+		if( entry.guid == guid )
+		{
+			entry.answered = 1;
+			entry.accepted = answer;
+			return true;
+		}
+
+		++itr;
+	}
+
+	return false;
+}
+
+bool LFGProposal::hasAllAccepted() const
+{
+	std::vector< LFGProposalEntry >::const_iterator itr = players.begin();
+	while( itr != players.end() )
+	{
+		if( itr->accepted == 0 )
+			return false;
+		++itr;
+	}
+
+	return true;
+}
+
 LFGProposalStore::LFGProposalStore()
 {
 	lastId = 0;
@@ -300,23 +333,20 @@ void LfgMgr::updateProposal( uint32 id, uint32 guid, uint8 result )
 		return;
 	}
 
-	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
-	while( itr != proposal->players.end() )
-	{
-		LFGProposalEntry &entry = *itr;
-		if( entry.guid == guid )
-		{
-			entry.answered = 1;
-			entry.accepted = result;
-			break;
-		}
-		++itr;
-	}
-
-	if( itr == proposal->players.end() )
+	if( ! proposal->updateProposalAnswer( guid, result ) )
 	{
 		LOG_DEBUG( "Player not found in proposal being updated." );
 		return;
+	}
+
+	if( result == 0 )
+	{
+		proposal->state = LFGProposal::LFG_PROPOSAL_STATE_FAIL;
+	}
+	else
+	if( proposal->hasAllAccepted() )
+	{
+		proposal->state = LFGProposal::LFG_PROPOSAL_STATE_SUCCESS;
 	}
 
 	/// Update players about the update
@@ -415,7 +445,7 @@ void LfgMgr::sendProposalToPlayer( uint32 guid, LFGProposal *proposal )
 	Arcemu::GamePackets::LFG::SLFGProposalUpdate update;
 	update.dungeonId = proposal->dungeon;
 	update.proposalId = proposal->id;
-	update.proposalState = 0;
+	update.proposalState = proposal->state;
 	update.encountersFinishedMask = 0;
 	update.silent = 0;
 

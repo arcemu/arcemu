@@ -48,9 +48,30 @@ public:
 class LFGProposal
 {
 public:
+	enum LFGProposalState
+	{
+		LFG_PROPOSAL_STATE_DEFAULT = 0,
+		LFG_PROPOSAL_STATE_FAIL = 1,
+		LFG_PROPOSAL_STATE_SUCCESS = 2
+	};
+
+	uint8 state;
 	uint32 id;
 	uint32 dungeon;
 	std::vector< LFGProposalEntry > players;
+
+	LFGProposal()
+	{
+		state = LFG_PROPOSAL_STATE_DEFAULT;
+		id = 0;
+		dungeon = 0;
+	}
+
+	/// Updates the proposal answer for a guid. Returns true on successful update.
+	bool updateProposalAnswer( uint32 guid, uint8 answer );
+
+	/// Tells if everyone has accepted
+	bool hasAllAccepted() const;
 };
 
 /// Generates proposal Id and maintains proposals
