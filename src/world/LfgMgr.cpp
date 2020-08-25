@@ -106,14 +106,17 @@ LFGQueue::~LFGQueue()
 	queue.clear();
 }
 
-void LFGQueue::addPlayer( uint32 guid, uint32 team, uint32 roles )
+void LFGQueue::addPlayer( uint32 guid, uint32 team, uint32 roles, bool readd )
 {
 	LFGQueueEntry entry;
 	entry.guid = guid;
 	entry.team = team;
 	entry.roles = roles;
 
-	queue.push_back( entry );	
+	if( readd )
+		queue.push_front( entry );
+	else
+		queue.push_back( entry );	
 }
 
 void LFGQueue::removePlayer( uint32 guid )
@@ -237,9 +240,6 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 		return;
 	}
 
-	// Packethandler checks if we're in world, which means player must exist
-	Player *player = objmgr.GetPlayer( guid );
-
 	if( roles == 0 )
 	{
 		LOG_DEBUG( "Tried to add player without roles." );
@@ -251,6 +251,14 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 		LOG_DEBUG( "Tried to add player without dungeons." );
 		return;
 	}
+
+	addPlayerInternal( guid, roles, dungeons, false );
+}
+
+void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 > dungeons, bool readd )
+{
+	// Packethandler checks if we're in world, which means player must exist
+	Player *player = objmgr.GetPlayer( guid );
 
 	/// Some checks
 	for( std::vector< uint32 >::const_iterator itr = dungeons.begin(); itr != dungeons.end(); ++itr )
@@ -288,7 +296,7 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 			queues[ dungeon ] = new LFGQueue( LFGQueueGroupRequirements() );
 		}
 		
-		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles );
+		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles, readd );
 	}
 
 	/// Add player to player to dungeon map
@@ -298,16 +306,24 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 	/// Notify player that they are in the queue
 	PacketBuffer buffer;
 
-	Arcemu::GamePackets::LFG::SLFGJoinResult result;
-	result.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_OK;
-	result.state = 0;
-	result.serialize( buffer );
-	player->SendPacket( &buffer );
+	if( !readd )
+	{
+		Arcemu::GamePackets::LFG::SLFGJoinResult result;
+		result.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_OK;
+		result.state = 0;
+		result.serialize( buffer );
+		player->SendPacket( &buffer );
+	}
 
 	Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
 	update.dungeons = dungeons;
 	update.queued = 1;
-	update.updateType = 0;
+
+	if( readd )
+		update.updateType = LFG_UPDATE_PROPOSAL_FAILURE;
+	else
+		update.updateType = LFG_UPDATE_JOINED;
+
 	update.unk1 = 0;
 	update.unk2 = 0;
 	update.comment = "";
@@ -351,6 +367,11 @@ void LfgMgr::updateProposal( uint32 id, uint32 guid, uint8 result )
 
 	/// Update players about the update
 	sendProposal( proposal );
+
+	if( proposal->state == LFGProposal::LFG_PROPOSAL_STATE_FAIL )
+	{
+		onProposalFailed( proposal );
+	}
 }
 
 void LfgMgr::removePlayerInternal( uint32 guid )
@@ -381,7 +402,7 @@ void LfgMgr::removePlayerInternal( uint32 guid )
 	PacketBuffer buffer;
 	Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
 	update.queued = 0;
-	update.updateType = 0;
+	update.updateType = LFG_UPDATE_REMOVED;
 	update.unk1 = 0;
 	update.unk2 = 0;
 	update.comment = "";
@@ -489,3 +510,39 @@ void LfgMgr::sendProposalToPlayer( uint32 guid, LFGProposal *proposal )
 	player->SendPacket( &buffer );
 }
 
+
+void LfgMgr::onProposalFailed( LFGProposal *proposal )
+{
+	proposals.removeProposal( proposal->id );
+
+	std::vector< uint32 > dungeons;
+	dungeons.push_back( proposal->dungeon );
+
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		/// If the player didn't decline, requeue
+		if( ( itr->answered == 0 ) || ( itr->accepted == 1 ) )
+		{
+			addPlayerInternal( itr->guid, itr->selectedRoles, dungeons, true );
+		}
+		else
+		{
+			/// Otherwise tell them they are out of the queue
+			Player *player = objmgr.GetPlayer( itr->guid );
+			PacketBuffer buffer;
+			Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
+			update.queued = 0;
+			update.updateType = LFG_UPDATE_REMOVED;
+			update.unk1 = 0;
+			update.unk2 = 0;
+			update.comment = "";
+			update.serialize( buffer );
+			player->SendPacket( &buffer );
+		}
+
+		++itr;
+	}
+
+	delete proposal;
+}

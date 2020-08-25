@@ -26,6 +26,13 @@ enum LFGRoles
 	LFG_ROLE_DPS = 8
 };
 
+enum LFGUpdateType
+{
+	LFG_UPDATE_JOINED = 5,
+	LFG_UPDATE_REMOVED = 7,
+	LFG_UPDATE_PROPOSAL_FAILURE = 8
+};
+
 class LFGProposalEntry
 {
 public:
@@ -146,7 +153,7 @@ public:
 	~LFGQueue();
 
 	/// Add player to queue
-	void addPlayer( uint32 guid, uint32 team, uint32 roles );
+	void addPlayer( uint32 guid, uint32 team, uint32 roles, bool readd );
 
 	/// Remove player from queue
 	void removePlayer( uint32 guid );
@@ -192,7 +199,10 @@ public:
 	void update( bool force );
 
 private:
-	/// Removes player from the queues, not protected by the lock
+	/// Adds player to queues. Not protected by the lock!
+	void addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 > dungeons, bool readd );
+
+	/// Removes player from the queues. Not protected by the lock!
 	void removePlayerInternal( uint32 guid );
 
 	/// Sends the proposal to players
@@ -200,6 +210,9 @@ private:
 
 	/// Sends the proposal to a specific player
 	void sendProposalToPlayer( uint32 guid, LFGProposal *proposal );
+
+	/// Propsal failure handler
+	void onProposalFailed( LFGProposal *proposal );
 
 	Mutex lock;
 
