@@ -20,6 +20,26 @@
 
 #include "StdAfx.h"
 
+void LFGProposal::removePlayer( uint32 guid )
+{
+	std::vector< LFGProposalEntry >::iterator itr = players.begin();
+	while( itr != players.end() )
+	{
+		LFGProposalEntry &entry = *itr;
+		if( entry.guid == guid )
+		{
+			break;
+		}
+
+		++itr;
+	}
+
+	if( itr != players.end() )
+	{
+		players.erase( itr );
+	}
+}
+
 bool LFGProposal::updateProposalAnswer( uint32 guid, uint8 answer )
 {
 	std::vector< LFGProposalEntry >::iterator itr = players.begin();
@@ -85,6 +105,30 @@ LFGProposal* LFGProposalStore::getProposal( uint32 id )
 		return NULL;
 	else
 		return itr->second;
+}
+
+LFGProposal* LFGProposalStore::getProposalForPlayer( uint32 guid ) const
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGProposal* >::const_iterator itr = proposals.begin();
+	while( itr != proposals.end() )
+	{
+		LFGProposal *proposal = itr->second;
+
+		std::vector< LFGProposalEntry >::const_iterator playerItr = proposal->players.begin();
+		while( playerItr != proposal->players.end() )
+		{
+			if( playerItr->guid == guid )
+			{
+				return proposal;
+			}
+
+			++playerItr;
+		}
+
+		++itr;
+	}
+
+	return NULL;
 }
 
 void LFGProposalStore::removeProposal( uint32 id )
@@ -336,6 +380,15 @@ void LfgMgr::removePlayer( uint32 guid )
 	Guard guard( lock );
 
 	removePlayerInternal( guid );
+
+	LFGProposal *proposal = proposals.getProposalForPlayer( guid );
+	if( proposal != NULL )
+	{
+		proposal->state = LFGProposal::LFG_PROPOSAL_STATE_FAIL;
+		proposal->removePlayer( guid );
+		sendProposal( proposal );
+		onProposalFailed( proposal );
+	}
 }
 
 void LfgMgr::updateProposal( uint32 id, uint32 guid, uint8 result )

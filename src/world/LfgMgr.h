@@ -74,6 +74,9 @@ public:
 		dungeon = 0;
 	}
 
+	/// Remove a player from the list of players
+	void removePlayer( uint32 guid );
+
 	/// Updates the proposal answer for a guid. Returns true on successful update.
 	bool updateProposalAnswer( uint32 guid, uint8 answer );
 
@@ -93,6 +96,9 @@ public:
 
 	/// Look up and return proposal, or NULL
 	LFGProposal* getProposal( uint32 id );
+
+	/// Look up and return proposal in which this player is in, or NULL
+	LFGProposal* getProposalForPlayer( uint32 guid ) const;
 
 	/// Remove proposal from the store
 	void removeProposal( uint32 id );
