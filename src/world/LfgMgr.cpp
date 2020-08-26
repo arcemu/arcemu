@@ -372,6 +372,11 @@ void LfgMgr::updateProposal( uint32 id, uint32 guid, uint8 result )
 	{
 		onProposalFailed( proposal );
 	}
+	else
+	if( proposal->state == LFGProposal::LFG_PROPOSAL_STATE_SUCCESS )
+	{
+		onProposalSuccess( proposal );
+	}
 }
 
 void LfgMgr::removePlayerInternal( uint32 guid )
@@ -540,6 +545,44 @@ void LfgMgr::onProposalFailed( LFGProposal *proposal )
 			update.serialize( buffer );
 			player->SendPacket( &buffer );
 		}
+
+		++itr;
+	}
+
+	delete proposal;
+}
+
+void LfgMgr::onProposalSuccess( LFGProposal *proposal )
+{
+	proposals.removeProposal( proposal->id );
+
+	/// Scarlet Monastery, for now
+	LocationVector location( 255.346f, -209.09f, 18.6773f, 6.26656f );
+	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, 189 );
+	if( mgr == NULL )
+	{
+		LOG_DEBUG( "Failed to create instance" );
+		delete proposal;
+		return;
+	}
+
+	PacketBuffer buffer;
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
+	update.queued = 0;
+	update.updateType = LFG_UPDATE_REMOVED;
+	update.unk1 = 0;
+	update.unk2 = 0;
+	update.comment = "";
+	update.serialize( buffer );
+
+	// Teleport players
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		Player *player = objmgr.GetPlayer( itr->guid );
+
+		player->SendPacket( &buffer );
+		player->SafeTeleport( mgr, location );
 
 		++itr;
 	}

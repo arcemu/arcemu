@@ -214,6 +214,9 @@ private:
 	/// Propsal failure handler
 	void onProposalFailed( LFGProposal *proposal );
 
+	/// Proposal success
+	void onProposalSuccess( LFGProposal *proposal );
+
 	Mutex lock;
 
 	LFGQueue* queues[ LFGMGR_QUEUE_COUNT ];
