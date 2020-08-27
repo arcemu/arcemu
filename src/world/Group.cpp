@@ -146,6 +146,9 @@ bool Group::AddMember(PlayerInfo* info, int32 subgroupid/* =-1 */)
 			Update();	// Send group update
 
 			m_groupLock.Release();
+
+			sLfgMgr.removePlayer( info->guid );
+
 			return true;
 		}
 		else
