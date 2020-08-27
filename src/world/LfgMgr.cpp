@@ -304,6 +304,13 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 	// Packethandler checks if we're in world, which means player must exist
 	Player *player = objmgr.GetPlayer( guid );
 
+	Group *group = player->GetGroup();
+	if( group != NULL )
+	{
+		player->GetSession()->SystemMessage( "LFG group queuing is not supported at this time." );
+		return;
+	}
+
 	/// Some checks
 	for( std::vector< uint32 >::const_iterator itr = dungeons.begin(); itr != dungeons.end(); ++itr )
 	{
