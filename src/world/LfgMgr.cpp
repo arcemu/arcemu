@@ -635,8 +635,31 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	update.comment = "";
 	update.serialize( buffer );
 
+	std::vector< LFGProposalEntry >::iterator itr;
+
+	// Create LFD group, and add players, if we have a real group, not a forced proposal
+	if( proposal->players.size() > 1 )
+	{
+		Group *group = new Group( true );
+		group->makeLFDGroup();
+		itr = proposal->players.begin();
+		
+		while( itr != proposal->players.end() )
+		{
+			Player *player = objmgr.GetPlayer( itr->guid );
+			
+			group->AddMember( player->getPlayerInfo() );
+			if( ( itr->selectedRoles & LFG_ROLE_LEADER ) != 0 )
+			{
+				group->SetLeader( player, false );
+			}
+			
+			++itr;
+		}
+	}
+
 	// Teleport players
-	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	itr = proposal->players.begin();
 	while( itr != proposal->players.end() )
 	{
 		Player *player = objmgr.GetPlayer( itr->guid );

@@ -147,7 +147,8 @@ bool Group::AddMember(PlayerInfo* info, int32 subgroupid/* =-1 */)
 
 			m_groupLock.Release();
 
-			sLfgMgr.removePlayer( info->guid );
+			if( ( m_GroupType & GROUP_TYPE_LFD ) == 0 )
+				sLfgMgr.removePlayer( info->guid );
 
 			return true;
 		}
@@ -565,6 +566,11 @@ void Group::ExpandToRaid()
 	m_dirty = true;
 	Update();
 	m_groupLock.Release();
+}
+
+void Group::makeLFDGroup()
+{
+	m_GroupType |= GROUP_TYPE_LFD;
 }
 
 void Group::SetLooter(Player* pPlayer, uint8 method, uint16 threshold)

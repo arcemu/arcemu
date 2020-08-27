@@ -199,6 +199,9 @@ class SERVER_DECL Group
 
 		void ExpandToRaid();
 
+		/// Turn this group into a Dungeon Finder group
+		void makeLFDGroup();
+
 		void SaveToDB();
 		void LoadFromDB(Field* fields);
 
