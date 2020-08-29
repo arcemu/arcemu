@@ -664,7 +664,6 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 				group->SetLeader( player, false );
 			}
 
-			player->SendPacket( &playerUpdateBuffer );
 			player->SendPacket( &partyUpdateBuffer );
 			
 			++itr;
@@ -682,6 +681,7 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	while( itr != proposal->players.end() )
 	{
 		Player *player = objmgr.GetPlayer( itr->guid );
+		player->SendPacket( &playerUpdateBuffer );
 		player->SafeTeleport( mgr, location );
 		++itr;
 	}
