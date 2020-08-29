@@ -652,8 +652,8 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	{
 		Group *group = new Group( true );
 		group->makeLFDGroup();
-		itr = proposal->players.begin();
-		
+
+		itr = proposal->players.begin();		
 		while( itr != proposal->players.end() )
 		{
 			Player *player = objmgr.GetPlayer( itr->guid );
@@ -669,6 +669,12 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 			
 			++itr;
 		}
+
+		mgr->pInstance->m_creatorGroup = group->GetID();
+	}
+	else
+	{
+		mgr->pInstance->m_creatorGuid = proposal->players[ 0 ].guid;
 	}
 
 	// Teleport players
