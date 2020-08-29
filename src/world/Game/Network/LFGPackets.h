@@ -110,6 +110,24 @@ namespace Arcemu
 				void deserialize( PacketBuffer& buffer );
 			};
 
+			class SLFGUpdateParty : public Arcemu::Shared::Packet
+			{
+			public:
+				uint8 updateType;
+				uint8 joined;
+				uint8 queued;
+				uint8 unk1;
+				uint8 unk2;
+				std::vector< uint32 > dungeons;
+				std::string comment;
+
+			public:
+				SLFGUpdateParty(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
+
 			/// Shows LFG group proposal, readyness check in the client
 			class SLFGProposalUpdate
 			{

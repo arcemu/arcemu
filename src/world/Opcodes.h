@@ -899,7 +899,7 @@ enum Opcodes
     CMSG_SET_LOOKING_FOR_MORE                       = 0x365,	// implemented
     CMSG_LFG_SET_COMMENT                            = 0x366,	// implemented
     SMSG_LFG_UPDATE_PLAYER                          = 0x367,	/// TODO: implement
-    SMSG_LFG_OTHER_TIMEDOUT                         = 0x368,	/// TODO: implement
+    SMSG_LFG_UPDATE_PARTY                           = 0x368,	/// TODO: implement
     SMSG_LFG_AUTOJOIN_FAILED                        = 0x369,	// implemented
     SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER              = 0x36A,	// implemented
     SMSG_LFG_LEADER_IS_LFM                          = 0x36B,	/// TODO: implement

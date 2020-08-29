@@ -626,14 +626,24 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 		return;
 	}
 
-	PacketBuffer buffer;
-	Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
-	update.queued = 0;
-	update.updateType = LFG_UPDATE_REMOVED;
-	update.unk1 = 0;
-	update.unk2 = 0;
-	update.comment = "";
-	update.serialize( buffer );
+	PacketBuffer playerUpdateBuffer;
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer playerUpdate;
+	playerUpdate.queued = 0;
+	playerUpdate.updateType = LFG_UPDATE_REMOVED;
+	playerUpdate.unk1 = 0;
+	playerUpdate.unk2 = 0;
+	playerUpdate.comment = "";
+	playerUpdate.serialize( playerUpdateBuffer );
+
+	PacketBuffer partyUpdateBuffer;
+	Arcemu::GamePackets::LFG::SLFGUpdateParty partyUpdate;
+	partyUpdate.updateType = LFG_UPDATE_REMOVED;
+	partyUpdate.queued = 0;
+	partyUpdate.joined = 0;
+	partyUpdate.unk1 = 0;
+	partyUpdate.unk2 = 0;
+	partyUpdate.comment = "";
+	partyUpdate.serialize( partyUpdateBuffer );
 
 	std::vector< LFGProposalEntry >::iterator itr;
 
@@ -653,6 +663,9 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 			{
 				group->SetLeader( player, false );
 			}
+
+			player->SendPacket( &playerUpdateBuffer );
+			player->SendPacket( &partyUpdateBuffer );
 			
 			++itr;
 		}
@@ -663,10 +676,7 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	while( itr != proposal->players.end() )
 	{
 		Player *player = objmgr.GetPlayer( itr->guid );
-
-		player->SendPacket( &buffer );
 		player->SafeTeleport( mgr, location );
-
 		++itr;
 	}
 

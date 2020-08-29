@@ -135,6 +135,72 @@ namespace Arcemu
 				}
 			}
 
+			void SLFGUpdateParty::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_LFG_UPDATE_PARTY );
+
+				buffer << uint8( updateType );
+
+				if( dungeons.size() > 0 )
+					buffer << uint8( 1 );
+				else
+					buffer << uint8( 0 );
+
+				if( dungeons.size() > 0 )
+				{
+					buffer << uint8( joined );
+					buffer << uint8( queued );
+					buffer << uint8( unk1 );
+					buffer << uint8( unk2 );
+
+					for( int i = 0; i < 3; i++ )
+					{
+						buffer << uint8( 0 );
+					}
+
+					buffer << uint8( dungeons.size() );
+
+					for( size_t i = 0; i < dungeons.size(); i++ )
+					{
+						buffer << uint32( dungeons[ i ] );
+					}
+
+					buffer << comment;
+				}
+			}
+
+			void SLFGUpdateParty::deserialize( PacketBuffer& buffer )
+			{
+				uint8 hasDungeons;
+				uint8 dungeonsCount;
+				uint8 something;
+
+				buffer >> updateType;
+				buffer >> hasDungeons;				
+				
+				if( hasDungeons )
+				{
+					buffer >> joined;
+					buffer >> queued;
+					buffer >> unk1;
+					buffer >> unk2;
+
+					for( int i = 0; i < 3; i++ )
+						buffer >> something;
+
+					buffer >> dungeonsCount;
+					
+					for( int i = 0; i < dungeonsCount; i++ )
+					{
+						uint32 dungeon;
+						buffer >> dungeon;
+						dungeons.push_back( dungeon );
+					}
+
+					buffer >> comment;
+				}
+			}
+
 			void SLFGProposalUpdate::serialize( PacketBuffer &buffer ) const
 			{
 				buffer.Initialize( SMSG_LFG_PROPOSAL_UPDATE );
