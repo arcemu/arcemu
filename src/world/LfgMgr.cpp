@@ -670,7 +670,6 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 
 	const LFGDungeonData *data = objmgr.getLFGDungeonData( proposal->dungeon );
 
-	/// Scarlet Monastery, for now
 	LocationVector location( data->entrypoint.x, data->entrypoint.y, data->entrypoint.z, data->entrypoint.o  );
 	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, data->map );
 	if( mgr == NULL )
@@ -679,6 +678,9 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 		delete proposal;
 		return;
 	}
+
+	LFGDungeonEntry *dungeonEntry = dbcLFGDungeon.LookupEntry( proposal->dungeon );
+	mgr->pInstance->m_difficulty = dungeonEntry->difficulty;
 
 	PacketBuffer playerUpdateBuffer;
 	Arcemu::GamePackets::LFG::SLFGUpdatePlayer playerUpdate;
@@ -724,10 +726,13 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 		}
 
 		mgr->pInstance->m_creatorGroup = group->GetID();
+		group->SetDungeonDifficulty( dungeonEntry->difficulty );
 	}
 	else
 	{
-		mgr->pInstance->m_creatorGuid = proposal->players[ 0 ].guid;
+		uint32 guid = proposal->players[ 0 ].guid;
+		mgr->pInstance->m_creatorGuid = guid;
+		objmgr.GetPlayer( guid )->SetDungeonDifficulty( dungeonEntry->difficulty );
 	}
 
 	// Teleport players
