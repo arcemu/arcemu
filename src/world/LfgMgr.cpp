@@ -623,6 +623,25 @@ void LfgMgr::onProposalFailed( LFGProposal *proposal )
 	std::vector< uint32 > dungeons;
 	dungeons.push_back( proposal->dungeon );
 
+	PacketBuffer playerUpdateBuffer;
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer playerUpdate;
+	playerUpdate.queued = 0;
+	playerUpdate.updateType = LFG_UPDATE_REMOVED;
+	playerUpdate.unk1 = 0;
+	playerUpdate.unk2 = 0;
+	playerUpdate.comment = "";
+	playerUpdate.serialize( playerUpdateBuffer );
+
+	PacketBuffer partyUpdateBuffer;
+	Arcemu::GamePackets::LFG::SLFGUpdateParty partyUpdate;
+	partyUpdate.updateType = LFG_UPDATE_REMOVED;
+	partyUpdate.queued = 0;
+	partyUpdate.joined = 0;
+	partyUpdate.unk1 = 0;
+	partyUpdate.unk2 = 0;
+	partyUpdate.comment = "";
+	partyUpdate.serialize( partyUpdateBuffer );
+
 	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
 	while( itr != proposal->players.end() )
 	{
@@ -635,15 +654,8 @@ void LfgMgr::onProposalFailed( LFGProposal *proposal )
 		{
 			/// Otherwise tell them they are out of the queue
 			Player *player = objmgr.GetPlayer( itr->guid );
-			PacketBuffer buffer;
-			Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
-			update.queued = 0;
-			update.updateType = LFG_UPDATE_REMOVED;
-			update.unk1 = 0;
-			update.unk2 = 0;
-			update.comment = "";
-			update.serialize( buffer );
-			player->SendPacket( &buffer );
+			player->SendPacket( &partyUpdateBuffer );
+			player->SendPacket( &playerUpdateBuffer );
 		}
 
 		++itr;
