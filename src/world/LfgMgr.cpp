@@ -326,6 +326,10 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 		return;
 	}
 
+	PacketBuffer buffer;
+	Arcemu::GamePackets::LFG::SLFGJoinResult result;
+	result.state = 0;
+
 	/// Some checks
 	for( std::vector< uint32 >::const_iterator itr = dungeons.begin(); itr != dungeons.end(); ++itr )
 	{
@@ -358,6 +362,16 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 			player->GetSession()->SystemMessage( "Random dungeon finding is not supported at this time." );
 			return;
 		}
+
+		if( ( player->getLevel() < entry->minlevel ) || ( player->getLevel() > entry->maxlevel ) )
+		{
+			LOG_DEBUG( "Player %u tried to join LFG queue %u with incorrect level", guid, dungeon );
+
+			result.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_DO_NOT_MEET_REQUIREMENTS;
+			result.serialize( buffer );
+			player->SendPacket( &buffer );
+			return;
+		}
 	}
 
 	/// Add player to queues
@@ -378,13 +392,9 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 
 
 	/// Notify player that they are in the queue
-	PacketBuffer buffer;
-
 	if( !readd )
 	{
-		Arcemu::GamePackets::LFG::SLFGJoinResult result;
 		result.result = Arcemu::GamePackets::LFG::SLFGJoinResult::LFG_JOIN_OK;
-		result.state = 0;
 		result.serialize( buffer );
 		player->SendPacket( &buffer );
 	}
