@@ -189,7 +189,9 @@ public:
 
 	enum LFGDungeonTypes
 	{
+		LFG_DUNGEON_TYPE_NORMAL = 1,
 		LFG_DUNGEON_TYPE_RAID = 2,
+		LFG_DUNGEON_TYPE_HEROIC = 5,
 		LFG_DUNGEON_TYPE_RANDOM = 6
 	};
 
@@ -227,6 +229,9 @@ private:
 
 	/// Proposal success
 	void onProposalSuccess( LFGProposal *proposal );
+
+	/// Pick a random dungeon that is appropriate for the group
+	uint32 pickRandomDungeonForProposal( LFGProposal *proposal );
 
 	Mutex lock;
 

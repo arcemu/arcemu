@@ -342,7 +342,7 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 		}
 
 		const LFGDungeonData *data = objmgr.getLFGDungeonData( dungeon );
-		if( data == NULL )
+		if( data == NULL && ( entry->type != LFG_DUNGEON_TYPE_RANDOM ) )
 		{
 			LOG_DEBUG( "Tried to add player with dungeon %u that doesn't have teleport data yet.", dungeon );
 			player->GetSession()->SystemMessage( "You cannot queue for dungeon %u ( %s ), because there's no teleport data available.", dungeon, entry->name );
@@ -353,13 +353,6 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 		{
 			LOG_DEBUG( "Raids are not supported at this time." );
 			player->GetSession()->SystemMessage( "Raid Finder is not supported at this time." );
-			return;
-		}
-
-		if( entry->type == LFG_DUNGEON_TYPE_RANDOM )
-		{
-			LOG_DEBUG( "Random LFG dungeons are not supported at this time." );
-			player->GetSession()->SystemMessage( "Random dungeon finding is not supported at this time." );
 			return;
 		}
 
@@ -676,9 +669,26 @@ void LfgMgr::onProposalFailed( LFGProposal *proposal )
 
 void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 {
+	uint32 dungeon = proposal->dungeon;
+	LFGDungeonEntry *dungeonEntry = dbcLFGDungeon.LookupEntry( dungeon );
+	
+	/// Generate a random dungeon
+	if( dungeonEntry->type == LFG_DUNGEON_TYPE_RANDOM )
+	{
+		dungeon = pickRandomDungeonForProposal( proposal );
+		/// We couldn't generate a dungeon :(
+		if( dungeon == 0 )
+		{
+			proposal->state = LFGProposal::LFG_PROPOSAL_STATE_FAIL;
+			sendProposal( proposal );
+			onProposalFailed( proposal );
+			return;
+		}
+	}
+
 	proposals.removeProposal( proposal->id );
 
-	const LFGDungeonData *data = objmgr.getLFGDungeonData( proposal->dungeon );
+	const LFGDungeonData *data = objmgr.getLFGDungeonData( dungeon );
 
 	LocationVector location( data->entrypoint.x, data->entrypoint.y, data->entrypoint.z, data->entrypoint.o  );
 	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, data->map );
@@ -689,7 +699,6 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 		return;
 	}
 
-	LFGDungeonEntry *dungeonEntry = dbcLFGDungeon.LookupEntry( proposal->dungeon );
 	mgr->pInstance->m_difficulty = dungeonEntry->difficulty;
 
 	PacketBuffer playerUpdateBuffer;
@@ -757,3 +766,93 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 
 	delete proposal;
 }
+
+uint32 LfgMgr::pickRandomDungeonForProposal( LFGProposal *proposal )
+{
+	/// First find the lowest, and highest level player
+	uint32 low = 999;
+	uint32 high = 0;
+
+	std::vector< LFGProposalEntry >::const_iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		Player *player = objmgr.GetPlayer( itr->guid );
+
+		if( player->getLevel() > high )
+		{
+			high = player->getLevel();
+		}
+
+		if( player->getLevel() < low )
+		{
+			low = player->getLevel();
+		}
+
+		++itr;
+	}
+
+	LFGDungeonEntry *randomDungeonEntry = dbcLFGDungeon.LookupEntry( proposal->dungeon );
+
+	std::vector< uint32 > candidates;
+
+	/// Now find a dungeon that is appropriate based on level
+	DBCStorage< LFGDungeonEntry >::iterator lfgDungeonItr = dbcLFGDungeon.begin();
+	while( lfgDungeonItr != dbcLFGDungeon.end() )
+	{
+		const LFGDungeonEntry *lfgDungeonEntry = *lfgDungeonItr;
+		LFGDungeonData *data = objmgr.getLFGDungeonData( lfgDungeonEntry->ID );
+
+		/// We need teleport data
+		if( data == NULL )
+		{
+			++lfgDungeonItr;
+			continue;
+		}
+
+		/// We need the same expansion
+		if( lfgDungeonEntry->expansion != randomDungeonEntry->expansion )
+		{
+			++lfgDungeonItr;
+			continue;
+		}
+
+		/// If we queued for normal, we need a normal dungeon, same with heroic.
+		if( lfgDungeonEntry->difficulty != randomDungeonEntry->difficulty )
+		{
+			++lfgDungeonItr;
+			continue;
+		}
+
+		/// Only normal and heroic dungeons
+		if( ( lfgDungeonEntry->type != LFG_DUNGEON_TYPE_NORMAL ) && ( lfgDungeonEntry->type != LFG_DUNGEON_TYPE_HEROIC ) )
+		{
+			++lfgDungeonItr;
+			continue;
+		}
+
+		/// should be appropriate for both the lowest and highest level
+		if( low >= lfgDungeonEntry->minlevel &&
+			low <= lfgDungeonEntry->maxlevel &&
+			high <= lfgDungeonEntry->maxlevel )
+		{
+			candidates.push_back( lfgDungeonEntry->ID );
+		}
+
+		++lfgDungeonItr;
+	}
+
+	/// We haven't found any appropriate :(
+	if( candidates.size() == 0 )
+	{
+		return 0;
+	}
+
+	uint32 chosen = 0;
+	if( candidates.size() > 1 )
+	{
+		chosen = RandomUInt( candidates.size() - 1 );
+	}
+
+	return candidates[ chosen ];
+}
+
