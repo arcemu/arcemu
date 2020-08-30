@@ -322,6 +322,14 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 			return;
 		}
 
+		const LFGDungeonData *data = objmgr.getLFGDungeonData( dungeon );
+		if( data == NULL )
+		{
+			LOG_DEBUG( "Tried to add player with dungeon %u that doesn't have teleport data yet.", dungeon );
+			player->GetSession()->SystemMessage( "You cannot queue for dungeon %u ( %s ), because there's no teleport data available.", dungeon, entry->name );
+			return;
+		}
+
 		if( entry->type == LFG_DUNGEON_TYPE_RAID )
 		{
 			LOG_DEBUG( "Raids are not supported at this time." );
@@ -616,9 +624,11 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 {
 	proposals.removeProposal( proposal->id );
 
+	const LFGDungeonData *data = objmgr.getLFGDungeonData( proposal->dungeon );
+
 	/// Scarlet Monastery, for now
-	LocationVector location( 255.346f, -209.09f, 18.6773f, 6.26656f );
-	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, 189 );
+	LocationVector location( data->entrypoint.x, data->entrypoint.y, data->entrypoint.z, data->entrypoint.o  );
+	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, data->map );
 	if( mgr == NULL )
 	{
 		LOG_DEBUG( "Failed to create instance" );

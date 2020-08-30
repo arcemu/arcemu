@@ -380,12 +380,23 @@ typedef HM_NAMESPACE::HM_HASH_MAP<string, PlayerInfo*> PlayerNameStringIndexMap;
 
 #endif
 
+struct LFGDungeonData
+{
+	uint32 dungeon;
+	uint32 map;
+	LocationVector entrypoint;
+};
+
 class PlayerCache;
 class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableObject
 {
 	public:
 		ObjectMgr();
 		~ObjectMgr();
+
+		void loadLFGDungeonData();
+		LFGDungeonData* getLFGDungeonData( uint32 dungeonId ) const;
+
 		void LoadCreatureWaypoints();
 
 		void LoadCreatureTimedEmotes();
@@ -799,7 +810,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 #endif
 		std::map< uint32, std::vector< VehicleAccessoryEntry* >* > vehicle_accessories;
 		std::map< uint32, std::multimap< uint32, WorldState >* > worldstate_templates;
-
+		HM_NAMESPACE::HM_HASH_MAP< uint32, LFGDungeonData* > lfgDungeonData;
 };
 
 

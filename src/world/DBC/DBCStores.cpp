@@ -345,7 +345,7 @@ const char* mailTemplateEntryFormat="nsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxx";
 const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxx";
 const char* summonpropertiesformat = "uuuuuu";
 const char* namegenentryformat = "usuu";
-const char* LFGDungeonEntryformat = "nxxxxxxxxxxxxxxxxxiiiiiiixixxixixxxxxxxxxxxxxxxxx";
+const char* LFGDungeonEntryformat = "nsxxxxxxxxxxxxxxxxiiiiiiixixxixixxxxxxxxxxxxxxxxx";
 
 template<class T>
 bool loader_stub(const char* filename, const char* format, bool ind, T & l, bool loadstrs)
@@ -427,7 +427,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false);
 	LOAD_DBC("DBC/SummonProperties.dbc", summonpropertiesformat, true, dbcSummonProperties, false);
 	LOAD_DBC("DBC/NameGen.dbc", namegenentryformat, true, dbcNameGen, true);
-	LOAD_DBC("DBC/LFGDungeons.dbc", LFGDungeonEntryformat, true, dbcLFGDungeon, false);
+	LOAD_DBC("DBC/LFGDungeons.dbc", LFGDungeonEntryformat, true, dbcLFGDungeon, true);
 	LOAD_DBC( "DBC/Vehicle.dbc", VehicleEntryfmt, true, dbcVehicle, true );
 	LOAD_DBC( "DBC/VehicleSeat.dbc", VehicleSeatEntryfmt, true, dbcVehicleSeat, false );
 

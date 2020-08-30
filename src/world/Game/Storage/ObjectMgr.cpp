@@ -43,6 +43,14 @@ ObjectMgr::ObjectMgr() :
 
 ObjectMgr::~ObjectMgr()
 {
+	Log.Notice( "ObjectMgr", "Deleting LFG dungeon data" );
+	for( HM_NAMESPACE::HM_HASH_MAP< uint32, LFGDungeonData* >::iterator itr = lfgDungeonData.begin(); itr != lfgDungeonData.end(); ++itr )
+	{
+		delete itr->second;
+		itr->second = NULL;
+	}
+	lfgDungeonData.clear();
+
 	Log.Notice("ObjectMgr", "Deleting Corpses...");
 	CorpseCollectorUnload();
 
@@ -271,6 +279,79 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	worldstate_templates.clear();
+}
+
+void ObjectMgr::loadLFGDungeonData()
+{
+	/// Try to load LFG dungeon teleport coords from areatriggers.
+	/// The idea here is that they have the same mapid, same name, AND the areatrigger name also contains the expression "entrance"
+
+	DBCStorage< LFGDungeonEntry >::iterator lfgDungeonItr = dbcLFGDungeon.begin();
+	while( lfgDungeonItr != dbcLFGDungeon.end() )
+	{
+		const LFGDungeonEntry *lfgDungeonEntry = *lfgDungeonItr;
+		
+		StorageContainerIterator<AreaTrigger> *areaTriggerItr = AreaTriggerStorage.MakeIterator();
+		while( ! areaTriggerItr->AtEnd() )
+		{
+			AreaTrigger *areaTrigger = areaTriggerItr->Get();
+
+			/// Not instance teleport trigger
+			if( areaTrigger->Type != ATTYPE_INSTANCE )
+			{
+				areaTriggerItr->Inc();
+				continue;
+			}
+
+			/// Not the same map
+			if( areaTrigger->Mapid != lfgDungeonEntry->map )
+			{
+				areaTriggerItr->Inc();
+				continue;
+			}
+
+			/// Not the same instance, according to name
+			if( strstr( areaTrigger->Name, lfgDungeonEntry->name ) == NULL )
+			{
+				areaTriggerItr->Inc();
+				continue;
+			}
+	
+			/// Not an entrance
+			if( ( strstr( areaTrigger->Name, "Entrance" ) == NULL ) && ( strstr( areaTrigger->Name, "entrance" ) == NULL ) )
+			{
+				areaTriggerItr->Inc();
+				continue;
+			}
+
+			LFGDungeonData *data = new LFGDungeonData();			
+			data->dungeon = lfgDungeonEntry->ID;
+			data->map = lfgDungeonEntry->map;
+			data->entrypoint.x = areaTrigger->x;
+			data->entrypoint.y = areaTrigger->y;
+			data->entrypoint.z = areaTrigger->z;
+			data->entrypoint.o = areaTrigger->o;
+			lfgDungeonData[ data->dungeon ] = data;
+			
+			break;
+		}
+
+		areaTriggerItr->Destruct();
+		areaTriggerItr = NULL;
+
+		++lfgDungeonItr;
+	}
+
+	Log.Success( "ObjectMgr", "%u LFG dungeon entry points loaded", lfgDungeonData.size() );
+}
+
+LFGDungeonData* ObjectMgr::getLFGDungeonData( uint32 dungeonId ) const
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGDungeonData* >::const_iterator itr = lfgDungeonData.find( dungeonId );
+	if( itr == lfgDungeonData.end() )
+		return NULL;
+	else
+		return itr->second;
 }
 
 //
