@@ -66,12 +66,14 @@ public:
 	uint32 id;
 	uint32 dungeon;
 	std::vector< LFGProposalEntry > players;
+	uint32 expiryTime;
 
 	LFGProposal()
 	{
 		state = LFG_PROPOSAL_STATE_DEFAULT;
 		id = 0;
 		dungeon = 0;
+		expiryTime = 0;
 	}
 
 	/// Remove a player from the list of players
@@ -102,6 +104,9 @@ public:
 
 	/// Remove proposal from the store
 	void removeProposal( uint32 id );
+
+	/// Return expired proposals
+	void getExpiredProposals( std::vector< LFGProposal* > &expiredProposals );
 
 private:
 	/// The last generated proposal Id

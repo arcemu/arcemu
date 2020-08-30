@@ -20,6 +20,8 @@
 
 #include "StdAfx.h"
 
+#define LFG_PROPOSAL_DURATION_SECONDS 20
+
 void LFGProposal::removePlayer( uint32 guid )
 {
 	std::vector< LFGProposalEntry >::iterator itr = players.begin();
@@ -138,6 +140,19 @@ void LFGProposalStore::removeProposal( uint32 id )
 		return;
 	else
 		proposals.erase( itr );
+}
+
+void LFGProposalStore::getExpiredProposals( std::vector< LFGProposal* > &expiredProposals )
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGProposal* >::iterator itr = proposals.begin();
+	while( itr != proposals.end() )
+	{
+		if( UNIXTIME >= itr->second->expiryTime )
+		{
+			expiredProposals.push_back( itr->second );
+		}
+		++itr;
+	}
 }
 
 LFGQueue::LFGQueue( const LFGQueueGroupRequirements &requirements ) :
@@ -487,6 +502,22 @@ void LfgMgr::update( bool force )
 {
 	Guard guard( lock );
 
+	/// Fail expired proposals
+	std::vector< LFGProposal* > expiredProposals;
+	proposals.getExpiredProposals( expiredProposals );
+	std::vector< LFGProposal* >::iterator expiredProposalItr = expiredProposals.begin();
+	while( expiredProposalItr != expiredProposals.end() )
+	{
+		LFGProposal *proposal = *expiredProposalItr;
+		proposal->state = LFGProposal::LFG_PROPOSAL_STATE_FAIL;
+		sendProposal( proposal );
+		onProposalFailed( proposal );
+
+		++expiredProposalItr;
+	}
+	expiredProposals.clear();
+
+	/// Update queues, create proposals if possible
 	for( int dungeon = 1; dungeon < LFGMGR_QUEUE_COUNT; dungeon++ )
 	{
 		LFGQueue *queue = queues[ dungeon ];
@@ -512,6 +543,7 @@ void LfgMgr::update( bool force )
 				}
 
 				/// Store the proposal
+				proposal->expiryTime = UNIXTIME + LFG_PROPOSAL_DURATION_SECONDS;
 				uint32 id = proposals.addProposal( proposal );
 				proposal->id = id;
 
