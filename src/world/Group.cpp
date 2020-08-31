@@ -107,7 +107,7 @@ SubGroup* Group::FindFreeSubGroup()
 	return NULL;
 }
 
-bool Group::AddMember(PlayerInfo* info, int32 subgroupid/* =-1 */)
+bool Group::AddMember(PlayerInfo* info, int32 subgroupid/* =-1 */, uint8 roles)
 {
 	m_groupLock.Acquire();
 	Player* pPlayer = info->m_loggedInPlayer;
@@ -140,6 +140,8 @@ bool Group::AddMember(PlayerInfo* info, int32 subgroupid/* =-1 */)
 
 			info->m_Group = this;
 			info->subGroup = (int8)subgroup->GetID();
+
+			playerRoles[ info->guid ] = roles;
 
 			++m_MemberCount;
 			m_dirty = true;
@@ -248,10 +250,14 @@ void Group::Update()
 					flags |= 4;
 				data << uint8(flags);
 
+				uint8 roles = 0;
+
 				if(m_Leader != NULL && m_Leader->m_loggedInPlayer != NULL && m_Leader->m_loggedInPlayer->IsInBg())
-					data << uint8(1);   //if the leader is in a BG, then the group is a BG group
-				else
-					data << uint8(0);
+					roles |= 1;
+
+				roles |= playerRoles[ (*itr1)->guid ];
+
+				data << uint8(roles);
 
 				if(m_GroupType & GROUP_TYPE_LFD)
 				{
@@ -298,7 +304,7 @@ void Group::Update()
 								flags |= 4;
 
 							data << uint8(flags);
-							data << uint8(0); // 3.3 - may have some use
+							data << uint8( playerRoles[ (*itr2)->guid ] );
 						}
 					}
 				}
@@ -474,6 +480,12 @@ void Group::RemovePlayer(PlayerInfo* info)
 	m_dirty = true;
 	sg->RemovePlayer(info);
 	--m_MemberCount;
+
+	/// Remove the player's role from the container
+	{
+		HM_NAMESPACE::HM_HASH_MAP< uint32, uint8 >::iterator itr = playerRoles.find( info->guid );
+		playerRoles.erase( itr );
+	}
 
 	// remove team member from the instance
 	if(info->m_loggedInPlayer != NULL)

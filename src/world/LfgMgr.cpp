@@ -733,7 +733,7 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 		{
 			Player *player = objmgr.GetPlayer( itr->guid );
 			
-			group->AddMember( player->getPlayerInfo() );
+			group->AddMember( player->getPlayerInfo(), -1, itr->selectedRoles );
 			if( ( itr->selectedRoles & LFG_ROLE_LEADER ) != 0 )
 			{
 				group->SetLeader( player, false );

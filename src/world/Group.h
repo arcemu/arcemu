@@ -150,7 +150,7 @@ class SERVER_DECL Group
 		~Group();
 
 		// Adding/Removal Management
-		bool AddMember(PlayerInfo* info, int32 subgroupid = -1);
+		bool AddMember(PlayerInfo* info, int32 subgroupid = -1, uint8 roles = 0);
 		void RemovePlayer(PlayerInfo* info);
 
 		// Leaders and Looting
@@ -273,6 +273,8 @@ class SERVER_DECL Group
 		Mutex m_groupLock;
 		bool m_dirty;
 		bool m_updateblock;
+
+		HM_NAMESPACE::HM_HASH_MAP< uint32, uint8 > playerRoles;
 	public:
 		uint8 m_difficulty;
 		uint8 m_raiddifficulty;
