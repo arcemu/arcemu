@@ -224,6 +224,9 @@ private:
 	/// Sends the proposal to a specific player
 	void sendProposalToPlayer( uint32 guid, LFGProposal *proposal );
 
+	/// We have a valid proposal, handle it!
+	void onGroupFound( LFGProposal *proposal );
+
 	/// Propsal failure handler
 	void onProposalFailed( LFGProposal *proposal );
 

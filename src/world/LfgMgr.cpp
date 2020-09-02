@@ -536,22 +536,7 @@ void LfgMgr::update( bool force )
 			if( proposal != NULL )
 			{
 				proposal->dungeon = dungeon;
-
-				/// We don't want these players to be part of further matchmaking
-				std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
-				while( itr != proposal->players.end() )
-				{
-					removePlayerInternal( itr->guid );
-					++itr;
-				}
-
-				/// Store the proposal
-				proposal->expiryTime = UNIXTIME + LFG_PROPOSAL_DURATION_SECONDS;
-				uint32 id = proposals.addProposal( proposal );
-				proposal->id = id;
-
-				/// Notify players
-				sendProposal( proposal );
+				onGroupFound( proposal );
 			}
 		}
 	}
@@ -616,6 +601,24 @@ void LfgMgr::sendProposalToPlayer( uint32 guid, LFGProposal *proposal )
 	PacketBuffer buffer;
 	update.serialize( buffer );
 	player->SendPacket( &buffer );
+}
+
+void LfgMgr::onGroupFound( LFGProposal *proposal )
+{
+	/// We don't want these players to be part of further matchmaking
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		removePlayerInternal( itr->guid );
+		++itr;
+	}
+	
+	/// Store the proposal
+	proposal->expiryTime = UNIXTIME + LFG_PROPOSAL_DURATION_SECONDS;
+	uint32 id = proposals.addProposal( proposal );
+	proposal->id = id;
+	/// Notify players
+	sendProposal( proposal );
 }
 
 
