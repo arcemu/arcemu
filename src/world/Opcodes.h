@@ -539,7 +539,7 @@ enum Opcodes
     CMSG_RWHOIS_OBSOLETE                            = 0x1FD,	// not used in client
     SMSG_RWHOIS                                     = 0x1FE,	/// TODO: maybe implement as response to a chatcommand.
     MSG_LOOKING_FOR_GROUP                           = 0x1FF,	// implemented
-    CMSG_SET_LOOKING_FOR_GROUP                      = 0x200,	// implemented
+    SMSG_LFG_TELEPORT_DENIED                        = 0x200,	// implemented
     CMSG_UNLEARN_SPELL                              = 0x201,	// GM client only
     CMSG_UNLEARN_SKILL                              = 0x202,	// implemented
     SMSG_REMOVED_SPELL                              = 0x203,	// implemented

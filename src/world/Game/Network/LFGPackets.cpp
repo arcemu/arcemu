@@ -282,6 +282,17 @@ namespace Arcemu
 			{
 				buffer >> out;
 			}
+
+			void SLFGTeleportDenied::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_LFG_TELEPORT_DENIED );
+				buffer << uint32( reason );
+			}
+
+			void SLFGTeleportDenied::deserialize( PacketBuffer &buffer )
+			{
+				buffer >> reason;
+			}
 		}
 	}
 }

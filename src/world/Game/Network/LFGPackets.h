@@ -200,6 +200,27 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			class SLFGTeleportDenied : public Arcemu::Shared::Packet
+			{
+			public:
+				enum LFGTeleportDeniedReason
+				{
+					REASON_OK = 0,
+					REASON_DEAD = 1,
+					REASON_FALLING = 2,
+					REASON_VEHICLE = 3,
+					REASON_FATIGUE = 4,
+					REASON_INVALID_LOCATION = 6
+				};
+
+			public:
+				uint32 reason;
+
+			public:
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }
