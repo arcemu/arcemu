@@ -274,8 +274,12 @@ class SERVER_DECL Group
 		bool m_dirty;
 		bool m_updateblock;
 
+		uint32 lfgDungeon;
+
 		HM_NAMESPACE::HM_HASH_MAP< uint32, uint8 > playerRoles;
 	public:
+		void setLFGDungeon( uint32 dungeon ){ lfgDungeon = dungeon; }
+
 		uint8 m_difficulty;
 		uint8 m_raiddifficulty;
 };

@@ -769,6 +769,7 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	{
 		Group *group = new Group( true );
 		group->makeLFDGroup();
+		group->setLFGDungeon( proposal->dungeon );
 
 		itr = proposal->players.begin();		
 		while( itr != proposal->players.end() )

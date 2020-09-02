@@ -53,6 +53,7 @@ Group::Group(bool Assign)
 	m_difficulty = 0;
 	m_raiddifficulty = 0;
 	m_assistantLeader = m_mainAssist = m_mainTank = NULL;
+	lfgDungeon = 0;
 }
 
 Group::~Group()
@@ -262,7 +263,7 @@ void Group::Update()
 				if(m_GroupType & GROUP_TYPE_LFD)
 				{
 					data << uint8(0);	// unk
-					data << uint32(0);	// unk
+					data << uint32(lfgDungeon);
 				}
 
 				data << uint64(0x500000000004BC0CULL);
