@@ -617,8 +617,27 @@ void LfgMgr::onGroupFound( LFGProposal *proposal )
 	proposal->expiryTime = UNIXTIME + LFG_PROPOSAL_DURATION_SECONDS;
 	uint32 id = proposals.addProposal( proposal );
 	proposal->id = id;
+	
 	/// Notify players
 	sendProposal( proposal );
+
+	PacketBuffer playerUpdateBuffer;
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer playerUpdate;
+	playerUpdate.queued = 0;
+	playerUpdate.updateType = LFG_UPDATE_PROPOSAL_BEGIN;
+	playerUpdate.unk1 = 0;
+	playerUpdate.unk2 = 0;
+	playerUpdate.comment = "";
+	playerUpdate.dungeons.push_back( proposal->dungeon );
+	playerUpdate.serialize( playerUpdateBuffer );
+
+	std::vector< LFGProposalEntry >::const_iterator entryItr = proposal->players.begin();
+	while( entryItr != proposal->players.end() )
+	{
+		Player *player = objmgr.GetPlayer( entryItr->guid );
+		player->SendPacket( &playerUpdateBuffer );
+		++entryItr;
+	}
 }
 
 
