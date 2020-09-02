@@ -568,6 +568,7 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_PARTY_INFO, LFGPartyInfoHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_JOIN, LFGJoinHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_LEAVE, LFGLeaveHandler );
+	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_TELEPORT, LFGTeleportHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

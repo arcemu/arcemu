@@ -271,6 +271,17 @@ namespace Arcemu
 			{
 				buffer >> comment;
 			}
+
+			void CLFGTeleport::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( CMSG_LFG_TELEPORT );
+				buffer << uint8( out );
+			}
+
+			void CLFGTeleport::deserialize( PacketBuffer& buffer )
+			{
+				buffer >> out;
+			}
 		}
 	}
 }

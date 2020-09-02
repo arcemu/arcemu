@@ -907,7 +907,7 @@ enum Opcodes
     SMSG_LFG_UPDATE_LFM                             = 0x36D,	/// TODO: implement
     CMSG_LFG_PLAYER_INFO                            = 0x36E,	/// TODO: implement
     SMSG_LFG_PLAYER_INFO                            = 0x36F,	/// TODO: implement
-    SMSG_LFG_PENDING_INVITE                         = 0x370,	/// TODO: implement
+    CMSG_LFG_TELEPORT                               = 0x370,	/// TODO: implement
     CMSG_LFG_PARTY_INFO                             = 0x371,	/// TODO: implement
     SMSG_LFG_PARTY_INFO                             = 0x372,	/// TODO: implement
     SMSG_TITLE_EARNED                               = 0x373,	// implemented

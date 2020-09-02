@@ -138,3 +138,15 @@ DEFINE_PACKET_HANDLER_METHOD( LFGLeaveHandler )
 
 	sLfgMgr.removePlayer( _player->GetLowGUID() );
 }
+
+DEFINE_PACKET_HANDLER_METHOD( LFGTeleportHandler )
+{
+	Player *_player = session.GetPlayer();
+	CHECK_INWORLD_RETURN
+
+	Arcemu::GamePackets::LFG::CLFGTeleport packet;
+	packet.deserialize( recv_data );
+
+	LOG_DEBUG( "Received LFG teleport request." );
+}
+

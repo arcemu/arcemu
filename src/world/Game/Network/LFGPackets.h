@@ -189,6 +189,17 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			class CLFGTeleport : public Arcemu::Shared::Packet
+			{
+			public:
+				uint8 out;
+
+			public:
+				CLFGTeleport(){}
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }
