@@ -753,6 +753,17 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 
 	std::vector< LFGProposalEntry >::iterator itr;
 
+	/// Send updates to players
+	itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		Player *player = objmgr.GetPlayer( itr->guid );
+		player->SendPacket( &groupFoundBuffer );
+		player->SendPacket( &playerUpdateBuffer );
+		player->SendPacket( &partyUpdateBuffer );
+		++itr;
+	}
+
 	// Create LFD group, and add players, if we have a real group, not a forced proposal
 	if( proposal->players.size() > 1 )
 	{
@@ -770,8 +781,6 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 				group->SetLeader( player, false );
 			}
 
-			player->SendPacket( &partyUpdateBuffer );
-			
 			++itr;
 		}
 
@@ -790,8 +799,6 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	while( itr != proposal->players.end() )
 	{
 		Player *player = objmgr.GetPlayer( itr->guid );
-		player->SendPacket( &groupFoundBuffer );
-		player->SendPacket( &playerUpdateBuffer );
 		player->SafeTeleport( mgr, location );
 		++itr;
 	}
