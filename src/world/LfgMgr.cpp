@@ -723,6 +723,15 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 
 	mgr->pInstance->m_difficulty = dungeonEntry->difficulty;
 
+	PacketBuffer groupFoundBuffer;
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer groupFoundUpdate;
+	groupFoundUpdate.queued = 0;
+	groupFoundUpdate.updateType = LFG_UPDATE_GROUP_FOUND;
+	groupFoundUpdate.unk1 = 0;
+	groupFoundUpdate.unk2 = 0;
+	groupFoundUpdate.comment = "";
+	groupFoundUpdate.serialize( groupFoundBuffer );
+
 	PacketBuffer playerUpdateBuffer;
 	Arcemu::GamePackets::LFG::SLFGUpdatePlayer playerUpdate;
 	playerUpdate.queued = 0;
@@ -781,6 +790,7 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	while( itr != proposal->players.end() )
 	{
 		Player *player = objmgr.GetPlayer( itr->guid );
+		player->SendPacket( &groupFoundBuffer );
 		player->SendPacket( &playerUpdateBuffer );
 		player->SafeTeleport( mgr, location );
 		++itr;
