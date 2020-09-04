@@ -1284,6 +1284,8 @@ MapMgr* InstanceMgr::CreateInstance(uint32 instanceType, uint32 mapid, uint32 di
 	}
 
 	MapMgr* ret = new MapMgr(m_maps[mapid], mapid, GenerateInstanceID());
+	ret->iInstanceMode = difficulty;
+
 	Instance* pInstance = new Instance();
 	pInstance->m_creation = UNIXTIME;
 	pInstance->m_creatorGroup = 0;
