@@ -1270,7 +1270,7 @@ MapMgr* InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 	return ret;
 }
 
-MapMgr* InstanceMgr::CreateInstance(uint32 instanceType, uint32 mapid)
+MapMgr* InstanceMgr::CreateInstance(uint32 instanceType, uint32 mapid, uint32 difficulty)
 {
 	// shouldn't happen
 	if(mapid >= NUM_MAPS)
@@ -1288,7 +1288,7 @@ MapMgr* InstanceMgr::CreateInstance(uint32 instanceType, uint32 mapid)
 	pInstance->m_creation = UNIXTIME;
 	pInstance->m_creatorGroup = 0;
 	pInstance->m_creatorGuid = 0;
-	pInstance->m_difficulty = 0;
+	pInstance->m_difficulty = difficulty;
 	pInstance->m_expiration = 0;
 	pInstance->m_instanceId = ret->GetInstanceID();
 	pInstance->m_persistent = false;

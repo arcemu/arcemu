@@ -713,15 +713,13 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 	const LFGDungeonData *data = objmgr.getLFGDungeonData( dungeon );
 
 	LocationVector location( data->entrypoint.x, data->entrypoint.y, data->entrypoint.z, data->entrypoint.o  );
-	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, data->map );
+	MapMgr *mgr = sInstanceMgr.CreateInstance( INSTANCE_NONRAID, data->map, dungeonEntry->difficulty );
 	if( mgr == NULL )
 	{
 		LOG_DEBUG( "Failed to create instance" );
 		delete proposal;
 		return;
 	}
-
-	mgr->pInstance->m_difficulty = dungeonEntry->difficulty;
 
 	PacketBuffer groupFoundBuffer;
 	Arcemu::GamePackets::LFG::SLFGUpdatePlayer groupFoundUpdate;

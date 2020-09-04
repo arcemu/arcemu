@@ -181,7 +181,7 @@ class SERVER_DECL InstanceMgr
 		MapMgr* CreateBattlegroundInstance(uint32 mapid);
 
 		// Create an instance for Level 3 gm command
-		MapMgr* CreateInstance(uint32 instanceType, uint32 mapid);
+		MapMgr* CreateInstance(uint32 instanceType, uint32 mapid, uint32 difficulty = 0);
 
 		// A (should be) safe way for scripts to delete an active instance
 		void SafeDeleteInstance(MapMgr* mgr);
