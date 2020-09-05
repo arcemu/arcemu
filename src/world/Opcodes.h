@@ -896,7 +896,7 @@ enum Opcodes
     CMSG_LFG_PROPOSAL_RESULT                        = 0x362,	/// TODO: implement
     CMSG_CLEAR_LOOKING_FOR_GROUP                    = 0x363,	// implemented
     SMSG_LFG_JOIN_RESULT                            = 0x364,	/// TODO: implement
-    CMSG_SET_LOOKING_FOR_MORE                       = 0x365,	// implemented
+    SMSG_LFG_QUEUE_STATUS                           = 0x365,	// implemented
     CMSG_LFG_SET_COMMENT                            = 0x366,	// implemented
     SMSG_LFG_UPDATE_PLAYER                          = 0x367,	/// TODO: implement
     SMSG_LFG_UPDATE_PARTY                           = 0x368,	/// TODO: implement

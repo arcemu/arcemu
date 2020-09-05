@@ -293,6 +293,35 @@ namespace Arcemu
 			{
 				buffer >> reason;
 			}
+
+			void SLFGQueueStatus::serialize( PacketBuffer &buffer ) const
+			{
+				buffer.Initialize( SMSG_LFG_QUEUE_STATUS );
+				buffer << uint32( dungeon );
+				buffer << int32( avgWaitTime );
+				buffer << int32( waitTime );
+				buffer << int32( waitTimeTank );
+				buffer << int32( waitTimeHealer );
+				buffer << int32( waitTimeDps );
+				buffer << uint8( tanksNeeded );
+				buffer << uint8( healersNeeded );
+				buffer << uint8( dpsNeeded );
+				buffer << uint32( queueTime );
+			}
+
+			void SLFGQueueStatus::deserialize( PacketBuffer &buffer )
+			{
+				buffer >> dungeon;
+				buffer >> waitTime;
+				buffer >> avgWaitTime;
+				buffer >> waitTimeTank;
+				buffer >> waitTimeHealer;
+				buffer >> waitTimeDps;
+				buffer >> tanksNeeded;
+				buffer >> healersNeeded;
+				buffer >> dpsNeeded;
+				buffer >> queueTime;
+			}
 		}
 	}
 }

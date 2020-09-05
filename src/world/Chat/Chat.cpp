@@ -327,6 +327,7 @@ void CommandTableStorage::Init()
 		{ "sendlfgpartyupdate", 'd', &ChatHandler::HandleDebugSendLFGPartyUpdateCommand, "Send an LFG party update message to the player's client", NULL, 0, 0, 0 },
 		{ "sendlfgproposalupdate", 'd', &ChatHandler::HandleDebugSendLFGProposalUpdateCommand, "Send an LFG proposal update message to the player's client", NULL, 0, 0, 0 },
 		{ "lfgupdate", 'd', &ChatHandler::HandleDebugLFGUpdateCommand, "Trigger an LFG update", NULL, 0, 0, 0 },
+		{ "sendlfgqueuestatus", 'd', &ChatHandler::HandleDebugSendLFGQueueStatusCommand, "Send LFG queue status", NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);

@@ -1432,3 +1432,40 @@ bool ChatHandler::HandleDebugLFGUpdateCommand( const char *args, WorldSession *s
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugSendLFGQueueStatusCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+
+	uint32 dungeon;
+	int32 waitTimeAvg;
+	uint32 tanksNeeded;
+	uint32 healersNeeded;
+	uint32 dpsNeeded;
+
+	if( sscanf( args, "%u %i %i %u %u %u", &dungeon, &waitTimeAvg, &tanksNeeded, &healersNeeded, &dpsNeeded ) != 5 )
+	{
+		RedSystemMessage( session, "usage:" );
+		RedSystemMessage( session, "sendlfgqueuestatus [dungeon] [avg waittime] [tanks needed] [healers needed] [dps needed]" );
+		return true;
+	}
+
+	Arcemu::GamePackets::LFG::SLFGQueueStatus status;
+	status.dungeon = dungeon;
+	status.avgWaitTime = waitTimeAvg;
+	status.waitTime = 0;
+	status.waitTimeTank = 90;
+	status.waitTimeHealer = 150;
+	status.waitTimeDps = 210;
+	status.tanksNeeded = static_cast< uint8 >( tanksNeeded );
+	status.healersNeeded = static_cast< uint8 >( healersNeeded );
+	status.dpsNeeded = static_cast< uint8 >( dpsNeeded );
+	status.queueTime = 65;
+
+	PacketBuffer buffer;
+	status.serialize( buffer );
+	player->SendPacket( &buffer );
+
+	return true;
+}
+

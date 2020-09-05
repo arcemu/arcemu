@@ -221,6 +221,27 @@ namespace Arcemu
 				void serialize( PacketBuffer &buffer ) const;
 				void deserialize( PacketBuffer& buffer );
 			};
+
+			class SLFGQueueStatus : public Arcemu::Shared::Packet
+			{
+			public:
+				uint32 dungeon;
+				int32 waitTime;
+				int32 avgWaitTime;
+				int32 waitTimeTank;
+				int32 waitTimeHealer;
+				int32 waitTimeDps;
+				uint8 tanksNeeded;
+				uint8 healersNeeded;
+				uint8 dpsNeeded;
+				uint32 queueTime;
+
+			public:
+				SLFGQueueStatus(){}
+
+				void serialize( PacketBuffer &buffer ) const;
+				void deserialize( PacketBuffer& buffer );
+			};
 		}
 	}
 }
