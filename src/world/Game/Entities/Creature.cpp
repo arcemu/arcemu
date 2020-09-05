@@ -1236,8 +1236,17 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 
 	setLevel(proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
 
-	if(mode && info)
-		modLevel(min(73 - getLevel(), info->lvl_mod_a));
+	if( ( mode > MODE_NORMAL ) && ( info != NULL ) )
+	{
+		if( info->minlevel_heroic > 0 )
+		{
+			modLevel( info->minlevel_heroic - getLevel() + RandomUInt( 3 ) );
+		}
+		else
+		{
+			LOG_DEBUG( "Unable to set heroic level for creature %u ( %s ), because there's no level mod, or heroic minlevel data", creature_info->Id, creature_info->Name );
+		}
+	}
 
 	for(uint32 i = 0; i < 7; ++i)
 		SetResistance(i, proto->Resistances[i]);
