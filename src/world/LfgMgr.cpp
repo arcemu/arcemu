@@ -465,6 +465,75 @@ void LfgMgr::updateProposal( uint32 id, uint32 guid, uint8 result )
 	}
 }
 
+void LfgMgr::teleportPlayer( uint32 guid, bool out )
+{
+	Guard guard( lock );
+
+	teleportPlayerInternal( guid, out );
+}
+
+void LfgMgr::teleportPlayerInternal( uint32 guid, bool out )
+{
+	Player *player = objmgr.GetPlayer( guid );
+	if( player == NULL )
+		return;
+
+	Group *group = player->GetGroup();
+	if( group == NULL )
+		return;
+
+	if( out )
+	{
+		LocationVector location;
+		location.x = player->m_bgEntryPointX;
+		location.y = player->m_bgEntryPointY;
+		location.z = player->m_bgEntryPointZ;
+		location.o = player->m_bgEntryPointO;
+
+		player->SafeTeleport( player->m_bgEntryPointMap, player->m_bgEntryPointInstance, location );
+	}
+	else
+	{
+		uint32 gid = group->GetID();
+		
+		HM_NAMESPACE::HM_HASH_MAP< uint32, LFGInstance >::const_iterator itr = groupToInstance.find( gid );
+		if( itr == groupToInstance.end() )
+			return;
+		
+		const LFGInstance &instance = itr->second;
+
+		player->saveEntryPoint();
+		player->SafeTeleport( instance.map, instance.instance, instance.entrance );
+	}
+}
+
+void LfgMgr::removeGroup( uint32 groupId )
+{
+	Guard guard( lock );
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGInstance >::const_iterator itr = groupToInstance.find( groupId );
+	if( itr == groupToInstance.end() )
+		return;
+
+	groupToInstance.erase( itr );
+}
+
+void LfgMgr::removeInstance( uint32 instanceId )
+{
+	Guard guard( lock );
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, uint32 >::const_iterator itr = instanceToGroup.find( instanceId );
+	if( itr == instanceToGroup.end() )
+		return;
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGInstance >::const_iterator itr2 = groupToInstance.find( itr->second );
+	if( itr2 == groupToInstance.end() )
+		return;
+
+	instanceToGroup.erase( itr );
+	groupToInstance.erase( itr2 );
+}
+
 void LfgMgr::removePlayerInternal( uint32 guid )
 {
 	/// Packethandler checks if we are in world, which means player must exist
@@ -762,43 +831,39 @@ void LfgMgr::onProposalSuccess( LFGProposal *proposal )
 		++itr;
 	}
 
-	// Create LFD group, and add players, if we have a real group, not a forced proposal
-	if( proposal->players.size() > 1 )
+	// Create LFD group, and add players
+	Group *group = new Group( true );
+	group->makeLFDGroup();
+	group->setLFGDungeon( proposal->dungeon );
+	
+	LFGInstance instance;
+	instance.map = data->map;
+	instance.instance = mgr->GetInstanceID();
+	instance.entrance = location;
+	
+	groupToInstance[ group->GetID() ] = instance;
+	instanceToGroup[ mgr->GetInstanceID() ] = group->GetID();
+	
+	itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
 	{
-		Group *group = new Group( true );
-		group->makeLFDGroup();
-		group->setLFGDungeon( proposal->dungeon );
-
-		itr = proposal->players.begin();		
-		while( itr != proposal->players.end() )
+		Player *player = objmgr.GetPlayer( itr->guid );
+		group->AddMember( player->getPlayerInfo(), -1, itr->selectedRoles );
+		if( ( itr->selectedRoles & LFG_ROLE_LEADER ) != 0 )
 		{
-			Player *player = objmgr.GetPlayer( itr->guid );
-			
-			group->AddMember( player->getPlayerInfo(), -1, itr->selectedRoles );
-			if( ( itr->selectedRoles & LFG_ROLE_LEADER ) != 0 )
-			{
-				group->SetLeader( player, false );
-			}
-
-			++itr;
+			group->SetLeader( player, false );
 		}
-
-		mgr->pInstance->m_creatorGroup = group->GetID();
-		group->SetDungeonDifficulty( dungeonEntry->difficulty );
+		++itr;
 	}
-	else
-	{
-		uint32 guid = proposal->players[ 0 ].guid;
-		mgr->pInstance->m_creatorGuid = guid;
-		objmgr.GetPlayer( guid )->SetDungeonDifficulty( dungeonEntry->difficulty );
-	}
+	
+	mgr->pInstance->m_creatorGroup = group->GetID();
+	group->SetDungeonDifficulty( dungeonEntry->difficulty );
 
 	// Teleport players
 	itr = proposal->players.begin();
 	while( itr != proposal->players.end() )
 	{
-		Player *player = objmgr.GetPlayer( itr->guid );
-		player->SafeTeleport( mgr, location );
+		teleportPlayer( itr->guid );
 		++itr;
 	}
 

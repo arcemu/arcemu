@@ -148,5 +148,18 @@ DEFINE_PACKET_HANDLER_METHOD( LFGTeleportHandler )
 	packet.deserialize( recv_data );
 
 	LOG_DEBUG( "Received LFG teleport request." );
+
+
+	/// If experimental LFG is not enabled, don't do anything
+	if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "lfg", false ) )
+	{
+		return;
+	}
+
+	if( packet.out == 1 )
+		sLfgMgr.teleportPlayer( _player->GetLowGUID(), true );
+	else
+	if( packet.out == 0 )
+		sLfgMgr.teleportPlayer( _player->GetLowGUID(), false );
 }
 

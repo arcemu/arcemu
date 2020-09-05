@@ -180,6 +180,14 @@ private:
 	const LFGQueueGroupRequirements groupRequirements;
 };
 
+class LFGInstance
+{
+public:
+	uint32 map;
+	uint32 instance;
+	LocationVector entrance;
+};
+
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
 public:
@@ -210,10 +218,22 @@ public:
 	/// Updates the specified proposal with the player's answer
 	void updateProposal( uint32 id, uint32 guid, uint8 result );
 
+	/// Teleports a player to their dungeon
+	void teleportPlayer( uint32 guid, bool out = false );
+
+	/// Remove the group from the LFG system
+	void removeGroup( uint32 groupId );
+
+	/// Remove the group - intance association that belongs to this instance
+	void removeInstance( uint32 instanceId );
+
 	/// Updates the LFG system.
 	void update( bool force );
 
 private:
+	/// Teleports the player to their dungeon. Not protected by the lock!
+	void teleportPlayerInternal( uint32 guid, bool out = false );
+
 	/// Adds player to queues. Not protected by the lock!
 	void addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 > dungeons, bool readd );
 
@@ -243,6 +263,9 @@ private:
 	LFGQueue* queues[ LFGMGR_QUEUE_COUNT ];
 
 	HM_NAMESPACE::HM_HASH_MAP< uint32, std::vector< uint32 > > playerToDungeons;
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, LFGInstance > groupToInstance;
+	HM_NAMESPACE::HM_HASH_MAP< uint32, uint32 > instanceToGroup;
 
 	LFGProposalStore proposals;
 };

@@ -359,6 +359,11 @@ void Group::Disband()
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
 
+	if( ( m_GroupType & GROUP_TYPE_LFD ) != 0 )
+	{
+		sLfgMgr.removeGroup( m_Id );
+	}
+
 	uint32 i = 0;
 	for(i = 0; i < m_SubGroupCount; i++)
 	{

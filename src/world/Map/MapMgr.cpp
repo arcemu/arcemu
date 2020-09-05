@@ -1332,6 +1332,9 @@ bool MapMgr::Do()
 	// Teleport any left-over players out.
 	TeleportPlayers();
 
+	/// Remove us from the LFG system
+	sLfgMgr.removeInstance( m_instanceID );
+
 	// Clear the instance's reference to us.
 	if(m_battleground)
 	{

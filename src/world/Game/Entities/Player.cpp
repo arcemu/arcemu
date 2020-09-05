@@ -7559,6 +7559,21 @@ bool Player::ExitInstance()
 	return true;
 }
 
+void Player::saveEntryPoint()
+{
+	if( IS_INSTANCE(m_mapId) )
+	{
+		return;
+	}
+
+	m_bgEntryPointMap = m_mapId;
+	m_bgEntryPointInstance = m_instanceId;
+	m_bgEntryPointX = m_position.x;
+	m_bgEntryPointY = m_position.y;
+	m_bgEntryPointZ = m_position.z;
+	m_bgEntryPointO = m_position.o;
+}
+
 void Player::SaveEntryPoint(uint32 mapId)
 {
 	if(IS_INSTANCE(GetMapId()))

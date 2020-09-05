@@ -1790,6 +1790,10 @@ class SERVER_DECL Player : public Unit
 		ByteBuffer* GetAndRemoveSplinePacket(uint64 guid);
 		void ClearSplinePackets();
 		bool ExitInstance();
+
+		/// Saves the BG, LFG, etc entry point of the player
+		void saveEntryPoint();
+
 		void SaveEntryPoint(uint32 mapId);
 		bool CooldownCheat;
 		bool CastTimeCheat;
