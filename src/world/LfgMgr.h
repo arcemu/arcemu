@@ -212,7 +212,7 @@ public:
 	LocationVector entrance;
 };
 
-class LfgMgr : public Singleton < LfgMgr >, EventableObject
+class LfgMgr : public Singleton < LfgMgr >, public EventableObject
 {
 public:
 	enum LFGMgrConstants
@@ -253,6 +253,9 @@ public:
 
 	/// Updates the LFG system.
 	void update( bool force );
+
+	/// EventMgr update method
+	void eventUpdate(){ update( false ); }
 
 private:
 	/// Teleports the player to their dungeon. Not protected by the lock!
