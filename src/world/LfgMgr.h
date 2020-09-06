@@ -151,13 +151,29 @@ public:
 	}
 };
 
-class LFGQueueEntry
+class LFGPlayer
 {
 public:
 	uint32 guid;
 	uint32 roles;
+	uint32 jointime;
+};
+
+class LFGQueueEntry
+{
+public:
 	uint32 team;
-	uint32 joinTime;
+	std::vector< LFGPlayer > players;
+	LFGQueueGroupRequirements requirements;
+
+	/// Try to add the player to this group, return false on failure.
+	bool tryAddPlayer( uint32 guid, uint32 roles );
+
+	/// Try to remove player from this group, return false on failure
+	bool tryRemovePlayer( uint32 guid );
+
+	/// Is this group ready to be deployed?
+	bool groupComplete() const { return requirements.met(); }
 };
 
 class LFGQueue
@@ -167,7 +183,10 @@ public:
 	~LFGQueue();
 
 	/// Add player to queue
-	void addPlayer( uint32 guid, uint32 team, uint32 roles, bool readd );
+	void addPlayer( uint32 guid, uint32 team, uint32 roles );
+
+	/// Readd proposed group to the front of the queue
+	void readdGroup( LFGProposal *proposal );
 
 	/// Remove player from queue
 	void removePlayer( uint32 guid );
@@ -244,6 +263,9 @@ private:
 
 	/// Removes player from the queues. Not protected by the lock!
 	void removePlayerInternal( uint32 guid );
+
+	/// Readd proposed group to the front of the queue
+	void readdGroup( LFGProposal *proposal );
 
 	/// Sends the proposal to players
 	void sendProposal( LFGProposal *proposal );

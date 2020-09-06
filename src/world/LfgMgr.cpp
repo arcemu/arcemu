@@ -166,18 +166,149 @@ LFGQueue::~LFGQueue()
 	queue.clear();
 }
 
-void LFGQueue::addPlayer( uint32 guid, uint32 team, uint32 roles, bool readd )
+bool LFGQueueEntry::tryAddPlayer( uint32 guid, uint32 roles )
+{
+	if( requirements.met() )
+		return false;
+
+	LFGQueueGroupRequirements oldRequirements = requirements;
+
+	uint32 selectedRoles = 0;
+
+	/// Can we add the player to the group?
+	if( ( requirements.tanksNeeded > 0 ) && ( ( roles & LFG_ROLE_TANK ) != 0 ) )
+	{
+		selectedRoles |= LFG_ROLE_TANK;
+		requirements.tanksNeeded--;
+	}
+	else
+	if( ( requirements.healersNeeded > 0 ) && ( ( roles & LFG_ROLE_HEALER ) != 0 ) )
+	{
+		selectedRoles |= LFG_ROLE_HEALER;
+		requirements.healersNeeded--;
+	}
+	else
+	if( ( requirements.dpsNeeded > 0 ) && ( ( roles & LFG_ROLE_DPS ) != 0 ) )
+	{
+		selectedRoles |= LFG_ROLE_DPS;
+		requirements.dpsNeeded--;
+	}
+
+	/// We can add the player!
+	if( selectedRoles != 0 )
+	{
+		/// Do we need a leader?
+		if( requirements.needLeader && ( ( roles & LFG_ROLE_LEADER ) != 0 ) )
+		{
+			selectedRoles |= LFG_ROLE_LEADER;
+			requirements.needLeader = false;
+		}
+
+		LFGPlayer player;
+		player.guid = guid;
+		player.roles = selectedRoles;
+		player.jointime = UNIXTIME;
+		players.push_back( player );
+		return true;
+	}
+	else
+	{
+		/// Restore requiremenets
+		requirements = oldRequirements;
+	}
+
+	return false;
+}
+
+bool LFGQueueEntry::tryRemovePlayer( uint32 guid )
+{
+	/// Try to find the guid
+	std::vector< LFGPlayer >::iterator itr = players.begin();
+	while( itr != players.end() )
+	{
+		const LFGPlayer &player = *itr;
+		if( player.guid == guid )
+		{
+			break;
+		}
+
+		++itr;
+	}
+
+	/// Not found :(
+	if( itr == players.end() )
+	{
+		return false;
+	}
+
+	/// Found! Remove it!
+	uint32 roles = itr->roles;
+	players.erase( itr );
+
+	/// Increase the role needs
+	if( roles & LFG_ROLE_LEADER )
+	{
+		requirements.needLeader = true;
+	}
+
+	if( ( roles & LFG_ROLE_TANK ) != 0 )
+	{
+		requirements.tanksNeeded++;
+	}
+	else
+	if( ( roles & LFG_ROLE_HEALER ) != 0 )
+	{
+		requirements.healersNeeded++;
+	}
+	else
+	if( ( roles & LFG_ROLE_DPS ) != 0 )
+	{
+		requirements.dpsNeeded++;
+	}
+
+	return true;
+}
+
+void LFGQueue::addPlayer( uint32 guid, uint32 team, uint32 roles )
+{
+	/// Try to find a group
+	std::deque< LFGQueueEntry >::iterator itr = queue.begin();
+	while( itr != queue.end() )
+	{
+		LFGQueueEntry &entry = *itr;
+		if( ( entry.team == team ) && entry.tryAddPlayer( guid, roles ) )
+		{
+			break;
+		}
+
+		++itr;
+	}
+
+	/// Couldn't find a group, make a new one!
+	if( itr == queue.end() )
+	{
+		LFGQueueEntry entry;
+		entry.team = team;
+		entry.tryAddPlayer( guid, roles );
+		queue.push_back( entry );
+	}
+}
+
+void LFGQueue::readdGroup( LFGProposal *proposal )
 {
 	LFGQueueEntry entry;
-	entry.guid = guid;
-	entry.team = team;
-	entry.roles = roles;
-	entry.joinTime = UNIXTIME;
 
-	if( readd )
-		queue.push_front( entry );
-	else
-		queue.push_back( entry );	
+	/// When readding, we have at least 1 player
+	entry.team = proposal->players[ 0 ].team;
+	
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		entry.tryAddPlayer( itr->guid, itr->selectedRoles );
+		++itr;
+	}
+
+	queue.push_front( entry );
 }
 
 void LFGQueue::removePlayer( uint32 guid )
@@ -185,13 +316,23 @@ void LFGQueue::removePlayer( uint32 guid )
 	std::deque< LFGQueueEntry >::iterator itr = queue.begin();
 	while( itr != queue.end() )
 	{
-		const LFGQueueEntry &entry = *itr;
-		if( entry.guid == guid )
+		LFGQueueEntry &entry = *itr;
+		if( entry.tryRemovePlayer( guid ) )
+		{
+			/// Found 'em!
 			break;
+		}
 		++itr;
 	}
 
-	queue.erase( itr );
+	/// If the queue entry is now empty, remove it
+	if( itr != queue.end() )
+	{
+		if( itr->players.empty() )
+		{
+			queue.erase( itr );
+		}
+	}
 }
 
 LFGProposal* LFGQueue::findMatch( uint32 team, bool force )
@@ -199,69 +340,40 @@ LFGProposal* LFGQueue::findMatch( uint32 team, bool force )
 	if( queue.empty() )
 		return NULL;
 
-	LFGQueueGroupRequirements requirements = groupRequirements;
 	LFGProposal *proposal = new LFGProposal();
 
+	/// Get the first group with the specified team from the queue
 	std::deque< LFGQueueEntry >::iterator itr = queue.begin();
-	while( !requirements.met() && ( itr != queue.end() ) )
+	while( itr != queue.end() && itr->team != team )
 	{
-		const LFGQueueEntry &entry = *itr;
-		uint32 selectedRole = 0;
-
-		if( entry.team == team )
-		{
-			// Select the player for some role if we can
-			if( requirements.tanksNeeded > 0 && ( ( entry.roles & LFG_ROLE_TANK ) != 0 ) )
-			{
-				selectedRole = LFG_ROLE_TANK;
-				requirements.tanksNeeded--;
-			}
-			else
-			if( requirements.healersNeeded > 0 && ( ( entry.roles & LFG_ROLE_HEALER ) != 0 ) )
-			{
-				selectedRole = LFG_ROLE_HEALER;
-				requirements.healersNeeded--;
-			}
-			else
-			if( requirements.dpsNeeded > 0 && ( ( entry.roles & LFG_ROLE_DPS ) != 0 ) )
-			{
-				selectedRole = LFG_ROLE_DPS;
-				requirements.dpsNeeded--;
-			}
-
-			// We have selected this player
-			if( selectedRole != 0 )
-			{
-
-				// If they want to be the leader, let them be
-				if( requirements.needLeader && ( ( entry.roles & LFG_ROLE_LEADER ) != 0 ) )
-				{
-					selectedRole |= LFG_ROLE_LEADER;
-					requirements.needLeader = false;
-				}
-
-				LFGProposalEntry proposalEntry;
-				proposalEntry.guid = entry.guid;
-				proposalEntry.team = team;
-				proposalEntry.selectedRoles = selectedRole;
-				proposal->players.push_back( proposalEntry );
-			}
-		}
-
 		++itr;
 	}
 
-	/// There was no leader, so let's make the first player one
-	if( requirements.needLeader && proposal->players.size() > 0 )
+	/// No such group :(
+	if( itr == queue.end() )
+		return NULL;
+
+	const LFGQueueEntry &entry = *itr;
+
+	/// If it is complete, or we're forcing, make a proposal
+	if( entry.groupComplete() || force )
 	{
-		proposal->players[ 0 ].selectedRoles |= LFG_ROLE_LEADER;
-		requirements.needLeader = false;
+		std::vector< LFGPlayer >::const_iterator pitr = entry.players.begin();
+		while( pitr != entry.players.end() )
+		{
+			const LFGPlayer &player = *pitr;
+			LFGProposalEntry proposalEntry;
+			proposalEntry.guid = player.guid;
+			proposalEntry.team = entry.team;
+			proposalEntry.selectedRoles = player.roles;
+			proposal->players.push_back( proposalEntry );
+			pitr++;
+		}
 	}
 
-	/// If we don't have enough for a group proposal, discard, unless forced
-	if( !force && !requirements.met() )
+	/// We don't have a group to propose
+	if( proposal->players.empty() )
 	{
-		proposal->players.clear();
 		delete proposal;
 		proposal = NULL;
 	}
@@ -288,11 +400,22 @@ void LFGQueue::updateQueueStatus()
 	while( itr != queue.end() )
 	{
 		const LFGQueueEntry &entry = *itr;
-		Player *player = objmgr.GetPlayer( entry.guid );
 
-		status.queueTime = UNIXTIME - entry.joinTime;
-		status.serialize( buffer );
-		player->SendPacket( &buffer );
+		status.tanksNeeded = entry.requirements.tanksNeeded;
+		status.healersNeeded = entry.requirements.healersNeeded;
+		status.dpsNeeded = entry.requirements.dpsNeeded;
+
+		std::vector< LFGPlayer >::const_iterator pitr = entry.players.begin();
+		while( pitr != entry.players.end() )
+		{
+			const LFGPlayer &lfgPlayer = *pitr;
+
+			Player *player = objmgr.GetPlayer( lfgPlayer.guid );
+			status.queueTime = UNIXTIME - lfgPlayer.jointime;
+			status.serialize( buffer );
+			player->SendPacket( &buffer );
+			++pitr;
+		}
 
 		++itr;
 	}
@@ -343,6 +466,39 @@ void LfgMgr::addPlayer( uint32 guid, uint32 roles, std::vector< uint32 > dungeon
 	}
 
 	addPlayerInternal( guid, roles, dungeons, false );
+}
+
+void LfgMgr::readdGroup( LFGProposal *proposal )
+{
+	uint32 dungeon = proposal->dungeon;
+	std::vector< uint32 > dungeons;
+	dungeons.push_back( dungeon );
+
+	PacketBuffer buffer;
+
+	Arcemu::GamePackets::LFG::SLFGUpdatePlayer update;
+	update.dungeons = dungeons;
+	update.queued = 1;
+	update.updateType = LFG_UPDATE_PROPOSAL_FAILURE;
+	update.unk1 = 0;
+	update.unk2 = 0;
+	update.comment = "";
+	update.serialize( buffer );
+
+	/// Readd the group
+	queues[ dungeon ]->readdGroup( proposal );
+
+	/// Notify players
+	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
+	while( itr != proposal->players.end() )
+	{
+		Player *player = objmgr.GetPlayer( itr->guid );
+		player->SendPacket( &buffer );
+		playerToDungeons[ itr->guid ] = dungeons;
+		++itr;
+	}
+
+	delete proposal;
 }
 
 void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 > dungeons, bool readd )
@@ -408,7 +564,7 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 			queues[ dungeon ] = new LFGQueue( dungeon, LFGQueueGroupRequirements() );
 		}
 		
-		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles, readd );
+		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles );
 	}
 
 	/// Add player to player to dungeon map
@@ -773,26 +929,33 @@ void LfgMgr::onProposalFailed( LFGProposal *proposal )
 	partyUpdate.comment = "";
 	partyUpdate.serialize( partyUpdateBuffer );
 
+	std::vector< uint32 > removables;
+
+	/// Find the player who declined
 	std::vector< LFGProposalEntry >::iterator itr = proposal->players.begin();
 	while( itr != proposal->players.end() )
 	{
-		/// If the player didn't decline, requeue
-		if( ( itr->answered == 0 ) || ( itr->accepted == 1 ) )
+		if( ( itr->answered == 1 ) && ( itr->accepted == 0 ) )
 		{
-			addPlayerInternal( itr->guid, itr->selectedRoles, dungeons, true );
+			break;
 		}
-		else
-		{
-			/// Otherwise tell them they are out of the queue
-			Player *player = objmgr.GetPlayer( itr->guid );
-			player->SendPacket( &partyUpdateBuffer );
-			player->SendPacket( &playerUpdateBuffer );
-		}
-
 		++itr;
 	}
 
-	delete proposal;
+	/// Should always be true
+	if( itr != proposal->players.end() )
+	{
+		/// Tell the player they are out of the queue
+		Player *player = objmgr.GetPlayer( itr->guid );
+		player->SendPacket( &partyUpdateBuffer );
+		player->SendPacket( &playerUpdateBuffer );
+
+		/// And remove them from the proposal
+		proposal->players.erase( itr );
+	}
+
+	/// Now requeue the rest of the group
+	readdGroup( proposal );
 }
 
 void LfgMgr::onProposalSuccess( LFGProposal *proposal )
