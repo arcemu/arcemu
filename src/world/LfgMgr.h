@@ -157,12 +157,13 @@ public:
 	uint32 guid;
 	uint32 roles;
 	uint32 team;
+	uint32 joinTime;
 };
 
 class LFGQueue
 {
 public:
-	LFGQueue( const LFGQueueGroupRequirements &requirements );
+	LFGQueue( uint32 dungeon, const LFGQueueGroupRequirements &requirements );
 	~LFGQueue();
 
 	/// Add player to queue
@@ -174,10 +175,14 @@ public:
 	/// Find next match
 	LFGProposal* findMatch( uint32 team, bool force );
 
+	void updateQueueStatus();
+
 private:
 	std::deque< LFGQueueEntry > queue;
 
 	const LFGQueueGroupRequirements groupRequirements;
+
+	uint32 dungeon;
 };
 
 class LFGInstance

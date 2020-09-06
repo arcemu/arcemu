@@ -155,9 +155,10 @@ void LFGProposalStore::getExpiredProposals( std::vector< LFGProposal* > &expired
 	}
 }
 
-LFGQueue::LFGQueue( const LFGQueueGroupRequirements &requirements ) :
+LFGQueue::LFGQueue( uint32 dungeon, const LFGQueueGroupRequirements &requirements ) :
 groupRequirements( requirements )
 {
+	this->dungeon = dungeon;
 }
 
 LFGQueue::~LFGQueue()
@@ -171,6 +172,7 @@ void LFGQueue::addPlayer( uint32 guid, uint32 team, uint32 roles, bool readd )
 	entry.guid = guid;
 	entry.team = team;
 	entry.roles = roles;
+	entry.joinTime = UNIXTIME;
 
 	if( readd )
 		queue.push_front( entry );
@@ -265,6 +267,35 @@ LFGProposal* LFGQueue::findMatch( uint32 team, bool force )
 	}
 
 	return proposal;
+}
+
+void LFGQueue::updateQueueStatus()
+{
+	Arcemu::GamePackets::LFG::SLFGQueueStatus status;
+	status.dungeon = dungeon;
+	status.waitTime = 0;
+	status.avgWaitTime = 0;
+	status.waitTimeTank = 0;
+	status.waitTimeDps = 0;
+	status.waitTimeHealer = 0;
+	status.tanksNeeded = 1;
+	status.healersNeeded = 1;
+	status.dpsNeeded = 3;
+
+	PacketBuffer buffer;
+
+	std::deque< LFGQueueEntry >::iterator itr = queue.begin();
+	while( itr != queue.end() )
+	{
+		const LFGQueueEntry &entry = *itr;
+		Player *player = objmgr.GetPlayer( entry.guid );
+
+		status.queueTime = UNIXTIME - entry.joinTime;
+		status.serialize( buffer );
+		player->SendPacket( &buffer );
+
+		++itr;
+	}
 }
 
 initialiseSingleton(LfgMgr);
@@ -374,7 +405,7 @@ void LfgMgr::addPlayerInternal( uint32 guid, uint32 roles, std::vector< uint32 >
 
 		if( queues[ dungeon ] == NULL )
 		{
-			queues[ dungeon ] = new LFGQueue( LFGQueueGroupRequirements() );
+			queues[ dungeon ] = new LFGQueue( dungeon, LFGQueueGroupRequirements() );
 		}
 		
 		queues[ dungeon ]->addPlayer( guid, player->GetTeam(), roles, readd );
@@ -602,6 +633,18 @@ void LfgMgr::update( bool force )
 				onGroupFound( proposal );
 			}
 		}
+	}
+
+	/// Send queue status
+	for( int dungeon = 1; dungeon < LFGMGR_QUEUE_COUNT; dungeon++ )
+	{
+		LFGQueue *queue = queues[ dungeon ];
+		if( queue == NULL )
+		{
+			continue;
+		}
+
+		queue->updateQueueStatus();
 	}
 }
 
