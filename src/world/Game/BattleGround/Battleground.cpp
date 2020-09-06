@@ -495,10 +495,9 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 		if(!m_ended && !plr->GetSession()->HasGMPermissions())
 			plr->CastSpell(plr, BG_DESERTER, true);
 
-		if(!IS_INSTANCE(plr->m_bgEntryPointMap))
+		if(!IS_INSTANCE(plr->m_entryPoint.map))
 		{
-			LocationVector vec(plr->m_bgEntryPointX, plr->m_bgEntryPointY, plr->m_bgEntryPointZ, plr->m_bgEntryPointO);
-			plr->SafeTeleport(plr->m_bgEntryPointMap, plr->m_bgEntryPointInstance, vec);
+			plr->SafeTeleport(plr->m_entryPoint.map, plr->m_entryPoint.instance, plr->m_entryPoint.location);
 		}
 		else
 		{

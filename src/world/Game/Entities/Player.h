@@ -804,6 +804,21 @@ typedef std::map<uint32, PlayerSkill>				SkillMap;
 typedef std::set<Player**>							ReferenceSet;
 typedef std::map<uint32, PlayerCooldown>			PlayerCooldownMap;
 
+class EntryPoint
+{
+public:
+	uint32 map;
+	uint32 instance;
+	LocationVector location;
+
+public:
+	EntryPoint()
+	{
+		map = 0;
+		instance = 0;
+	}
+};
+
 class SERVER_DECL Player : public Unit
 {
 		friend class WorldSession;
@@ -1589,12 +1604,9 @@ class SERVER_DECL Player : public Unit
 		// Battlegrounds xD
 		CBattleground* m_bg;
 		CBattleground* m_pendingBattleground;
-		uint32 m_bgEntryPointMap;
-		float m_bgEntryPointX;
-		float m_bgEntryPointY;
-		float m_bgEntryPointZ;
-		float m_bgEntryPointO;
-		int32 m_bgEntryPointInstance;
+		
+		EntryPoint m_entryPoint;
+
 		bool m_bgHasFlag;
 		bool m_bgIsQueued;
 		uint32 m_bgQueueType;

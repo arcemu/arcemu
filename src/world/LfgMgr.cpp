@@ -484,13 +484,7 @@ void LfgMgr::teleportPlayerInternal( uint32 guid, bool out )
 
 	if( out )
 	{
-		LocationVector location;
-		location.x = player->m_bgEntryPointX;
-		location.y = player->m_bgEntryPointY;
-		location.z = player->m_bgEntryPointZ;
-		location.o = player->m_bgEntryPointO;
-
-		player->SafeTeleport( player->m_bgEntryPointMap, player->m_bgEntryPointInstance, location );
+		player->SafeTeleport( player->m_entryPoint.map, player->m_entryPoint.instance, player->m_entryPoint.location );
 	}
 	else
 	{

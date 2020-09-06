@@ -97,12 +97,7 @@ Player::Player(uint32 guid)
 	m_AllowAreaTriggerPort(true),
 // Battleground
 	m_bg(NULL),
-	m_bgEntryPointMap(0),
-	m_bgEntryPointX(0),
-	m_bgEntryPointY(0),
-	m_bgEntryPointZ(0),
-	m_bgEntryPointO(0),
-	m_bgEntryPointInstance(0),
+	m_entryPoint(),
 	m_bgHasFlag(false),
 	m_bgIsQueued(false),
 	m_bgQueueType(0),
@@ -2358,11 +2353,11 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if(in_arena)
 	{
 		// if its an arena, save the entry coords instead
-		ss << m_bgEntryPointX << ", ";
-		ss << m_bgEntryPointY << ", ";
-		ss << m_bgEntryPointZ << ", ";
-		ss << m_bgEntryPointO << ", ";
-		ss << m_bgEntryPointMap << ", ";
+		ss << m_entryPoint.location.x << ", ";
+		ss << m_entryPoint.location.y << ", ";
+		ss << m_entryPoint.location.z << ", ";
+		ss << m_entryPoint.location.o << ", ";
+		ss << m_entryPoint.map << ", ";
 	}
 	else
 	{
@@ -2419,19 +2414,19 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	// instances
 	if(in_arena)
 	{
-		ss << m_bgEntryPointInstance << ", ";
+		ss << m_entryPoint.instance << ", ";
 	}
 	else
 	{
 		ss << m_instanceId		   << ", ";
 	}
 
-	ss << m_bgEntryPointMap	  << ", "
-	   << m_bgEntryPointX		<< ", "
-	   << m_bgEntryPointY		<< ", "
-	   << m_bgEntryPointZ		<< ", "
-	   << m_bgEntryPointO		<< ", "
-	   << m_bgEntryPointInstance << ", ";
+	ss << m_entryPoint.map	  << ", "
+		<< m_entryPoint.location.x		<< ", "
+		<< m_entryPoint.location.y		<< ", "
+		<< m_entryPoint.location.z		<< ", "
+		<< m_entryPoint.location.o		<< ", "
+		<< m_entryPoint.instance << ", ";
 
 	// taxi
 	if(m_onTaxi && m_CurrentTaxiPath)
@@ -3032,12 +3027,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	m_StableSlotCount = static_cast<uint8>(get_next_field.GetUInt32());
 	m_instanceId = get_next_field.GetUInt32();
-	m_bgEntryPointMap = get_next_field.GetUInt32();
-	m_bgEntryPointX = get_next_field.GetFloat();
-	m_bgEntryPointY = get_next_field.GetFloat();
-	m_bgEntryPointZ = get_next_field.GetFloat();
-	m_bgEntryPointO = get_next_field.GetFloat();
-	m_bgEntryPointInstance = get_next_field.GetUInt32();
+	m_entryPoint.map = get_next_field.GetUInt32();
+	m_entryPoint.location.x = get_next_field.GetFloat();
+	m_entryPoint.location.y = get_next_field.GetFloat();
+	m_entryPoint.location.z = get_next_field.GetFloat();
+	m_entryPoint.location.o = get_next_field.GetFloat();
+	m_entryPoint.instance = get_next_field.GetUInt32();
 
 	uint32 taxipath = get_next_field.GetUInt32();
 	TaxiPath* path = NULL;
@@ -7548,13 +7543,12 @@ void Player::ClearSplinePackets()
 
 bool Player::ExitInstance()
 {
-	if(!m_bgEntryPointX)
+	if( m_entryPoint.location.x == 0.0f )
 		return false;
 
 	RemoveFromWorld();
 
-	SafeTeleport(m_bgEntryPointMap, m_bgEntryPointInstance, LocationVector(
-	                 m_bgEntryPointX, m_bgEntryPointY, m_bgEntryPointZ, m_bgEntryPointO));
+	SafeTeleport(m_entryPoint.map, m_entryPoint.instance, m_entryPoint.location);
 
 	return true;
 }
@@ -7566,12 +7560,12 @@ void Player::saveEntryPoint()
 		return;
 	}
 
-	m_bgEntryPointMap = m_mapId;
-	m_bgEntryPointInstance = m_instanceId;
-	m_bgEntryPointX = m_position.x;
-	m_bgEntryPointY = m_position.y;
-	m_bgEntryPointZ = m_position.z;
-	m_bgEntryPointO = m_position.o;
+	m_entryPoint.map = m_mapId;
+	m_entryPoint.instance = m_instanceId;
+	m_entryPoint.location.x = m_position.x;
+	m_entryPoint.location.y = m_position.y;
+	m_entryPoint.location.z = m_position.z;
+	m_entryPoint.location.o = m_position.o;
 }
 
 void Player::SaveEntryPoint(uint32 mapId)
@@ -7583,21 +7577,16 @@ void Player::SaveEntryPoint(uint32 mapId)
 
 	if(pMapinfo)
 	{
-		m_bgEntryPointX = pMapinfo->repopx;
-		m_bgEntryPointY = pMapinfo->repopy;
-		m_bgEntryPointZ = pMapinfo->repopz;
-		m_bgEntryPointO = GetOrientation();
-		m_bgEntryPointMap = pMapinfo->repopmapid;
-		m_bgEntryPointInstance = GetInstanceID();
+		m_entryPoint.location.x = pMapinfo->repopx;
+		m_entryPoint.location.y = pMapinfo->repopy;
+		m_entryPoint.location.z = pMapinfo->repopz;
+		m_entryPoint.location.o = GetOrientation();
+		m_entryPoint.map = pMapinfo->repopmapid;
+		m_entryPoint.instance = GetInstanceID();
 	}
 	else
 	{
-		m_bgEntryPointMap	 = 0;
-		m_bgEntryPointX		 = 0;
-		m_bgEntryPointY		 = 0;
-		m_bgEntryPointZ		 = 0;
-		m_bgEntryPointO		 = 0;
-		m_bgEntryPointInstance  = 0;
+		m_entryPoint = EntryPoint();
 	}
 }
 
@@ -10414,9 +10403,9 @@ void Player::EventGroupFullUpdate()
 
 void Player::EjectFromInstance()
 {
-	if(m_bgEntryPointX && m_bgEntryPointY && m_bgEntryPointZ && !IS_INSTANCE(m_bgEntryPointMap))
+	if(m_entryPoint.location.x && m_entryPoint.location.y && m_entryPoint.location.z && !IS_INSTANCE(m_entryPoint.map))
 	{
-		if(SafeTeleport(m_bgEntryPointMap, m_bgEntryPointInstance, m_bgEntryPointX, m_bgEntryPointY, m_bgEntryPointZ, m_bgEntryPointO))
+		if(SafeTeleport(m_entryPoint.map, m_entryPoint.instance, m_entryPoint.location))
 			return;
 	}
 

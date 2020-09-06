@@ -669,13 +669,13 @@ void WorldSession::FullLogin(Player* plr)
 	// Trying to log to an instance that doesn't exists anymore?
 	if(!mgr)
 	{
-		if(!IS_INSTANCE(plr->m_bgEntryPointMap))
+		if(!IS_INSTANCE(plr->m_entryPoint.map))
 		{
-			plr->m_position.x = plr->m_bgEntryPointX;
-			plr->m_position.y = plr->m_bgEntryPointY;
-			plr->m_position.z = plr->m_bgEntryPointZ;
-			plr->m_position.o = plr->m_bgEntryPointO;
-			plr->m_mapId = plr->m_bgEntryPointMap;
+			plr->m_position.x = plr->m_entryPoint.location.x;
+			plr->m_position.y = plr->m_entryPoint.location.y;
+			plr->m_position.z = plr->m_entryPoint.location.z;
+			plr->m_position.o = plr->m_entryPoint.location.o;
+			plr->m_mapId = plr->m_entryPoint.map;
 		}
 		else
 		{

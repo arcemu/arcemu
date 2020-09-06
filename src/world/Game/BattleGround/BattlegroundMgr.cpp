@@ -190,11 +190,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession* m_session, World
 	m_session->GetPlayer()->m_bgQueueType = bgtype;
 
 	/* Set battleground entry point */
-	m_session->GetPlayer()->m_bgEntryPointX = m_session->GetPlayer()->GetPositionX();
-	m_session->GetPlayer()->m_bgEntryPointY = m_session->GetPlayer()->GetPositionY();
-	m_session->GetPlayer()->m_bgEntryPointZ = m_session->GetPlayer()->GetPositionZ();
-	m_session->GetPlayer()->m_bgEntryPointMap = m_session->GetPlayer()->GetMapId();
-	m_session->GetPlayer()->m_bgEntryPointInstance = m_session->GetPlayer()->GetInstanceID();
+	m_session->GetPlayer()->saveEntryPoint();
 
 	m_queueLock.Release();
 
@@ -1299,10 +1295,10 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession* m_session, uint32 Battl
 					(*itx)->m_loggedInPlayer->m_bgQueueInstanceId = 0;
 					(*itx)->m_loggedInPlayer->m_bgQueueType = BattlegroundType;
 					(*itx)->m_loggedInPlayer->GetSession()->SendPacket(&data);
-					(*itx)->m_loggedInPlayer->m_bgEntryPointX = (*itx)->m_loggedInPlayer->GetPositionX();
-					(*itx)->m_loggedInPlayer->m_bgEntryPointY = (*itx)->m_loggedInPlayer->GetPositionY();
-					(*itx)->m_loggedInPlayer->m_bgEntryPointZ = (*itx)->m_loggedInPlayer->GetPositionZ();
-					(*itx)->m_loggedInPlayer->m_bgEntryPointMap = (*itx)->m_loggedInPlayer->GetMapId();
+					(*itx)->m_loggedInPlayer->m_entryPoint.location.x = (*itx)->m_loggedInPlayer->GetPositionX();
+					(*itx)->m_loggedInPlayer->m_entryPoint.location.y = (*itx)->m_loggedInPlayer->GetPositionY();
+					(*itx)->m_loggedInPlayer->m_entryPoint.location.z = (*itx)->m_loggedInPlayer->GetPositionZ();
+					(*itx)->m_loggedInPlayer->m_entryPoint.map = (*itx)->m_loggedInPlayer->GetMapId();
 				}
 			}
 
@@ -1332,11 +1328,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession* m_session, uint32 Battl
 	m_session->GetPlayer()->m_bgQueueType = BattlegroundType;
 
 	/* Set battleground entry point */
-	m_session->GetPlayer()->m_bgEntryPointX = m_session->GetPlayer()->GetPositionX();
-	m_session->GetPlayer()->m_bgEntryPointY = m_session->GetPlayer()->GetPositionY();
-	m_session->GetPlayer()->m_bgEntryPointZ = m_session->GetPlayer()->GetPositionZ();
-	m_session->GetPlayer()->m_bgEntryPointMap = m_session->GetPlayer()->GetMapId();
-	m_session->GetPlayer()->m_bgEntryPointInstance = m_session->GetPlayer()->GetInstanceID();
+	m_session->GetPlayer()->saveEntryPoint();
 
 	m_queueLock.Release();
 }
