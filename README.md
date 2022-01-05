@@ -1,7 +1,7 @@
 # ![logo](http://arcemu.org/forums/public/style_images/1_arcemulogo.png) Arcemu
 
 ## Project Status
-This project is unfortunately no longer managed. We appreciate everyone's contributions over the last decade! If you would like to continue this project message @joshgoldfeder on Twitter
+This project is unfortunately no longer managed. We appreciate everyone's contributions over the last decade! If you would like to continue this project message @joshgoldfeder on Twitter. 
 
 ## Build Status
 
