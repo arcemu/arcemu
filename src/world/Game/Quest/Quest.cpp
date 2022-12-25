@@ -419,6 +419,19 @@ void QuestLogEntry::Finish()
 	delete this;
 }
 
+void QuestLogEntry::MarkObjectiveComplete( const unsigned int objective )
+{
+	SetMobCount( objective, GetQuest()->required_mobcount[ objective ] );
+	SendUpdateAddKill( objective );
+	
+	if( CanBeFinished() )
+	{
+		SendQuestComplete();
+	}
+
+	UpdatePlayerFields();
+}
+
 void QuestLogEntry::Fail( bool timerexpired ){
 	sEventMgr.RemoveEvents( m_plr, EVENT_TIMED_QUEST_EXPIRE );
 

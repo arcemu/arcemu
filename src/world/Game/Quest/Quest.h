@@ -314,6 +314,8 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 		void SetSlot(int32 i);
 		void Finish();
 
+		void MarkObjectiveComplete( const unsigned int objective );
+
 
 		//////////////////////////////////////////////////////////////
 		//void Fail( bool timerexpired )

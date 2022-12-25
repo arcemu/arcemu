@@ -7045,4 +7045,12 @@ void ApplyNormalFixes()
 			ritOfSumm->Id = ritOfSummId;
 		}
 	}
+
+	// 74222 - Perform speech
+	// Summoning should be done by the dummy script
+	sp = CheckAndReturnSpellEntry(74222);
+	if( sp != NULL )
+	{
+		sp->Effect[ 1 ] = SPELL_EFFECT_NULL;
+	}
 }

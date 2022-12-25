@@ -1760,13 +1760,7 @@ class LuaUnit
 			if(!pl->HasFinishedQuest(questid))
 			{
 				QuestLogEntry* qle = pl->GetQuestLogForEntry(questid);
-				qle->SetMobCount(objective, qle->GetQuest()->required_mobcount[objective]);
-				qle->SendUpdateAddKill(objective);
-				if(qle->CanBeFinished())
-				{
-					qle->SendQuestComplete();
-					qle->UpdatePlayerFields();
-				}
+				qle->MarkObjectiveComplete( objective );
 			}
 			return 0;
 		}
