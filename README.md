@@ -5,8 +5,6 @@ This project is unfortunately no longer managed. We appreciate everyone's contri
 
 ## Build Status
 
-[![Build Status](https://travis-ci.com/arcemu/arcemu.svg?branch=master)](https://travis-ci.com/arcemu/arcemu) Ubuntu Linux build on Travis 
-
 [![Build status](https://ci.appveyor.com/api/projects/status/avvvuy4vpn183ncm?svg=true)](https://ci.appveyor.com/project/dfighter1985/arcemu-vulhc) Windows build on AppVeyor
 
 ## Introduction
