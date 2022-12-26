@@ -5,6 +5,8 @@ This project is unfortunately no longer managed. We appreciate everyone's contri
 
 ## Build Status
 
+[![master_actions](https://github.com/arcemu/arcemu/actions/workflows/master_actions.yml/badge.svg)](https://github.com/arcemu/arcemu/actions/workflows/master_actions.yml) Dockerized Linux build with Github Actions
+
 [![Build status](https://ci.appveyor.com/api/projects/status/avvvuy4vpn183ncm?svg=true)](https://ci.appveyor.com/project/dfighter1985/arcemu-vulhc) Windows build on AppVeyor
 
 ## Introduction
