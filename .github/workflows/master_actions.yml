@@ -1,0 +1,65 @@
+name: master_actions
+on:
+    push:
+      branches: [ master ]
+    pull_request:
+      branches: [ master ]
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          
+      - name: Build Arcemu builder image
+        run: |
+          cd extras/docker/arcemu_build
+          sudo docker build -t arcemu_build .
+          sudo docker tag arcemu_build arcemu/arcemu_build:latest
+          sudo docker image ls
+          cd ../../../
+          
+      - name: Build Arcemu artifacts
+        run: |
+          mkdir bin
+          sudo docker run -v `pwd`/bin:/srv/build/arcemu/bin arcemu_build
+          ls -la ./bin
+          
+      - name: Build Docker images
+        run: |
+          mkdir docker_build
+          cp -r extras/docker/arcemu_logon docker_build/
+          cp -r extras/docker/arcemu_world docker_build/
+          cp -r extras/docker/arcemu_tools docker_build/
+          find ./docker_build
+          cp bin/logon docker_build/arcemu_logon/srv/arcemu_logon/
+          cp bin/world docker_build/arcemu_world/srv/arcemu_world/
+          cp -r bin/plugins docker_build/arcemu_world/srv/arcemu_world/
+          cp bin/tools/* docker_build/arcemu_tools/srv/arcemu_tools/
+          cd docker_build/arcemu_logon
+          sudo docker build --no-cache -t arcemu_logon .
+          cd ../arcemu_world
+          sudo docker build --no-cache -t arcemu_world .
+          cd ../arcemu_tools
+          sudo docker build --no-cache -t arcemu_tools .
+          sudo docker tag arcemu_logon arcemu/arcemu_logon:latest
+          sudo docker tag arcemu_world arcemu/arcemu_world:latest
+          sudo docker tag arcemu_tools arcemu/arcemu_tools:latest
+          sudo docker images
+      
+      - name: Push Docker images
+        env:
+          DOCKERHUB_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
+        run: |
+          echo "$DOCKERHUB_PASSWORD" | sudo docker login -u arcemu --password-stdin
+          sudo docker push arcemu/arcemu_build
+          sudo docker push arcemu/arcemu_tools
+          sudo docker push arcemu/arcemu_logon
+          sudo docker push arcemu/arcemu_world
+          sudo docker logout
+  
