@@ -20,7 +20,7 @@
 #ifndef __MYSQLDATABASE_H
 #define __MYSQLDATABASE_H
 
-#if PLATFORM == PLATFORM_APPLE
+#if ARCEMU_PLATFORM == PLATFORM_APPLE
 #include <mysql.h>
 #else
 #include <mysql/mysql.h>

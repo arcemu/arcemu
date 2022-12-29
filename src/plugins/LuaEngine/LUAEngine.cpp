@@ -31,7 +31,7 @@
 #pragma warning(disable:4244)
 #endif
 
-#if PLATFORM != PLATFORM_WIN32
+#if ARCEMU_PLATFORM != PLATFORM_WIN32
 #include <dirent.h>
 #endif
 

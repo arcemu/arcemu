@@ -296,9 +296,6 @@ bool Master::Run(int argc, char** argv)
 
 	_HookSignals();
 
-	ConsoleThread* console = new ConsoleThread();
-	ThreadPool.ExecuteTask(console);
-
 	uint32 realCurrTime, realPrevTime;
 	realCurrTime = realPrevTime = Arcemu::Shared::Util::getMSTime();
 
@@ -316,6 +313,9 @@ bool Master::Run(int argc, char** argv)
 	sSocketMgr.SpawnWorkerThreads();
 
 	sScriptMgr.LoadScripts();
+
+	ConsoleThread* console = new ConsoleThread();
+	ThreadPool.ExecuteTask(console);
 
 	if(Config.MainConfig.GetBoolDefault("Startup", "EnableSpellIDDump", false))
 		sScriptMgr.DumpUnimplementedSpells();
