@@ -115,11 +115,11 @@ enum MsTimeVariables
 #define UNIX_FLAVOUR_OSX 4
 
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )
-#  define PLATFORM PLATFORM_WIN32
+#  define ARCEMU_PLATFORM PLATFORM_WIN32
 #elif defined( __APPLE_CC__ )
-#  define PLATFORM PLATFORM_APPLE
+#  define ARCEMU_PLATFORM PLATFORM_APPLE
 #else
-#  define PLATFORM PLATFORM_UNIX
+#  define ARCEMU_PLATFORM PLATFORM_UNIX
 #endif
 
 #define COMPILER_MICROSOFT 0
@@ -127,16 +127,16 @@ enum MsTimeVariables
 #define COMPILER_BORLAND   2
 
 #ifdef _MSC_VER
-#  define COMPILER COMPILER_MICROSOFT
+#  define ARCEMU_COMPILER COMPILER_MICROSOFT
 #elif defined( __BORLANDC__ )
-#  define COMPILER COMPILER_BORLAND
+#  define ARCEMU_COMPILER COMPILER_BORLAND
 #elif defined( __GNUC__ )
-#  define COMPILER COMPILER_GNU
+#  define ARCEMU_COMPILER COMPILER_GNU
 #else
 #  pragma error "FATAL ERROR: Unknown compiler."
 #endif
 
-#if PLATFORM == PLATFORM_UNIX || PLATFORM == PLATFORM_APPLE
+#if ARCEMU_PLATFORM == PLATFORM_UNIX || ARCEMU_PLATFORM == PLATFORM_APPLE
 #ifdef HAVE_DARWIN
 #define PLATFORM_TEXT "MacOSX"
 #define UNIX_FLAVOUR UNIX_FLAVOUR_OSX
@@ -151,7 +151,7 @@ enum MsTimeVariables
 #endif
 #endif
 
-#if PLATFORM == PLATFORM_WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WIN32
 #define PLATFORM_TEXT "Win32"
 #endif
 
@@ -168,13 +168,13 @@ enum MsTimeVariables
 #endif
 
 
-#if PLATFORM == PLATFORM_WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WIN32
 #define STRCASECMP stricmp
 #else
 #define STRCASECMP strcasecmp
 #endif
 
-#if PLATFORM == PLATFORM_WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WIN32
 #define ASYNC_NET
 #endif
 
@@ -252,7 +252,7 @@ enum MsTimeVariables
 #endif
 
 #ifndef HAS_CXX0X
-#if COMPILER == COMPILER_MICROSOFT && _MSC_VER > 1600
+#if ARCEMU_COMPILER == COMPILER_MICROSOFT && _MSC_VER > 1600
 #define HAS_CXX0X
 #endif
 #endif
@@ -266,7 +266,7 @@ enum MsTimeVariables
 #define HM_NAMESPACE ::std
 #define HM_HASH_MAP unordered_map
 #define HM_HASH_SET unordered_set
-#elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
+#elif ARCEMU_COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #include <ext/hash_map>
 #include <ext/hash_set>
 #define HM_NAMESPACE __gnu_cxx
@@ -301,7 +301,7 @@ namespace __gnu_cxx
 #endif
 
 /* Use correct types for x64 platforms, too */
-#if COMPILER != COMPILER_GNU
+#if ARCEMU_COMPILER != COMPILER_GNU
 typedef signed __int64 int64;
 typedef signed __int32 int32;
 typedef signed __int16 int16;
@@ -362,7 +362,7 @@ Scripting system exports/imports
 
 #include "Util/MersenneTwister.h"
 
-#if COMPILER == COMPILER_MICROSOFT
+#if ARCEMU_COMPILER == COMPILER_MICROSOFT
 
 #define I64FMT "%016I64X"
 #define I64FMTD "%I64u"
@@ -387,12 +387,12 @@ Scripting system exports/imports
 // fix buggy MSVC's for variable scoping to be reliable =S
 #define for if(true) for
 
-#if COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
+#if ARCEMU_COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
 #pragma float_control(push)
 #pragma float_control(precise, on)
 #endif
 
-#if COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
+#if ARCEMU_COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
 #pragma float_control(pop)
 #endif
 
