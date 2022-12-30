@@ -19,7 +19,7 @@
 
 #include <Python.h>
 
-extern PyObject* PyInit_Arcemu(void);
+PyObject* PyInit_Arcemu(void);
 
 void register_arcemu_extensions()
 {

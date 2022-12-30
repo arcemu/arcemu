@@ -33,7 +33,11 @@ add_subdirectory( miscscripts )
 add_subdirectory( serverstatusplugin )
 add_subdirectory( lualib ) #Used by luaengine module.
 add_subdirectory( luaengine )
-add_subdirectory( new_script_engine )
+
+IF( BUILD_NEW_SCRIPT_ENGINE )
+	add_subdirectory( python34 )
+	add_subdirectory( new_script_engine )
+ENDIF()
 
 unset(SCRIPTS_PATH)
 unset(include_dirs)

@@ -27,7 +27,7 @@
 
 #include "serverhooks.hpp"
 
-extern void register_arcemu_extensions();
+void register_arcemu_extensions();
 
 
 PythonEngine::PythonEngine( ScriptMgr *mgr )
