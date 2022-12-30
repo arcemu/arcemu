@@ -54,12 +54,28 @@ void PythonEngine::onStartup()
 int PythonEngine::loadScript( const char *fileName )
 {
 	int val = python->runSimpleFile( fileName );
+	if( val == 0 )
+	{
+	    LOG_BASIC( "Loaded %s", fileName );
+	}
+	else
+	{
+	    LOG_BASIC( "Failed to load %s", fileName );
+	}
+
 	return val;
 }
 
 int PythonEngine::loadScripts()
 {
-	loadScript( "test_script.py" );
+	LOG_BASIC( "Loading Python scripts..." );
+	int c = 0;
+
+	if( loadScript( "test_script.py" ) == 0 )
+	    c++;
+
+	LOG_BASIC( "Loaded %d Python scripts.", c );
+
 	return 0;
 }
 
