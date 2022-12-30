@@ -67,5 +67,5 @@ int PythonEngine::loadScripts()
 
 void PythonEngine::registerHooks()
 {
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, &python_hookOnEmote );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, (void*)python_hookOnEmote );
 }
