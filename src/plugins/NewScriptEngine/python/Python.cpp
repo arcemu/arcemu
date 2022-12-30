@@ -1,7 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2022 Arcemu Team <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +17,35 @@
  *
  */
 
-#ifndef NEW_ENGINE_H_
-#define NEW_ENGINE_H_
+#include <Python.h>
+#include "Python.hpp"
 
-#endif
+Python::Python()
+{
+	Py_InitializeEx( 0 );
+}
+
+Python::~Python()
+{
+	Py_Finalize();
+}
+
+void Python::printError()
+{
+	PyErr_Print();
+}
+
+int Python::runSimpleFile( const char *fileName )
+{
+	FILE *fp = fopen( fileName, "rt" );
+	if( fp == NULL )
+	{
+		return -1;
+	}
+
+	int value = PyRun_SimpleFile( fp, fileName );
+
+	fclose( fp );
+
+	return value;
+}

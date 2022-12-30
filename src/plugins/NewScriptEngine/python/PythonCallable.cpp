@@ -1,7 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2022 Arcemu Team <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+ 
+#include <Python.h>
+#include "PythonObject.hpp"
+#include "PythonValue.hpp"
+#include "PythonTuple.hpp"
+#include "PythonCallable.hpp"
+ 
+PythonCallable::PythonCallable( PyObject *obj ) :
+PythonObject( obj )
+{
+}
 
-#ifndef NEW_ENGINE_H_
-#define NEW_ENGINE_H_
+PythonCallable::~PythonCallable()
+{
+}
 
-#endif
+PythonValue PythonCallable::call( PythonTuple &args )
+{
+	PyObject *obj = PyObject_CallObject( getObject(), args.getObject() );
+	PythonValue value( obj );
+	return value;
+}

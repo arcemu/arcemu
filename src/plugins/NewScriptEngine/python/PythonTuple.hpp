@@ -1,7 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2022 Arcemu Team <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +17,24 @@
  *
  */
 
-#ifndef NEW_ENGINE_H_
-#define NEW_ENGINE_H_
+#ifndef PYTHON_TUPLE_H
+#define PYTHON_TUPLE_H
+
+class PythonTuple
+{
+public:
+	PythonTuple( unsigned long size );
+	~PythonTuple();
+
+	void setItem( unsigned long idx, long value );
+
+	PyObject* getObject(){ return obj; }
+
+	unsigned long getSize(){ return size; }
+
+private:
+	unsigned long size;
+	PyObject *obj;
+};
 
 #endif

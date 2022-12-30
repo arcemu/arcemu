@@ -1,7 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2022 Arcemu Team <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+ 
+#ifndef PYTHONVALUE_H_
+#define PYTHONVALUE_H_
 
-#ifndef NEW_ENGINE_H_
-#define NEW_ENGINE_H_
+class PythonValue : public PythonObject
+{
+public:
+	PythonValue( PyObject *obj );
+	~PythonValue();
+};
 
 #endif

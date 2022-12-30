@@ -1,7 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2022 Arcemu Team <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +17,24 @@
  *
  */
 
-#ifndef NEW_ENGINE_H_
-#define NEW_ENGINE_H_
+#ifndef SERVERHOOK_REGISTRY_H
+#define SERVERHOOK_REGISTRY_H
+
+#include <vector>
+#include <map>
+#include <set>
+
+class ServerHookRegistry
+{
+private:
+	static std::multimap< unsigned long, void* > hooks;
+
+public:
+	static void addHook( unsigned long serverEvent, void* handler );
+	static bool hasHooksForEvent( unsigned long serverEvent );
+	static void getHooksForEvent( unsigned long serverEvent, std::vector< void* > &handlers );
+	static void getHooks( std::set< void* > &handlers );
+	static void clear();
+};
 
 #endif

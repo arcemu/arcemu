@@ -23,33 +23,38 @@
 
 #include <ScriptSetup.h>
 
+#include "PythonEngine.hpp"
+
+static PythonEngine *pythonEngine = NULL;
+
+
 extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 {
 	return SCRIPT_TYPE_SCRIPT_ENGINE;
 }
 
-extern "C" SCRIPT_DECL void _exp_script_register( const ScriptMgr *mgr )
+extern "C" SCRIPT_DECL void _exp_script_register( ScriptMgr *mgr )
 {
-	LOG_BASIC("NSE: Script register called");
+	LOG_BASIC("NSE: Starting up.");
+	
+	pythonEngine = new PythonEngine(mgr);
+	pythonEngine->onStartup();
+
+	LOG_BASIC("NSE: Startup complete.");
 }
 
 extern "C" SCRIPT_DECL void _exp_engine_unload()
 {
-	LOG_BASIC("NSE: Engine unload called");
+	LOG_BASIC("NSE: Shutting down...");
+
+	delete pythonEngine;
+	pythonEngine = NULL;
+	
+	LOG_BASIC("NSE: Shutdown complete.");
 }
 
 extern "C" SCRIPT_DECL void _export_engine_reload()
 {
-	LOG_BASIC("NSE: Engine reload called");
+	LOG_BASIC("NSE: Engine reload currently NOT supported.");
 }
 
-
-namespace Arcemu
-{
-	namespace Scripting
-	{
-		NewScriptEngine::NewScriptEngine()
-		{
-		}
-	};
-};
