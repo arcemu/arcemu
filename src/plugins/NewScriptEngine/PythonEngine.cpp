@@ -72,7 +72,7 @@ int PythonEngine::loadScripts()
 	LOG_BASIC( "Loading Python scripts..." );
 	int c = 0;
 
-	if( loadScript( "test_script.py" ) == 0 )
+	if( loadScript( "pythonscripts/test_script.py" ) == 0 )
 	    c++;
 
 	LOG_BASIC( "Loaded %d Python scripts.", c );
