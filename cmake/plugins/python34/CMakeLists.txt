@@ -324,7 +324,12 @@ IF(CMAKE_GENERATOR MATCHES Visual*)
 ENDIF()
 
 ADD_LIBRARY( python34 SHARED ${pythoncore_sources} ${pythoncore_headers} )
+
 INSTALL( TARGETS python34 DESTINATION . )
+
+IF( IS_64BIT )
+    SET_PROPERTY( TARGET python34 APPEND PROPERTY COMPILE_FLAGS "-fPIC")
+ENDIF()
 
 SET( prefix ${ROOT_PATH}/src/plugins/python34 )
 

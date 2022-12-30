@@ -42,10 +42,19 @@ ELSE()
 	include_directories( ${include_dirs} ${prefix} ${SCRIPTS_PATH}/python34/src/Include ${SCRIPTS_PATH}/python34/src/platform/Windows )
 ENDIF()
 
+IF(NOT CMAKE_GENERATOR MATCHES Visual*)
+    SET( CMAKE_INSTALL_RPATH "./" )
+ENDIF()
 
 add_library(${PROJECT_NAME} SHARED ${SRCS} ${HEADERS})
-add_dependencies( ${PROJECT_NAME} ${dependancies})
-target_link_libraries( ${PROJECT_NAME} ${linkages} python34 )
+add_dependencies( ${PROJECT_NAME} ${dependancies} python34 )
+
+IF( IS_LINUX )
+    target_link_libraries( ${PROJECT_NAME} ${linkages} python34 pthread m util dl )
+ELSE()
+    target_link_libraries( ${PROJECT_NAME} ${linkages} python34 )
+ENDIF()
+
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})
 
 #Cleap up our variables(Not required.)
