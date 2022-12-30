@@ -333,7 +333,7 @@ ENDIF()
 
 SET( prefix ${ROOT_PATH}/src/plugins/python34 )
 
-INSTALL( DIRECTORY ${prefix}/Lib/encodings DESTINATION ./Lib )
+INSTALL( DIRECTORY ${prefix}/Lib/encodings DESTINATION ./pythonlibs )
 INSTALL( FILES
 		${prefix}/Lib/_bootlocale.py
 		${prefix}/Lib/_collections_abc.py
@@ -349,4 +349,4 @@ INSTALL( FILES
 		${prefix}/Lib/site.py
 		${prefix}/Lib/stat.py
 		${prefix}/Lib/sysconfig.py
-		DESTINATION ./Lib )
+		DESTINATION ./pythonlibs )
