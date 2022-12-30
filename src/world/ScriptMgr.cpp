@@ -182,8 +182,9 @@ void ScriptMgr::LoadScripts()
 
 		if(!dl->Load())
 		{
-			loadmessage << "ERROR: Cannot open library.";
+			loadmessage << "Cannot open library:";
 			LOG_ERROR(loadmessage.str().c_str());
+			LOG_ERROR( dl->GetLastError().c_str() );
 			delete dl;
 			continue;
 

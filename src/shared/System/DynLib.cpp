@@ -25,6 +25,38 @@
 
 #include "DynLib.hpp"
 
+#ifdef WIN32
+
+std::string decodeWindowsError( DWORD error )
+{
+	std::string messageText;
+
+	char *message = NULL;
+
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL,
+		error,
+		MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+		(LPTSTR)&message,
+		0,
+		NULL
+	);
+
+	if( message != NULL )
+	{
+		messageText.append( message );
+		LocalFree( message );
+	}
+	else
+	{
+		messageText.append( "No message for this error" );
+	}
+
+	return messageText;
+}
+
+#endif
 
 namespace Arcemu
 {
@@ -73,6 +105,16 @@ namespace Arcemu
 		return address;
 	}
 
+	std::string DynLib::GetLastError()
+	{
+		std::string error;
+
+		DWORD errorCode = ::GetLastError();
+		error = decodeWindowsError( errorCode );
+
+		return error;
+	}
+
 	void DynLib::Close()
 	{
 
@@ -115,6 +157,13 @@ namespace Arcemu
 			error = true;
 
 		return address;
+	}
+
+	std::string DynLib::GetLastError()
+	{
+		std::string error;
+		error.append( dlerror() );
+		return error;
 	}
 
 	void DynLib::Close()
