@@ -35,6 +35,11 @@ void Python::printError()
 	PyErr_Print();
 }
 
+void Python::setPath( const wchar_t *path )
+{
+	Py_SetPath( path );
+}
+
 int Python::runSimpleFile( const char *fileName )
 {
 	FILE *fp = fopen( fileName, "rt" );

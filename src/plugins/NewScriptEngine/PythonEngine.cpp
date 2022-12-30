@@ -34,6 +34,7 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 {
 	register_arcemu_extensions();
 
+	Python::setPath( L"./Lib" );
 	python = new Python();
 	this->mgr = mgr;
 }

@@ -28,6 +28,8 @@ public:
 
 	static void printError();
 
+	static void setPath( const wchar_t *path );
+
 	int runSimpleFile( const char *fileName );
 };
 
