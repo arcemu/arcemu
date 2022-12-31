@@ -13,6 +13,7 @@ SET( SRCS
 ${prefix}/engine.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/modules/arcemu_module.cpp
+${prefix}/python/modules/unit_module.cpp
 ${prefix}/python/Python.cpp
 ${prefix}/python/PythonCallable.cpp
 ${prefix}/python/PythonObject.cpp

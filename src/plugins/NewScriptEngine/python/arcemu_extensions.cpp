@@ -20,8 +20,10 @@
 #include <Python.h>
 
 PyObject* PyInit_Arcemu(void);
+PyObject* PyInit_ArcPyUnit(void);
 
 void register_arcemu_extensions()
 {
 	PyImport_AppendInittab( "arcemu", &PyInit_Arcemu );
+	PyImport_AppendInittab( "unit", &PyInit_ArcPyUnit );
 }
