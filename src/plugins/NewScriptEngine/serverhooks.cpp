@@ -30,6 +30,7 @@
 #include "ServerHookRegistry.hpp"
 
 #include "python/modules/unit_module.hpp"
+#include "python/modules/player_module.hpp"
 
 void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 {
@@ -39,7 +40,18 @@ void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		PythonTuple args( 3 );
-		args.setItem( 0, (long)player );
+
+		if( player != NULL )
+		{
+			ArcPyPlayer *app = createArcPyPlayer();
+			app->playerPtr = player;
+			args.setItem( 0, PythonObject( (PyObject*)app ) );
+		}
+		else
+		{
+			args.setItemNone( 0 );
+		}
+		
 		args.setItem( 1, emote );
 
 		if( unit != NULL )

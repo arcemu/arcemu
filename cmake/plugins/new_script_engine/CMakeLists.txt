@@ -14,6 +14,7 @@ ${prefix}/engine.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/unit_module.cpp
+${prefix}/python/modules/player_module.cpp
 ${prefix}/python/Python.cpp
 ${prefix}/python/PythonCallable.cpp
 ${prefix}/python/PythonObject.cpp
@@ -32,6 +33,7 @@ ${prefix}/python/PythonObject.hpp
 ${prefix}/python/PythonTuple.hpp
 ${prefix}/python/PythonValue.hpp
 ${prefix}/python/modules/unit_module.hpp
+${prefix}/python/modules/player_module.hpp
 ${prefix}/PythonEngine.hpp
 ${prefix}/ServerHookRegistry.hpp
 ${prefix}/serverhooks.hpp

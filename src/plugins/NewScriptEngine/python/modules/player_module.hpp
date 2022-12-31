@@ -17,19 +17,17 @@
  *
  */
 
-#include <Python.h>
+#ifndef PLAYER_MODULE_H_
+#define PLAYER_MODULE_H_
 
-PyObject* PyInit_Arcemu(void);
-PyObject* PyInit_ArcPyUnit(void);
-PyObject* PyInit_ArcPyPlayer(void);
+class Player;
 
-void register_arcemu_extensions()
+typedef struct
 {
-	PyImport_AppendInittab( "arcemu", &PyInit_Arcemu );
-	PyImport_AppendInittab( "unit", &PyInit_ArcPyUnit );
-	
-	if( PyImport_AppendInittab( "player", &PyInit_ArcPyPlayer ) < 0 )
-	{
-		printf( "Failed to append inittab with player" );
-	}
-}
+	PyObject_HEAD
+	Player* playerPtr;
+} ArcPyPlayer;
+
+ArcPyPlayer* createArcPyPlayer();
+
+#endif
