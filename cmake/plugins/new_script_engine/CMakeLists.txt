@@ -31,6 +31,7 @@ ${prefix}/python/PythonCallable.hpp
 ${prefix}/python/PythonObject.hpp
 ${prefix}/python/PythonTuple.hpp
 ${prefix}/python/PythonValue.hpp
+${prefix}/python/modules/unit_module.hpp
 ${prefix}/PythonEngine.hpp
 ${prefix}/ServerHookRegistry.hpp
 ${prefix}/serverhooks.hpp

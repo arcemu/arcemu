@@ -29,7 +29,7 @@
 
 #include "ServerHookRegistry.hpp"
 
-#include "python/modules/unit_module.h"
+#include "python/modules/unit_module.hpp"
 
 void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 {

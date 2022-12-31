@@ -22,7 +22,7 @@
 
 #include "StdAfx.h"
 
-#include "unit_module.h"
+#include "unit_module.hpp"
 
 static PyObject* ArcPyUnit_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
