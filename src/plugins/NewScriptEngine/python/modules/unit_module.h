@@ -17,37 +17,17 @@
  *
  */
 
-#include <Python.h>
+#ifndef UNITMODULE_H_
+#define UNITMODULE_H_
 
-#include "PythonObject.hpp"
-#include "PythonTuple.hpp"
+class Unit;
 
-PythonTuple::PythonTuple( unsigned long size )
+typedef struct
 {
-	this->obj = PyTuple_New( size );
-	size = size;
-}
+	PyObject_HEAD
+	Unit* unitPtr;
+} ArcPyUnit;
 
-PythonTuple::~PythonTuple()
-{
-	Py_DECREF( obj );
-	obj = NULL;
-	size = 0;
-}
+ArcPyUnit* createArcPyUnit();
 
-
-void PythonTuple::setItem( unsigned long idx, long value )
-{
-	PyTuple_SetItem( obj, idx, PyLong_FromLong( value ) );
-}
-
-void PythonTuple::setItem( unsigned long idx, PythonObject &pyobj )
-{
-	PyTuple_SetItem( obj, idx, pyobj.getObject() );
-}
-
-void PythonTuple::setItemNone( unsigned long idx )
-{
-	Py_INCREF( Py_None );
-	PyTuple_SetItem( obj, idx, Py_None );
-}
+#endif

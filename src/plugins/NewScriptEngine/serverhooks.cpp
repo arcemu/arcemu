@@ -29,6 +29,8 @@
 
 #include "ServerHookRegistry.hpp"
 
+#include "python/modules/unit_module.h"
+
 void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 {
 	std::vector< void* > handlers;
@@ -39,7 +41,17 @@ void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 		PythonTuple args( 3 );
 		args.setItem( 0, (long)player );
 		args.setItem( 1, emote );
-		args.setItem( 2, (long)unit );
+
+		if( unit != NULL )
+		{
+			ArcPyUnit *apu = createArcPyUnit();
+			apu->unitPtr = unit;
+			args.setItem( 2, PythonObject( (PyObject*)apu ) );
+		}
+		else
+		{
+			args.setItemNone( 2 );
+		}
 
 		PythonCallable callable( (PyObject*)(*itr) );
 		PythonValue value = callable.call( args );

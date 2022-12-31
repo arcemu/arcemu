@@ -27,14 +27,17 @@ public:
 	~PythonTuple();
 
 	void setItem( unsigned long idx, long value );
+	void setItem( unsigned long idx, PythonObject &object );
 
-	PyObject* getObject(){ return obj; }
+	void setItemNone( unsigned long idx );
 
 	unsigned long getSize(){ return size; }
 
+	PyObject* getObject() const{ return obj; }
+
 private:
-	unsigned long size;
 	PyObject *obj;
+	unsigned long size;
 };
 
 #endif
