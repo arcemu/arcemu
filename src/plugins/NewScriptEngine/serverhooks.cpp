@@ -45,7 +45,8 @@ void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 		{
 			ArcPyPlayer *app = createArcPyPlayer();
 			app->playerPtr = player;
-			args.setItem( 0, PythonObject( (PyObject*)app ) );
+			PythonObject o( (PyObject*)app );
+			args.setItem( 0, o );
 		}
 		else
 		{
@@ -58,7 +59,8 @@ void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 		{
 			ArcPyUnit *apu = createArcPyUnit();
 			apu->unitPtr = unit;
-			args.setItem( 2, PythonObject( (PyObject*)apu ) );
+			PythonObject o( (PyObject*)apu );
+			args.setItem( 2, o );
 		}
 		else
 		{
