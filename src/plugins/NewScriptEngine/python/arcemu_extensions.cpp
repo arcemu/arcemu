@@ -23,13 +23,27 @@ PyObject* PyInit_Arcemu(void);
 PyObject* PyInit_ArcPyUnit(void);
 PyObject* PyInit_ArcPyPlayer(void);
 
+class PythonExtensionRegistrar
+{
+private:
+	static void registerExtension( const char *name, PyObject* (*initfunc)(void) )
+	{
+		if( PyImport_AppendInittab( name, initfunc ) < 0 )
+		{
+			printf( "Failed to initialize extension: %s\n", name );
+		}
+	}
+
+public:
+	static void registerExtensions()
+	{
+		registerExtension( "arcemu", &PyInit_Arcemu );
+		registerExtension( "unit", &PyInit_ArcPyUnit );
+		registerExtension( "player", &PyInit_ArcPyPlayer );
+	}
+};
+
 void register_arcemu_extensions()
 {
-	PyImport_AppendInittab( "arcemu", &PyInit_Arcemu );
-	PyImport_AppendInittab( "unit", &PyInit_ArcPyUnit );
-	
-	if( PyImport_AppendInittab( "player", &PyInit_ArcPyPlayer ) < 0 )
-	{
-		printf( "Failed to append inittab with player" );
-	}
+	PythonExtensionRegistrar::registerExtensions();
 }
