@@ -136,7 +136,6 @@ SET( pythoncore_sources
     ${prefix}/Modules/_bisectmodule.c
     ${prefix}/Modules/_codecsmodule.c
     ${prefix}/Modules/_collectionsmodule.c
-    ${prefix}/Modules/_csv.c
     ${prefix}/Modules/_functoolsmodule.c
     ${prefix}/Modules/_heapqmodule.c
     ${prefix}/Modules/_json.c
@@ -151,7 +150,6 @@ SET( pythoncore_sources
     ${prefix}/Modules/_weakref.c
     ${prefix}/Modules/arraymodule.c
     ${prefix}/Modules/atexitmodule.c
-    ${prefix}/Modules/audioop.c
     ${prefix}/Modules/binascii.c
     ${prefix}/Modules/cmathmodule.c
     ${prefix}/Modules/_datetimemodule.c
