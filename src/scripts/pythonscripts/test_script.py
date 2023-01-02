@@ -15,6 +15,10 @@ def onEmote( pPlayer, emote, pUnit ):
 		print( "The unit's name is: ", pUnit.getName() )
 		pUnit.sendChatMessage( 12, 0, 'Hello, my name is ' + pUnit.getName() )
 		
+		
+def onEnterCombat( pPlayer, pUnit ):
+	print( "Player " + pPlayer.getName() + " entered combat with Unit " + pUnit.getName() )		
 
 arcemu.info()
 arcemu.RegisterServerHook( 8, onEmote )
+arcemu.RegisterServerHook( 9, onEnterCombat )

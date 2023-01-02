@@ -44,8 +44,13 @@ static void ArcPyUnit_dealloc( ArcPyUnit* self )
 
 static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
 {
+	PyObject *name = NULL;
+
 	Unit *unit = self->unitPtr;
-	PyObject *name = PyUnicode_FromString( TO_CREATURE( unit )->GetCreatureInfo()->Name );	
+	if( unit->IsCreature() )
+		name = PyUnicode_FromString( TO_CREATURE( unit )->GetCreatureInfo()->Name );	
+	else
+		name = PyUnicode_FromString( TO_PLAYER( unit )->GetName() );	
 	return name;
 }
 

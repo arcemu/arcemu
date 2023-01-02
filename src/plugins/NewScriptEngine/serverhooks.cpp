@@ -32,10 +32,43 @@
 #include "python/modules/unit_module.hpp"
 #include "python/modules/player_module.hpp"
 
+void python_hookOnEnterCombat( Player* player, Unit* unit )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyUnit *apu = createArcPyUnit();
+		apu->unitPtr = unit;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );		
+		args.setItem( 1, PythonObject( (PyObject*)apu ) );
+
+		PythonCallable callable( (PyObject*)(*itr) );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			///call failed
+			Python::printError();
+		}
+		else
+		{
+			/// Value not needed, throw it away
+			value.decref();
+		}
+	}
+}
+
 void python_hookOnEmote( Player* player, uint32 emote, Unit* unit )
 {
 	std::vector< void* > handlers;
-	ServerHookRegistry::getHooksForEvent( 8, handlers );
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_EMOTE, handlers );
 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
