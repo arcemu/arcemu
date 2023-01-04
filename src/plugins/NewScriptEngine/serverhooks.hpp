@@ -22,6 +22,7 @@
 
 extern void python_hookOnEnterWorld( Player* player );
 extern void python_hookOnPlayerDeath( Player* player );
+extern void python_hookOnPlayerRepop( Player* player );
 extern void python_hookOnEmote( Player* player, uint32 emote, Unit* unit );
 extern void python_hookOnEnterCombat( Player* player, Unit* unit );
 
