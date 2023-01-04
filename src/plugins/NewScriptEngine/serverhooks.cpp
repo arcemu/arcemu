@@ -29,8 +29,8 @@
 
 #include "ServerHookRegistry.hpp"
 
-#include "python/modules/unit_module.hpp"
-#include "python/modules/player_module.hpp"
+#include "python/modules/ArcPyUnit.hpp"
+#include "python/modules/ArcPyPlayer.hpp"
 
 void python_hookOnEnterCombat( Player* player, Unit* unit )
 {

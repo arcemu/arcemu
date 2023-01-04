@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef UNITMODULE_H_
-#define UNITMODULE_H_
+#ifndef ARCPYUNIT_H_
+#define ARCPYUNIT_H_
 
 class Unit;
 

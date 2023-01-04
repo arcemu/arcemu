@@ -16,45 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #include <Python.h>
 #include <cstdio>
 
 #include "StdAfx.h"
 
-#include "unit_module.hpp"
+#include "ArcPyPlayer.hpp"
 
-static PyObject* ArcPyUnit_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
+static PyObject* ArcPyPlayer_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
-	ArcPyUnit *self = (ArcPyUnit*)type->tp_alloc( type, 0 );
-	self->unitPtr = NULL;
+	ArcPyPlayer *self = (ArcPyPlayer*)type->tp_alloc( type, 0 );
+	self->playerPtr = NULL;
 	return (PyObject*)self;
 }
 
-static int ArcPyUnit_init( ArcPyUnit *self, PyObject *args, PyObject *keywords )
+static int ArcPyPlayer_init( ArcPyPlayer *self, PyObject *args, PyObject *keywords )
 {
-	self->unitPtr = NULL;
+	self->playerPtr = NULL;
 	return 0;
 }
 
-static void ArcPyUnit_dealloc( ArcPyUnit* self )
+static void ArcPyPlayer_dealloc( ArcPyPlayer* self )
 {
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
-static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
+static PyObject* ArcPyPlayer_getName( ArcPyPlayer *self, PyObject *args )
 {
-	PyObject *name = NULL;
-
-	Unit *unit = self->unitPtr;
-	if( unit->IsCreature() )
-		name = PyUnicode_FromString( TO_CREATURE( unit )->GetCreatureInfo()->Name );	
-	else
-		name = PyUnicode_FromString( TO_PLAYER( unit )->GetName() );	
+	Player *player = self->playerPtr;
+	PyObject *name = PyUnicode_FromString(  player->GetName() );	
 	return name;
 }
 
-static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
+static PyObject* ArcPyPlayer_sendChatMessage( ArcPyPlayer *self, PyObject *args )
 {
 	unsigned long type = 0;
 	unsigned long lang = 0;
@@ -65,26 +60,26 @@ static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
 		return NULL;
 	}
 
-	Unit *unit = self->unitPtr;
-	unit->SendChatMessage( (uint8)type, lang, msg );
+	Player *player = self->playerPtr;
+	player->SendChatMessage( (uint8)type, lang, msg );
 
 	Py_RETURN_NONE;
 }
 
-static PyMethodDef ArcPyUnit_methods[] = 
+static PyMethodDef ArcPyPlayer_methods[] = 
 {
-	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
-	{ "sendChatMessage", (PyCFunction)ArcPyUnit_sendChatMessage, METH_VARARGS, "Sends a chat message from the Unit" },
+	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
+	{ "sendChatMessage", (PyCFunction)ArcPyPlayer_sendChatMessage, METH_VARARGS, "Sends a chat message from the Player" },
 	{NULL}
 };
 
-static PyTypeObject ArcPyUnitType = {
+static PyTypeObject ArcPyPlayerType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	
-	"ArcPyUnit",					// tp_name
-	sizeof( ArcPyUnit ),			// tp_basicsize
+	"ArcPyPlayer",					// tp_name
+	sizeof( ArcPyPlayer ),			// tp_basicsize
 	0,								// tp_itemsize
-	(destructor)ArcPyUnit_dealloc,	// tp_dealloc
+	(destructor)ArcPyPlayer_dealloc,	// tp_dealloc
 	0,								// tp_print
 	0,								// tp_getattr
 	0,								// tp_setattr
@@ -100,14 +95,14 @@ static PyTypeObject ArcPyUnitType = {
 	0,								// tp_setattro
 	0,								// tp_as_buffer
 	Py_TPFLAGS_DEFAULT,				// tp_flags
-	"Arcemu Unit",					// tp_doc
+	"Arcemu Player",				// tp_doc
 	0,								// tp_traverse
 	0,								// tp_clear
 	0,								// tp_richcompare
 	0,								// tp_weaklistoffset
 	0,								// tp_iter
 	0,								// tp_iternext
-	ArcPyUnit_methods,				// tp_methods
+	ArcPyPlayer_methods,			// tp_methods
 	0,								// tp_members
 	0,								// tp_getset
 	0,								// tp_base
@@ -115,30 +110,35 @@ static PyTypeObject ArcPyUnitType = {
 	0,								// tp_descr_get
 	0,								// tp_descr_set
 	0,								// tp_dictoffset
-	(initproc)ArcPyUnit_init,		// tp_tp_init
+	(initproc)ArcPyPlayer_init,		// tp_tp_init
 	0,								// tp_alloc
-	ArcPyUnit_new,					// tp_new
+	ArcPyPlayer_new,				// tp_new
 };
 
-int registerArcPyUnit( PyObject *module )
-{
-	ArcPyUnitType.tp_new = ArcPyUnit_new;
+static PyModuleDef ArcPyPlayerModule = {
+	PyModuleDef_HEAD_INIT,
+	"player", NULL, -1, NULL,
+	NULL, NULL, NULL, NULL
+};
 
-	if( PyType_Ready( &ArcPyUnitType ) < 0 )
+int registerArcPyPlayer( PyObject *module )
+{
+	ArcPyPlayerType.tp_new = ArcPyPlayer_new;
+
+	if( PyType_Ready( &ArcPyPlayerType ) < 0 )
 	{
 		return -1;
 	}
-	
-	Py_INCREF( &ArcPyUnitType );
-	PyModule_AddObject( module, "Unit", (PyObject*)&ArcPyUnitType);
+
+	Py_INCREF( &ArcPyPlayerType );
+	PyModule_AddObject( module, "Player", (PyObject*)&ArcPyPlayerType);
 
 	return 0;
 }
 
-ArcPyUnit* createArcPyUnit()
+ArcPyPlayer* createArcPyPlayer()
 {
-	PyTypeObject *type = &ArcPyUnitType;
-	ArcPyUnit* unit = (ArcPyUnit*)type->tp_alloc( type, 0 );
-	return unit;
+	PyTypeObject *type = &ArcPyPlayerType;
+	ArcPyPlayer* player = (ArcPyPlayer*)type->tp_alloc( type, 0 );
+	return player;
 }
-

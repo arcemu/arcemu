@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef PLAYER_MODULE_H_
-#define PLAYER_MODULE_H_
+#ifndef ARCPYPLAYER_H_
+#define ARCPYPLAYER_H_
 
 class Player;
 
