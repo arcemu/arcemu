@@ -10,6 +10,9 @@ def onPlayerDeath( player ):
 	
 def onPlayerRepop( player ):
 	print( "Player '" + player.getName() + "' has been repopped." )
+	
+def onPlayerResurrect( player ):
+	print( "Player '" + player.getName() + "' has resurrected." )
 
 def onEmote( pPlayer, emote, pUnit ):
 	print( "Player emote ", emote )
@@ -30,5 +33,6 @@ arcemu.info()
 arcemu.RegisterServerHook( 4, onEnterWorld )
 arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
+arcemu.RegisterServerHook( 32, onPlayerResurrect )
 arcemu.RegisterServerHook( 8, onEmote )
 arcemu.RegisterServerHook( 9, onEnterCombat )
