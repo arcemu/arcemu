@@ -60,6 +60,34 @@ void python_hookOnEnterWorld( Player* player )
 	}
 }
 
+void python_hookOnPlayerDeath( Player* player )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_DEATH, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 1 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void python_hookOnEnterCombat( Player* player, Unit* unit )
 {
 	std::vector< void* > handlers;
