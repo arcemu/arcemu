@@ -121,20 +121,19 @@ static PyModuleDef ArcPyPlayerModule = {
 	NULL, NULL, NULL, NULL
 };
 
-PyObject* PyInit_ArcPyPlayer(void)
+int registerArcPyPlayer( PyObject *module )
 {
-	PyObject *module = NULL;
 	ArcPyPlayerType.tp_new = ArcPyPlayer_new;
 
 	if( PyType_Ready( &ArcPyPlayerType ) < 0 )
 	{
-		return NULL;
+		return -1;
 	}
 
-	module = PyModule_Create( &ArcPyPlayerModule );
 	Py_INCREF( &ArcPyPlayerType );
 	PyModule_AddObject( module, "Player", (PyObject*)&ArcPyPlayerType);
-	return module;
+
+	return 0;
 }
 
 ArcPyPlayer* createArcPyPlayer()

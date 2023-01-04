@@ -22,6 +22,9 @@
 
 #include "ServerHookRegistry.hpp"
 
+extern int registerArcPyUnit( PyObject *module );
+extern int registerArcPyPlayer( PyObject *module );
+
 static PyObject* arcemu_info( PyObject *self, PyObject *args )
 {
 	printf( "Arcemu info called\n" );
@@ -60,5 +63,10 @@ static PyModuleDef ArcemuModule = {
 
 PyObject* PyInit_Arcemu(void)
 {
-	return PyModule_Create(&ArcemuModule);
+	PyObject *module = PyModule_Create(&ArcemuModule);
+	
+	registerArcPyUnit( module );
+	registerArcPyPlayer( module );
+
+	return module;
 }

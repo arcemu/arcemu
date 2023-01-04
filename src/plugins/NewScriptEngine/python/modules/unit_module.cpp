@@ -120,26 +120,19 @@ static PyTypeObject ArcPyUnitType = {
 	ArcPyUnit_new,					// tp_new
 };
 
-static PyModuleDef ArcPyUnitModule = {
-	PyModuleDef_HEAD_INIT,
-	"unit", NULL, -1, NULL,
-	NULL, NULL, NULL, NULL
-};
-
-PyObject* PyInit_ArcPyUnit(void)
+int registerArcPyUnit( PyObject *module )
 {
-	PyObject *module = NULL;
 	ArcPyUnitType.tp_new = ArcPyUnit_new;
 
 	if( PyType_Ready( &ArcPyUnitType ) < 0 )
 	{
-		return NULL;
+		return -1;
 	}
-
-	module = PyModule_Create( &ArcPyUnitModule );
+	
 	Py_INCREF( &ArcPyUnitType );
 	PyModule_AddObject( module, "Unit", (PyObject*)&ArcPyUnitType);
-	return module;
+
+	return 0;
 }
 
 ArcPyUnit* createArcPyUnit()

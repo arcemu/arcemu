@@ -1,8 +1,6 @@
 import arcemu
-import unit
-from unit import Unit
-import player
-from player import Player
+from arcemu import Unit
+from arcemu import Player
 
 def onEmote( pPlayer, emote, pUnit ):
 	print( "Player emote ", emote )

@@ -20,8 +20,6 @@
 #include <Python.h>
 
 PyObject* PyInit_Arcemu(void);
-PyObject* PyInit_ArcPyUnit(void);
-PyObject* PyInit_ArcPyPlayer(void);
 
 class PythonExtensionRegistrar
 {
@@ -38,8 +36,6 @@ public:
 	static void registerExtensions()
 	{
 		registerExtension( "arcemu", &PyInit_Arcemu );
-		registerExtension( "unit", &PyInit_ArcPyUnit );
-		registerExtension( "player", &PyInit_ArcPyPlayer );
 	}
 };
 
