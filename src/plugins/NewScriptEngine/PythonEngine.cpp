@@ -84,6 +84,7 @@ int PythonEngine::loadScripts()
 
 void PythonEngine::registerHooks()
 {
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)python_hookOnEnterWorld );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, (void*)python_hookOnEmote );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)python_hookOnEnterCombat );
 }

@@ -2,6 +2,9 @@ import arcemu
 from arcemu import Unit
 from arcemu import Player
 
+def onEnterWorld( player ):
+	print( "Player '" + player.getName() + "' has entered the world." )
+
 def onEmote( pPlayer, emote, pUnit ):
 	print( "Player emote ", emote )
 	
@@ -18,5 +21,6 @@ def onEnterCombat( pPlayer, pUnit ):
 	print( "Player " + pPlayer.getName() + " entered combat with Unit " + pUnit.getName() )		
 
 arcemu.info()
+arcemu.RegisterServerHook( 4, onEnterWorld )
 arcemu.RegisterServerHook( 8, onEmote )
 arcemu.RegisterServerHook( 9, onEnterCombat )
