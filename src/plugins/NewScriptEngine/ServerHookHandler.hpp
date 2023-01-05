@@ -23,7 +23,13 @@
 class ServerHookHandler
 {
 public:
-	static void onPreUnitDie( Unit* killer, Unit *victim );
+	static void hookOnEnterWorld( Player* player );
+	static void hookOnPlayerDeath( Player* player );
+	static void hookOnPlayerRepop( Player* player );
+	static void hookOnPlayerResurrect( Player* player );
+	static void hookOnEmote( Player* player, uint32 emote, Unit* unit );
+	static void hookOnEnterCombat( Player* player, Unit* unit );
+	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 };
 
 #endif

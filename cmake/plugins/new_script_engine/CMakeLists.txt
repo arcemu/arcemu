@@ -23,7 +23,6 @@ ${prefix}/python/PythonValue.cpp
 ${prefix}/PythonEngine.cpp
 ${prefix}/ServerHookRegistry.cpp
 ${prefix}/ServerHookHandler.cpp
-${prefix}/serverhooks.cpp
 )
 
 SET( HEADERS
@@ -38,7 +37,6 @@ ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/PythonEngine.hpp
 ${prefix}/ServerHookRegistry.hpp
 ${prefix}/ServerHookHandler.hpp
-${prefix}/serverhooks.hpp
 )
 
 IF( IS_LINUX )

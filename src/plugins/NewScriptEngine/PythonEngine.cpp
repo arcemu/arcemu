@@ -18,15 +18,10 @@
  */
 
 #include "StdAfx.h"
-
 #include <Python.h>
 #include "PythonEngine.hpp"
 #include "python/Python.hpp"
-
 #include "ServerHookRegistry.hpp"
-
-#include "serverhooks.hpp"
-
 #include "ServerHookHandler.hpp"
 
 void register_arcemu_extensions();
@@ -86,12 +81,11 @@ int PythonEngine::loadScripts()
 
 void PythonEngine::registerHooks()
 {
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)python_hookOnEnterWorld );
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_DEATH, (void*)python_hookOnPlayerDeath );
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_REPOP, (void*)python_hookOnPlayerRepop );
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_RESURRECT, (void*)python_hookOnPlayerResurrect );
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, (void*)python_hookOnEmote );
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)python_hookOnEnterCombat );
-
-	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_PRE_DIE, (void*)(&ServerHookHandler::onPreUnitDie) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)(&ServerHookHandler::hookOnEnterWorld) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_DEATH, (void*)(&ServerHookHandler::hookOnPlayerDeath) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_REPOP, (void*)(&ServerHookHandler::hookOnPlayerRepop) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_RESURRECT, (void*)(&ServerHookHandler::hookOnPlayerResurrect) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, (void*)(&ServerHookHandler::hookOnEmote) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)(&ServerHookHandler::hookOnEnterCombat) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_PRE_DIE, (void*)(&ServerHookHandler::hookOnPreUnitDie) );
 }
