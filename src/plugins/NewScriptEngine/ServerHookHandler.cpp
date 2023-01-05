@@ -34,6 +34,37 @@
 #include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
 
+void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_KILL_PLAYER, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *appKiller = createArcPyPlayer();
+		appKiller->playerPtr = killer;
+
+		ArcPyPlayer *appVictim = createArcPyPlayer();
+		appVictim->playerPtr = victim;
+
+		args.setItem( 0, PythonObject( (PyObject*)appKiller ) );		
+		args.setItem( 1, PythonObject( (PyObject*)appVictim ) );
+
+		PythonCallable callable( (PyObject*)(*itr) );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnEnterWorld( Player* player )
 {
 	std::vector< void* > handlers;

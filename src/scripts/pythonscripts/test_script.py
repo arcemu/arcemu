@@ -32,8 +32,13 @@ def onEnterCombat( pPlayer, pUnit ):
 def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 	victim.sendChatMessage( 12, 0, killer.getName() + " is killing me softly...  ...with his spell." )
+	
+def onKillPlayer( killer, victim ):
+	print( killer.getName() + " is killing " + victim.getName() )
 
 arcemu.info()
+
+arcemu.RegisterServerHook( 2, onKillPlayer )
 arcemu.RegisterServerHook( 4, onEnterWorld )
 arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
