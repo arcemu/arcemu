@@ -22,6 +22,7 @@ ${prefix}/python/PythonTuple.cpp
 ${prefix}/python/PythonValue.cpp
 ${prefix}/PythonEngine.cpp
 ${prefix}/ServerHookRegistry.cpp
+${prefix}/ServerHookHandler.cpp
 ${prefix}/serverhooks.cpp
 )
 
@@ -36,6 +37,7 @@ ${prefix}/python/modules/ArcPyUnit.hpp
 ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/PythonEngine.hpp
 ${prefix}/ServerHookRegistry.hpp
+${prefix}/ServerHookHandler.hpp
 ${prefix}/serverhooks.hpp
 )
 

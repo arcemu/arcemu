@@ -27,6 +27,8 @@
 
 #include "serverhooks.hpp"
 
+#include "ServerHookHandler.hpp"
+
 void register_arcemu_extensions();
 
 
@@ -90,4 +92,6 @@ void PythonEngine::registerHooks()
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_RESURRECT, (void*)python_hookOnPlayerResurrect );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, (void*)python_hookOnEmote );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)python_hookOnEnterCombat );
+
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_PRE_DIE, (void*)(&ServerHookHandler::onPreUnitDie) );
 }
