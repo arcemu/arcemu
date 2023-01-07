@@ -30,7 +30,10 @@ def onEmote( pPlayer, emote, pUnit ):
 		
 		
 def onEnterCombat( pPlayer, pUnit ):
-	print( "Player " + pPlayer.getName() + " entered combat with Unit " + pUnit.getName() )		
+	print( "Player " + pPlayer.getName() + " entered combat with Unit " + pUnit.getName() )
+
+def onLogoutRequest( player ):
+	print( "Player '" + player.getName() + "' has requested to log out." )
 	
 def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
@@ -44,11 +47,16 @@ arcemu.info()
 arcemu.RegisterServerHook( 2, onKillPlayer )
 arcemu.RegisterServerHook( 3, onFirstEnterWorld )
 arcemu.RegisterServerHook( 4, onEnterWorld )
+
 arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
-arcemu.RegisterServerHook( 32, onPlayerResurrect )
 arcemu.RegisterServerHook( 8, onEmote )
 arcemu.RegisterServerHook( 9, onEnterCombat )
 
+arcemu.RegisterServerHook( 12, onLogoutRequest )
+
 arcemu.RegisterServerHook( 28, onPreDie )
+
+arcemu.RegisterServerHook( 32, onPlayerResurrect )
+
 

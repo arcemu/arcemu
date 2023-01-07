@@ -31,6 +31,8 @@ public:
 	static void hookOnEmote( Player* player, uint32 emote, Unit* unit );
 	static void hookOnEnterCombat( Player* player, Unit* unit );
 
+	static void hookOnLogoutRequest( Player* player );
+
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 
 	static void hookOnPlayerResurrect( Player* player );	
