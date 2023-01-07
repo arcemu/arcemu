@@ -32,6 +32,7 @@ public:
 	static void hookOnEnterCombat( Player* player, Unit* unit );
 
 	static void hookOnLogoutRequest( Player* player );
+	static void hookOnLogout( Player* player );
 
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 

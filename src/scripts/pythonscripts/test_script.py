@@ -35,6 +35,9 @@ def onEnterCombat( pPlayer, pUnit ):
 def onLogoutRequest( player ):
 	print( "Player '" + player.getName() + "' has requested to log out." )
 	
+def onLogout( player ):
+	print( "Player '" + player.getName() + "' has logged out." )
+	
 def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 	victim.sendChatMessage( 12, 0, killer.getName() + " is killing me softly...  ...with his spell." )
@@ -54,6 +57,7 @@ arcemu.RegisterServerHook( 8, onEmote )
 arcemu.RegisterServerHook( 9, onEnterCombat )
 
 arcemu.RegisterServerHook( 12, onLogoutRequest )
+arcemu.RegisterServerHook( 13, onLogout )
 
 arcemu.RegisterServerHook( 28, onPreDie )
 
