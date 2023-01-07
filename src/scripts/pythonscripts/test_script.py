@@ -2,6 +2,9 @@ import arcemu
 from arcemu import Unit
 from arcemu import Player
 
+def onFirstEnterWorld( player ):
+	print( "Player '" + player.getName() + "' has entered the world for the first time!." )
+
 def onEnterWorld( player ):
 	print( "Player '" + player.getName() + "' has entered the world." )
 	
@@ -39,6 +42,7 @@ def onKillPlayer( killer, victim ):
 arcemu.info()
 
 arcemu.RegisterServerHook( 2, onKillPlayer )
+arcemu.RegisterServerHook( 3, onFirstEnterWorld )
 arcemu.RegisterServerHook( 4, onEnterWorld )
 arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
