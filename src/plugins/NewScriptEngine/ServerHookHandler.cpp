@@ -312,6 +312,36 @@ void ServerHookHandler::hookOnLogout( Player* player )
 	}
 }
 
+void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32 newZone )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ZONE, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 3 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, oldZone );
+		args.setItem( 2, newZone );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
 	std::vector< void* > handlers;

@@ -34,6 +34,8 @@ public:
 	static void hookOnLogoutRequest( Player* player );
 	static void hookOnLogout( Player* player );
 
+	static void hookOnZoneChange( Player* player, uint32 oldZone, uint32 newZone );
+
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 
 	static void hookOnPlayerResurrect( Player* player );	
