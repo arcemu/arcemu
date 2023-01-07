@@ -149,65 +149,6 @@ void ServerHookHandler::hookOnPlayerRepop( Player* player )
 	}
 }
 
-void ServerHookHandler::hookOnPlayerResurrect( Player* player )
-{
-	std::vector< void* > handlers;
-	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_RESURRECT, handlers );
-
-	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
-	{
-		void* handler = *itr;
-		PythonTuple args( 1 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-
-		PythonCallable callable( (PyObject*)handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
-	}
-}
-
-void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
-{
-	std::vector< void* > handlers;
-	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, handlers );
-
-	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
-	{
-		PythonTuple args( 2 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyUnit *apu = createArcPyUnit();
-		apu->unitPtr = unit;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );		
-		args.setItem( 1, PythonObject( (PyObject*)apu ) );
-
-		PythonCallable callable( (PyObject*)(*itr) );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
-	}
-}
-
 void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 {
 	std::vector< void* > handlers;
@@ -256,6 +197,64 @@ void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 	}
 }
 
+void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyUnit *apu = createArcPyUnit();
+		apu->unitPtr = unit;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );		
+		args.setItem( 1, PythonObject( (PyObject*)apu ) );
+
+		PythonCallable callable( (PyObject*)(*itr) );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
+void ServerHookHandler::hookOnPlayerResurrect( Player* player )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_RESURRECT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 1 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
 
 void ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
 {
