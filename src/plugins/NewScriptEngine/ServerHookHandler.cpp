@@ -342,6 +342,42 @@ void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32
 	}
 }
 
+void ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CHAT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 5 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, type );
+		args.setItem( 2, lang );
+		args.setItem( 3, message );
+
+		if( misc != NULL )
+			args.setItem( 4, misc );
+		else
+			args.setItem( 4, "" );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
 	std::vector< void* > handlers;

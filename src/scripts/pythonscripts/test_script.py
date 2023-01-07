@@ -41,6 +41,9 @@ def onLogout( player ):
 def onZoneChange( player, oldZone, newZone ):
 	print( "Player '" + player.getName() + "' has changed zone from " + str( oldZone ) + " to " + str( newZone ) )
 	
+def onChatMessage( player, type, lang, message, misc ):
+	print( "Player '" + player.getName() + "': " + message + "( misc:" + misc + ")" + "(lang:" + str(lang) + ")(type:" + str(type) + ")" )
+	
 def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 	victim.sendChatMessage( 12, 0, killer.getName() + " is killing me softly...  ...with his spell." )
@@ -63,6 +66,7 @@ arcemu.RegisterServerHook( 12, onLogoutRequest )
 arcemu.RegisterServerHook( 13, onLogout )
 
 arcemu.RegisterServerHook( 15, onZoneChange )
+arcemu.RegisterServerHook( 16, onChatMessage );
 
 arcemu.RegisterServerHook( 28, onPreDie )
 

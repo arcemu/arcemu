@@ -46,6 +46,12 @@ void PythonTuple::setItem( unsigned long idx, PythonObject &pyobj )
 	PyTuple_SetItem( obj, idx, pyobj.getObject() );
 }
 
+void PythonTuple::setItem( unsigned long idx, const char* value )
+{
+	PyObject *string = Py_BuildValue( "s", value );
+	PyTuple_SetItem( obj, idx, string );
+}
+
 void PythonTuple::setItemNone( unsigned long idx )
 {
 	Py_INCREF( Py_None );
