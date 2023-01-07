@@ -38,6 +38,7 @@ public:
 	static void hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc );
 
 	static void hookOnFullLogin( Player* player );
+	static void hookOnCharacterCreated( Player* player );
 
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 

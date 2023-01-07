@@ -47,6 +47,9 @@ def onChatMessage( player, type, lang, message, misc ):
 def onFullLogin( player ):
 	print( "Player '" + player.getName() + " has fully logged in." )
 	
+def onCharacterCreated( player ):
+	print( "A new character '" + player.getName() + " has been created!" )
+	
 def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 	victim.sendChatMessage( 12, 0, killer.getName() + " is killing me softly...  ...with his spell." )
@@ -72,6 +75,7 @@ arcemu.RegisterServerHook( 15, onZoneChange )
 arcemu.RegisterServerHook( 16, onChatMessage );
 
 arcemu.RegisterServerHook( 19, onFullLogin );
+arcemu.RegisterServerHook( 20, onCharacterCreated );
 
 arcemu.RegisterServerHook( 28, onPreDie )
 
