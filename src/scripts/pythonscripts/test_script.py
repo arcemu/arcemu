@@ -50,6 +50,9 @@ def onFullLogin( player ):
 def onCharacterCreated( player ):
 	print( "A new character '" + player.getName() + " has been created!" )
 	
+def onLevelUp( player ):
+	print( "Player '" + player.getName() + " has reached a new level." )
+	
 def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 	victim.sendChatMessage( 12, 0, killer.getName() + " is killing me softly...  ...with his spell." )
@@ -77,6 +80,7 @@ arcemu.RegisterServerHook( 16, onChatMessage );
 arcemu.RegisterServerHook( 19, onFullLogin );
 arcemu.RegisterServerHook( 20, onCharacterCreated );
 
+arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )
 
 arcemu.RegisterServerHook( 32, onPlayerResurrect )

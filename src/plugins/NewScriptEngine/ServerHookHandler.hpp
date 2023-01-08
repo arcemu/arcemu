@@ -40,6 +40,7 @@ public:
 	static void hookOnFullLogin( Player* player );
 	static void hookOnCharacterCreated( Player* player );
 
+	static void hookOnLevelUp( Player* player );
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 
 	static void hookOnPlayerResurrect( Player* player );	
