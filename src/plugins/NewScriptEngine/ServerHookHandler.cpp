@@ -521,4 +521,33 @@ void ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
 	}
 }
 
+void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 3 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, skill );
+		args.setItem( 2, value );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
  

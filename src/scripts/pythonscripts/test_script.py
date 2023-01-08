@@ -57,6 +57,9 @@ def onPreDie( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 	victim.sendChatMessage( 12, 0, killer.getName() + " is killing me softly...  ...with his spell." )
 	
+def onAdvanceSkillLine( player, skill, value ):
+	print( "Player '" + player.getName() + "' has advanced skill " + str( skill ) + " to level " + str( value ) )
+	
 def onKillPlayer( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 
@@ -82,5 +85,6 @@ arcemu.RegisterServerHook( 20, onCharacterCreated );
 
 arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )
+arcemu.RegisterServerHook( 29, onAdvanceSkillLine );
 
 arcemu.RegisterServerHook( 32, onPlayerResurrect )
