@@ -41,6 +41,8 @@ public:
 	static void hookOnFullLogin( Player* player );
 	static void hookOnCharacterCreated( Player* player );
 
+	static void hookOnHonorableKill( Player* killer, Player* victim );
+
 	static void hookOnLevelUp( Player* player );
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 	static void hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value );

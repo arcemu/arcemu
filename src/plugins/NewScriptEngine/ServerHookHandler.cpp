@@ -468,6 +468,40 @@ void ServerHookHandler::hookOnCharacterCreated( Player* player )
 	}
 }
 
+void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *appKiller = createArcPyPlayer();
+		appKiller->playerPtr = killer;
+
+
+		ArcPyPlayer *appVictim = createArcPyPlayer();
+		appVictim->playerPtr = victim;
+
+
+		args.setItem( 0, PythonObject( (PyObject*)appKiller ) );
+		args.setItem( 1, PythonObject( (PyObject*)appVictim ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
 	std::vector< void* > handlers;

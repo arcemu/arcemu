@@ -53,6 +53,9 @@ def onFullLogin( player ):
 def onCharacterCreated( player ):
 	print( "A new character '" + player.getName() + " has been created!" )
 	
+def onHonorableKill( killer, victim ):
+	print( killer.getName() + " has killed " + victim.getName() + " with honor" )
+	
 def onLevelUp( player ):
 	print( "Player '" + player.getName() + " has reached a new level." )
 	
@@ -86,6 +89,8 @@ arcemu.RegisterServerHook( 17, onLoot )
 
 arcemu.RegisterServerHook( 19, onFullLogin );
 arcemu.RegisterServerHook( 20, onCharacterCreated );
+
+arcemu.RegisterServerHook( 23, onHonorableKill )
 
 arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )
