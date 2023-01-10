@@ -43,6 +43,9 @@ def onZoneChange( player, oldZone, newZone ):
 	
 def onChatMessage( player, type, lang, message, misc ):
 	print( "Player '" + player.getName() + "': " + message + "( misc:" + misc + ")" + "(lang:" + str(lang) + ")(type:" + str(type) + ")" )	
+	
+def onLoot( player, unit, money, itemId ):
+	print( "Player " + player.getName() + " has looted " + str( money ) + " coins and item " + str( itemId ) + " from " + unit.getName() )
 
 def onFullLogin( player ):
 	print( "Player '" + player.getName() + " has fully logged in." )
@@ -79,6 +82,7 @@ arcemu.RegisterServerHook( 13, onLogout )
 
 arcemu.RegisterServerHook( 15, onZoneChange )
 arcemu.RegisterServerHook( 16, onChatMessage );
+arcemu.RegisterServerHook( 17, onLoot )
 
 arcemu.RegisterServerHook( 19, onFullLogin );
 arcemu.RegisterServerHook( 20, onCharacterCreated );

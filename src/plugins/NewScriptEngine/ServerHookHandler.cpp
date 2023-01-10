@@ -378,6 +378,40 @@ void ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 	}
 }
 
+void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, uint32 itemId )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_LOOT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 4 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyUnit *apu = createArcPyUnit();
+		apu->unitPtr = unit;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( (PyObject*)apu ) );
+		args.setItem( 2, money );
+		args.setItem( 3, itemId );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnFullLogin( Player* player )
 {
 	std::vector< void* > handlers;
