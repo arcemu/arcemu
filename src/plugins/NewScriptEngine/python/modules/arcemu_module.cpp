@@ -24,6 +24,7 @@
 
 extern int registerArcPyUnit( PyObject *module );
 extern int registerArcPyPlayer( PyObject *module );
+extern int registerArcPySpell( PyObject *module );
 
 static PyObject* arcemu_info( PyObject *self, PyObject *args )
 {
@@ -67,6 +68,7 @@ PyObject* PyInit_Arcemu(void)
 	
 	registerArcPyUnit( module );
 	registerArcPyPlayer( module );
+	registerArcPySpell( module );
 
 	return module;
 }

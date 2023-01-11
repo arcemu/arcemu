@@ -30,6 +30,7 @@ public:
 	static void hookOnPlayerRepop( Player* player );
 	static void hookOnEmote( Player* player, uint32 emote, Unit* unit );
 	static void hookOnEnterCombat( Player* player, Unit* unit );
+	static void hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell );
 
 	static void hookOnLogoutRequest( Player* player );
 	static void hookOnLogout( Player* player );

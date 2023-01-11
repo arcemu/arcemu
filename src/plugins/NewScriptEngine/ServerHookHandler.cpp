@@ -33,6 +33,7 @@
 
 #include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
+#include "python/modules/ArcPySpell.hpp"
 
 void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 {
@@ -244,6 +245,39 @@ void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 		args.setItem( 1, PythonObject( (PyObject*)apu ) );
 
 		PythonCallable callable( (PyObject*)(*itr) );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
+void ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CAST_SPELL, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 3 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPySpell *aps = createArcPySpell();
+		aps->spellPtr = spell;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, spe->Id );
+		args.setItem( 2, PythonObject( (PyObject*)aps ) );
+
+		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{

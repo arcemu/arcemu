@@ -1,6 +1,7 @@
 import arcemu
 from arcemu import Unit
 from arcemu import Player
+from arcemu import Spell
 
 def onFirstEnterWorld( player ):
 	print( "Player '" + player.getName() + "' has entered the world for the first time!." )
@@ -31,6 +32,9 @@ def onEmote( pPlayer, emote, pUnit ):
 		
 def onEnterCombat( pPlayer, pUnit ):
 	print( "Player " + pPlayer.getName() + " entered combat with Unit " + pUnit.getName() )
+	
+def onCastSpell( player, spellId, spell ):
+	print( "Player " + player.getName() + " has cast spell " + str( spellId ) + " (" + spell.getName() + ")" )
 
 def onLogoutRequest( player ):
 	print( "Player '" + player.getName() + "' has requested to log out." )
@@ -82,6 +86,7 @@ arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
 arcemu.RegisterServerHook( 8, onEmote )
 arcemu.RegisterServerHook( 9, onEnterCombat )
+arcemu.RegisterServerHook( 10, onCastSpell )
 
 arcemu.RegisterServerHook( 12, onLogoutRequest )
 arcemu.RegisterServerHook( 13, onLogout )
