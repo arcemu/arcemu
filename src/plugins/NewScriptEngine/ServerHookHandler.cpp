@@ -618,4 +618,36 @@ void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, ui
 		}
 	}
 }
+
+void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_DUEL_FINISHED, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *appWinner = createArcPyPlayer();
+		appWinner->playerPtr = winner;
+
+		ArcPyPlayer *appLoser = createArcPyPlayer();
+		appLoser->playerPtr = loser;
+
+		args.setItem( 0, PythonObject( (PyObject*)appWinner ) );
+		args.setItem( 1, PythonObject( (PyObject*)appLoser ) );		
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
  

@@ -66,6 +66,9 @@ def onPreDie( killer, victim ):
 def onAdvanceSkillLine( player, skill, value ):
 	print( "Player '" + player.getName() + "' has advanced skill " + str( skill ) + " to level " + str( value ) )
 	
+def onDuelFinished( winner, loser ):
+	print( winner.getName() + " has beaten " + loser.getName() + " in a duel" )
+	
 def onKillPlayer( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
 
@@ -87,13 +90,14 @@ arcemu.RegisterServerHook( 15, onZoneChange )
 arcemu.RegisterServerHook( 16, onChatMessage );
 arcemu.RegisterServerHook( 17, onLoot )
 
-arcemu.RegisterServerHook( 19, onFullLogin );
-arcemu.RegisterServerHook( 20, onCharacterCreated );
+arcemu.RegisterServerHook( 19, onFullLogin )
+arcemu.RegisterServerHook( 20, onCharacterCreated )
 
 arcemu.RegisterServerHook( 23, onHonorableKill )
 
 arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )
-arcemu.RegisterServerHook( 29, onAdvanceSkillLine );
+arcemu.RegisterServerHook( 29, onAdvanceSkillLine )
+arcemu.RegisterServerHook( 30, onDuelFinished )
 
 arcemu.RegisterServerHook( 32, onPlayerResurrect )
