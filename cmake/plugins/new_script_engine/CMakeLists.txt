@@ -16,6 +16,7 @@ ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/ArcPyUnit.cpp
 ${prefix}/python/modules/ArcPyPlayer.cpp
 ${prefix}/python/modules/ArcPySpell.cpp
+${prefix}/python/modules/ArcPyWorldSession.cpp
 ${prefix}/python/Python.cpp
 ${prefix}/python/PythonCallable.cpp
 ${prefix}/python/PythonObject.cpp
@@ -36,6 +37,7 @@ ${prefix}/python/PythonValue.hpp
 ${prefix}/python/modules/ArcPyUnit.hpp
 ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/python/modules/ArcPySpell.hpp
+${prefix}/python/modules/ArcPyWorldSession.hpp
 ${prefix}/PythonEngine.hpp
 ${prefix}/ServerHookRegistry.hpp
 ${prefix}/ServerHookHandler.hpp
