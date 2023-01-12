@@ -31,6 +31,7 @@
 
 #include "ServerHookHandler.hpp"
 
+#include "python/modules/ArcPyGuild.hpp"
 #include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
 #include "python/modules/ArcPySpell.hpp"
@@ -139,6 +140,38 @@ void ServerHookHandler::hookOnEnterWorld( Player* player )
 		app->playerPtr = player;
 
 		args.setItem( 0, PythonObject( (PyObject*)app ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
+void ServerHookHandler::hookOnGuildJoin( Player* player, Guild* guild )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_GUILD_JOIN, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyGuild *apg = createArcPyGuild();
+		apg->guildPtr = guild;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( (PyObject*)apg ) );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );

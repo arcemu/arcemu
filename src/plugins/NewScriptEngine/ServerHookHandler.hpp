@@ -27,6 +27,7 @@ public:
 	static void hookOnKillPlayer( Player* killer, Player *victim );
 	static void hookOnFirstEnterWorld( Player *player );
 	static void hookOnEnterWorld( Player* player );
+	static void hookOnGuildJoin( Player* player, Guild* guild );
 	static void hookOnPlayerDeath( Player* player );
 	static void hookOnPlayerRepop( Player* player );
 	static void hookOnEmote( Player* player, uint32 emote, Unit* unit );

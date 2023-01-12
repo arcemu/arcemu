@@ -1,4 +1,6 @@
 import arcemu
+
+from arcemu import Guild
 from arcemu import Unit
 from arcemu import Player
 from arcemu import Spell
@@ -12,6 +14,9 @@ def onFirstEnterWorld( player ):
 
 def onEnterWorld( player ):
 	print( "Player '" + player.getName() + "' has entered the world." )
+	
+def onGuildJoin( player, guild ):
+	print( "Player '" + player.getName() + "' has joined guild " + guild.getGuildName() + " (" + guild.getGuildId() + ")" )
 	
 def onPlayerDeath( player ):
 	print( "Player '" + player.getName() + "' has died." )
@@ -86,6 +91,7 @@ arcemu.RegisterServerHook( 1, onNewCharacter )
 arcemu.RegisterServerHook( 2, onKillPlayer )
 arcemu.RegisterServerHook( 3, onFirstEnterWorld )
 arcemu.RegisterServerHook( 4, onEnterWorld )
+arcemu.RegisterServerHook( 5, onGuildJoin )
 
 arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
@@ -97,7 +103,7 @@ arcemu.RegisterServerHook( 12, onLogoutRequest )
 arcemu.RegisterServerHook( 13, onLogout )
 
 arcemu.RegisterServerHook( 15, onZoneChange )
-arcemu.RegisterServerHook( 16, onChatMessage );
+arcemu.RegisterServerHook( 16, onChatMessage )
 arcemu.RegisterServerHook( 17, onLoot )
 
 arcemu.RegisterServerHook( 19, onFullLogin )
