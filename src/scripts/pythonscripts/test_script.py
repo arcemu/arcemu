@@ -2,6 +2,10 @@ import arcemu
 from arcemu import Unit
 from arcemu import Player
 from arcemu import Spell
+from arcemu import WorldSession
+
+def onNewCharacter( charRace, charClass, session, name ):
+	print( "New character created by " + session.getAccountName() + " (" + str( session.getAccountId() ) +  ")" + " Character name: " + name + ", race:" + str( charRace ) + ", class:" + str( charClass ) )
 
 def onFirstEnterWorld( player ):
 	print( "Player '" + player.getName() + "' has entered the world for the first time!." )
@@ -78,6 +82,7 @@ def onKillPlayer( killer, victim ):
 
 arcemu.info()
 
+arcemu.RegisterServerHook( 1, onNewCharacter )
 arcemu.RegisterServerHook( 2, onKillPlayer )
 arcemu.RegisterServerHook( 3, onFirstEnterWorld )
 arcemu.RegisterServerHook( 4, onEnterWorld )

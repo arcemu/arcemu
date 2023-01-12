@@ -23,6 +23,7 @@
 class ServerHookHandler
 {
 public:
+	static void hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name );
 	static void hookOnKillPlayer( Player* killer, Player *victim );
 	static void hookOnFirstEnterWorld( Player *player );
 	static void hookOnEnterWorld( Player* player );

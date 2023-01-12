@@ -34,6 +34,37 @@
 #include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
 #include "python/modules/ArcPySpell.hpp"
+#include "python/modules/ArcPyWorldSession.hpp"
+
+void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_NEW_CHARACTER, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		ArcPyWorldSession *apws = createArcPyWorldSession();
+		apws->worldSessionPtr = session;
+
+		PythonTuple args( 4 );
+
+		args.setItem( 0, charRace );
+		args.setItem( 1, charClass );
+		args.setItem( 2, PythonObject( (PyObject*)apws ) );
+		args.setItem( 3, name );
+
+		PythonCallable callable( (PyObject*)(*itr) );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
 
 void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 {
