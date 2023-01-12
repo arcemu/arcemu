@@ -13,6 +13,7 @@ SET( SRCS
 ${prefix}/engine.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/modules/arcemu_module.cpp
+${prefix}/python/modules/ArcPyGuild.cpp
 ${prefix}/python/modules/ArcPyUnit.cpp
 ${prefix}/python/modules/ArcPyPlayer.cpp
 ${prefix}/python/modules/ArcPySpell.cpp
@@ -34,6 +35,7 @@ ${prefix}/python/PythonCallable.hpp
 ${prefix}/python/PythonObject.hpp
 ${prefix}/python/PythonTuple.hpp
 ${prefix}/python/PythonValue.hpp
+${prefix}/python/modules/ArcPyGuild.hpp
 ${prefix}/python/modules/ArcPyUnit.hpp
 ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/python/modules/ArcPySpell.hpp
