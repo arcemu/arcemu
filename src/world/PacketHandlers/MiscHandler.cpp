@@ -54,18 +54,22 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 	Creature* pCreature = NULL;
 	Item *lootSrcItem = NULL;
 
+	Object* lootedObject = NULL;
+
 	uint32 guidtype = GET_TYPE_FROM_GUID(_player->GetLootGUID());
 	if(guidtype == HIGHGUID_TYPE_UNIT)
 	{
 		pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(GetPlayer()->GetLootGUID()));
 		if(!pCreature)return;
 		pLoot = &pCreature->loot;
+		lootedObject = pCreature;
 	}
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(GetPlayer()->GetLootGUID()));
 		if(!pGO)return;
 		pLoot = &pGO->loot;
+		lootedObject = pGO;
 	}
 	else if(guidtype == HIGHGUID_TYPE_ITEM)
 	{
@@ -74,12 +78,14 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 			return;
 		lootSrcItem = pItem;
 		pLoot = pItem->loot;
+		lootedObject = pItem;
 	}
 	else if(guidtype == HIGHGUID_TYPE_PLAYER)
 	{
 		Player* pl = _player->GetMapMgr()->GetPlayer((uint32)GetPlayer()->GetLootGUID());
 		if(!pl) return;
 		pLoot = &pl->loot;
+		lootedObject = pl;
 	}
 
 	if(!pLoot) return;
@@ -139,6 +145,7 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket & recv_data)
 
 	add = GetPlayer()->GetItemInterface()->FindItemLessMax(itemid, amt, false);
 	sHookInterface.OnLoot(_player, pCreature, 0, itemid);
+	sHookInterface.OnObjectLoot(_player, lootedObject, 0, itemid);
 	if(!add)
 	{
 		slotresult = GetPlayer()->GetItemInterface()->FindFreeInventorySlot(it);
@@ -244,18 +251,22 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 	Unit* pt = 0;
 	uint32 guidtype = GET_TYPE_FROM_GUID(lootguid);
 
+	Object *lootedObject = NULL;
+
 	if(guidtype == HIGHGUID_TYPE_UNIT)
 	{
 		Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(lootguid));
 		if(!pCreature)return;
 		pLoot = &pCreature->loot;
 		pt = pCreature;
+		lootedObject = pCreature;
 	}
 	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(lootguid));
 		if(!pGO)return;
 		pLoot = &pGO->loot;
+		lootedObject = pGO;
 	}
 	else if(guidtype == HIGHGUID_TYPE_CORPSE)
 	{
@@ -270,6 +281,7 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 		pLoot = &pPlayer->loot;
 		pPlayer->bShouldHaveLootableOnCorpse = false;
 		pt = pPlayer;
+		lootedObject = pPlayer;
 	}
 	else if(guidtype == HIGHGUID_TYPE_ITEM)
 	{
@@ -277,6 +289,7 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 		if(!pItem)
 			return;
 		pLoot = pItem->loot;
+		lootedObject = pItem;
 	}
 
 	if(!pLoot)
@@ -315,6 +328,7 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket & recv_data)
 #endif
 			}
 			sHookInterface.OnLoot(_player, pt, money, 0);
+			sHookInterface.OnObjectLoot(_player, lootedObject, money, 0);
 		}
 	}
 	else
