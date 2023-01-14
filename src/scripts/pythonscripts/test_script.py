@@ -85,6 +85,15 @@ def onCharacterCreated( player ):
 def onQuestCancelled( player, quest ):
 	print( "Player '" + player.getName() + "' has cancelled quest " + quest.getTitle() + "(" + str( quest.getId() ) + ")" )
 	
+def onQuestFinished( player, quest, questFinisher ):
+	print( "Player '" + player.getName() + "' has finished quest " + quest.getTitle() + "(" + str( quest.getId() ) + ")" )
+	if isinstance(questFinisher, Unit):
+		print( "Unit questFinisher name: " + questFinisher.getName() )
+	elif isinstance( questFinisher, GameObject ):
+		print( "GameObject questFinisher name: " + questFinisher.getName() )
+	elif isinstance( questFinisher, Item ):
+		print( "Item questFinisher name: " + questFinisher.getName() )
+	
 def onHonorableKill( killer, victim ):
 	print( killer.getName() + " has killed " + victim.getName() + " with honor" )
 	
@@ -127,7 +136,7 @@ arcemu.RegisterServerHook( 18, onGuildCreate )
 arcemu.RegisterServerHook( 19, onFullLogin )
 arcemu.RegisterServerHook( 20, onCharacterCreated )
 arcemu.RegisterServerHook( 21, onQuestCancelled )
-
+arcemu.RegisterServerHook( 22, onQuestFinished )
 arcemu.RegisterServerHook( 23, onHonorableKill )
 
 arcemu.RegisterServerHook( 27, onLevelUp )

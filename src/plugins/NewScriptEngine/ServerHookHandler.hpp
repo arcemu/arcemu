@@ -33,20 +33,17 @@ public:
 	static void hookOnEmote( Player* player, uint32 emote, Unit* unit );
 	static void hookOnEnterCombat( Player* player, Unit* unit );
 	static void hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell );
-
 	static void hookOnLogoutRequest( Player* player );
 	static void hookOnLogout( Player* player );
 	static void hookOnAcceptQuest( Player* player, Quest* quest, Object* questGiver );
-
 	static void hookOnZoneChange( Player* player, uint32 oldZone, uint32 newZone );
 	static void hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc );
 	static void hookOnLoot( Player* player, Unit* unit, uint32 money, uint32 itemId );
 	static void hookOnGuildCreate( Player* leader, Guild* guild );
-
 	static void hookOnFullLogin( Player* player );
 	static void hookOnCharacterCreated( Player* player );
 	static void hookOnQuestCancelled( Player* player, Quest* quest );
-
+	static void hookOnQuestFinished( Player* player, Quest* quest, Object* questFinisher );
 	static void hookOnHonorableKill( Player* killer, Player* victim );
 
 	static void hookOnLevelUp( Player* player );

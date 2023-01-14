@@ -102,6 +102,7 @@ void PythonEngine::registerHooks()
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_FULL_LOGIN, (void*)(&ServerHookHandler::hookOnFullLogin) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_CHARACTER_CREATE, (void*)(&ServerHookHandler::hookOnCharacterCreated) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_QUEST_CANCELLED, (void*)(&ServerHookHandler::hookOnQuestCancelled) );
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_QUEST_FINISHED, (void*)(&ServerHookHandler::hookOnQuestFinished) );
 
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)(&ServerHookHandler::hookOnHonorableKill) );
 

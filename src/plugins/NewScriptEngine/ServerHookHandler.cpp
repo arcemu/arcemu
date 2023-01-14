@@ -702,6 +702,75 @@ void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
 	}
 }
 
+void ServerHookHandler::hookOnQuestFinished( Player* player, Quest* quest, Object *questFinisher )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_QUEST_FINISHED, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 3 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyQuest *apq = createArcPyQuest();
+		apq->questPtr = quest;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( (PyObject*)apq ) );
+
+		PyObject *param = NULL;
+
+		uint8 qgt = questFinisher->GetTypeId();
+		switch( qgt )
+		{
+		case TYPEID_GAMEOBJECT:
+			{
+				ArcPyGameObject *go = createArcPyGameObject();
+				go->gameObjectPtr = (GameObject*)questFinisher;
+				param = (PyObject*)go;
+			}
+			break;
+
+		case TYPEID_UNIT:
+			{
+				ArcPyUnit *unit = createArcPyUnit();
+				unit->unitPtr = (Unit*)questFinisher;
+				param = (PyObject*)unit;
+			}
+			break;
+
+		case TYPEID_ITEM:
+			ArcPyItem *item = createArcPyItem();
+			item->itemPtr = (Item*)questFinisher;
+			param = (PyObject*)item;
+			break;
+		}
+
+		if( param != NULL )
+		{
+			args.setItem( 2, PythonObject( param ) );
+		}
+		else
+		{
+			args.setItemNone( 2 );
+		}
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 {
 	std::vector< void* > handlers;
