@@ -807,6 +807,44 @@ void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 	}
 }
 
+void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam, bool victory, bool rated )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ARENA_FINISH, handlers );
+	
+	/// Because of debug commands sometimes there's no arena team!
+	std:string teamName;
+	if( arenaTeam != NULL )
+	{
+		teamName = arenaTeam->m_name;
+	}
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 4 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, teamName.c_str() );
+		args.setItemBool( 2, victory );
+		args.setItemBool( 3, rated );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
 	std::vector< void* > handlers;

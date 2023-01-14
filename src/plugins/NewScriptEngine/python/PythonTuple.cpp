@@ -52,6 +52,19 @@ void PythonTuple::setItem( unsigned long idx, const char* value )
 	PyTuple_SetItem( obj, idx, string );
 }
 
+void PythonTuple::setItemBool( unsigned long idx, bool boolValue )
+{
+	PyObject *value = NULL;
+	if( boolValue )
+		value = Py_True;
+	else
+		value = Py_False;
+	
+	Py_IncRef( value );
+
+	PyTuple_SetItem( obj, idx, value );
+}
+
 void PythonTuple::setItemNone( unsigned long idx )
 {
 	Py_INCREF( Py_None );

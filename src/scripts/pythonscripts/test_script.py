@@ -97,6 +97,9 @@ def onQuestFinished( player, quest, questFinisher ):
 def onHonorableKill( killer, victim ):
 	print( killer.getName() + " has killed " + victim.getName() + " with honor" )
 	
+def onArenaFinish( player, arenaTeam, victory, rated ):
+	print( "Player '" + player.getName() + " has finished arena. Arena team: " + arenaTeam + ", victory: " + str( victory ) + ", rated: " + str( rated ) )
+	
 def onLevelUp( player ):
 	print( "Player '" + player.getName() + " has reached a new level." )
 	
@@ -138,6 +141,7 @@ arcemu.RegisterServerHook( 20, onCharacterCreated )
 arcemu.RegisterServerHook( 21, onQuestCancelled )
 arcemu.RegisterServerHook( 22, onQuestFinished )
 arcemu.RegisterServerHook( 23, onHonorableKill )
+arcemu.RegisterServerHook( 24, onArenaFinish )
 
 arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )

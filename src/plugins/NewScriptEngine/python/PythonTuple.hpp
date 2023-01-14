@@ -29,6 +29,8 @@ public:
 	void setItem( unsigned long idx, long value );
 	void setItem( unsigned long idx, PythonObject &object );
 	void setItem( unsigned long idx, const char* value );
+	
+	void setItemBool( unsigned long idx, bool value );
 
 	void setItemNone( unsigned long idx );
 
