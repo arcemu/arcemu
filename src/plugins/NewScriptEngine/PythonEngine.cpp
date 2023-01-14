@@ -106,7 +106,7 @@ void PythonEngine::registerHooks()
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)(&ServerHookHandler::hookOnHonorableKill) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ARENA_FINISH, (void*)(&ServerHookHandler::hookOnArenaFinish) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_OBJECTLOOT, (void*)(&ServerHookHandler::hookOnObjectLoot) );
-
+	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_AREATRIGGER, (void*)(&ServerHookHandler::hookOnAreaTrigger) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_POST_LEVELUP, (void*)(&ServerHookHandler::hookOnLevelUp) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_PRE_DIE, (void*)(&ServerHookHandler::hookOnPreUnitDie) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, (void*)(&ServerHookHandler::hookOnAdvanceSkillLine) );

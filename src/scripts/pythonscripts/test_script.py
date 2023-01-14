@@ -111,6 +111,9 @@ def onObjectLoot( player, target, money, itemId ):
 		print( "Looted GameObject: " + target.getName() )
 	elif isinstance( target, Item ):
 		print( "Looted item name: " + target.getName() )
+		
+def onAreaTrigger( player, areaTriggerId ):
+	print( "Player '" + player.getName() + " has reached areatrigger " + str( areaTriggerId ) )
 	
 def onLevelUp( player ):
 	print( "Player '" + player.getName() + " has reached a new level." )
@@ -155,7 +158,7 @@ arcemu.RegisterServerHook( 22, onQuestFinished )
 arcemu.RegisterServerHook( 23, onHonorableKill )
 arcemu.RegisterServerHook( 24, onArenaFinish )
 arcemu.RegisterServerHook( 25, onObjectLoot )
-
+arcemu.RegisterServerHook( 26, onAreaTrigger )
 arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )
 arcemu.RegisterServerHook( 29, onAdvanceSkillLine )
