@@ -661,16 +661,20 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					{
 						for( uint32 team = 0; team < 2; team++ )
 						{
-							plrguid = teams[ team ].front();
-							teams[ team ].pop();
-							plr = objmgr.GetPlayer( plrguid );
-							if( plr == NULL )
-								continue;
+							/// If we forcestarted with a GM command we can't be sure there are players in every team...
+							if( teams[ team ].size() > 0 )
+							{
+								plrguid = teams[ team ].front();
+								teams[ team ].pop();
+								plr = objmgr.GetPlayer( plrguid );
+								if( plr == NULL )
+									continue;
 							
-							plr->m_bgTeam = team;
-							arena->AddPlayer( plr, plr->m_bgTeam );
-							// remove from the main queue (painful!)
-							ErasePlayerFromList( plr->GetLowGUID(), &m_queuedPlayers[i][j] );
+								plr->m_bgTeam = team;
+								arena->AddPlayer( plr, plr->m_bgTeam );
+								// remove from the main queue (painful!)
+								ErasePlayerFromList( plr->GetLowGUID(), &m_queuedPlayers[i][j] );
+							}
 						}
 					}
 				}
