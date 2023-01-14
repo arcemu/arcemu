@@ -100,6 +100,18 @@ def onHonorableKill( killer, victim ):
 def onArenaFinish( player, arenaTeam, victory, rated ):
 	print( "Player '" + player.getName() + " has finished arena. Arena team: " + arenaTeam + ", victory: " + str( victory ) + ", rated: " + str( rated ) )
 	
+def onObjectLoot( player, target, money, itemId ):
+	print( "Player " + player.getName() + " has looted " + str( money ) + " coins and item " + str( itemId ) )
+	
+	if isinstance( target, Unit ):
+		print( "Looted unit: " + target.getName() )
+	elif isinstance( target, Player ):
+		print( "Looted player: " + target.getName() )
+	elif isinstance( target, GameObject ):
+		print( "Looted GameObject: " + target.getName() )
+	elif isinstance( target, Item ):
+		print( "Looted item name: " + target.getName() )
+	
 def onLevelUp( player ):
 	print( "Player '" + player.getName() + " has reached a new level." )
 	
@@ -142,6 +154,7 @@ arcemu.RegisterServerHook( 21, onQuestCancelled )
 arcemu.RegisterServerHook( 22, onQuestFinished )
 arcemu.RegisterServerHook( 23, onHonorableKill )
 arcemu.RegisterServerHook( 24, onArenaFinish )
+arcemu.RegisterServerHook( 25, onObjectLoot )
 
 arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )

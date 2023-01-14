@@ -46,6 +46,7 @@ public:
 	static void hookOnQuestFinished( Player* player, Quest* quest, Object* questFinisher );
 	static void hookOnHonorableKill( Player* killer, Player* victim );
 	static void hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam, bool victory, bool rated );
+	static void hookOnObjectLoot( Player* player, Object* target, uint32 money, uint32 itemId );
 
 	static void hookOnLevelUp( Player* player );
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );

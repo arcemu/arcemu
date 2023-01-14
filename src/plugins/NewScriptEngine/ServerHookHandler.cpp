@@ -849,6 +849,77 @@ void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam,
 	}
 }
 
+void ServerHookHandler::hookOnObjectLoot( Player* player, Object* target, uint32 money, uint32 itemId )
+{
+	if( target == NULL )
+		return;
+
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_OBJECTLOOT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		
+		PythonTuple args( 4 );
+
+		PyObject* targetObj = NULL;
+
+		switch( target->GetTypeId() )
+		{
+		case TYPEID_UNIT:
+			{
+				ArcPyUnit *apu = createArcPyUnit();
+				apu->unitPtr = (Unit*)target;
+				targetObj = (PyObject*)apu;
+				break;
+			}
+
+		case TYPEID_PLAYER:
+			{
+				ArcPyPlayer *app = createArcPyPlayer();
+				app->playerPtr = (Player*)target;
+				targetObj = (PyObject*)app;
+				break;
+			}
+
+		case TYPEID_GAMEOBJECT:
+			{
+				ArcPyGameObject *apgo = createArcPyGameObject();
+				apgo->gameObjectPtr = (GameObject*)target;
+				targetObj = (PyObject*)apgo;
+				break;
+			}
+
+		case TYPEID_ITEM:
+			{
+				ArcPyItem *api = createArcPyItem();
+				api->itemPtr = (Item*)target;
+				targetObj = (PyObject*)api;
+			}
+		}
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;		
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( targetObj ) );		
+		args.setItem( 2, money );
+		args.setItem( 3, itemId );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
 	std::vector< void* > handlers;
