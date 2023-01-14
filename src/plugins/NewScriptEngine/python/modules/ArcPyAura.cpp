@@ -1,0 +1,136 @@
+/*
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include <Python.h>
+#include <cstdio>
+
+#include "StdAfx.h"
+
+#include "ArcPyAura.hpp"
+
+static PyObject* ArcPyAura_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
+{
+	ArcPyAura *self = (ArcPyAura*)type->tp_alloc( type, 0 );
+	self->auraPtr = NULL;
+	return (PyObject*)self;
+}
+
+static int ArcPyAura_init( ArcPyAura *self, PyObject *args, PyObject *keywords )
+{
+	self->auraPtr = NULL;
+	return 0;
+}
+
+static void ArcPyAura_dealloc( ArcPyAura* self )
+{
+	Py_TYPE( self )->tp_free( (PyObject*)self );
+}
+
+static PyObject* ArcPyAura_getSpellName( ArcPyAura *self, PyObject *args )
+{
+	Aura* aura = self->auraPtr;
+	PyObject *name = PyUnicode_FromString(  aura->GetSpellProto()->Name );	
+	return name;
+}
+
+static PyObject* ArcPyAura_getSpellId( ArcPyAura* self, PyObject* args )
+{
+	Aura* aura = self->auraPtr;
+	PyObject *id = PyLong_FromLong( aura->GetSpellProto()->Id );
+	return id;
+}
+
+static PyObject* ArcPyAura_getAuraSlot( ArcPyAura* self, PyObject* args )
+{
+	Aura* aura = self->auraPtr;
+	PyObject *id = PyLong_FromLong( aura->GetAuraSlot() );
+	return id;
+}
+
+static PyMethodDef ArcPyAura_methods[] = 
+{
+	{ "getSpellName", (PyCFunction)ArcPyAura_getSpellName, METH_NOARGS, "Returns the name of the Spell that applied this Aura" },
+	{ "getSpellId", (PyCFunction)ArcPyAura_getSpellId, METH_NOARGS, "Returns the Id of the Spell that applied this Aura" },	
+	{ "getAuraSlot", (PyCFunction)ArcPyAura_getAuraSlot, METH_NOARGS, "Returns the slot of this Aura" },
+	{NULL}
+};
+
+static PyTypeObject ArcPyAuraType = {
+	PyVarObject_HEAD_INIT(NULL, 0)
+	
+	"ArcPyAura",					// tp_name
+	sizeof( ArcPyAura ),			// tp_basicsize
+	0,								// tp_itemsize
+	(destructor)ArcPyAura_dealloc,	// tp_dealloc
+	0,								// tp_print
+	0,								// tp_getattr
+	0,								// tp_setattr
+	0,								// tp_as_async
+	0,								// tp_repr
+	0,								// tp_as_number
+	0,								// tp_as_sequence
+	0,								// tp_as_mapping
+	0,								// tp_hash
+	0,								// tp_call
+	0,								// tp_str
+	0,								// tp_getattro
+	0,								// tp_setattro
+	0,								// tp_as_buffer
+	Py_TPFLAGS_DEFAULT,				// tp_flags
+	"Arcemu Aura",				// tp_doc
+	0,								// tp_traverse
+	0,								// tp_clear
+	0,								// tp_richcompare
+	0,								// tp_weaklistoffset
+	0,								// tp_iter
+	0,								// tp_iternext
+	ArcPyAura_methods,			// tp_methods
+	0,								// tp_members
+	0,								// tp_getset
+	0,								// tp_base
+	0,								// tp_dict
+	0,								// tp_descr_get
+	0,								// tp_descr_set
+	0,								// tp_dictoffset
+	(initproc)ArcPyAura_init,		// tp_tp_init
+	0,								// tp_alloc
+	ArcPyAura_new,				// tp_new
+};
+
+int registerArcPyAura( PyObject *module )
+{
+	ArcPyAuraType.tp_new = ArcPyAura_new;
+
+	if( PyType_Ready( &ArcPyAuraType ) < 0 )
+	{
+		return -1;
+	}
+
+	Py_INCREF( &ArcPyAuraType );
+	PyModule_AddObject( module, "Aura", (PyObject*)&ArcPyAuraType);
+
+	return 0;
+}
+
+ArcPyAura* createArcPyAura()
+{
+	PyTypeObject *type = &ArcPyAuraType;
+	ArcPyAura* player = (ArcPyAura*)type->tp_alloc( type, 0 );
+	return player;
+}
