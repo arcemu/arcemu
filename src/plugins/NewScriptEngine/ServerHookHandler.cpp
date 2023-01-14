@@ -512,7 +512,7 @@ void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32
 	}
 }
 
-void ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc )
+bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc )
 {
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CHAT, handlers );
@@ -546,6 +546,8 @@ void ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 			value.decref();
 		}
 	}
+
+	return true;
 }
 
 void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, uint32 itemId )

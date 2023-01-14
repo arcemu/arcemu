@@ -37,7 +37,7 @@ public:
 	static void hookOnLogout( Player* player );
 	static void hookOnAcceptQuest( Player* player, Quest* quest, Object* questGiver );
 	static void hookOnZoneChange( Player* player, uint32 oldZone, uint32 newZone );
-	static void hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc );
+	static bool hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc );
 	static void hookOnLoot( Player* player, Unit* unit, uint32 money, uint32 itemId );
 	static void hookOnGuildCreate( Player* leader, Guild* guild );
 	static void hookOnFullLogin( Player* player );
