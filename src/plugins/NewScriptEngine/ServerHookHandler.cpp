@@ -552,6 +552,10 @@ bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 
 void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, uint32 itemId )
 {
+	/// Why is this called when it's not a Unit we're looting?!
+	if( unit == NULL )
+		return;
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_LOOT, handlers );
 
@@ -813,7 +817,7 @@ void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam,
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ARENA_FINISH, handlers );
 	
 	/// Because of debug commands sometimes there's no arena team!
-	std:string teamName;
+	string teamName;
 	if( arenaTeam != NULL )
 	{
 		teamName = arenaTeam->m_name;
