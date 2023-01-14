@@ -670,6 +670,38 @@ void ServerHookHandler::hookOnCharacterCreated( Player* player )
 	}
 }
 
+void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_QUEST_CANCELLED, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyQuest *apq = createArcPyQuest();
+		apq->questPtr = quest;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( (PyObject*)apq ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 {
 	std::vector< void* > handlers;

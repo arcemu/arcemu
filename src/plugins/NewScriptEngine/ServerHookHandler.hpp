@@ -45,6 +45,7 @@ public:
 
 	static void hookOnFullLogin( Player* player );
 	static void hookOnCharacterCreated( Player* player );
+	static void hookOnQuestCancelled( Player* player, Quest* quest );
 
 	static void hookOnHonorableKill( Player* killer, Player* victim );
 

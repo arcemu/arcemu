@@ -82,6 +82,9 @@ def onFullLogin( player ):
 def onCharacterCreated( player ):
 	print( "A new character '" + player.getName() + " has been created!" )
 	
+def onQuestCancelled( player, quest ):
+	print( "Player '" + player.getName() + "' has cancelled quest " + quest.getTitle() + "(" + str( quest.getId() ) + ")" )
+	
 def onHonorableKill( killer, victim ):
 	print( killer.getName() + " has killed " + victim.getName() + " with honor" )
 	
@@ -108,24 +111,22 @@ arcemu.RegisterServerHook( 2, onKillPlayer )
 arcemu.RegisterServerHook( 3, onFirstEnterWorld )
 arcemu.RegisterServerHook( 4, onEnterWorld )
 arcemu.RegisterServerHook( 5, onGuildJoin )
-
 arcemu.RegisterServerHook( 6, onPlayerDeath )
 arcemu.RegisterServerHook( 7, onPlayerRepop )
 arcemu.RegisterServerHook( 8, onEmote )
 arcemu.RegisterServerHook( 9, onEnterCombat )
 arcemu.RegisterServerHook( 10, onCastSpell )
-
+# Not implementing event 11 (tick)
 arcemu.RegisterServerHook( 12, onLogoutRequest )
 arcemu.RegisterServerHook( 13, onLogout )
 arcemu.RegisterServerHook( 14, onAcceptQuest )
-
 arcemu.RegisterServerHook( 15, onZoneChange )
 arcemu.RegisterServerHook( 16, onChatMessage )
 arcemu.RegisterServerHook( 17, onLoot )
 arcemu.RegisterServerHook( 18, onGuildCreate )
-
 arcemu.RegisterServerHook( 19, onFullLogin )
 arcemu.RegisterServerHook( 20, onCharacterCreated )
+arcemu.RegisterServerHook( 21, onQuestCancelled )
 
 arcemu.RegisterServerHook( 23, onHonorableKill )
 
