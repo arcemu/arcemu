@@ -1,5 +1,6 @@
 import arcemu
 
+from arcemu import Aura
 from arcemu import GameObject
 from arcemu import Guild
 from arcemu import Item
@@ -130,6 +131,9 @@ def onDuelFinished( winner, loser ):
 	
 def onKillPlayer( killer, victim ):
 	print( killer.getName() + " is killing " + victim.getName() )
+	
+def onAuraRemove( aura ):
+	print( "Aura removed. Spell name: " + aura.getSpellName() + ", Spell Id:" + str( aura.getSpellId() ) + ", Aura slot:" + str( aura.getAuraSlot() ) )
 
 arcemu.info()
 
@@ -163,5 +167,5 @@ arcemu.RegisterServerHook( 27, onLevelUp )
 arcemu.RegisterServerHook( 28, onPreDie )
 arcemu.RegisterServerHook( 29, onAdvanceSkillLine )
 arcemu.RegisterServerHook( 30, onDuelFinished )
-
+arcemu.RegisterServerHook( 31, onAuraRemove )
 arcemu.RegisterServerHook( 32, onPlayerResurrect )

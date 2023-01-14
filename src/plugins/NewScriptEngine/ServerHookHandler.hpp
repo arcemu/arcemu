@@ -52,7 +52,7 @@ public:
 	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
 	static void hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value );
 	static void hookOnDuelFinished( Player* winner, Player* loser );
-
+	static void hookOnAuraRemove( Aura* aura );
 	static void hookOnPlayerResurrect( Player* player );	
 };
 

@@ -31,6 +31,7 @@
 
 #include "ServerHookHandler.hpp"
 
+#include "python/modules/ArcPyAura.hpp"
 #include "python/modules/ArcPyGameObject.hpp"
 #include "python/modules/ArcPyGuild.hpp"
 #include "python/modules/ArcPyItem.hpp"
@@ -1097,4 +1098,33 @@ void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
 		}
 	}
 }
+
+void ServerHookHandler::hookOnAuraRemove( Aura* aura )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_AURA_REMOVE, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 1 );
+
+		ArcPyAura *apa = createArcPyAura();
+		apa->auraPtr = aura;
+
+		args.setItem( 0, PythonObject( (PyObject*)apa ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
  
