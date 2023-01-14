@@ -1,8 +1,11 @@
 import arcemu
 
+from arcemu import GameObject
 from arcemu import Guild
+from arcemu import Item
 from arcemu import Unit
 from arcemu import Player
+from arcemu import Quest
 from arcemu import Spell
 from arcemu import WorldSession
 
@@ -50,6 +53,16 @@ def onLogoutRequest( player ):
 	
 def onLogout( player ):
 	print( "Player '" + player.getName() + "' has logged out." )
+	
+def onAcceptQuest( player, quest, questGiver ):
+	print( "Player '" + player.getName() + "' has accepted quest " + quest.getTitle() + "(" + str( quest.getId() ) + ")" )
+
+	if isinstance(questGiver, Unit):
+		print( "Unit questgiver name: " + questGiver.getName() )
+	elif isinstance( questGiver, GameObject ):
+		print( "GameObject questgiver name: " + questGiver.getName() )
+	elif isinstance( questGiver, Item ):
+		print( "Item questgiver name: " + questGiver.getName() )
 	
 def onZoneChange( player, oldZone, newZone ):
 	print( "Player '" + player.getName() + "' has changed zone from " + str( oldZone ) + " to " + str( newZone ) )
@@ -104,6 +117,7 @@ arcemu.RegisterServerHook( 10, onCastSpell )
 
 arcemu.RegisterServerHook( 12, onLogoutRequest )
 arcemu.RegisterServerHook( 13, onLogout )
+arcemu.RegisterServerHook( 14, onAcceptQuest )
 
 arcemu.RegisterServerHook( 15, onZoneChange )
 arcemu.RegisterServerHook( 16, onChatMessage )

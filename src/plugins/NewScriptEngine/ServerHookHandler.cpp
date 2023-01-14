@@ -31,9 +31,12 @@
 
 #include "ServerHookHandler.hpp"
 
+#include "python/modules/ArcPyGameObject.hpp"
 #include "python/modules/ArcPyGuild.hpp"
+#include "python/modules/ArcPyItem.hpp"
 #include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
+#include "python/modules/ArcPyQuest.hpp"
 #include "python/modules/ArcPySpell.hpp"
 #include "python/modules/ArcPyWorldSession.hpp"
 
@@ -396,6 +399,75 @@ void ServerHookHandler::hookOnLogout( Player* player )
 		app->playerPtr = player;
 
 		args.setItem( 0, PythonObject( (PyObject*)app ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
+void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object* questGiver )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_QUEST_ACCEPT, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 3 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = player;
+
+		ArcPyQuest *apq = createArcPyQuest();
+		apq->questPtr = quest;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( (PyObject*)apq ) );
+
+		PyObject *param = NULL;
+
+		uint8 qgt = questGiver->GetTypeId();
+		switch( qgt )
+		{
+		case TYPEID_GAMEOBJECT:
+			{
+				ArcPyGameObject *go = createArcPyGameObject();
+				go->gameObjectPtr = (GameObject*)questGiver;
+				param = (PyObject*)go;
+			}
+			break;
+
+		case TYPEID_UNIT:
+			{
+				ArcPyUnit *unit = createArcPyUnit();
+				unit->unitPtr = (Unit*)questGiver;
+				param = (PyObject*)unit;
+			}
+			break;
+
+		case TYPEID_ITEM:
+			ArcPyItem *item = createArcPyItem();
+			item->itemPtr = (Item*)questGiver;
+			param = (PyObject*)item;
+			break;
+		}
+
+		if( param != NULL )
+		{
+			args.setItem( 2, PythonObject( param ) );
+		}
+		else
+		{
+			args.setItemNone( 2 );
+		}
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
