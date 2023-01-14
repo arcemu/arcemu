@@ -510,6 +510,38 @@ void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, ui
 	}
 }
 
+void ServerHookHandler::hookOnGuildCreate( Player* leader, Guild* guild )
+{
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_GUILD_CREATE, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+		PythonTuple args( 2 );
+
+		ArcPyPlayer *app = createArcPyPlayer();
+		app->playerPtr = leader;
+
+		ArcPyGuild *apg = createArcPyGuild();
+		apg->guildPtr = guild;
+
+		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItem( 1, PythonObject( (PyObject*)apg ) );
+
+		PythonCallable callable( (PyObject*)handler );
+		PythonValue value = callable.call( args );
+		if( value.isEmpty() )
+		{
+			Python::printError();
+		}
+		else
+		{
+			value.decref();
+		}
+	}
+}
+
 void ServerHookHandler::hookOnFullLogin( Player* player )
 {
 	std::vector< void* > handlers;

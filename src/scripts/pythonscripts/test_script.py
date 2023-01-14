@@ -59,6 +59,9 @@ def onChatMessage( player, type, lang, message, misc ):
 	
 def onLoot( player, unit, money, itemId ):
 	print( "Player " + player.getName() + " has looted " + str( money ) + " coins and item " + str( itemId ) + " from " + unit.getName() )
+	
+def onGuildCreate( leader, guild ):
+	print( "Player " + player.getName() + " has created guild " + guild.getGuildName() )
 
 def onFullLogin( player ):
 	print( "Player '" + player.getName() + " has fully logged in." )
@@ -105,6 +108,7 @@ arcemu.RegisterServerHook( 13, onLogout )
 arcemu.RegisterServerHook( 15, onZoneChange )
 arcemu.RegisterServerHook( 16, onChatMessage )
 arcemu.RegisterServerHook( 17, onLoot )
+arcemu.RegisterServerHook( 18, onGuildCreate )
 
 arcemu.RegisterServerHook( 19, onFullLogin )
 arcemu.RegisterServerHook( 20, onCharacterCreated )
