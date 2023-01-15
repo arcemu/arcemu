@@ -54,6 +54,7 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 
 	printf( "RegisterServerHook event %u\n", serverEvent );
 
+	Py_IncRef( callback );
 	ServerHookRegistry::addHook( serverEvent, callback );
 
 	return Py_None;

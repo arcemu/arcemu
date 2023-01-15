@@ -38,6 +38,7 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 
 PythonEngine::~PythonEngine()
 {
+	ServerHookRegistry::releaseHooks();
 	delete python;
 	python = NULL;
 }
@@ -51,6 +52,8 @@ void PythonEngine::onStartup()
 
 int PythonEngine::loadScript( const char *fileName )
 {
+	LOG_BASIC( "Loading %s...", fileName );
+
 	int val = python->runSimpleFile( fileName );
 	if( val == 0 )
 	{
@@ -69,8 +72,15 @@ int PythonEngine::loadScripts()
 	LOG_BASIC( "Loading Python scripts..." );
 	int c = 0;
 
-	if( loadScript( "pythonscripts/test_script.py" ) == 0 )
-	    c++;
+	std::vector< std::string > pythonFiles;
+	Arcemu::FileUtils::findFilesByExtension( "pythonscripts", "py", pythonFiles ); 
+
+	for( std::vector< std::string >::iterator itr = pythonFiles.begin(); itr != pythonFiles.end(); ++itr )
+	{
+		const std::string &fileName = *itr;
+		if( loadScript( fileName.c_str() ) == 0 )
+			c++;
+	}
 
 	LOG_BASIC( "Loaded %d Python scripts.", c );
 

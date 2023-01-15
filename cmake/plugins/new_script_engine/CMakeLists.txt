@@ -65,13 +65,15 @@ IF(NOT CMAKE_GENERATOR MATCHES Visual*)
     SET( CMAKE_INSTALL_RPATH "./" )
 ENDIF()
 
+link_directories( ${EXTRA_LIBS_PATH} ${DEPENDENCY_LIBS} )
+
 add_library(${PROJECT_NAME} SHARED ${SRCS} ${HEADERS})
 add_dependencies( ${PROJECT_NAME} ${dependancies} python34 )
 
 IF( IS_LINUX )
     target_link_libraries( ${PROJECT_NAME} ${linkages} python34 pthread m util dl )
 ELSE()
-    target_link_libraries( ${PROJECT_NAME} ${linkages} python34 )
+    target_link_libraries( ${PROJECT_NAME} ${linkages} python34 shared)
 ENDIF()
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})

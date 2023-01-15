@@ -17,6 +17,8 @@
  *
  */
 
+#include "Python.h"
+
 #include "ServerHookRegistry.hpp"
 
 std::multimap< unsigned long, void* > ServerHookRegistry::hooks;
@@ -63,7 +65,15 @@ void ServerHookRegistry::getHooks( std::set< void* > &handlers )
 	}
 }
 
-void ServerHookRegistry::clear()
+void ServerHookRegistry::releaseHooks()
 {
+	std::multimap< unsigned long, void* >::iterator itr = hooks.begin();
+	while( itr != hooks.end() )
+	{
+		PyObject *callback = (PyObject*)itr->second;
+		Py_DecRef( callback );
+		++itr;
+	}
 	hooks.clear();
 }
+

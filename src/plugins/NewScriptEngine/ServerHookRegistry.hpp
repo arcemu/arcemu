@@ -34,7 +34,7 @@ public:
 	static bool hasHooksForEvent( unsigned long serverEvent );
 	static void getHooksForEvent( unsigned long serverEvent, std::vector< void* > &handlers );
 	static void getHooks( std::set< void* > &handlers );
-	static void clear();
+	static void releaseHooks();
 };
 
 #endif
