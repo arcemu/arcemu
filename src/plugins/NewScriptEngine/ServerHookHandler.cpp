@@ -27,6 +27,8 @@
 #include "python/PythonCallable.hpp"
 #include "python/Python.hpp"
 
+#include "python/ArcPyTuple.hpp"
+
 #include "ServerHookRegistry.hpp"
 
 #include "ServerHookHandler.hpp"
@@ -48,14 +50,11 @@ void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, W
 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
-		ArcPyWorldSession *apws = createArcPyWorldSession();
-		apws->worldSessionPtr = session;
-
-		PythonTuple args( 4 );
+		ArcPyTuple args( 4 );
 
 		args.setItem( 0, charRace );
 		args.setItem( 1, charClass );
-		args.setItem( 2, PythonObject( (PyObject*)apws ) );
+		args.setItemWorldSession( 2, session );
 		args.setItem( 3, name );
 
 		PythonCallable callable( (PyObject*)(*itr) );
