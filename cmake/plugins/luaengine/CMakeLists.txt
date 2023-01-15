@@ -34,9 +34,16 @@ IF( IS_LINUX )
 ENDIF()
 
 
+link_directories( ${EXTRA_LIBS_PATH} ${DEPENDENCY_LIBS} )
+
 add_library(${PROJECT_NAME} SHARED ${SRCS} ${HEADERS})
 add_dependencies( ${PROJECT_NAME} ${dependancies} lualib)
-target_link_libraries( ${PROJECT_NAME} ${linkages} lualib)
+IF( WIN32 )
+	target_link_libraries( ${PROJECT_NAME} ${linkages} lualib shared)
+ELSE()
+	target_link_libraries( ${PROJECT_NAME} ${linkages} lualib)
+ENDIF()
+
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${ARCEMU_SCRIPTLIB_PATH} LIBRARY DESTINATION ${ARCEMU_SCRIPTLIB_PATH})
 
 #Cleap up our variables(Not required.)
