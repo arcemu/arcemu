@@ -27,6 +27,7 @@ public:
 	~ArcPyTuple();
 
 	void setItemWorldSession( unsigned long idx, WorldSession* worldSession );
+	void setItemPlayer( unsigned long idx, Player* player );
 };
 
 #endif

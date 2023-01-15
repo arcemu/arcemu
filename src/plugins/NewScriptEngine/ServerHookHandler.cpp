@@ -77,16 +77,10 @@ void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
-		PythonTuple args( 2 );
+		ArcPyTuple args( 2 );
 
-		ArcPyPlayer *appKiller = createArcPyPlayer();
-		appKiller->playerPtr = killer;
-
-		ArcPyPlayer *appVictim = createArcPyPlayer();
-		appVictim->playerPtr = victim;
-
-		args.setItem( 0, PythonObject( (PyObject*)appKiller ) );		
-		args.setItem( 1, PythonObject( (PyObject*)appVictim ) );
+		args.setItemPlayer( 0, killer );		
+		args.setItemPlayer( 1, victim );
 
 		PythonCallable callable( (PyObject*)(*itr) );
 		PythonValue value = callable.call( args );
