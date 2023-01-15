@@ -169,7 +169,7 @@ void ScriptMgr::LoadScripts()
 	Arcemu::FindFilesResult findres;
 	std::vector< ScriptingEngine_dl > Engines;
 
-	Arcemu::FindFiles(Path.c_str(), FileMask.c_str(), findres);
+	Arcemu::FindFilesByMask(Path.c_str(), FileMask.c_str(), findres);
 	uint32 count = 0;
 
 	while(findres.HasNext())
