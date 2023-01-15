@@ -22,7 +22,14 @@
 
 #include "FindFilesResult.hpp"
 
-namespace Arcemu{
+namespace Arcemu
+{
+	class FileUtils
+	{
+	public:
+		static void findFiles( const char* dirName, const char *extension, std::vector< std::string > &files );
+	};
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//bool FindFiles( const char *where, const char *filename, FindFilesResult &r )
 	//  Searches for files with the name of *filename*, and

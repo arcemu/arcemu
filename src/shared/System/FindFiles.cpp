@@ -25,10 +25,100 @@
 #include <cstdlib>
 #include <cstring>
 #include <dirent.h>
+#include <sys/stat.h>
 #endif
 
 namespace Arcemu
 {
+	void FileUtils::findFiles( const char* dirName, const char *extension, std::vector< std::string > &files )
+	{
+#ifdef WIN32
+		HANDLE hFile;
+		WIN32_FIND_DATA FindData;
+		memset(&FindData, 0, sizeof(FindData));
+
+		std::string searchName;
+
+		searchName = dirName;
+		searchName += "\\*.*";
+	
+		hFile = FindFirstFile(searchName.c_str(), &FindData);
+		FindNextFile(hFile, &FindData);
+
+		while(FindNextFile(hFile, &FindData))
+		{
+			if(FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				searchName = dirName;
+				searchName += "\\";
+				searchName += FindData.cFileName;
+				findFiles(searchName.c_str(), extension, files);
+			}
+			else
+			{
+				std::string fname = dirName;
+				fname += "\\";
+				fname += FindData.cFileName;
+
+				const char *fn = fname.c_str();
+				const char *ext = strrchr( fn, '.' );
+				if( ext != NULL )
+				{
+					ext++;
+
+					if( _stricmp( ext, extension ) == 0 )
+					{
+						files.push_back( fname );
+					}
+				}
+			}
+		}
+		FindClose(hFile);
+#else
+		const char* pch = strrchr(dirName, '/');
+		if(strcmp(dirName, "..") == 0 || strcmp(dirName, ".") == 0) return; //Against Endless-Loop
+		if(pch != NULL && (strcmp(pch, "/..") == 0 || strcmp(pch, "/.") == 0 || strcmp(pch, "/.svn") == 0)) return;
+		struct dirent** list;
+		int filecount = scandir(dirName, &list, 0, 0);
+
+		if(filecount <= 0 || !list)
+			return;
+
+		struct stat attributes;
+		bool err;
+		while(filecount--)
+		{
+			char dottedrelpath[1024];
+			sprintf(dottedrelpath, "%s/%s", dirName, list[filecount]->d_name);
+			if(stat(dottedrelpath, &attributes) == -1)
+			{
+				err = true;
+			}
+			else err = false;
+
+			if(!err && S_ISDIR(attributes.st_mode))
+			{
+				findFiles(dottedrelpath, extension, files);
+			}
+			else
+			{
+				char* ext = strrchr(list[filecount]->d_name, '.');
+				if( ext != NULL )
+				{
+					ext++;
+
+					if( strcasecmp(ext, extension) == 0 )
+					{
+						files.push_back(dottedrelpath);
+					}
+				}
+			}
+
+			free(list[filecount]);
+		}
+		free(list);
+#endif
+	}
 
 #ifdef WIN32
 

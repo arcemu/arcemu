@@ -190,11 +190,6 @@ enum CustomLuaEvenTypes
     LUA_EVENTS_END
 };
 
-struct LUALoadScripts
-{
-	set<string> luaFiles;
-};
-
 struct EventInfoHolder
 {
 	const char* funcName;
@@ -551,7 +546,6 @@ class LuaEngine
 	protected:
 		//Hidden methods
 		void Unload();
-		void ScriptLoadDir(char* Dirname, LUALoadScripts* pak);
 
 		template <typename T>
 		class ArcLuna
