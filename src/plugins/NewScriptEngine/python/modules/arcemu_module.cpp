@@ -22,6 +22,8 @@
 
 #include "ServerHookRegistry.hpp"
 
+extern void registerArcemuConstants( PyObject *module );
+
 extern int registerArcPyAura( PyObject *module );
 extern int registerArcPyGameObject( PyObject *module );
 extern int registerArcPyGuild( PyObject *module );
@@ -71,7 +73,9 @@ static PyModuleDef ArcemuModule = {
 PyObject* PyInit_Arcemu(void)
 {
 	PyObject *module = PyModule_Create(&ArcemuModule);
-	
+
+	registerArcemuConstants( module );
+
 	registerArcPyAura( module );
 	registerArcPyGameObject( module );
 	registerArcPyGuild( module );

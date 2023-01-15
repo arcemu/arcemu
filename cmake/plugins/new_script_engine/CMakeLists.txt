@@ -13,6 +13,7 @@ SET( SRCS
 ${prefix}/engine.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/modules/arcemu_module.cpp
+${prefix}/python/modules/arcemu_module_consts.cpp
 ${prefix}/python/modules/ArcPyAura.cpp
 ${prefix}/python/modules/ArcPyGameObject.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
