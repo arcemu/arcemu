@@ -122,7 +122,7 @@ namespace Arcemu
 
 #ifdef WIN32
 
-	bool FindFiles(const char* where, const char* filename, FindFilesResult & r)
+	bool FileUtils::FindFilesByMask(const char* where, const char* filename, FindFilesResult & r)
 	{
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind;
@@ -154,7 +154,7 @@ namespace Arcemu
 
 #else
 
-	bool FindFiles(const char* where, const char* filename, FindFilesResult & r)
+	bool FileUtils::FindFilesByMask(const char* where, const char* filename, FindFilesResult & r)
 	{
 		int n = 0;
 		dirent** filelist = NULL;
