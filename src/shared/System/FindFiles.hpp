@@ -27,7 +27,7 @@ namespace Arcemu
 	class FileUtils
 	{
 	public:
-		static void findFiles( const char* dirName, const char *extension, std::vector< std::string > &files );
+		static void findFilesByExtension( const char* dirName, const char *extension, std::vector< std::string > &files );
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////

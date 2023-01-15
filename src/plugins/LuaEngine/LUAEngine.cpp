@@ -100,7 +100,7 @@ void LuaEngine::LoadScripts()
 	Log.Notice("LuaEngine", "Scanning Script-Directories...");
 
 	vector<string> luaFiles;
-	Arcemu::FileUtils::findFiles( "scripts", "lua", luaFiles );
+	Arcemu::FileUtils::findFilesByExtension( "scripts", "lua", luaFiles );
 
 	unsigned int cnt_uncomp = 0;
 

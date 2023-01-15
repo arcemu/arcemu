@@ -30,7 +30,7 @@
 
 namespace Arcemu
 {
-	void FileUtils::findFiles( const char* dirName, const char *extension, std::vector< std::string > &files )
+	void FileUtils::findFilesByExtension( const char* dirName, const char *extension, std::vector< std::string > &files )
 	{
 #ifdef WIN32
 		HANDLE hFile;
@@ -52,7 +52,7 @@ namespace Arcemu
 				searchName = dirName;
 				searchName += "\\";
 				searchName += FindData.cFileName;
-				findFiles(searchName.c_str(), extension, files);
+				findFilesByExtension(searchName.c_str(), extension, files);
 			}
 			else
 			{
@@ -98,7 +98,7 @@ namespace Arcemu
 
 			if(!err && S_ISDIR(attributes.st_mode))
 			{
-				findFiles(dottedrelpath, extension, files);
+				findFilesByExtension(dottedrelpath, extension, files);
 			}
 			else
 			{
