@@ -1058,12 +1058,9 @@ void ServerHookHandler::hookOnAuraRemove( Aura* aura )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
+		ArcPyTuple args( 1 );
 
-		ArcPyAura *apa = createArcPyAura();
-		apa->auraPtr = aura;
-
-		args.setItem( 0, PythonObject( (PyObject*)apa ) );
+		args.setItemAura( 0, aura );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );

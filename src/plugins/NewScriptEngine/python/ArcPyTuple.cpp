@@ -25,6 +25,7 @@
 #include "python/PythonTuple.hpp"
 #include "python/ArcPyTuple.hpp"
 
+#include "python/modules/ArcPyAura.hpp"
 #include "python/modules/ArcPyGameObject.hpp"
 #include "python/modules/ArcPyGuild.hpp"
 #include "python/modules/ArcPyItem.hpp"
@@ -43,6 +44,12 @@ ArcPyTuple::~ArcPyTuple()
 {
 }
 
+void ArcPyTuple::setItemAura( unsigned long idx, Aura* aura )
+{
+	ArcPyAura *apa = createArcPyAura();
+	apa->auraPtr = aura;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)apa );
+}
 
 void ArcPyTuple::setItemGameObject( unsigned long idx, GameObject* gameObject )
 {
