@@ -26,8 +26,10 @@ public:
 	ArcPyTuple( unsigned long size );
 	~ArcPyTuple();
 
-	void setItemWorldSession( unsigned long idx, WorldSession* worldSession );
+	void setItemGuild( unsigned long idx, Guild* guild );
 	void setItemPlayer( unsigned long idx, Player* player );
+	void setItemWorldSession( unsigned long idx, WorldSession* worldSession );
+	
 };
 
 #endif

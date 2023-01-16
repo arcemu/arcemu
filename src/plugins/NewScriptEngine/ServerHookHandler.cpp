@@ -159,16 +159,10 @@ void ServerHookHandler::hookOnGuildJoin( Player* player, Guild* guild )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 2 );
+		ArcPyTuple args( 2 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyGuild *apg = createArcPyGuild();
-		apg->guildPtr = guild;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( (PyObject*)apg ) );
+		args.setItemPlayer( 0, player );
+		args.setItemGuild( 1, guild );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );

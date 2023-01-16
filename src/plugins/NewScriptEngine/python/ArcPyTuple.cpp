@@ -25,8 +25,9 @@
 #include "python/PythonTuple.hpp"
 #include "python/ArcPyTuple.hpp"
 
-#include "python/modules/ArcPyWorldSession.hpp"
+#include "python/modules/ArcPyGuild.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
+#include "python/modules/ArcPyWorldSession.hpp"
 
 ArcPyTuple::ArcPyTuple( unsigned long size ) :
 PythonTuple( size )
@@ -37,11 +38,12 @@ ArcPyTuple::~ArcPyTuple()
 {
 }
 
-void ArcPyTuple::setItemWorldSession( unsigned long idx, WorldSession* worldSession )
+
+void ArcPyTuple::setItemGuild( unsigned long idx, Guild* guild )
 {
-	ArcPyWorldSession *apws = createArcPyWorldSession();
-	apws->worldSessionPtr = worldSession;
-	PyTuple_SetItem( getObject(), idx, (PyObject*)apws );
+	ArcPyGuild *apg = createArcPyGuild();
+	apg->guildPtr = guild;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)apg );
 }
 
 void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
@@ -50,3 +52,11 @@ void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
 	app->playerPtr = player;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)app );
 }
+
+void ArcPyTuple::setItemWorldSession( unsigned long idx, WorldSession* worldSession )
+{
+	ArcPyWorldSession *apws = createArcPyWorldSession();
+	apws->worldSessionPtr = worldSession;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)apws );
+}
+
