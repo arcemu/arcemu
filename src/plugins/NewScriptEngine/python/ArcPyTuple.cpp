@@ -27,6 +27,7 @@
 
 #include "python/modules/ArcPyGuild.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
+#include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyWorldSession.hpp"
 
 ArcPyTuple::ArcPyTuple( unsigned long size ) :
@@ -51,6 +52,13 @@ void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
 	ArcPyPlayer *app = createArcPyPlayer();
 	app->playerPtr = player;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)app );
+}
+
+void ArcPyTuple::setItemUnit( unsigned long idx, Unit* unit )
+{
+	ArcPyUnit *apu = createArcPyUnit();
+	apu->unitPtr = unit;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)apu );
 }
 
 void ArcPyTuple::setItemWorldSession( unsigned long idx, WorldSession* worldSession )

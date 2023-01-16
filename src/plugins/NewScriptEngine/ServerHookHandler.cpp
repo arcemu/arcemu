@@ -288,16 +288,10 @@ void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
-		PythonTuple args( 2 );
+		ArcPyTuple args( 2 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyUnit *apu = createArcPyUnit();
-		apu->unitPtr = unit;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );		
-		args.setItem( 1, PythonObject( (PyObject*)apu ) );
+		args.setItemPlayer( 0, player );		
+		args.setItemUnit( 1, unit );
 
 		PythonCallable callable( (PyObject*)(*itr) );
 		PythonValue value = callable.call( args );
