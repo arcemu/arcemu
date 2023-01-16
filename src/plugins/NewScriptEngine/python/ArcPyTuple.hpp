@@ -26,7 +26,9 @@ public:
 	ArcPyTuple( unsigned long size );
 	~ArcPyTuple();
 
+	void setItemGameObject( unsigned long idx, GameObject* gameObject );
 	void setItemGuild( unsigned long idx, Guild* guild );
+	void setItemItem( unsigned long idx, Item* item );
 	void setItemPlayer( unsigned long idx, Player* player );
 	void setItemQuest( unsigned long idx, Quest* quest );
 	void setItemSpell( unsigned long idx, Spell* spell );

@@ -25,7 +25,9 @@
 #include "python/PythonTuple.hpp"
 #include "python/ArcPyTuple.hpp"
 
+#include "python/modules/ArcPyGameObject.hpp"
 #include "python/modules/ArcPyGuild.hpp"
+#include "python/modules/ArcPyItem.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
 #include "python/modules/ArcPyQuest.hpp"
 #include "python/modules/ArcPySpell.hpp"
@@ -42,11 +44,25 @@ ArcPyTuple::~ArcPyTuple()
 }
 
 
+void ArcPyTuple::setItemGameObject( unsigned long idx, GameObject* gameObject )
+{
+	ArcPyGameObject *apgo = createArcPyGameObject();
+	apgo->gameObjectPtr = gameObject;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)apgo );
+}
+
 void ArcPyTuple::setItemGuild( unsigned long idx, Guild* guild )
 {
 	ArcPyGuild *apg = createArcPyGuild();
 	apg->guildPtr = guild;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apg );
+}
+
+void ArcPyTuple::setItemItem( unsigned long idx, Item* item )
+{
+	ArcPyItem *api = createArcPyItem();
+	api->itemPtr = item;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)api );
 }
 
 void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )

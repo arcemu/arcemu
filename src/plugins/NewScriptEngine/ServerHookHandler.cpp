@@ -688,52 +688,37 @@ void ServerHookHandler::hookOnQuestFinished( Player* player, Quest* quest, Objec
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 3 );
+		ArcPyTuple args( 3 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyQuest *apq = createArcPyQuest();
-		apq->questPtr = quest;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( (PyObject*)apq ) );
-
-		PyObject *param = NULL;
+		args.setItemPlayer( 0, player );
+		args.setItemQuest( 1, quest );
 
 		uint8 qgt = questFinisher->GetTypeId();
 		switch( qgt )
 		{
 		case TYPEID_GAMEOBJECT:
 			{
-				ArcPyGameObject *go = createArcPyGameObject();
-				go->gameObjectPtr = (GameObject*)questFinisher;
-				param = (PyObject*)go;
+				args.setItemGameObject( 2, (GameObject*)questFinisher );
 			}
 			break;
 
 		case TYPEID_UNIT:
 			{
-				ArcPyUnit *unit = createArcPyUnit();
-				unit->unitPtr = (Unit*)questFinisher;
-				param = (PyObject*)unit;
+				args.setItemUnit( 2, (Unit*)questFinisher );
 			}
 			break;
 
 		case TYPEID_ITEM:
-			ArcPyItem *item = createArcPyItem();
-			item->itemPtr = (Item*)questFinisher;
-			param = (PyObject*)item;
+			{
+				args.setItemItem( 2, (Item*)questFinisher );
+			}
 			break;
-		}
 
-		if( param != NULL )
-		{
-			args.setItem( 2, PythonObject( param ) );
-		}
-		else
-		{
-			args.setItemNone( 2 );
+		default:
+			{
+				args.setItemNone( 2 );
+			}
+			break;
 		}
 
 		PythonCallable callable( (PyObject*)handler );
@@ -833,49 +818,44 @@ void ServerHookHandler::hookOnObjectLoot( Player* player, Object* target, uint32
 	{
 		void* handler = *itr;
 		
-		PythonTuple args( 4 );
+		ArcPyTuple args( 4 );
 
-		PyObject* targetObj = NULL;
+		args.setItemPlayer( 0, player );
 
 		switch( target->GetTypeId() )
 		{
 		case TYPEID_UNIT:
 			{
-				ArcPyUnit *apu = createArcPyUnit();
-				apu->unitPtr = (Unit*)target;
-				targetObj = (PyObject*)apu;
+				args.setItemUnit( 1, (Unit*)target );
 				break;
 			}
 
 		case TYPEID_PLAYER:
 			{
-				ArcPyPlayer *app = createArcPyPlayer();
-				app->playerPtr = (Player*)target;
-				targetObj = (PyObject*)app;
+				args.setItemPlayer( 1, (Player*)target );
 				break;
 			}
 
 		case TYPEID_GAMEOBJECT:
 			{
-				ArcPyGameObject *apgo = createArcPyGameObject();
-				apgo->gameObjectPtr = (GameObject*)target;
-				targetObj = (PyObject*)apgo;
+				args.setItemGameObject( 1, (GameObject*)target );
 				break;
 			}
 
 		case TYPEID_ITEM:
 			{
-				ArcPyItem *api = createArcPyItem();
-				api->itemPtr = (Item*)target;
-				targetObj = (PyObject*)api;
+				args.setItemItem( 1, (Item*)target );
+				break;
+			}
+
+		default:
+			{
+				args.setItemNone( 1 );
+				break;
 			}
 		}
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;		
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( targetObj ) );		
+		
 		args.setItem( 2, money );
 		args.setItem( 3, itemId );
 
