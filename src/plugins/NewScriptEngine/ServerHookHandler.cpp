@@ -314,17 +314,11 @@ void ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell*
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 3 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPySpell *aps = createArcPySpell();
-		aps->spellPtr = spell;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		
+		ArcPyTuple args( 3 );
+		args.setItemPlayer( 0, player );
 		args.setItem( 1, spe->Id );
-		args.setItem( 2, PythonObject( (PyObject*)aps ) );
+		args.setItemSpell( 2, spell );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
