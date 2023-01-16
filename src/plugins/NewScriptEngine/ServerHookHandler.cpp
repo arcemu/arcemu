@@ -306,7 +306,7 @@ void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 	}
 }
 
-void ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell )
+bool ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell )
 {
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CAST_SPELL, handlers );
@@ -331,6 +331,8 @@ void ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell*
 			value.decref();
 		}
 	}
+
+	return true;
 }
 
 void ServerHookHandler::hookOnLogoutRequest( Player* player )
