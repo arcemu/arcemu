@@ -28,6 +28,7 @@ public:
 
 	void setItemGuild( unsigned long idx, Guild* guild );
 	void setItemPlayer( unsigned long idx, Player* player );
+	void setItemQuest( unsigned long idx, Quest* quest );
 	void setItemSpell( unsigned long idx, Spell* spell );
 	void setItemUnit( unsigned long idx, Unit* unit );
 	void setItemWorldSession( unsigned long idx, WorldSession* worldSession );

@@ -399,16 +399,10 @@ void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object*
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 3 );
+		ArcPyTuple args( 3 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyQuest *apq = createArcPyQuest();
-		apq->questPtr = quest;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( (PyObject*)apq ) );
+		args.setItemPlayer( 0, player );
+		args.setItemQuest( 1, quest );
 
 		PyObject *param = NULL;
 

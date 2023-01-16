@@ -27,6 +27,7 @@
 
 #include "python/modules/ArcPyGuild.hpp"
 #include "python/modules/ArcPyPlayer.hpp"
+#include "python/modules/ArcPyQuest.hpp"
 #include "python/modules/ArcPySpell.hpp"
 #include "python/modules/ArcPyUnit.hpp"
 #include "python/modules/ArcPyWorldSession.hpp"
@@ -53,6 +54,13 @@ void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
 	ArcPyPlayer *app = createArcPyPlayer();
 	app->playerPtr = player;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)app );
+}
+
+void ArcPyTuple::setItemQuest( unsigned long idx, Quest* quest )
+{
+	ArcPyQuest *apq = createArcPyQuest();
+	apq->questPtr = quest;
+	PyTuple_SetItem( getObject(), idx, (PyObject*)apq );
 }
 
 void ArcPyTuple::setItemSpell( unsigned long idx, Spell* spell )
