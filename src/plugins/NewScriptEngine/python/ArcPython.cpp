@@ -17,31 +17,23 @@
  *
  */
 
-#ifndef ARCEMU_PYTHON_ENGINE_HPP
-#define ARCEMU_PYTHON_ENGINE_HPP
 
-class ArcPython;
-class ScriptMgr;
+#include "StdAfx.h"
 
-class PythonEngine
+#include "ArcPython.hpp"
+
+Mutex ArcPython::lock;
+
+ArcPython::ArcPython() :
+Python()
 {
-public:
-	PythonEngine( ScriptMgr *mgr );
-	~PythonEngine();
+}
 
-	void onStartup();
+ArcPython::~ArcPython()
+{
+}
 
-private:
-	int loadScript( const char *fileName );
-
-	int loadScripts();
-
-	void registerHooks();
-
-private:
-	ArcPython *python;
-
-	ScriptMgr *mgr;
-};
-
-#endif
+Mutex& ArcPython::getLock()
+{
+	return lock;
+}

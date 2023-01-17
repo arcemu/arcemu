@@ -24,6 +24,7 @@ ${prefix}/python/modules/ArcPyQuest.cpp
 ${prefix}/python/modules/ArcPySpell.cpp
 ${prefix}/python/modules/ArcPyWorldSession.cpp
 ${prefix}/python/ArcPyTuple.cpp
+${prefix}/python/ArcPython.cpp
 ${prefix}/python/Python.cpp
 ${prefix}/python/PythonCallable.cpp
 ${prefix}/python/PythonObject.cpp
@@ -37,6 +38,7 @@ ${prefix}/ServerHookHandler.cpp
 SET( HEADERS
 ${prefix}/engine.h
 ${prefix}/python/ArcPyTuple.hpp
+${prefix}/python/ArcPython.hpp
 ${prefix}/python/Python.hpp
 ${prefix}/python/PythonCallable.hpp
 ${prefix}/python/PythonObject.hpp

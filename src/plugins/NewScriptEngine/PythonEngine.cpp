@@ -20,7 +20,7 @@
 #include "StdAfx.h"
 #include <Python.h>
 #include "PythonEngine.hpp"
-#include "python/Python.hpp"
+#include "python/ArcPython.hpp"
 #include "ServerHookRegistry.hpp"
 #include "ServerHookHandler.hpp"
 
@@ -32,7 +32,7 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 	register_arcemu_extensions();
 
 	Python::setPath( L"./pythonlibs" );
-	python = new Python();
+	python = new ArcPython();
 	this->mgr = mgr;
 }
 
