@@ -336,7 +336,7 @@ bool ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell*
 	return true;
 }
 
-void ServerHookHandler::hookOnLogoutRequest( Player* player )
+bool ServerHookHandler::hookOnLogoutRequest( Player* player )
 {
 	Guard g( ArcPython::getLock() );
 
@@ -360,6 +360,8 @@ void ServerHookHandler::hookOnLogoutRequest( Player* player )
 			value.decref();
 		}
 	}
+
+	return true;
 }
 
 void ServerHookHandler::hookOnLogout( Player* player )
