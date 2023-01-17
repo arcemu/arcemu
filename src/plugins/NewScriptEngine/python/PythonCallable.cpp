@@ -23,8 +23,8 @@
 #include "PythonTuple.hpp"
 #include "PythonCallable.hpp"
  
-PythonCallable::PythonCallable( PyObject *obj ) :
-PythonObject( obj )
+PythonCallable::PythonCallable( void* callable ) :
+PythonObject( (PyObject*)callable )
 {
 }
 

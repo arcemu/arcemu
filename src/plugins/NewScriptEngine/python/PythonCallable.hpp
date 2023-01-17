@@ -25,7 +25,7 @@
  class PythonCallable : public PythonObject
  {
  public:
-	 PythonCallable( PyObject *obj );
+	 PythonCallable( void* callable );
 	 ~PythonCallable();
 	 
 	 PythonValue call( PythonTuple &args );

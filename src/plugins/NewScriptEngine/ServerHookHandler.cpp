@@ -22,7 +22,6 @@
 #include <Python.h>
 
 #include "python/PythonObject.hpp"
-///#include "python/PythonTuple.hpp"
 #include "python/PythonValue.hpp"
 #include "python/PythonCallable.hpp"
 #include "python/Python.hpp"
@@ -57,7 +56,7 @@ void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, W
 		args.setItemWorldSession( 2, session );
 		args.setItem( 3, name );
 
-		PythonCallable callable( (PyObject*)(*itr) );
+		PythonCallable callable( *itr );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -82,7 +81,7 @@ void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 		args.setItemPlayer( 0, killer );		
 		args.setItemPlayer( 1, victim );
 
-		PythonCallable callable( (PyObject*)(*itr) );
+		PythonCallable callable( *itr );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -107,7 +106,7 @@ void ServerHookHandler::hookOnFirstEnterWorld( Player* player )
 
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -132,7 +131,7 @@ void ServerHookHandler::hookOnEnterWorld( Player* player )
 
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -158,7 +157,7 @@ void ServerHookHandler::hookOnGuildJoin( Player* player, Guild* guild )
 		args.setItemPlayer( 0, player );
 		args.setItemGuild( 1, guild );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -183,7 +182,7 @@ void ServerHookHandler::hookOnPlayerDeath( Player* player )
 
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -208,7 +207,7 @@ void ServerHookHandler::hookOnPlayerRepop( Player* player )
 
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -250,7 +249,7 @@ void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 			args.setItemNone( 2 );
 		}
 
-		PythonCallable callable( (PyObject*)(*itr) );
+		PythonCallable callable( *itr );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -275,7 +274,7 @@ void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 		args.setItemPlayer( 0, player );		
 		args.setItemUnit( 1, unit );
 
-		PythonCallable callable( (PyObject*)(*itr) );
+		PythonCallable callable( *itr );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -302,7 +301,7 @@ bool ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell*
 		args.setItem( 1, spe->Id );
 		args.setItemSpell( 2, spell );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -328,7 +327,7 @@ void ServerHookHandler::hookOnLogoutRequest( Player* player )
 		ArcPyTuple args( 1 );
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -353,7 +352,7 @@ void ServerHookHandler::hookOnLogout( Player* player )
 
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -409,7 +408,7 @@ void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object*
 			}
 		}
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -436,7 +435,7 @@ void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32
 		args.setItem( 1, oldZone );
 		args.setItem( 2, newZone );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -469,7 +468,7 @@ bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 		else
 			args.setItem( 4, "" );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -503,7 +502,7 @@ void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, ui
 		args.setItem( 2, money );
 		args.setItem( 3, itemId );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -529,7 +528,7 @@ void ServerHookHandler::hookOnGuildCreate( Player* leader, Guild* guild )
 		args.setItemPlayer( 0, leader );
 		args.setItemGuild( 1, guild );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -554,7 +553,7 @@ void ServerHookHandler::hookOnFullLogin( Player* player )
 		ArcPyTuple args( 1 );
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -579,7 +578,7 @@ void ServerHookHandler::hookOnCharacterCreated( Player* player )
 		ArcPyTuple args( 1 );
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -605,7 +604,7 @@ void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
 		args.setItemPlayer( 0, player );
 		args.setItemQuest( 1, quest );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -659,7 +658,7 @@ void ServerHookHandler::hookOnQuestFinished( Player* player, Quest* quest, Objec
 			break;
 		}
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -685,7 +684,7 @@ void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 		args.setItemPlayer( 0, killer );
 		args.setItemPlayer( 1, victim );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -720,7 +719,7 @@ void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam,
 		args.setItemBool( 2, victory );
 		args.setItemBool( 3, rated );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -786,7 +785,7 @@ void ServerHookHandler::hookOnObjectLoot( Player* player, Object* target, uint32
 		args.setItem( 2, money );
 		args.setItem( 3, itemId );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -812,7 +811,7 @@ void ServerHookHandler::hookOnAreaTrigger( Player* player, uint32 areaTriggerId 
 		args.setItemPlayer( 0, player );
 		args.setItem( 1, areaTriggerId );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -837,7 +836,7 @@ void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 		ArcPyTuple args( 1 );
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -862,7 +861,7 @@ void ServerHookHandler::hookOnLevelUp( Player* player )
 		ArcPyTuple args( 1 );
 		args.setItemPlayer( 0, player );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -886,7 +885,7 @@ void ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
 		args.setItemUnit( 0, killer );		
 		args.setItemUnit( 1, victim );
 
-		PythonCallable callable( (PyObject*)(*itr) );
+		PythonCallable callable( *itr );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -913,7 +912,7 @@ void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, ui
 		args.setItem( 1, skill );
 		args.setItem( 2, value );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -939,7 +938,7 @@ void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
 		args.setItemPlayer( 0, winner );
 		args.setItemPlayer( 1, loser );		
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
@@ -964,7 +963,7 @@ void ServerHookHandler::hookOnAuraRemove( Aura* aura )
 
 		args.setItemAura( 0, aura );
 
-		PythonCallable callable( (PyObject*)handler );
+		PythonCallable callable( handler );
 		PythonValue value = callable.call( args );
 		if( value.isEmpty() )
 		{
