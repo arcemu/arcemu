@@ -22,7 +22,7 @@
 #include <Python.h>
 
 #include "python/PythonObject.hpp"
-#include "python/PythonTuple.hpp"
+///#include "python/PythonTuple.hpp"
 #include "python/PythonValue.hpp"
 #include "python/PythonCallable.hpp"
 #include "python/Python.hpp"
@@ -103,12 +103,9 @@ void ServerHookHandler::hookOnFirstEnterWorld( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
+		ArcPyTuple args( 1 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -131,12 +128,9 @@ void ServerHookHandler::hookOnEnterWorld( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
+		ArcPyTuple args( 1 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -185,12 +179,9 @@ void ServerHookHandler::hookOnPlayerDeath( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
+		ArcPyTuple args( 1 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -213,12 +204,9 @@ void ServerHookHandler::hookOnPlayerRepop( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
+		ArcPyTuple args( 1 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -240,14 +228,11 @@ void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
-		PythonTuple args( 3 );
+		ArcPyTuple args( 3 );
 
 		if( player != NULL )
 		{
-			ArcPyPlayer *app = createArcPyPlayer();
-			app->playerPtr = player;
-			PythonObject o( (PyObject*)app );
-			args.setItem( 0, o );
+			args.setItemPlayer( 0, player );
 		}
 		else
 		{
@@ -258,10 +243,7 @@ void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 
 		if( unit != NULL )
 		{
-			ArcPyUnit *apu = createArcPyUnit();
-			apu->unitPtr = unit;
-			PythonObject o( (PyObject*)apu );
-			args.setItem( 2, o );
+			args.setItemUnit( 2, unit );
 		}
 		else
 		{
@@ -343,12 +325,8 @@ void ServerHookHandler::hookOnLogoutRequest( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		ArcPyTuple args( 1 );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -371,12 +349,9 @@ void ServerHookHandler::hookOnLogout( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
+		ArcPyTuple args( 1 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -411,34 +386,27 @@ void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object*
 		{
 		case TYPEID_GAMEOBJECT:
 			{
-				ArcPyGameObject *go = createArcPyGameObject();
-				go->gameObjectPtr = (GameObject*)questGiver;
-				param = (PyObject*)go;
+				args.setItemGameObject( 2, (GameObject*)questGiver );
 			}
 			break;
 
 		case TYPEID_UNIT:
 			{
-				ArcPyUnit *unit = createArcPyUnit();
-				unit->unitPtr = (Unit*)questGiver;
-				param = (PyObject*)unit;
+				args.setItemUnit( 2, (Unit*)questGiver );
 			}
 			break;
 
 		case TYPEID_ITEM:
-			ArcPyItem *item = createArcPyItem();
-			item->itemPtr = (Item*)questGiver;
-			param = (PyObject*)item;
-			break;
-		}
+			{
+				args.setItemPlayer( 2, (Player*)questGiver );
+				break;
+			}
 
-		if( param != NULL )
-		{
-			args.setItem( 2, PythonObject( param ) );
-		}
-		else
-		{
-			args.setItemNone( 2 );
+		default:
+			{
+				args.setItemNone( 2 );
+				break;
+			}
 		}
 
 		PythonCallable callable( (PyObject*)handler );
@@ -462,12 +430,9 @@ void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 3 );
+		ArcPyTuple args( 3 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		args.setItemPlayer( 0, player );
 		args.setItem( 1, oldZone );
 		args.setItem( 2, newZone );
 
@@ -492,12 +457,9 @@ bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 5 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		ArcPyTuple args( 5 );
+		args.setItemPlayer( 0, player );
 		args.setItem( 1, type );
 		args.setItem( 2, lang );
 		args.setItem( 3, message );
@@ -534,16 +496,10 @@ void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, ui
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 4 );
+		ArcPyTuple args( 4 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyUnit *apu = createArcPyUnit();
-		apu->unitPtr = unit;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( (PyObject*)apu ) );
+		args.setItemPlayer( 0, player );
+		args.setItemUnit( 1, unit );
 		args.setItem( 2, money );
 		args.setItem( 3, itemId );
 
@@ -568,16 +524,10 @@ void ServerHookHandler::hookOnGuildCreate( Player* leader, Guild* guild )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 2 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = leader;
-
-		ArcPyGuild *apg = createArcPyGuild();
-		apg->guildPtr = guild;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( (PyObject*)apg ) );
+		
+		ArcPyTuple args( 2 );
+		args.setItemPlayer( 0, leader );
+		args.setItemGuild( 1, guild );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -600,12 +550,9 @@ void ServerHookHandler::hookOnFullLogin( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		
+		ArcPyTuple args( 1 );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -628,12 +575,9 @@ void ServerHookHandler::hookOnCharacterCreated( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		
+		ArcPyTuple args( 1 );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -656,16 +600,10 @@ void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 2 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		ArcPyQuest *apq = createArcPyQuest();
-		apq->questPtr = quest;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
-		args.setItem( 1, PythonObject( (PyObject*)apq ) );
+		
+		ArcPyTuple args( 2 );
+		args.setItemPlayer( 0, player );
+		args.setItemQuest( 1, quest );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -742,18 +680,10 @@ void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 2 );
-
-		ArcPyPlayer *appKiller = createArcPyPlayer();
-		appKiller->playerPtr = killer;
-
-
-		ArcPyPlayer *appVictim = createArcPyPlayer();
-		appVictim->playerPtr = victim;
-
-
-		args.setItem( 0, PythonObject( (PyObject*)appKiller ) );
-		args.setItem( 1, PythonObject( (PyObject*)appVictim ) );
+		
+		ArcPyTuple args( 2 );
+		args.setItemPlayer( 0, killer );
+		args.setItemPlayer( 1, victim );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -783,12 +713,9 @@ void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam,
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 4 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		
+		ArcPyTuple args( 4 );
+		args.setItemPlayer( 0, player );
 		args.setItem( 1, teamName.c_str() );
 		args.setItemBool( 2, victory );
 		args.setItemBool( 3, rated );
@@ -880,12 +807,9 @@ void ServerHookHandler::hookOnAreaTrigger( Player* player, uint32 areaTriggerId 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 2 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		
+		ArcPyTuple args( 2 );
+		args.setItemPlayer( 0, player );
 		args.setItem( 1, areaTriggerId );
 
 		PythonCallable callable( (PyObject*)handler );
@@ -909,12 +833,9 @@ void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		ArcPyTuple args( 1 );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -937,12 +858,9 @@ void ServerHookHandler::hookOnLevelUp( Player* player )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 1 );
-
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		
+		ArcPyTuple args( 1 );
+		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );
@@ -964,16 +882,9 @@ void ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
 
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
-		PythonTuple args( 2 );
-
-		ArcPyUnit *apuKiller = createArcPyUnit();
-		apuKiller->unitPtr = killer;
-
-		ArcPyUnit *apuVictim = createArcPyUnit();
-		apuVictim->unitPtr = victim;
-
-		args.setItem( 0, PythonObject( (PyObject*)apuKiller ) );		
-		args.setItem( 1, PythonObject( (PyObject*)apuVictim ) );
+		ArcPyTuple args( 2 );
+		args.setItemUnit( 0, killer );		
+		args.setItemUnit( 1, victim );
 
 		PythonCallable callable( (PyObject*)(*itr) );
 		PythonValue value = callable.call( args );
@@ -996,12 +907,9 @@ void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, ui
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 3 );
 
-		ArcPyPlayer *app = createArcPyPlayer();
-		app->playerPtr = player;
-
-		args.setItem( 0, PythonObject( (PyObject*)app ) );
+		ArcPyTuple args( 3 );
+		args.setItemPlayer( 0, player );
 		args.setItem( 1, skill );
 		args.setItem( 2, value );
 
@@ -1026,16 +934,10 @@ void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
 	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
 	{
 		void* handler = *itr;
-		PythonTuple args( 2 );
 
-		ArcPyPlayer *appWinner = createArcPyPlayer();
-		appWinner->playerPtr = winner;
-
-		ArcPyPlayer *appLoser = createArcPyPlayer();
-		appLoser->playerPtr = loser;
-
-		args.setItem( 0, PythonObject( (PyObject*)appWinner ) );
-		args.setItem( 1, PythonObject( (PyObject*)appLoser ) );		
+		ArcPyTuple args( 2 );
+		args.setItemPlayer( 0, winner );
+		args.setItemPlayer( 1, loser );		
 
 		PythonCallable callable( (PyObject*)handler );
 		PythonValue value = callable.call( args );

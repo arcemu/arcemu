@@ -19,6 +19,8 @@
  
  #ifndef PYTHONCALL_H
  #define PYTHONCALL_H
+
+#include "python/PythonTuple.hpp"
  
  class PythonCallable : public PythonObject
  {

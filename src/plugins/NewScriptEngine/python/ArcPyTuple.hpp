@@ -20,6 +20,8 @@
 #ifndef ARCPY_TUPLE_H
 #define ARCPY_TUPLE_H
 
+#include "python/PythonTuple.hpp"
+
 class ArcPyTuple : public PythonTuple
 {
 public:
