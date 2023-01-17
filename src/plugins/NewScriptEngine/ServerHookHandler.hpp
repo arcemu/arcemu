@@ -49,7 +49,7 @@ public:
 	static void hookOnObjectLoot( Player* player, Object* target, uint32 money, uint32 itemId );
 	static void hookOnAreaTrigger( Player* player, uint32 areaTriggerId );
 	static void hookOnLevelUp( Player* player );
-	static void hookOnPreUnitDie( Unit* killer, Unit *victim );
+	static bool hookOnPreUnitDie( Unit* killer, Unit *victim );
 	static void hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value );
 	static void hookOnDuelFinished( Player* winner, Player* loser );
 	static void hookOnAuraRemove( Aura* aura );

@@ -24,7 +24,7 @@
 #include "python/PythonObject.hpp"
 #include "python/PythonValue.hpp"
 #include "python/PythonCallable.hpp"
-#include "python/Python.hpp"
+#include "python/ArcPython.hpp"
 
 #include "python/ArcPyTuple.hpp"
 
@@ -44,6 +44,8 @@
 
 void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_NEW_CHARACTER, handlers );
 
@@ -71,6 +73,8 @@ void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, W
 
 void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_KILL_PLAYER, handlers );
 
@@ -96,6 +100,8 @@ void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 
 void ServerHookHandler::hookOnFirstEnterWorld( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, handlers );
 
@@ -121,6 +127,8 @@ void ServerHookHandler::hookOnFirstEnterWorld( Player* player )
 
 void ServerHookHandler::hookOnEnterWorld( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ENTER_WORLD, handlers );
 
@@ -146,6 +154,8 @@ void ServerHookHandler::hookOnEnterWorld( Player* player )
 
 void ServerHookHandler::hookOnGuildJoin( Player* player, Guild* guild )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_GUILD_JOIN, handlers );
 
@@ -172,6 +182,8 @@ void ServerHookHandler::hookOnGuildJoin( Player* player, Guild* guild )
 
 void ServerHookHandler::hookOnPlayerDeath( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_DEATH, handlers );
 
@@ -197,6 +209,8 @@ void ServerHookHandler::hookOnPlayerDeath( Player* player )
 
 void ServerHookHandler::hookOnPlayerRepop( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_REPOP, handlers );
 
@@ -222,6 +236,8 @@ void ServerHookHandler::hookOnPlayerRepop( Player* player )
 
 void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_EMOTE, handlers );
 
@@ -264,6 +280,8 @@ void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 
 void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, handlers );
 
@@ -289,6 +307,8 @@ void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 
 bool ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CAST_SPELL, handlers );
 
@@ -318,6 +338,8 @@ bool ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell*
 
 void ServerHookHandler::hookOnLogoutRequest( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST, handlers );
 
@@ -342,6 +364,8 @@ void ServerHookHandler::hookOnLogoutRequest( Player* player )
 
 void ServerHookHandler::hookOnLogout( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_LOGOUT, handlers );
 
@@ -367,6 +391,8 @@ void ServerHookHandler::hookOnLogout( Player* player )
 
 void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object* questGiver )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_QUEST_ACCEPT, handlers );
 
@@ -423,6 +449,8 @@ void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object*
 
 void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32 newZone )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ZONE, handlers );
 
@@ -450,6 +478,8 @@ void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32
 
 bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 lang, const char* message, const char* misc )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CHAT, handlers );
 
@@ -489,6 +519,8 @@ void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, ui
 	if( unit == NULL )
 		return;
 
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_LOOT, handlers );
 
@@ -517,6 +549,8 @@ void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, ui
 
 void ServerHookHandler::hookOnGuildCreate( Player* leader, Guild* guild )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_GUILD_CREATE, handlers );
 
@@ -543,6 +577,8 @@ void ServerHookHandler::hookOnGuildCreate( Player* leader, Guild* guild )
 
 void ServerHookHandler::hookOnFullLogin( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_FULL_LOGIN, handlers );
 
@@ -568,6 +604,8 @@ void ServerHookHandler::hookOnFullLogin( Player* player )
 
 void ServerHookHandler::hookOnCharacterCreated( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CHARACTER_CREATE, handlers );
 
@@ -593,6 +631,8 @@ void ServerHookHandler::hookOnCharacterCreated( Player* player )
 
 void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_QUEST_CANCELLED, handlers );
 
@@ -619,6 +659,8 @@ void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
 
 void ServerHookHandler::hookOnQuestFinished( Player* player, Quest* quest, Object *questFinisher )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_QUEST_FINISHED, handlers );
 
@@ -673,6 +715,8 @@ void ServerHookHandler::hookOnQuestFinished( Player* player, Quest* quest, Objec
 
 void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, handlers );
 
@@ -699,6 +743,8 @@ void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 
 void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam, bool victory, bool rated )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ARENA_FINISH, handlers );
 	
@@ -736,6 +782,8 @@ void ServerHookHandler::hookOnObjectLoot( Player* player, Object* target, uint32
 {
 	if( target == NULL )
 		return;
+
+	Guard g( ArcPython::getLock() );
 
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_OBJECTLOOT, handlers );
@@ -800,6 +848,8 @@ void ServerHookHandler::hookOnObjectLoot( Player* player, Object* target, uint32
 
 void ServerHookHandler::hookOnAreaTrigger( Player* player, uint32 areaTriggerId )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_AREATRIGGER, handlers );
 
@@ -826,6 +876,8 @@ void ServerHookHandler::hookOnAreaTrigger( Player* player, uint32 areaTriggerId 
 
 void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_RESURRECT, handlers );
 
@@ -851,6 +903,8 @@ void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 
 void ServerHookHandler::hookOnLevelUp( Player* player )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_POST_LEVELUP, handlers );
 
@@ -874,8 +928,10 @@ void ServerHookHandler::hookOnLevelUp( Player* player )
 	}
 }
 
-void ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
+bool ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_PRE_DIE, handlers );
 
@@ -896,10 +952,14 @@ void ServerHookHandler::hookOnPreUnitDie( Unit* killer, Unit* victim )
 			value.decref();
 		}
 	}
+
+	return true;
 }
 
 void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, handlers );
 
@@ -927,6 +987,8 @@ void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, ui
 
 void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_DUEL_FINISHED, handlers );
 
@@ -953,6 +1015,8 @@ void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
 
 void ServerHookHandler::hookOnAuraRemove( Aura* aura )
 {
+	Guard g( ArcPython::getLock() );
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_AURA_REMOVE, handlers );
 
