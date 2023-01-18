@@ -31,6 +31,8 @@ public:
 
 	void onStartup();
 
+	void onReload();
+
 private:
 	int loadScript( const char *fileName );
 

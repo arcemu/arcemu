@@ -55,6 +55,10 @@ extern "C" SCRIPT_DECL void _exp_engine_unload()
 
 extern "C" SCRIPT_DECL void _export_engine_reload()
 {
-	LOG_BASIC("NSE: Engine reload currently NOT supported.");
+	LOG_BASIC("NSE: Reloading");
+	
+	pythonEngine->onReload();
+
+	LOG_BASIC("NSE: Done reloading.");
 }
 

@@ -50,6 +50,12 @@ void PythonEngine::onStartup()
 	registerHooks();
 }
 
+void PythonEngine::onReload()
+{
+	ServerHookRegistry::releaseHooks();
+	loadScripts();
+}
+
 int PythonEngine::loadScript( const char *fileName )
 {
 	LOG_BASIC( "Loading %s...", fileName );
