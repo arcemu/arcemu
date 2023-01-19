@@ -51,6 +51,7 @@ def onCastSpell( player, spellId, spell ):
 
 def onLogoutRequest( player ):
 	print( "Player '" + player.getName() + "' has requested to log out." )
+	return True
 	
 def onLogout( player ):
 	print( "Player '" + player.getName() + "' has logged out." )

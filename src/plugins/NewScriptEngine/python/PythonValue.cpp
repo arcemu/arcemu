@@ -21,6 +21,8 @@
 #include "PythonObject.hpp"
 #include "PythonValue.hpp"
 
+#include <cstring>
+
 PythonValue::PythonValue( PyObject *obj ) :
 PythonObject( obj )
 {
@@ -30,3 +32,29 @@ PythonValue::~PythonValue()
 {
 }
 
+bool PythonValue::isNone()
+{
+	
+	if( getObject() == &_Py_NoneStruct )
+		return true;
+	else
+		return false;
+}
+
+bool PythonValue::isBool()
+{
+	if( PyBool_Check( getObject() ) )
+		return true;
+	else
+		return false;
+}
+
+bool PythonValue::getBoolValue()
+{
+	PyObject* tr = Py_True;
+
+	if( getObject() == tr )
+		return true;
+	else
+		return false;
+}

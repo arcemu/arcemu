@@ -340,6 +340,8 @@ bool ServerHookHandler::hookOnLogoutRequest( Player* player )
 {
 	Guard g( ArcPython::getLock() );
 
+	bool returnValue = true;
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST, handlers );
 
@@ -357,11 +359,15 @@ bool ServerHookHandler::hookOnLogoutRequest( Player* player )
 		}
 		else
 		{
+			if( value.isBool() && ! value.getBoolValue() )
+			{
+				returnValue = false;
+			}
 			value.decref();
 		}
 	}
 
-	return true;
+	return returnValue;
 }
 
 void ServerHookHandler::hookOnLogout( Player* player )
