@@ -140,8 +140,6 @@ def onKillPlayer( killer, victim ):
 def onAuraRemove( aura ):
 	print( "Aura removed. Spell name: " + aura.getSpellName() + ", Spell Id:" + str( aura.getSpellId() ) + ", Aura slot:" + str( aura.getAuraSlot() ) )
 
-arcemu.info()
-
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_NEW_CHARACTER, onNewCharacter )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_KILL_PLAYER, onKillPlayer )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, onFirstEnterWorld )

@@ -34,12 +34,6 @@ extern int registerArcPyQuest( PyObject *module );
 extern int registerArcPySpell( PyObject *module );
 extern int registerArcPyWorldSession( PyObject *module );
 
-static PyObject* arcemu_info( PyObject *self, PyObject *args )
-{
-	printf( "Arcemu info called\n" );
-	return Py_None;
-}
-
 static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 {
 	printf( "Arcemu RegisterServerHook called\n" );
@@ -61,7 +55,6 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 }
 
 static PyMethodDef ArcemuMethods[] = {
-	{ "info", arcemu_info, METH_NOARGS, "Prints Arcemu info" },
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
 	{NULL, NULL, 0, NULL }
 };
