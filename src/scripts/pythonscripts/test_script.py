@@ -39,11 +39,11 @@ def onEmote( pPlayer, emote, pUnit ):
 	
 	if pPlayer is not None:
 		print( "The player's name is: ", pPlayer.getName() )
-		pPlayer.sendChatMessage( 12, 0, "Hello my name is " + pPlayer.getName() )
+		pPlayer.sendChatMessage( 12, arcemu.LANG_UNIVERSAL, "Hello my name is " + pPlayer.getName() )
 	
 	if pUnit is not None:
 		print( "The unit's name is: ", pUnit.getName() )
-		pUnit.sendChatMessage( 12, 0, 'Hello, my name is ' + pUnit.getName() )
+		pUnit.sendChatMessage( 12, arcemu.LANG_UNIVERSAL, 'Hello, my name is ' + pUnit.getName() )
 		
 		
 def onEnterCombat( pPlayer, pUnit ):

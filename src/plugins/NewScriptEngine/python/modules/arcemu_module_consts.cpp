@@ -23,6 +23,7 @@
 
 void registerArcemuConstants( PyObject *module )
 {
+	/// Server hook constants
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_NEW_CHARACTER", SERVER_HOOK_EVENT_ON_NEW_CHARACTER );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_KILL_PLAYER", SERVER_HOOK_EVENT_ON_KILL_PLAYER );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD", SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD );
@@ -55,4 +56,25 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_DUEL_FINISHED", SERVER_HOOK_EVENT_ON_DUEL_FINISHED );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_AURA_REMOVE", SERVER_HOOK_EVENT_ON_AURA_REMOVE );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_RESURRECT", SERVER_HOOK_EVENT_ON_RESURRECT );
+
+	/// Languages
+	PyModule_AddIntConstant( module, "LANG_UNIVERSAL", LANG_UNIVERSAL );
+	PyModule_AddIntConstant( module, "LANG_ORCISH", LANG_ORCISH );
+	PyModule_AddIntConstant( module, "LANG_DARNASSIAN", LANG_DARNASSIAN );
+	PyModule_AddIntConstant( module, "LANG_TAURAHE", LANG_TAURAHE );
+	/// 4
+	/// 5
+	PyModule_AddIntConstant( module, "LANG_DWARVISH", LANG_DWARVISH );
+	PyModule_AddIntConstant( module, "LANG_COMMON", LANG_COMMON );
+	PyModule_AddIntConstant( module, "LANG_DEMONIC", LANG_DEMONIC );
+	PyModule_AddIntConstant( module, "LANG_TITAN", LANG_TITAN );
+	PyModule_AddIntConstant( module, "LANG_THELASSIAN", LANG_THELASSIAN );
+	PyModule_AddIntConstant( module, "LANG_DRACONIC", LANG_DRACONIC );
+	PyModule_AddIntConstant( module, "LANG_KALIMAG", LANG_KALIMAG );
+	PyModule_AddIntConstant( module, "LANG_GNOMISH", LANG_GNOMISH );
+	PyModule_AddIntConstant( module, "LANG_TROLL", LANG_TROLL );
+
+	PyModule_AddIntConstant( module, "LANG_GUTTERSPEAK", LANG_GUTTERSPEAK );
+	PyModule_AddIntConstant( module, "LANG_TITAN", LANG_TITAN );
+	PyModule_AddIntConstant( module, "LANG_DRAENEI", LANG_DRAENEI );
 }
