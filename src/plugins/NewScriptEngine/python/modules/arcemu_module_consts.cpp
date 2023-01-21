@@ -77,4 +77,19 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "LANG_GUTTERSPEAK", LANG_GUTTERSPEAK );
 	PyModule_AddIntConstant( module, "LANG_TITAN", LANG_TITAN );
 	PyModule_AddIntConstant( module, "LANG_DRAENEI", LANG_DRAENEI );
+
+	/// Chat message types
+	PyModule_AddIntConstant( module, "CHAT_MSG_SYSTEM", CHAT_MSG_SYSTEM );
+	PyModule_AddIntConstant( module, "CHAT_MSG_SAY", CHAT_MSG_SAY );
+	PyModule_AddIntConstant( module, "CHAT_MSG_PARTY", CHAT_MSG_PARTY );
+	PyModule_AddIntConstant( module, "CHAT_MSG_RAID", CHAT_MSG_RAID );
+	PyModule_AddIntConstant( module, "CHAT_MSG_YELL", CHAT_MSG_YELL );
+	PyModule_AddIntConstant( module, "CHAT_MSG_WHISPER", CHAT_MSG_WHISPER );
+
+	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_SAY", CHAT_MSG_MONSTER_SAY );
+	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_PARTY", CHAT_MSG_MONSTER_PARTY );
+	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_YELL", CHAT_MSG_MONSTER_YELL );
+	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_WHISPER", CHAT_MSG_MONSTER_WHISPER );
+	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_EMOTE", CHAT_MSG_MONSTER_EMOTE );
+
 }
