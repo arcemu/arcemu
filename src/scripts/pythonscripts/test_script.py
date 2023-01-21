@@ -12,6 +12,7 @@ from arcemu import WorldSession
 
 def onNewCharacter( charRace, charClass, session, name ):
 	print( "New character created by " + session.getAccountName() + " (" + str( session.getAccountId() ) +  ")" + " Character name: " + name + ", race:" + str( charRace ) + ", class:" + str( charClass ) )
+	return True
 
 def onFirstEnterWorld( player ):
 	print( "Player '" + player.getName() + "' has entered the world for the first time!." )
@@ -27,9 +28,11 @@ def onPlayerDeath( player ):
 	
 def onPlayerRepop( player ):
 	print( "Player '" + player.getName() + "' has been repopped." )
+	return True
 	
 def onPlayerResurrect( player ):
 	print( "Player '" + player.getName() + "' has resurrected." )
+	return True
 
 def onEmote( pPlayer, emote, pUnit ):
 	print( "Player emote ", emote )
@@ -70,7 +73,8 @@ def onZoneChange( player, oldZone, newZone ):
 	print( "Player '" + player.getName() + "' has changed zone from " + str( oldZone ) + " to " + str( newZone ) )
 	
 def onChatMessage( player, type, lang, message, misc ):
-	print( "Player '" + player.getName() + "': " + message + "( misc:" + misc + ")" + "(lang:" + str(lang) + ")(type:" + str(type) + ")" )	
+	print( "Player '" + player.getName() + "': " + message + "( misc:" + misc + ")" + "(lang:" + str(lang) + ")(type:" + str(type) + ")" )
+	return True
 	
 def onLoot( player, unit, money, itemId ):
 	print( "Player " + player.getName() + " has looted " + str( money ) + " coins and item " + str( itemId ) + " from " + unit.getName() )

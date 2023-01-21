@@ -23,13 +23,13 @@
 class ServerHookHandler
 {
 public:
-	static void hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name );
+	static bool hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name );
 	static void hookOnKillPlayer( Player* killer, Player *victim );
 	static void hookOnFirstEnterWorld( Player *player );
 	static void hookOnEnterWorld( Player* player );
 	static void hookOnGuildJoin( Player* player, Guild* guild );
 	static void hookOnPlayerDeath( Player* player );
-	static void hookOnPlayerRepop( Player* player );
+	static bool hookOnPlayerRepop( Player* player );
 	static void hookOnEmote( Player* player, uint32 emote, Unit* unit );
 	static void hookOnEnterCombat( Player* player, Unit* unit );
 	static bool hookOnCastSpell( Player* player, SpellEntry* spe, Spell* spell );
@@ -53,7 +53,7 @@ public:
 	static void hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value );
 	static void hookOnDuelFinished( Player* winner, Player* loser );
 	static void hookOnAuraRemove( Aura* aura );
-	static void hookOnPlayerResurrect( Player* player );	
+	static bool hookOnPlayerResurrect( Player* player );	
 };
 
 #endif

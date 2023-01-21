@@ -42,9 +42,11 @@
 #include "python/modules/ArcPySpell.hpp"
 #include "python/modules/ArcPyWorldSession.hpp"
 
-void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name )
+bool ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, WorldSession* session, const char *name )
 {
 	Guard g( ArcPython::getLock() );
+
+	bool returnValue = true;
 
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_NEW_CHARACTER, handlers );
@@ -66,9 +68,15 @@ void ServerHookHandler::hookOnNewCharacter( uint32 charRace, uint32 charClass, W
 		}
 		else
 		{
+			if( value.isBool() && !value.getBoolValue() )
+			{
+				returnValue = false;
+			}
 			value.decref();
 		}
 	}
+
+	return returnValue;
 }
 
 void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
@@ -207,9 +215,11 @@ void ServerHookHandler::hookOnPlayerDeath( Player* player )
 	}
 }
 
-void ServerHookHandler::hookOnPlayerRepop( Player* player )
+bool ServerHookHandler::hookOnPlayerRepop( Player* player )
 {
 	Guard g( ArcPython::getLock() );
+
+	bool returnValue = true;
 
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_REPOP, handlers );
@@ -229,9 +239,15 @@ void ServerHookHandler::hookOnPlayerRepop( Player* player )
 		}
 		else
 		{
+			if( value.isBool() && !value.getBoolValue() )
+			{
+				returnValue = false;
+			}
 			value.decref();
 		}
 	}
+
+	return returnValue;
 }
 
 void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
@@ -488,6 +504,8 @@ bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 {
 	Guard g( ArcPython::getLock() );
 
+	bool returnValue = true;
+
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_CHAT, handlers );
 
@@ -514,11 +532,16 @@ bool ServerHookHandler::hookOnChatMessage( Player* player, uint32 type, uint32 l
 		}
 		else
 		{
+			if( value.isBool() && !value.getBoolValue() )
+			{
+				returnValue = false;
+			}
+
 			value.decref();
 		}
 	}
 
-	return true;
+	return returnValue;
 }
 
 void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, uint32 itemId )
@@ -882,9 +905,11 @@ void ServerHookHandler::hookOnAreaTrigger( Player* player, uint32 areaTriggerId 
 	}
 }
 
-void ServerHookHandler::hookOnPlayerResurrect( Player* player )
+bool ServerHookHandler::hookOnPlayerResurrect( Player* player )
 {
 	Guard g( ArcPython::getLock() );
+
+	bool returnValue = true;
 
 	std::vector< void* > handlers;
 	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_RESURRECT, handlers );
@@ -904,9 +929,15 @@ void ServerHookHandler::hookOnPlayerResurrect( Player* player )
 		}
 		else
 		{
+			if( value.isBool() && !value.getBoolValue() )
+			{
+				returnValue = false;
+			}
 			value.decref();
 		}
 	}
+
+	return true;
 }
 
 void ServerHookHandler::hookOnLevelUp( Player* player )
