@@ -58,16 +58,16 @@ void PythonEngine::onReload()
 
 int PythonEngine::loadScript( const char *fileName )
 {
-	LOG_BASIC( "Loading %s...", fileName );
+	sLog.Success( "APE", "Loading %s...", fileName );
 
 	int val = python->runSimpleFile( fileName );
 	if( val == 0 )
 	{
-	    LOG_BASIC( "Loaded %s", fileName );
+	    sLog.Success( "APE", "Loaded %s", fileName );
 	}
 	else
 	{
-	    LOG_BASIC( "Failed to load %s", fileName );
+	    sLog.Error( "APE", "Failed to load %s", fileName );
 	}
 
 	return val;
@@ -75,7 +75,7 @@ int PythonEngine::loadScript( const char *fileName )
 
 int PythonEngine::loadScripts()
 {
-	LOG_BASIC( "Loading Python scripts..." );
+	sLog.Success( "APE", "Loading Python scripts..." );
 	int c = 0;
 
 	std::vector< std::string > pythonFiles;
@@ -88,7 +88,7 @@ int PythonEngine::loadScripts()
 			c++;
 	}
 
-	LOG_BASIC( "Loaded %d Python scripts.", c );
+	sLog.Success( "APE", "Loaded %d Python scripts.", c );
 
 	return 0;
 }

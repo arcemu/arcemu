@@ -17,8 +17,9 @@
  *
  */
 
+#include "StdAfx.h"
+
 #include <Python.h>
-#include <cstdio>
 
 #include "ServerHookRegistry.hpp"
 
@@ -36,8 +37,6 @@ extern int registerArcPyWorldSession( PyObject *module );
 
 static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 {
-	printf( "Arcemu RegisterServerHook called\n" );
-
 	unsigned long serverEvent = 0;
 	PyObject *callback = NULL;
 
@@ -46,10 +45,10 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 		return NULL;
 	}
 
-	printf( "RegisterServerHook event %u\n", serverEvent );
-
 	Py_IncRef( callback );
 	ServerHookRegistry::addHook( serverEvent, callback );
+	
+	sLog.Debug( "APE", "Registered handler for server hook event %u", serverEvent );
 
 	return Py_None;
 }

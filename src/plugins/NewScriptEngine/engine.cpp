@@ -35,30 +35,30 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 
 extern "C" SCRIPT_DECL void _exp_script_register( ScriptMgr *mgr )
 {
-	LOG_BASIC("NSE: Starting up.");
+	sLog.Success( "APE", "Starting up...");
 	
 	pythonEngine = new PythonEngine(mgr);
 	pythonEngine->onStartup();
 
-	LOG_BASIC("NSE: Startup complete.");
+	sLog.Success( "APE", "Startup complete.");
 }
 
 extern "C" SCRIPT_DECL void _exp_engine_unload()
 {
-	LOG_BASIC("NSE: Shutting down...");
+	sLog.Success( "APE", "Shutting down...");
 
 	delete pythonEngine;
 	pythonEngine = NULL;
 	
-	LOG_BASIC("NSE: Shutdown complete.");
+	sLog.Success( "APE", "Shutdown complete.");
 }
 
 extern "C" SCRIPT_DECL void _export_engine_reload()
 {
-	LOG_BASIC("NSE: Reloading");
+	sLog.Success( "APE", "Reloading");
 	
 	pythonEngine->onReload();
 
-	LOG_BASIC("NSE: Done reloading.");
+	sLog.Success( "APE", "Done reloading.");
 }
 
