@@ -50,7 +50,7 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 	
 	sLog.Debug( "APE", "Registered handler for server hook event %u", serverEvent );
 
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 static PyMethodDef ArcemuMethods[] = {
