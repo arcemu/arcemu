@@ -29,6 +29,7 @@ extern void registerArcemuConstants( PyObject *module );
 
 extern int registerArcPyAura( PyObject *module );
 extern int registerArcPyGameObject( PyObject *module );
+extern int registerArcPyGossipMenu( PyObject *module );
 extern int registerArcPyGuild( PyObject *module );
 extern int registerArcPyItem( PyObject *module );
 extern int registerArcPyUnit( PyObject *module );
@@ -91,6 +92,7 @@ PyObject* PyInit_Arcemu(void)
 
 	registerArcPyAura( module );
 	registerArcPyGameObject( module );
+	registerArcPyGossipMenu( module );
 	registerArcPyGuild( module );
 	registerArcPyItem( module );
 	registerArcPyUnit( module );

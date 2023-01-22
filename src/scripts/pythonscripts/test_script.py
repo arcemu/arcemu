@@ -2,6 +2,7 @@ import arcemu
 
 from arcemu import Aura
 from arcemu import GameObject
+from arcemu import GossipMenu
 from arcemu import Guild
 from arcemu import Item
 from arcemu import Unit
@@ -143,6 +144,12 @@ def onAuraRemove( aura ):
 def mohawk_onHello( unit, event, player ):
 	print( player.getName() + " said gossip hello to " + unit.getName() )
 	print( "Event id: " + str( event ) )
+	
+	menu = GossipMenu( 1, player, 0 )
+	menu.addItem( 0, "First menu item", 1, 0 )
+	menu.addItem( 0, "Second menu item", 2, 0 )
+	menu.addItem( 0, "Third menu item", 3, 0 )
+	menu.sendToPlayer( player )
 	
 arcemu.RegisterUnitGossipEvent( 31111, 1, mohawk_onHello )
 

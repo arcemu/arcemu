@@ -16,6 +16,7 @@ ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/arcemu_module_consts.cpp
 ${prefix}/python/modules/ArcPyAura.cpp
 ${prefix}/python/modules/ArcPyGameObject.cpp
+${prefix}/python/modules/ArcPyGossipMenu.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
 ${prefix}/python/modules/ArcPyItem.cpp
 ${prefix}/python/modules/ArcPyUnit.cpp
@@ -49,6 +50,7 @@ ${prefix}/python/PythonTuple.hpp
 ${prefix}/python/PythonValue.hpp
 ${prefix}/python/modules/ArcPyAura.hpp
 ${prefix}/python/modules/ArcPyGameObject.hpp
+${prefix}/python/modules/ArcPyGossipMenu.hpp
 ${prefix}/python/modules/ArcPyGuild.hpp
 ${prefix}/python/modules/ArcPyItem.hpp
 ${prefix}/python/modules/ArcPyUnit.hpp
