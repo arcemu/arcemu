@@ -22,6 +22,7 @@
 
 #include "StdAfx.h"
 
+#include "ArcPyUnit.hpp"
 #include "ArcPyPlayer.hpp"
 
 #include "ArcPyGossipMenu.hpp"
@@ -37,21 +38,21 @@ static PyObject* ArcPyGossipMenu_new( PyTypeObject *type, PyObject *args, PyObje
 static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject *keywords )
 {
 	unsigned long textId = 0;
-	PyObject* playerObj = NULL;
+	PyObject* obj = NULL;
 	unsigned long autoSend = 0;
 
-	if( ! PyArg_ParseTuple( args, "kOk", &textId, &playerObj, &autoSend ) )
+	if( ! PyArg_ParseTuple( args, "kOk", &textId, &obj, &autoSend ) )
 	{
 		return NULL;
 	}
 
-	if( strcmp( Py_TYPE( playerObj )->tp_name, "ArcPyPlayer" ) != 0 )
+	if( strcmp( Py_TYPE( obj )->tp_name, "ArcPyUnit" ) != 0 )
 	{
 		return NULL;
 	}
 
-	Player *player = ((ArcPyPlayer*)playerObj)->playerPtr;
-	self->gossipMenuPtr = new Arcemu::Gossip::Menu( player, textId );
+	Unit *unit = ((ArcPyUnit*)obj)->unitPtr;
+	self->gossipMenuPtr = new Arcemu::Gossip::Menu( unit, textId );
 	return 0;
 }
 
