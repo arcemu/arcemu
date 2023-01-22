@@ -104,10 +104,30 @@ static PyObject* ArcPyGossipMenu_sendToPlayer( ArcPyGossipMenu* self, PyObject* 
 	Py_RETURN_NONE;
 }
 
+static PyObject* ArcPyGossipMenu_complete( ArcPyGossipMenu* /*self*/, PyObject* args )
+{
+	PyObject* playerObj = NULL;
+	if( ! PyArg_ParseTuple( args, "O", &playerObj ) )
+	{
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( playerObj )->tp_name, "ArcPyPlayer" ) != 0 )
+	{
+		return NULL;
+	}
+
+	Player *player = ((ArcPyPlayer*)playerObj)->playerPtr;
+	Arcemu::Gossip::Menu::Complete( player );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyGossipMenu_methods[] = 
 {
 	{ "addItem", (PyCFunction)ArcPyGossipMenu_addItem, METH_VARARGS, "Adds a new menu item to the Gossip menu" },
 	{ "sendToPlayer", (PyCFunction)ArcPyGossipMenu_sendToPlayer, METH_VARARGS, "Sends the menu to a Player" },
+	{ "complete", (PyCFunction)ArcPyGossipMenu_complete, METH_VARARGS | METH_STATIC, "Completes the player's gossip menu" },
 	{NULL}
 };
 
