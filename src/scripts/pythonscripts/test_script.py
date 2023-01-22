@@ -139,6 +139,12 @@ def onKillPlayer( killer, victim ):
 	
 def onAuraRemove( aura ):
 	print( "Aura removed. Spell name: " + aura.getSpellName() + ", Spell Id:" + str( aura.getSpellId() ) + ", Aura slot:" + str( aura.getAuraSlot() ) )
+	
+def mohawk_onHello( unit, event, player ):
+	print( player.getName() + " said gossip hello to " + unit.getName() )
+	print( "Event id: " + str( event ) )
+	
+arcemu.RegisterUnitGossipEvent( 31111, 1, mohawk_onHello )
 
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_NEW_CHARACTER, onNewCharacter )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_KILL_PLAYER, onKillPlayer )

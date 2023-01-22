@@ -24,6 +24,10 @@
 #include "ServerHookRegistry.hpp"
 #include "ServerHookHandler.hpp"
 
+#include "GossipFunctionRegistry.hpp"
+
+#include "CreatureGossipScriptRegisterer.hpp"
+
 void register_arcemu_extensions();
 
 
@@ -39,6 +43,8 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 PythonEngine::~PythonEngine()
 {
 	ServerHookRegistry::releaseHooks();
+	CreatureGossipFunctionRegistry::releaseFunctions();
+
 	delete python;
 	python = NULL;
 }
@@ -48,6 +54,8 @@ void PythonEngine::onStartup()
 	loadScripts();
 
 	registerHooks();
+
+	registerGossipScripts();
 }
 
 void PythonEngine::onReload()
@@ -129,4 +137,10 @@ void PythonEngine::registerHooks()
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_DUEL_FINISHED, (void*)(&ServerHookHandler::hookOnDuelFinished) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_AURA_REMOVE, (void*)(&ServerHookHandler::hookOnAuraRemove) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_RESURRECT, (void*)(&ServerHookHandler::hookOnPlayerResurrect) );	
+}
+
+void PythonEngine::registerGossipScripts()
+{
+	CreatureGossipScriptRegisterer registerer( this->mgr );
+	CreatureGossipFunctionRegistry::visit( &registerer );
 }

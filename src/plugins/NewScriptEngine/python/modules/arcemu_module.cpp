@@ -23,6 +23,8 @@
 
 #include "ServerHookRegistry.hpp"
 
+#include "GossipFunctionRegistry.hpp"
+
 extern void registerArcemuConstants( PyObject *module );
 
 extern int registerArcPyAura( PyObject *module );
@@ -53,8 +55,26 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args )
+{
+	unsigned long creatureId = 0;
+	unsigned long gossipEvent = 0;
+	PyObject *callback = NULL;
+
+	if( !PyArg_ParseTuple( args, "IIO", &creatureId, &gossipEvent, &callback ) )
+	{
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	CreatureGossipFunctionRegistry::registerGossipFunction( creatureId, gossipEvent, callback );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
+	{ "RegisterUnitGossipEvent", arcemu_RegisterUnitGossipEvent, METH_VARARGS, "Registers a Unit gossip event" },
 	{NULL, NULL, 0, NULL }
 };
 

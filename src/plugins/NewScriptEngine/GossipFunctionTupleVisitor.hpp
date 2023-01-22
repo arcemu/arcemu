@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,34 +17,15 @@
  *
  */
 
-#ifndef ARCEMU_PYTHON_ENGINE_HPP
-#define ARCEMU_PYTHON_ENGINE_HPP
+#ifndef ARCPY_G_F_T_V_H
+#define ARCPY_G_F_T_V_H
 
-class ArcPython;
-class ScriptMgr;
+#include "GossipFunctionTuple.hpp"
 
-class PythonEngine
+class GossipFunctionTupleVisitor
 {
 public:
-	PythonEngine( ScriptMgr *mgr );
-	~PythonEngine();
-
-	void onStartup();
-
-	void onReload();
-
-private:
-	int loadScript( const char *fileName );
-
-	int loadScripts();
-
-	void registerHooks();
-	void registerGossipScripts();
-
-private:
-	ArcPython *python;
-
-	ScriptMgr *mgr;
+	virtual void visit( unsigned int id, GossipFunctionTuple &tuple ) = 0;
 };
 
 #endif

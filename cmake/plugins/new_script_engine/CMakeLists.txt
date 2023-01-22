@@ -31,6 +31,9 @@ ${prefix}/python/PythonObject.cpp
 ${prefix}/python/PythonTuple.cpp
 ${prefix}/python/PythonValue.cpp
 ${prefix}/PythonEngine.cpp
+${prefix}/PythonGossipScript.cpp
+${prefix}/CreatureGossipScriptRegisterer.cpp
+${prefix}/GossipFunctionRegistry.cpp
 ${prefix}/ServerHookRegistry.cpp
 ${prefix}/ServerHookHandler.cpp
 )
@@ -54,6 +57,12 @@ ${prefix}/python/modules/ArcPyQuest.hpp
 ${prefix}/python/modules/ArcPySpell.hpp
 ${prefix}/python/modules/ArcPyWorldSession.hpp
 ${prefix}/PythonEngine.hpp
+${prefix}/PythonGossipEventTypes.hpp
+${prefix}/PythonGossipScript.hpp
+${prefix}/CreatureGossipScriptRegisterer.hpp
+${prefix}/GossipFunctionTuple.hpp
+${prefix}/GossipFunctionTupleVisitor.hpp
+${prefix}/GossipFunctionRegistry.hpp
 ${prefix}/ServerHookRegistry.hpp
 ${prefix}/ServerHookHandler.hpp
 )

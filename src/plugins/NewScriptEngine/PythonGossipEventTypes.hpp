@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,34 +17,14 @@
  *
  */
 
-#ifndef ARCEMU_PYTHON_ENGINE_HPP
-#define ARCEMU_PYTHON_ENGINE_HPP
+#ifndef PYTHON_GOSSIP_EVENT_TYPES_H
+#define PYTHON_GOSSIP_EVENT_TYPES_H
 
-class ArcPython;
-class ScriptMgr;
-
-class PythonEngine
+enum PythonGossipEventTypes
 {
-public:
-	PythonEngine( ScriptMgr *mgr );
-	~PythonEngine();
-
-	void onStartup();
-
-	void onReload();
-
-private:
-	int loadScript( const char *fileName );
-
-	int loadScripts();
-
-	void registerHooks();
-	void registerGossipScripts();
-
-private:
-	ArcPython *python;
-
-	ScriptMgr *mgr;
+	PYTHON_GOSSIP_EVENT_HELLO  = 1,
+	PYTHON_GOSSIP_EVENT_SELECT = 2,
+	PYTHON_GOSSIP_EVENT_END    = 3,
 };
 
 #endif
