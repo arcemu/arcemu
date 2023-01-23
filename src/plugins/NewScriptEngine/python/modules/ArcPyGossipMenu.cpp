@@ -70,7 +70,10 @@ static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args 
 	unsigned long optionId = 0;
 	unsigned long coded = 0;
 
-	if( ! PyArg_ParseTuple( args, "kskk", &icon, &text, &optionId, &coded ) )
+	const char *boxMessage = "";
+	unsigned long boxMoney = 0;
+
+	if( ! PyArg_ParseTuple( args, "kskk|sk", &icon, &text, &optionId, &coded, &boxMessage, &boxMoney ) )
 	{
 		return NULL;
 	}
@@ -78,9 +81,9 @@ static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args 
 	std::string strText = text;
 
 	if( coded == 0 )
-		self->gossipMenuPtr->AddItem( (uint8)icon, strText.c_str(), optionId, false );
+		self->gossipMenuPtr->AddItem( icon, text, optionId, boxMoney, boxMessage, false );
 	else
-		self->gossipMenuPtr->AddItem( (uint8)icon, strText.c_str(), optionId, true );
+		self->gossipMenuPtr->AddItem( icon, text, optionId, boxMoney, boxMessage, true );
 
 	Py_RETURN_NONE;
 }
