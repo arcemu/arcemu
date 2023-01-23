@@ -108,4 +108,30 @@ void PythonGossipScript::OnSelectOption( Object* object, Player* player, uint32 
 
 void PythonGossipScript::OnEnd( Object* object, Player* player )
 {
+	if( functions.onEndFunction == NULL )
+		return;
+
+	ArcPyTuple args( 2 );
+	
+	switch( object->GetTypeId() )
+	{
+	case TYPEID_UNIT:
+		{
+			args.setItemUnit( 0, (Unit*)object );
+			break;
+		}
+	}
+
+	args.setItemPlayer( 1, player );
+
+	PythonCallable callable( functions.onEndFunction );
+	PythonValue value = callable.call( args );
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
