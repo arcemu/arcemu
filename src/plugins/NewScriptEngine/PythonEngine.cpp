@@ -60,6 +60,8 @@ void PythonEngine::onStartup()
 
 void PythonEngine::onReload()
 {
+	Guard g( ArcPython::getLock() );
+
 	ServerHookRegistry::releaseHooks();
 	loadScripts();
 }
