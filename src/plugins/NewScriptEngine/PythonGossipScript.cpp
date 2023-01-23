@@ -44,6 +44,8 @@ void PythonGossipScript::OnHello( Object* object, Player* player )
 	if( functions.onHelloFunction == NULL )
 		return;
 
+	Guard g( ArcPython::getLock() );
+
 	ArcPyTuple args( 3 );
 	
 	switch( object->GetTypeId() )
@@ -74,6 +76,8 @@ void PythonGossipScript::OnSelectOption( Object* object, Player* player, uint32 
 {
 	if( functions.onSelectionFunction == NULL )
 		return;
+
+	Guard g( ArcPython::getLock() );
 
 	ArcPyTuple args( 4 );
 
@@ -110,6 +114,8 @@ void PythonGossipScript::OnEnd( Object* object, Player* player )
 {
 	if( functions.onEndFunction == NULL )
 		return;
+
+	Guard g( ArcPython::getLock() );
 
 	ArcPyTuple args( 2 );
 	
