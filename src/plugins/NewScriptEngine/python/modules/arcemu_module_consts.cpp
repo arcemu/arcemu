@@ -92,4 +92,14 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_WHISPER", CHAT_MSG_MONSTER_WHISPER );
 	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_EMOTE", CHAT_MSG_MONSTER_EMOTE );
 
+	/// Gossip Icons
+	PyModule_AddIntConstant( module, "ICON_CHAT", Arcemu::Gossip::ICON_CHAT );
+	PyModule_AddIntConstant( module, "ICON_VENDOR", Arcemu::Gossip::ICON_VENDOR );
+	PyModule_AddIntConstant( module, "ICON_FLIGHTMASTER", Arcemu::Gossip::ICON_FLIGHTMASTER );
+	PyModule_AddIntConstant( module, "ICON_TRAINER", Arcemu::Gossip::ICON_TRAINER );
+	PyModule_AddIntConstant( module, "ICON_MONEY_BAG", Arcemu::Gossip::ICON_MONEY_BAG );
+	PyModule_AddIntConstant( module, "ICON_TALK", Arcemu::Gossip::ICON_TALK );
+	PyModule_AddIntConstant( module, "ICON_TABARD", Arcemu::Gossip::ICON_TABARD );
+	PyModule_AddIntConstant( module, "ICON_BATTLE", Arcemu::Gossip::ICON_BATTLE );
+	PyModule_AddIntConstant( module, "ICON_DOT", Arcemu::Gossip::ICON_DOT );
 }

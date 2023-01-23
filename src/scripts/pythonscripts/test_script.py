@@ -146,9 +146,9 @@ def mohawk_onHello( unit, event, player ):
 	print( "Event id: " + str( event ) )
 	
 	menu = GossipMenu( 1, unit, 0 )
-	menu.addItem( 0, "First menu item", 1, 0 )
-	menu.addItem( 0, "Second menu item", 2, 0 )
-	menu.addItem( 0, "Third menu item", 3, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "First menu item", 1, 0 )
+	menu.addItem( arcemu.ICON_VENDOR, "Second menu item", 2, 0 )
+	menu.addItem( arcemu.ICON_DOT, "Third menu item", 3, 0 )
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
