@@ -48,6 +48,12 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 		return NULL;
 	}
 
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a function!" );
+		return NULL;
+	}
+
 	Py_IncRef( callback );
 	ServerHookRegistry::addHook( serverEvent, callback );
 	
@@ -64,6 +70,12 @@ static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args 
 
 	if( !PyArg_ParseTuple( args, "IIO", &creatureId, &gossipEvent, &callback ) )
 	{
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Third argument should be a function!" );
 		return NULL;
 	}
 
