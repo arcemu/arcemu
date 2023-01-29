@@ -58,9 +58,9 @@ public:
 	static GOFunctionTuple* getGOEventFunctions( unsigned int goId );
 
 private:
-	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > creatureGossipFunctions;
-	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > goGossipFunctions;
-	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > itemGossipFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > creatureGossipFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > goGossipFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > itemGossipFunctions;
 
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > goFunctions;
 };
