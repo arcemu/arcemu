@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,32 +17,21 @@
  *
  */
 
-#ifndef PYTHON_TUPLE_H
-#define PYTHON_TUPLE_H
+#include "StdAfx.h"
 
-#include "python/PythonObject.hpp"
+#include "GOGossipScriptReleaser.hpp"
 
-class PythonTuple
+#include "PythonGossipScript.hpp"
+
+void GOGossipScriptReleaser::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
-public:
-	PythonTuple( unsigned long size );
-	~PythonTuple();
+	Arcemu::Gossip::Script *script = mgr->get_go_gossip( id );
+	if( script == NULL )
+		return;
 
-	void setItem( unsigned long idx, long value );
-	void setItem( unsigned long idx, PythonObject &object );
-	void setItem( unsigned long idx, const char* value );
-	
-	void setItemBool( unsigned long idx, bool value );
+	PythonGossipScript *pythonScript = dynamic_cast< PythonGossipScript* >( script );
+	if( pythonScript == NULL )
+		return;
 
-	void setItemNone( unsigned long idx );
-
-	unsigned long getSize(){ return size; }
-
-	PyObject* getObject() const{ return obj; }
-
-private:
-	PyObject *obj;
-	unsigned long size;
-};
-
-#endif
+	pythonScript->clearFunctions();
+}

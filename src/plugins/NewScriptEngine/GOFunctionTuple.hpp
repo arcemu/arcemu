@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,32 +17,32 @@
  *
  */
 
-#ifndef PYTHON_TUPLE_H
-#define PYTHON_TUPLE_H
+#ifndef GOFUNCTION_TUPLE_H
+#define GOFUNCTION_TUPLE_H
 
-#include "python/PythonObject.hpp"
-
-class PythonTuple
+class GOFunctionTuple
 {
 public:
-	PythonTuple( unsigned long size );
-	~PythonTuple();
+	void* onCreate;
+	void* onSpawn;
+	void* onLootTaken;
+	void* onUse;
+	void* onAIUpdate;
+	void* onDespawn;
+	void* onDamaged;
+	void* onDestroyed;
 
-	void setItem( unsigned long idx, long value );
-	void setItem( unsigned long idx, PythonObject &object );
-	void setItem( unsigned long idx, const char* value );
-	
-	void setItemBool( unsigned long idx, bool value );
-
-	void setItemNone( unsigned long idx );
-
-	unsigned long getSize(){ return size; }
-
-	PyObject* getObject() const{ return obj; }
-
-private:
-	PyObject *obj;
-	unsigned long size;
+	GOFunctionTuple()
+	{
+		onCreate    = NULL;
+		onSpawn     = NULL;
+		onLootTaken = NULL;
+		onUse       = NULL;
+		onAIUpdate  = NULL;
+		onDespawn   = NULL;
+		onDamaged   = NULL;
+		onDestroyed = NULL;
+	}
 };
 
 #endif

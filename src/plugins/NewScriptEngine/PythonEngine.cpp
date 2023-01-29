@@ -28,7 +28,9 @@
 
 #include "CreatureGossipScriptRegisterer.hpp"
 #include "CreatureGossipScriptReleaser.hpp"
-
+#include "GOScriptRegisterer.hpp"
+#include "GOGossipScriptRegisterer.hpp"
+#include "GOGossipScriptReleaser.hpp"
 #include "ItemGossipScriptRegisterer.hpp"
 #include "ItemGossipScriptReleaser.hpp"
 
@@ -59,7 +61,7 @@ void PythonEngine::onStartup()
 
 	registerHooks();
 
-	registerGossipScripts();
+	registerScripts();
 }
 
 void PythonEngine::onReload()
@@ -71,6 +73,9 @@ void PythonEngine::onReload()
 	CreatureGossipScriptReleaser creatureGossipReleaser( mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
 
+	GOGossipScriptReleaser goGossipReleaser( mgr );
+	FunctionRegistry::visitGOGossipFunctions( &goGossipReleaser );
+
 	ItemGossipScriptReleaser itemGossipReleaser( mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipReleaser );
 
@@ -78,7 +83,7 @@ void PythonEngine::onReload()
 
 	loadScripts();
 
-	registerGossipScripts();
+	registerScripts();
 }
 
 int PythonEngine::loadScript( const char *fileName )
@@ -156,12 +161,18 @@ void PythonEngine::registerHooks()
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_RESURRECT, (void*)(&ServerHookHandler::hookOnPlayerResurrect) );	
 }
 
-void PythonEngine::registerGossipScripts()
+void PythonEngine::registerScripts()
 {
 	CreatureGossipScriptRegisterer registerer( this->mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &registerer );
 
+	GOGossipScriptRegisterer goGossipRegisterer( this->mgr );
+	FunctionRegistry::visitGOGossipFunctions( &goGossipRegisterer );
+
 	ItemGossipScriptRegisterer itemGossipRegisterer( this->mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipRegisterer );
+
+	GOScriptRegisterer goScriptRegisterer( this->mgr );
+	FunctionRegistry::visitGOEventFunctions( &goScriptRegisterer );
 }
 

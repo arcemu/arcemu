@@ -108,10 +108,58 @@ static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+static PyObject* arcemu_RegisterGOGossipEvent( PyObject *self, PyObject *args )
+{
+	unsigned long goId = 0;
+	unsigned long gossipEvent = 0;
+	PyObject *callback = NULL;
+
+	if( !PyArg_ParseTuple( args, "IIO", &goId, &gossipEvent, &callback ) )
+	{
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Third argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	FunctionRegistry::registerGOGossipFunction( goId, gossipEvent, callback );
+
+	Py_RETURN_NONE;
+}
+
+static PyObject* arcemu_RegisterGameObjectEvent( PyObject *self, PyObject *args )
+{
+	unsigned long goId = 0;
+	unsigned long goEvent = 0;
+	PyObject *callback = NULL;
+
+	if( !PyArg_ParseTuple( args, "IIO", &goId, &goEvent, &callback ) )
+	{
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Third argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	FunctionRegistry::registerGOEventFunction( goId, goEvent, callback );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
 	{ "RegisterUnitGossipEvent", arcemu_RegisterUnitGossipEvent, METH_VARARGS, "Registers a Unit gossip event" },
 	{ "RegisterItemGossipEvent", arcemu_RegisterItemGossipEvent, METH_VARARGS, "Registers an Item gossip event" },
+	{ "RegisterGOGossipEvent", arcemu_RegisterGOGossipEvent, METH_VARARGS, "Registers a GO gossip event" },
+	{ "RegisterGameObjectEvent", arcemu_RegisterGameObjectEvent, METH_VARARGS, "Registers a GameObject event" },
 	{NULL, NULL, 0, NULL }
 };
 

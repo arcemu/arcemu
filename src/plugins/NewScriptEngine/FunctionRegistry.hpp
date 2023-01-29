@@ -23,22 +23,46 @@
 #include "GossipFunctionTuple.hpp"
 #include "GossipFunctionTupleVisitor.hpp"
 
+#include "GOFunctionTuple.hpp"
+#include "GOFunctionTupleVisitor.hpp"
+
 class FunctionRegistry
 {
 public:
 	static void registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
 
+	static void registerGOGossipFunction( unsigned int goId, unsigned int gossipEvent, void* function );
+
 	static void registerItemGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
 
-	static void visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor );
+
+
+	static void registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function );
+
+
 
 	static void visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor );
 
+	static void visitGOGossipFunctions( GossipFunctionTupleVisitor *visitor );
+
+	static void visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor );
+
+
+
+	static void visitGOEventFunctions( GOFunctionTupleVisitor *visitor );
+
+
 	static void releaseFunctions();
+
+
+	static GOFunctionTuple* getGOEventFunctions( unsigned int goId );
 
 private:
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > creatureGossipFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > goGossipFunctions;
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > itemGossipFunctions;
+
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > goFunctions;
 };
 
 #endif

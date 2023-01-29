@@ -21,6 +21,7 @@
  #define PYTHONCALL_H
 
 #include "python/PythonTuple.hpp"
+#include "python/PythonValue.hpp"
  
  class PythonCallable : public PythonObject
  {

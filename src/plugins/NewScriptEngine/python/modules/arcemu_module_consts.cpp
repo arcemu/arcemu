@@ -19,6 +19,8 @@
 
 #include "StdAfx.h"
 
+#include "PythonGOEventTypes.hpp"
+
 #include <Python.h>
 
 void registerArcemuConstants( PyObject *module )
@@ -102,4 +104,14 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "ICON_TABARD", Arcemu::Gossip::ICON_TABARD );
 	PyModule_AddIntConstant( module, "ICON_BATTLE", Arcemu::Gossip::ICON_BATTLE );
 	PyModule_AddIntConstant( module, "ICON_DOT", Arcemu::Gossip::ICON_DOT );
+
+	/// GameObject events
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_CREATE", PYTHON_GO_EVENT_ON_CREATE );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_SPAWN", PYTHON_GO_EVENT_ON_SPAWN );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_LOOT_TAKEN", PYTHON_GO_EVENT_ON_LOOT_TAKEN );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_USE", PYTHON_GO_EVENT_ON_USE );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_AIUPDATE", PYTHON_GO_EVENT_ON_AIUPDATE );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_DESPAWN", PYTHON_GO_EVENT_ON_DESPAWN );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_DAMAGED", PYTHON_GO_EVENT_ON_DAMAGED );
+	PyModule_AddIntConstant( module, "GO_EVENT_ON_DESTROYED", PYTHON_GO_EVENT_ON_DESTROYED );
 }

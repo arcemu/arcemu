@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,32 +17,30 @@
  *
  */
 
-#ifndef PYTHON_TUPLE_H
-#define PYTHON_TUPLE_H
+#ifndef P_GO_AI_SCRIPT_H
+#define P_GO_AI_SCRIPT_H
 
-#include "python/PythonObject.hpp"
+#include "GOFunctionTuple.hpp"
 
-class PythonTuple
+class PythonGameObjectAIScript : public GameObjectAIScript
 {
 public:
-	PythonTuple( unsigned long size );
-	~PythonTuple();
+	PythonGameObjectAIScript( GameObject* src, GOFunctionTuple &functions );
+	~PythonGameObjectAIScript();
 
-	void setItem( unsigned long idx, long value );
-	void setItem( unsigned long idx, PythonObject &object );
-	void setItem( unsigned long idx, const char* value );
+	void setFunctions( GOFunctionTuple &functions );
 	
-	void setItemBool( unsigned long idx, bool value );
-
-	void setItemNone( unsigned long idx );
-
-	unsigned long getSize(){ return size; }
-
-	PyObject* getObject() const{ return obj; }
+	void OnCreate();
+	void OnSpawn();
+	void OnDespawn();
+	void OnLootTaken( Player* looter, ItemPrototype* itemInfo);
+	void OnActivate( Player* player );
+	void OnDamaged( uint32 damage );
+	void OnDestroyed();
+	void AIUpdate();
 
 private:
-	PyObject *obj;
-	unsigned long size;
+	GOFunctionTuple functions;
 };
 
 #endif

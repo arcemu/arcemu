@@ -20,6 +20,8 @@
 #ifndef PYTHONVALUE_H_
 #define PYTHONVALUE_H_
 
+#include "python/PythonObject.hpp"
+
 class PythonValue : public PythonObject
 {
 public:

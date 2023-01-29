@@ -39,7 +39,7 @@ private:
 	int loadScripts();
 
 	void registerHooks();
-	void registerGossipScripts();
+	void registerScripts();
 
 private:
 	ArcPython *python;
