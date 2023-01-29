@@ -17,28 +17,24 @@
  *
  */
 
-#ifndef _FUNCTION_REGISTRY_H_
-#define _FUNCTION_REGISTRY_H_
+#ifndef ARCPY_I_G_S_RL_H
+#define ARCPY_I_G_S_RL_H
 
 #include "GossipFunctionTuple.hpp"
 #include "GossipFunctionTupleVisitor.hpp"
 
-class FunctionRegistry
+class ItemGossipScriptReleaser : public GossipFunctionTupleVisitor
 {
-public:
-	static void registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
-
-	static void registerItemGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
-
-	static void visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor );
-
-	static void visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor );
-
-	static void releaseFunctions();
-
 private:
-	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > creatureGossipFunctions;
-	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > itemGossipFunctions;
+	ScriptMgr *mgr;
+
+public:
+	ItemGossipScriptReleaser( ScriptMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void visit( unsigned int id, GossipFunctionTuple &tuple );
 };
 
 #endif

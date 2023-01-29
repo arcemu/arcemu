@@ -67,6 +67,12 @@ void PythonGossipScript::OnHello( Object* object, Player* player )
 			args.setItemUnit( 0, (Unit*)object );
 			break;
 		}
+
+	case TYPEID_ITEM:
+		{
+			args.setItemItem( 0, (Item*)object );
+			break;
+		}
 	}
 
 	args.setItem( 1, 1 );
@@ -98,6 +104,12 @@ void PythonGossipScript::OnSelectOption( Object* object, Player* player, uint32 
 	case TYPEID_UNIT:
 		{
 			args.setItemUnit( 0, (Unit*)object );
+			break;
+		}
+
+	case TYPEID_ITEM:
+		{
+			args.setItemItem( 0, (Item*)object );
 			break;
 		}
 	}
@@ -136,6 +148,12 @@ void PythonGossipScript::OnEnd( Object* object, Player* player )
 	case TYPEID_UNIT:
 		{
 			args.setItemUnit( 0, (Unit*)object );
+			break;
+		}
+
+	case TYPEID_ITEM:
+		{
+			args.setItemItem( 0, (Item*)object );
 			break;
 		}
 	}

@@ -158,8 +158,23 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, player.getName() + " you've selected option " + str( id ) )
 	
+	
+def item_onHello( item, event, player ):
+	menu = GossipMenu( 1, item, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "First menu item", 1, 0 )
+	menu.addItem( arcemu.ICON_VENDOR, "Second menu item", 2, 0 )
+	menu.addItem( arcemu.ICON_DOT, "Third menu item", 3, 0 )
+	menu.sendToPlayer( player )
+	
+def item_onSelectOption( item, player, id, enteredCode ):
+	player.sendChatMessage( arcemu.CHAT_MSG_SAY, arcemu.LANG_UNIVERSAL, "I have selected " + str( id )  )
+	GossipMenu.complete( player )
+	
 arcemu.RegisterUnitGossipEvent( 31111, 1, mohawk_onHello )
 arcemu.RegisterUnitGossipEvent( 31111, 2, mohawk_onSelectOption )
+
+arcemu.RegisterItemGossipEvent( 8051, 1, item_onHello )
+arcemu.RegisterItemGossipEvent( 8051, 2, item_onSelectOption )
 
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_NEW_CHARACTER, onNewCharacter )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_KILL_PLAYER, onKillPlayer )

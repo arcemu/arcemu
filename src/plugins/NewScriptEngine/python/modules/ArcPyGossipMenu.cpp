@@ -22,6 +22,7 @@
 
 #include "StdAfx.h"
 
+#include "ArcPyItem.hpp"
 #include "ArcPyUnit.hpp"
 #include "ArcPyPlayer.hpp"
 
@@ -46,13 +47,25 @@ static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject
 		return NULL;
 	}
 
-	if( strcmp( Py_TYPE( obj )->tp_name, "ArcPyUnit" ) != 0 )
+	const char* typeName = Py_TYPE( obj )->tp_name;
+
+	if( strcmp( typeName, "ArcPyUnit" ) != 0 )
 	{
+		Unit *unit = ((ArcPyUnit*)obj)->unitPtr;
+		self->gossipMenuPtr = new Arcemu::Gossip::Menu( unit, textId );
+	}
+	else
+	if( strcmp( typeName, "ArcPyItem" ) != 0 )
+	{
+		Item *item = ((ArcPyItem*)obj)->itemPtr;
+		self->gossipMenuPtr = new Arcemu::Gossip::Menu( item, textId );
+	}
+	else
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a Unit or an Item!" );
 		return NULL;
 	}
 
-	Unit *unit = ((ArcPyUnit*)obj)->unitPtr;
-	self->gossipMenuPtr = new Arcemu::Gossip::Menu( unit, textId );
 	return 0;
 }
 
@@ -72,6 +85,8 @@ static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args 
 
 	const char *boxMessage = "";
 	unsigned long boxMoney = 0;
+
+	ARCEMU_ASSERT( self->gossipMenuPtr != NULL );
 
 	if( ! PyArg_ParseTuple( args, "kskk|sk", &icon, &text, &optionId, &coded, &boxMessage, &boxMoney ) )
 	{

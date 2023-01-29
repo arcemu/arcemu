@@ -26,6 +26,7 @@
 #include "Python.h"
 
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > FunctionRegistry::creatureGossipFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > FunctionRegistry::itemGossipFunctions;
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
 {
@@ -34,6 +35,37 @@ void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, 
 	{
 		GossipFunctionTuple tuple;
 		itr = creatureGossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple >( creatureId, tuple ) ).first;
+	}
+
+	switch( gossipEvent )
+	{
+	case PYTHON_GOSSIP_EVENT_HELLO:
+		{
+			itr->second.onHelloFunction = function;
+			break;
+		}
+
+	case PYTHON_GOSSIP_EVENT_SELECT:
+		{
+			itr->second.onSelectionFunction = function;
+			break;
+		}
+
+	case PYTHON_GOSSIP_EVENT_END:
+		{
+			itr->second.onEndFunction = function;
+			break;
+		}
+	}
+}
+
+void FunctionRegistry::registerItemGossipFunction( unsigned int itemId, unsigned int gossipEvent, void* function )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = itemGossipFunctions.find( itemId );
+	if( itr == itemGossipFunctions.end() )
+	{
+		GossipFunctionTuple tuple;
+		itr = itemGossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple >( itemId, tuple ) ).first;
 	}
 
 	switch( gossipEvent )
@@ -68,9 +100,21 @@ void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor 
 	}
 }
 
+void FunctionRegistry::visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = itemGossipFunctions.begin();
+	while( itr != itemGossipFunctions.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
 void FunctionRegistry::releaseFunctions()
 {
-	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = creatureGossipFunctions.begin();
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr;
+	
+	itr = creatureGossipFunctions.begin();
 	while( itr != creatureGossipFunctions.end() )
 	{
 		if( itr->second.onHelloFunction != NULL )
@@ -86,5 +130,22 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	creatureGossipFunctions.clear();
+
+	itr = itemGossipFunctions.begin();
+	while( itr != itemGossipFunctions.end() )
+	{
+		if( itr->second.onHelloFunction != NULL )
+			Py_DecRef( (PyObject*)itr->second.onHelloFunction );
+
+		if( itr->second.onSelectionFunction != NULL )
+			Py_DecRef( (PyObject*)itr->second.onSelectionFunction );
+		
+		if( itr->second.onEndFunction != NULL )
+			Py_DecRef( (PyObject*)itr->second.onEndFunction );
+
+		++itr;
+	}
+
+	itemGossipFunctions.clear();
 }
 

@@ -29,6 +29,9 @@
 #include "CreatureGossipScriptRegisterer.hpp"
 #include "CreatureGossipScriptReleaser.hpp"
 
+#include "ItemGossipScriptRegisterer.hpp"
+#include "ItemGossipScriptReleaser.hpp"
+
 void register_arcemu_extensions();
 
 
@@ -65,8 +68,12 @@ void PythonEngine::onReload()
 
 	ServerHookRegistry::releaseHooks();
 	
-	CreatureGossipScriptReleaser releaser( mgr );
-	FunctionRegistry::visitCreatureGossipFunctions( &releaser );
+	CreatureGossipScriptReleaser creatureGossipReleaser( mgr );
+	FunctionRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
+
+	ItemGossipScriptReleaser itemGossipReleaser( mgr );
+	FunctionRegistry::visitItemGossipFunctions( &itemGossipReleaser );
+
 	FunctionRegistry::releaseFunctions();
 
 	loadScripts();
@@ -153,5 +160,8 @@ void PythonEngine::registerGossipScripts()
 {
 	CreatureGossipScriptRegisterer registerer( this->mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &registerer );
+
+	ItemGossipScriptRegisterer itemGossipRegisterer( this->mgr );
+	FunctionRegistry::visitItemGossipFunctions( &itemGossipRegisterer );
 }
 

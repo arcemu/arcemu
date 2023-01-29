@@ -85,9 +85,33 @@ static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args )
+{
+	unsigned long itemId = 0;
+	unsigned long gossipEvent = 0;
+	PyObject *callback = NULL;
+
+	if( !PyArg_ParseTuple( args, "IIO", &itemId, &gossipEvent, &callback ) )
+	{
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Third argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	FunctionRegistry::registerItemGossipFunction( itemId, gossipEvent, callback );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
 	{ "RegisterUnitGossipEvent", arcemu_RegisterUnitGossipEvent, METH_VARARGS, "Registers a Unit gossip event" },
+	{ "RegisterItemGossipEvent", arcemu_RegisterItemGossipEvent, METH_VARARGS, "Registers an Item gossip event" },
 	{NULL, NULL, 0, NULL }
 };
 
