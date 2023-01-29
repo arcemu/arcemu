@@ -24,7 +24,7 @@
 #include "ServerHookRegistry.hpp"
 #include "ServerHookHandler.hpp"
 
-#include "GossipFunctionRegistry.hpp"
+#include "FunctionRegistry.hpp"
 
 #include "CreatureGossipScriptRegisterer.hpp"
 #include "CreatureGossipScriptReleaser.hpp"
@@ -44,7 +44,7 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 PythonEngine::~PythonEngine()
 {
 	ServerHookRegistry::releaseHooks();
-	CreatureGossipFunctionRegistry::releaseFunctions();
+	FunctionRegistry::releaseFunctions();
 
 	delete python;
 	python = NULL;
@@ -66,8 +66,8 @@ void PythonEngine::onReload()
 	ServerHookRegistry::releaseHooks();
 	
 	CreatureGossipScriptReleaser releaser( mgr );
-	CreatureGossipFunctionRegistry::visit( &releaser );
-	CreatureGossipFunctionRegistry::releaseFunctions();
+	FunctionRegistry::visitCreatureGossipFunctions( &releaser );
+	FunctionRegistry::releaseFunctions();
 
 	loadScripts();
 
@@ -152,6 +152,6 @@ void PythonEngine::registerHooks()
 void PythonEngine::registerGossipScripts()
 {
 	CreatureGossipScriptRegisterer registerer( this->mgr );
-	CreatureGossipFunctionRegistry::visit( &registerer );
+	FunctionRegistry::visitCreatureGossipFunctions( &registerer );
 }
 

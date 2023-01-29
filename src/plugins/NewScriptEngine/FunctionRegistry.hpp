@@ -17,23 +17,23 @@
  *
  */
 
-#ifndef GOSSIP_REGISTRY_H
-#define GOSSIP_REGISTRY_H
+#ifndef _FUNCTION_REGISTRY_H_
+#define _FUNCTION_REGISTRY_H_
 
 #include "GossipFunctionTuple.hpp"
 #include "GossipFunctionTupleVisitor.hpp"
 
-class CreatureGossipFunctionRegistry
+class FunctionRegistry
 {
 public:
-	static void registerGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
+	static void registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
+
+	static void visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor );
 
 	static void releaseFunctions();
 
-	static void visit( GossipFunctionTupleVisitor *visitor );
-
 private:
-	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > gossipFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > creatureGossipFunctions;
 };
 
 #endif

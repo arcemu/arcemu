@@ -19,21 +19,21 @@
 
 #include "StdAfx.h"
 
-#include "GossipFunctionRegistry.hpp"
+#include "FunctionRegistry.hpp"
 
 #include "PythonGossipEventTypes.hpp"
 
 #include "Python.h"
 
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > CreatureGossipFunctionRegistry::gossipFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple > FunctionRegistry::creatureGossipFunctions;
 
-void CreatureGossipFunctionRegistry::registerGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
+void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
 {
-	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = gossipFunctions.find( creatureId );
-	if( itr == gossipFunctions.end() )
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = creatureGossipFunctions.find( creatureId );
+	if( itr == creatureGossipFunctions.end() )
 	{
 		GossipFunctionTuple tuple;
-		itr = gossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple >( creatureId, tuple ) ).first;
+		itr = creatureGossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple >( creatureId, tuple ) ).first;
 	}
 
 	switch( gossipEvent )
@@ -58,10 +58,20 @@ void CreatureGossipFunctionRegistry::registerGossipFunction( unsigned int creatu
 	}
 }
 
-void CreatureGossipFunctionRegistry::releaseFunctions()
+void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
-	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = gossipFunctions.begin();
-	while( itr != gossipFunctions.end() )
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = creatureGossipFunctions.begin();
+	while( itr != creatureGossipFunctions.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
+void FunctionRegistry::releaseFunctions()
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = creatureGossipFunctions.begin();
+	while( itr != creatureGossipFunctions.end() )
 	{
 		if( itr->second.onHelloFunction != NULL )
 			Py_DecRef( (PyObject*)itr->second.onHelloFunction );
@@ -75,15 +85,6 @@ void CreatureGossipFunctionRegistry::releaseFunctions()
 		++itr;
 	}
 
-	gossipFunctions.clear();
+	creatureGossipFunctions.clear();
 }
 
-void CreatureGossipFunctionRegistry::visit( GossipFunctionTupleVisitor *visitor )
-{
-	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple >::iterator itr = gossipFunctions.begin();
-	while( itr != gossipFunctions.end() )
-	{
-		visitor->visit( itr->first, itr->second );
-		++itr;
-	}
-}

@@ -23,7 +23,7 @@
 
 #include "ServerHookRegistry.hpp"
 
-#include "GossipFunctionRegistry.hpp"
+#include "FunctionRegistry.hpp"
 
 extern void registerArcemuConstants( PyObject *module );
 
@@ -80,7 +80,7 @@ static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args 
 	}
 
 	Py_IncRef( callback );
-	CreatureGossipFunctionRegistry::registerGossipFunction( creatureId, gossipEvent, callback );
+	FunctionRegistry::registerCreatureGossipFunction( creatureId, gossipEvent, callback );
 
 	Py_RETURN_NONE;
 }
