@@ -25,5 +25,8 @@
 
 void GOScriptRegisterer::visit( unsigned int id, GOFunctionTuple &tuple )
 {
-	mgr->register_gameobject_script( id, &PythonGameObjectAIScriptFactory::createScript );
+	/// If we already have a script factory for this GO then either it's from another source, or we're reloading.
+	/// Nevertheless, let's not try to add the script factory then
+	if( !mgr->has_gameobject_script( id ) )
+		mgr->register_gameobject_script( id, &PythonGameObjectAIScriptFactory::createScript );
 }
