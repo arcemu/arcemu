@@ -268,6 +268,24 @@ void FunctionRegistry::releaseFunctions()
 		++itr;
 	}
 
+	itr = goGossipFunctions.begin();
+	while( itr != goGossipFunctions.end() )
+	{
+		if( itr->second->onHelloFunction != NULL )
+			Py_DecRef( (PyObject*)itr->second->onHelloFunction );
+
+		if( itr->second->onSelectionFunction != NULL )
+			Py_DecRef( (PyObject*)itr->second->onSelectionFunction );
+		
+		if( itr->second->onEndFunction != NULL )
+			Py_DecRef( (PyObject*)itr->second->onEndFunction );
+
+		delete itr->second;
+		itr->second = NULL;
+
+		++itr;
+	}
+
 	itemGossipFunctions.clear();
 
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator goFunctionsItr = goFunctions.begin();
