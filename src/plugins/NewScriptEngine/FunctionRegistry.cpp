@@ -268,6 +268,8 @@ void FunctionRegistry::releaseFunctions()
 		++itr;
 	}
 
+	itemGossipFunctions.clear();
+
 	itr = goGossipFunctions.begin();
 	while( itr != goGossipFunctions.end() )
 	{
@@ -286,7 +288,7 @@ void FunctionRegistry::releaseFunctions()
 		++itr;
 	}
 
-	itemGossipFunctions.clear();
+	goGossipFunctions.clear();
 
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator goFunctionsItr = goFunctions.begin();
 	while( goFunctionsItr != goFunctions.end() )
