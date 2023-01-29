@@ -34,9 +34,21 @@
 
 PythonGossipScript::PythonGossipScript( GossipFunctionTuple &tuple )
 {
-	this->functions.onHelloFunction = tuple.onHelloFunction;
-	this->functions.onSelectionFunction = tuple.onSelectionFunction;
-	this->functions.onEndFunction = tuple.onEndFunction;
+	setFunctions( tuple );
+}
+
+void PythonGossipScript::clearFunctions()
+{
+	functions.onHelloFunction = NULL;
+	functions.onSelectionFunction = NULL;
+	functions.onEndFunction = NULL;
+}
+
+void PythonGossipScript::setFunctions( GossipFunctionTuple &functions )
+{
+	this->functions.onHelloFunction = functions.onHelloFunction;
+	this->functions.onSelectionFunction = functions.onSelectionFunction;
+	this->functions.onEndFunction = functions.onEndFunction;
 }
 
 void PythonGossipScript::OnHello( Object* object, Player* player )

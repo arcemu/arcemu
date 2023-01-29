@@ -17,26 +17,21 @@
  *
  */
 
-#ifndef PYTHON_GOSSIP_SCRIPT_H
-#define PYTHON_GOSSIP_SCRIPT_H
+#include "StdAfx.h"
 
-class PythonGossipScript : public Arcemu::Gossip::Script
+#include "CreatureGossipScriptReleaser.hpp"
+
+#include "PythonGossipScript.hpp"
+
+void CreatureGossipScriptReleaser::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
-public:
+	Arcemu::Gossip::Script *script = mgr->get_creature_gossip( id );
+	if( script == NULL )
+		return;
 
-	PythonGossipScript( GossipFunctionTuple &tuple );
+	PythonGossipScript *pythonScript = dynamic_cast< PythonGossipScript* >( script );
+	if( pythonScript == NULL )
+		return;
 
-	void OnHello( Object* object, Player* player );
-
-	void OnSelectOption( Object* object, Player* player, uint32 id, const char* enteredCode );
-
-	void OnEnd( Object* object, Player* player );
-
-	void clearFunctions();
-	void setFunctions( GossipFunctionTuple &functions );
-
-private:
-	GossipFunctionTuple functions;
-};
-
-#endif
+	pythonScript->clearFunctions();
+}

@@ -34,6 +34,7 @@ ${prefix}/python/PythonValue.cpp
 ${prefix}/PythonEngine.cpp
 ${prefix}/PythonGossipScript.cpp
 ${prefix}/CreatureGossipScriptRegisterer.cpp
+${prefix}/CreatureGossipScriptReleaser.cpp
 ${prefix}/GossipFunctionRegistry.cpp
 ${prefix}/ServerHookRegistry.cpp
 ${prefix}/ServerHookHandler.cpp
@@ -62,6 +63,7 @@ ${prefix}/PythonEngine.hpp
 ${prefix}/PythonGossipEventTypes.hpp
 ${prefix}/PythonGossipScript.hpp
 ${prefix}/CreatureGossipScriptRegisterer.hpp
+${prefix}/CreatureGossipScriptReleaser.hpp
 ${prefix}/GossipFunctionTuple.hpp
 ${prefix}/GossipFunctionTupleVisitor.hpp
 ${prefix}/GossipFunctionRegistry.hpp

@@ -25,6 +25,18 @@
 
 void CreatureGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
-	PythonGossipScript *script = new PythonGossipScript( tuple );
-	mgr->register_creature_gossip( id, script );
+	Arcemu::Gossip::Script* script = mgr->get_creature_gossip( id );
+	if( script == NULL )
+	{
+		PythonGossipScript *script = new PythonGossipScript( tuple );
+		mgr->register_creature_gossip( id, script );
+	}
+	else
+	{
+		PythonGossipScript* pythonScript = dynamic_cast< PythonGossipScript* >( script );
+		if( pythonScript != NULL )
+		{
+			pythonScript->setFunctions( tuple );
+		}
+	}
 }

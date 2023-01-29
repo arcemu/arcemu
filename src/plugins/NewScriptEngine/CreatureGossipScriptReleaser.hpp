@@ -17,26 +17,24 @@
  *
  */
 
-#ifndef PYTHON_GOSSIP_SCRIPT_H
-#define PYTHON_GOSSIP_SCRIPT_H
+#ifndef ARCPY_C_G_S_RL_H
+#define ARCPY_C_G_S_RL_H
 
-class PythonGossipScript : public Arcemu::Gossip::Script
+#include "GossipFunctionTuple.hpp"
+#include "GossipFunctionTupleVisitor.hpp"
+
+class CreatureGossipScriptReleaser : public GossipFunctionTupleVisitor
 {
-public:
-
-	PythonGossipScript( GossipFunctionTuple &tuple );
-
-	void OnHello( Object* object, Player* player );
-
-	void OnSelectOption( Object* object, Player* player, uint32 id, const char* enteredCode );
-
-	void OnEnd( Object* object, Player* player );
-
-	void clearFunctions();
-	void setFunctions( GossipFunctionTuple &functions );
-
 private:
-	GossipFunctionTuple functions;
+	ScriptMgr *mgr;
+
+public:
+	CreatureGossipScriptReleaser( ScriptMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void visit( unsigned int id, GossipFunctionTuple &tuple );
 };
 
 #endif

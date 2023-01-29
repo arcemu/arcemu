@@ -27,6 +27,7 @@
 #include "GossipFunctionRegistry.hpp"
 
 #include "CreatureGossipScriptRegisterer.hpp"
+#include "CreatureGossipScriptReleaser.hpp"
 
 void register_arcemu_extensions();
 
@@ -63,7 +64,14 @@ void PythonEngine::onReload()
 	Guard g( ArcPython::getLock() );
 
 	ServerHookRegistry::releaseHooks();
+	
+	CreatureGossipScriptReleaser releaser( mgr );
+	CreatureGossipFunctionRegistry::visit( &releaser );
+	CreatureGossipFunctionRegistry::releaseFunctions();
+
 	loadScripts();
+
+	registerGossipScripts();
 }
 
 int PythonEngine::loadScript( const char *fileName )
@@ -146,3 +154,4 @@ void PythonEngine::registerGossipScripts()
 	CreatureGossipScriptRegisterer registerer( this->mgr );
 	CreatureGossipFunctionRegistry::visit( &registerer );
 }
+
