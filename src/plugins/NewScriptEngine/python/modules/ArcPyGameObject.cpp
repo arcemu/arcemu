@@ -56,10 +56,27 @@ static PyObject* ArcPyGameObject_getId( ArcPyGameObject* self, PyObject* args )
 	return id;
 }
 
+static PyObject* ArcPyGameObject_RegisterAIUpdateEvent( ArcPyGameObject* self, PyObject* args )
+{
+	GameObject *gameObject = self->gameObjectPtr;
+
+	uint32 interval;
+
+	if( !PyArg_ParseTuple( args, "k", &interval ) )
+	{
+		return NULL;
+	}
+
+	sEventMgr.AddEvent(gameObject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, interval, 0, 0);
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyGameObject_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyGameObject_getName, METH_NOARGS, "Returns the name of the GameObject" },
 	{ "getId", (PyCFunction)ArcPyGameObject_getId, METH_NOARGS, "Returns the Id of the GameObject" },
+	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyGameObject_RegisterAIUpdateEvent, METH_VARARGS, "Registers AI Updates for the GameObject" },
 	{NULL}
 };
 

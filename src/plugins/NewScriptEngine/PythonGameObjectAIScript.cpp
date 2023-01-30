@@ -57,7 +57,20 @@ void PythonGameObjectAIScript::OnCreate()
 	if( functions.onCreate == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 1 );
+	args.setItemGameObject( 0, _gameobject );
+
+	PythonCallable callable( functions.onCreate );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
 void PythonGameObjectAIScript::OnSpawn()
@@ -67,7 +80,20 @@ void PythonGameObjectAIScript::OnSpawn()
 	if( functions.onSpawn == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 1 );
+	args.setItemGameObject( 0, _gameobject );
+
+	PythonCallable callable( functions.onSpawn );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
 void PythonGameObjectAIScript::OnDespawn()
@@ -77,7 +103,20 @@ void PythonGameObjectAIScript::OnDespawn()
 	if( functions.onDespawn == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 1 );
+	args.setItemGameObject( 0, _gameobject );
+
+	PythonCallable callable( functions.onDespawn );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
 void PythonGameObjectAIScript::OnLootTaken( Player* looter, ItemPrototype* itemProto )
@@ -87,7 +126,23 @@ void PythonGameObjectAIScript::OnLootTaken( Player* looter, ItemPrototype* itemP
 	if( functions.onLootTaken == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 4 );
+	args.setItemGameObject( 0, _gameobject );
+	args.setItem( 1, PYTHON_GO_EVENT_ON_LOOT_TAKEN );
+	args.setItemPlayer( 2, looter );
+	args.setItem( 3, itemProto->ItemId );
+
+	PythonCallable callable( functions.onLootTaken );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
 void PythonGameObjectAIScript::OnActivate( Player* player )
@@ -122,7 +177,21 @@ void PythonGameObjectAIScript::OnDamaged( uint32 damage )
 	if( functions.onDamaged == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 2 );
+	args.setItemGameObject( 0, _gameobject );
+	args.setItem( 1, damage );
+
+	PythonCallable callable( functions.onDamaged );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
 void PythonGameObjectAIScript::OnDestroyed()
@@ -132,7 +201,20 @@ void PythonGameObjectAIScript::OnDestroyed()
 	if( functions.onDestroyed == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 1 );
+	args.setItemGameObject( 0, _gameobject );
+
+	PythonCallable callable( functions.onDestroyed );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
 void PythonGameObjectAIScript::AIUpdate()
@@ -142,6 +224,19 @@ void PythonGameObjectAIScript::AIUpdate()
 	if( functions.onAIUpdate == NULL )
 		return;
 
-	// Call function
+	ArcPyTuple args( 1 );
+	args.setItemGameObject( 0, _gameobject );
+
+	PythonCallable callable( functions.onAIUpdate );
+	PythonValue value = callable.call( args );
+
+	if( value.isEmpty() )
+	{
+		Python::printError();
+	}
+	else
+	{
+		value.decref();
+	}
 }
 
