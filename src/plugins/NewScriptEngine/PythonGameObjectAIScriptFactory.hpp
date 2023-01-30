@@ -24,6 +24,15 @@ class PythonGameObjectAIScriptFactory
 {
 public:
 	static GameObjectAIScript* createScript( GameObject* src );
+
+	static void onReload();
+
+	static void onShutdown();
+
+	static void removeScript( uint32 goId );
+
+private:
+	static HM_NAMESPACE::HM_HASH_MAP< uint32, GameObjectAIScript* > createdScripts;
 };
 
 #endif

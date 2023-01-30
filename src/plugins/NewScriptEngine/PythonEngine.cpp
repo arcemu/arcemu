@@ -34,6 +34,8 @@
 #include "ItemGossipScriptRegisterer.hpp"
 #include "ItemGossipScriptReleaser.hpp"
 
+#include "PythonGameObjectAIScriptFactory.hpp"
+
 void register_arcemu_extensions();
 
 
@@ -48,6 +50,8 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 
 PythonEngine::~PythonEngine()
 {
+	PythonGameObjectAIScriptFactory::onShutdown();
+
 	ServerHookRegistry::releaseHooks();
 	FunctionRegistry::releaseFunctions();
 
@@ -84,6 +88,8 @@ void PythonEngine::onReload()
 	loadScripts();
 
 	registerScripts();
+
+	PythonGameObjectAIScriptFactory::onReload();
 }
 
 int PythonEngine::loadScript( const char *fileName )

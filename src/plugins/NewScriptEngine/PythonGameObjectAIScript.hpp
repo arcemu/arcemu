@@ -26,7 +26,7 @@ class PythonGameObjectAIScript : public GameObjectAIScript
 {
 public:
 	PythonGameObjectAIScript( GameObject* src, GOFunctionTuple &functions );
-	~PythonGameObjectAIScript();
+	virtual ~PythonGameObjectAIScript();
 
 	void setFunctions( GOFunctionTuple &functions );
 	
