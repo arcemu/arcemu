@@ -20,6 +20,9 @@
 #ifndef _FUNCTION_REGISTRY_H_
 #define _FUNCTION_REGISTRY_H_
 
+#include "CreatureFunctionTuple.hpp"
+#include "CreatureFunctionTupleVisitor.hpp"
+
 #include "GossipFunctionTuple.hpp"
 #include "GossipFunctionTupleVisitor.hpp"
 
@@ -38,6 +41,7 @@ public:
 
 
 	static void registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function );
+	static void registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function );
 
 
 
@@ -50,12 +54,14 @@ public:
 
 
 	static void visitGOEventFunctions( GOFunctionTupleVisitor *visitor );
+	static void visitCreatureEventFunctions( CreatureFunctionTupleVisitor *visitor );
 
 
 	static void releaseFunctions();
 
 
 	static GOFunctionTuple* getGOEventFunctions( unsigned int goId );
+	static CreatureFunctionTuple* getCreatureEventFunctions( unsigned int creatureId );
 
 private:
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > creatureGossipFunctions;
@@ -63,6 +69,7 @@ private:
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > itemGossipFunctions;
 
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > goFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > creatureFunctions;
 };
 
 #endif

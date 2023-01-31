@@ -30,6 +30,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::itemGossipFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::goGossipFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > FunctionRegistry::goFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > FunctionRegistry::creatureFunctions;
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
 {
@@ -185,6 +186,20 @@ void FunctionRegistry::registerGOEventFunction( unsigned int goId, unsigned int 
 	}
 }
 
+void FunctionRegistry::registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function )
+{
+	ARCEMU_ASSERT( creatureEvent < PYTHON_CREATURE_EVENT_COUNT );
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator itr = creatureFunctions.find( creatureId );
+	if( itr == creatureFunctions.end() )
+	{
+		CreatureFunctionTuple* tuple = new CreatureFunctionTuple();
+		itr = creatureFunctions.insert( std::pair< unsigned int, CreatureFunctionTuple* >( creatureId, tuple ) ).first;
+	}
+
+	itr->second->functions[ creatureEvent ] = function;
+}
+
 void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = creatureGossipFunctions.begin();
@@ -220,6 +235,16 @@ void FunctionRegistry::visitGOEventFunctions( GOFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator itr = goFunctions.begin();
 	while( itr != goFunctions.end() )
+	{
+		visitor->visit( itr->first, *(itr->second) );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitCreatureEventFunctions( CreatureFunctionTupleVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator itr = creatureFunctions.begin();
+	while( itr != creatureFunctions.end() )
 	{
 		visitor->visit( itr->first, *(itr->second) );
 		++itr;
@@ -303,12 +328,43 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	goFunctions.clear();
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator creatureFunctionsItr = creatureFunctions.begin();
+	while( creatureFunctionsItr != creatureFunctions.end() )
+	{
+		CreatureFunctionTuple* tuple = creatureFunctionsItr->second;
+
+		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
+		{
+			if( tuple->functions[ i ] != NULL )
+			{
+				Py_DecRef( (PyObject*)( tuple->functions[ i ] ) );
+				tuple->functions[ i ] = NULL;
+			}
+		}
+
+		delete creatureFunctionsItr->second;
+		creatureFunctionsItr->second = NULL;
+
+		++creatureFunctionsItr;
+	}
+
+	creatureFunctions.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator itr = goFunctions.find( goId );
 	if( itr == goFunctions.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+
+CreatureFunctionTuple* FunctionRegistry::getCreatureEventFunctions( unsigned int creatureId )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator itr = creatureFunctions.find( creatureId );
+	if( itr == creatureFunctions.end() )
 		return NULL;
 	else
 		return itr->second;
