@@ -29,10 +29,10 @@ public:
 
 	static void onShutdown();
 
-	static void removeScript( uint32 goId );
+	static void removeScript( GameObjectAIScript *script );
 
 private:
-	static HM_NAMESPACE::HM_HASH_MAP< uint32, GameObjectAIScript* > createdScripts;
+	static HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* > createdScripts;
 };
 
 #endif

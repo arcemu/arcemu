@@ -39,6 +39,8 @@ public:
 	void OnDestroyed();
 	void AIUpdate();
 
+	GameObject* getGameObject(){ return _gameobject; }
+
 private:
 	GOFunctionTuple functions;
 };

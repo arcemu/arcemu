@@ -33,12 +33,12 @@ public:
 	
 	~FactoryManagedPythonGameObjectAIScript()
 	{
-		PythonGameObjectAIScriptFactory::removeScript( _gameobject->GetInfo()->ID );
+		PythonGameObjectAIScriptFactory::removeScript( this );
 	}
 };
 
 
-HM_NAMESPACE::HM_HASH_MAP< uint32, GameObjectAIScript* > PythonGameObjectAIScriptFactory::createdScripts;
+HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* > PythonGameObjectAIScriptFactory::createdScripts;
 
 GameObjectAIScript* PythonGameObjectAIScriptFactory::createScript( GameObject* src )
 {
@@ -57,19 +57,19 @@ GameObjectAIScript* PythonGameObjectAIScriptFactory::createScript( GameObject* s
 		script = new FactoryManagedPythonGameObjectAIScript( src, empty );
 	}
 
-	createdScripts.insert( std::pair< uint32, GameObjectAIScript* >( id, script ) );
+	createdScripts.insert( script );
 
 	return script;
 }
 
 void PythonGameObjectAIScriptFactory::onReload()
 {
-	HM_NAMESPACE::HM_HASH_MAP< uint32, GameObjectAIScript* >::iterator itr = createdScripts.begin();
+	HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{
-		PythonGameObjectAIScript *script = (PythonGameObjectAIScript*)itr->second;
+		PythonGameObjectAIScript *script = (PythonGameObjectAIScript*)(*itr);
 
-		GOFunctionTuple* tuple = FunctionRegistry::getGOEventFunctions( itr->first );
+		GOFunctionTuple* tuple = FunctionRegistry::getGOEventFunctions( script->getGameObject()->GetInfo()->ID );
 		if( tuple != NULL )
 		{
 			script->setFunctions( *tuple );
@@ -89,9 +89,9 @@ void PythonGameObjectAIScriptFactory::onShutdown()
 	createdScripts.clear();
 }
 
-void PythonGameObjectAIScriptFactory::removeScript( uint32 goId )
+void PythonGameObjectAIScriptFactory::removeScript( GameObjectAIScript *script )
 {
-	HM_NAMESPACE::HM_HASH_MAP< uint32, GameObjectAIScript* >::iterator itr = createdScripts.find( goId );
+	HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* >::iterator itr = createdScripts.find( script );
 	if( itr != createdScripts.end() )
 	{
 		createdScripts.erase( itr );

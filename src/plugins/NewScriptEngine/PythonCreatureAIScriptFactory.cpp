@@ -33,12 +33,12 @@ public:
 	
 	~FactoryManagedPythonCreatureAIScript()
 	{
-		PythonCreatureAIScriptFactory::removeScript( _unit->GetProto()->Id );
+		PythonCreatureAIScriptFactory::removeScript( this );
 	}
 };
 
 
-HM_NAMESPACE::HM_HASH_MAP< uint32, CreatureAIScript* > PythonCreatureAIScriptFactory::createdScripts;
+HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* > PythonCreatureAIScriptFactory::createdScripts;
 
 CreatureAIScript* PythonCreatureAIScriptFactory::createScript( Creature* src )
 {
@@ -57,19 +57,19 @@ CreatureAIScript* PythonCreatureAIScriptFactory::createScript( Creature* src )
 		script = new FactoryManagedPythonCreatureAIScript( src, empty );
 	}
 
-	createdScripts.insert( std::pair< uint32,CreatureAIScript* >( id, script ) );
+	createdScripts.insert( script );
 
 	return script;
 }
 
 void PythonCreatureAIScriptFactory::onReload()
 {
-	HM_NAMESPACE::HM_HASH_MAP< uint32, CreatureAIScript* >::iterator itr = createdScripts.begin();
+	HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{
-		PythonCreatureAIScript *script = (PythonCreatureAIScript*)itr->second;
+		PythonCreatureAIScript *script = (PythonCreatureAIScript*)(*itr);
 
-		CreatureFunctionTuple* tuple = FunctionRegistry::getCreatureEventFunctions( itr->first );
+		CreatureFunctionTuple* tuple = FunctionRegistry::getCreatureEventFunctions( script->GetUnit()->GetProto()->Id );
 		if( tuple != NULL )
 		{
 			script->setFunctions( *tuple );
@@ -89,9 +89,9 @@ void PythonCreatureAIScriptFactory::onShutdown()
 	createdScripts.clear();
 }
 
-void PythonCreatureAIScriptFactory::removeScript( uint32 goId )
+void PythonCreatureAIScriptFactory::removeScript( CreatureAIScript *script )
 {
-	HM_NAMESPACE::HM_HASH_MAP< uint32, CreatureAIScript* >::iterator itr = createdScripts.find( goId );
+	HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* >::iterator itr = createdScripts.find( script );
 	if( itr != createdScripts.end() )
 	{
 		createdScripts.erase( itr );

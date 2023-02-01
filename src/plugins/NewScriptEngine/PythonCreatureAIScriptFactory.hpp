@@ -29,10 +29,10 @@ public:
 
 	static void onShutdown();
 
-	static void removeScript( uint32 creatureId );
+	static void removeScript( CreatureAIScript* script );
 
 private:
-	static HM_NAMESPACE::HM_HASH_MAP< uint32, CreatureAIScript* > createdScripts;
+	static HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* > createdScripts;
 };
 
 #endif
