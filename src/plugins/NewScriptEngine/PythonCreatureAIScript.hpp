@@ -33,6 +33,11 @@ public:
 
 	void OnDamageTaken( Unit* attacker, uint32 amount );
 
+	void OnHit( Unit* target, float amount );
+	void OnDied( Unit* killer );
+
+	void OnLoad();
+
 private:
 	CreatureFunctionTuple functions;
 };

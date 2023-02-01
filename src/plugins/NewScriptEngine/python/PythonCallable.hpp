@@ -30,6 +30,8 @@
 	 ~PythonCallable();
 	 
 	 PythonValue call( PythonTuple &args );
+
+	 static void callNoReturn( void* callable, PythonTuple &args );
  };
  
  #endif
