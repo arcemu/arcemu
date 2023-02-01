@@ -318,6 +318,27 @@ void FunctionRegistry::releaseFunctions()
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator goFunctionsItr = goFunctions.begin();
 	while( goFunctionsItr != goFunctions.end() )
 	{
+		if( goFunctionsItr->second->onAIUpdate != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onAIUpdate );
+
+		if( goFunctionsItr->second->onCreate != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onCreate );
+
+		if( goFunctionsItr->second->onDamaged != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onDamaged );
+
+		if( goFunctionsItr->second->onDespawn != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onDespawn );
+
+		if( goFunctionsItr->second->onDestroyed != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onDestroyed );
+
+		if( goFunctionsItr->second->onLootTaken != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onLootTaken );
+
+		if( goFunctionsItr->second->onSpawn != NULL )
+			Py_DecRef( (PyObject*)goFunctionsItr->second->onSpawn );
+
 		if( goFunctionsItr->second->onUse != NULL )
 			Py_DecRef( (PyObject*)goFunctionsItr->second->onUse );
 
