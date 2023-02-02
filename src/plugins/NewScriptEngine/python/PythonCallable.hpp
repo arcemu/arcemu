@@ -31,8 +31,6 @@
 	 
 	 PythonValue call( PythonTuple &args );
 	 void callNoReturn( PythonTuple &args );
-
-	 static void callNoReturn( void* callable, PythonTuple &args );
  };
  
  #endif

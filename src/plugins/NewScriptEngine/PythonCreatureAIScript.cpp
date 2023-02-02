@@ -115,7 +115,8 @@ void PythonCreatureAIScript::OnHit( Unit* target, float amount )
 	args.setItemUnit( 2, target );
 	args.setItem( 3, (unsigned long)amount );
 
-	PythonCallable::callNoReturn( functions.functions[ PYTHON_CREATURE_EVENT_ON_HIT ], args );
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_HIT ] );
+	callable.callNoReturn( args );
 }
 
 void PythonCreatureAIScript::OnDied( Unit* killer )
@@ -130,7 +131,8 @@ void PythonCreatureAIScript::OnDied( Unit* killer )
 	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_DIED );
 	args.setItemUnit( 2, killer );
 
-	PythonCallable::callNoReturn( functions.functions[ PYTHON_CREATURE_EVENT_ON_DIED ], args );
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_DIED ] );
+	callable.callNoReturn( args );
 }
 
 void PythonCreatureAIScript::OnLoad()
@@ -144,7 +146,8 @@ void PythonCreatureAIScript::OnLoad()
 	args.setItemUnit( 0, _unit );
 	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_LOAD );
 
-	PythonCallable::callNoReturn( functions.functions[ PYTHON_CREATURE_EVENT_ON_LOAD ], args );
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_LOAD ] );
+	callable.callNoReturn( args );
 }
 
 
