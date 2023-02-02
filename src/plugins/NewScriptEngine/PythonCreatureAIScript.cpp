@@ -45,6 +45,38 @@ void PythonCreatureAIScript::setFunctions( CreatureFunctionTuple &functions )
 	}
 }
 
+void PythonCreatureAIScript::OnCombatStart( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnCombatStop( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT ] );
+	callable.callNoReturn( args );
+}
+
 void PythonCreatureAIScript::OnDamageTaken( Unit* attacker, uint32 amount )
 {
 	Guard g( ArcPython::getLock() );

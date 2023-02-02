@@ -39,6 +39,19 @@ PythonValue PythonCallable::call( PythonTuple &args )
 	return value;
 }
 
+void PythonCallable::callNoReturn( PythonTuple &args )
+{
+	PythonValue result = call( args );
+	if( result.isEmpty() )
+	{
+		PyErr_Print();
+	}
+	else
+	{
+		result.decref();
+	}
+}
+
 void PythonCallable::callNoReturn( void* callable, PythonTuple &args )
 {
 	PythonCallable c( callable );

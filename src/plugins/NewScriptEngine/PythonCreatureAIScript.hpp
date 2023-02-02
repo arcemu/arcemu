@@ -31,6 +31,11 @@ public:
 	void setFunctions( CreatureFunctionTuple &functions );
 
 
+
+
+	void OnCombatStart( Unit* target );
+	void OnCombatStop( Unit* target );
+
 	void OnDamageTaken( Unit* attacker, uint32 amount );
 
 	void OnHit( Unit* target, float amount );
