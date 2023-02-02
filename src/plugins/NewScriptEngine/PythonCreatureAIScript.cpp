@@ -135,6 +135,22 @@ void PythonCreatureAIScript::OnDied( Unit* killer )
 	callable.callNoReturn( args );
 }
 
+void PythonCreatureAIScript::OnTargetDied( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_TARGET_DIED );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] );
+	callable.callNoReturn( args );
+}
+
 void PythonCreatureAIScript::OnLoad()
 {
 	Guard g( ArcPython::getLock() );

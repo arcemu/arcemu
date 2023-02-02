@@ -16,6 +16,9 @@ def npc_onHit( unit, event, target, amount ):
 def npc_onDied( unit, event, killer ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, killer.getName() + " has killed me." )
 	
+def npc_onTargetDied( unit, event, target ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Hahahaha. " + target.getName() + " you are not prepared!" )
+	
 def npc_onLoad( unit, event ):
 	print( "Loaded creature " + unit.getName() )
 	
@@ -25,4 +28,5 @@ arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LEAVE_COMBAT, npc_onComb
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_HIT, npc_onHit )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_DAMAGE_TAKEN, npc_onDamageTaken )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_DIED, npc_onDied )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_DIED, npc_onTargetDied )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LOAD, npc_onLoad )

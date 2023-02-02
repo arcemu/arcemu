@@ -40,6 +40,7 @@ public:
 
 	void OnHit( Unit* target, float amount );
 	void OnDied( Unit* killer );
+	void OnTargetDied( Unit* target );
 
 	void OnLoad();
 
