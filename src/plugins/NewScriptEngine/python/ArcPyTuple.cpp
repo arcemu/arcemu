@@ -46,6 +46,12 @@ ArcPyTuple::~ArcPyTuple()
 
 void ArcPyTuple::setItemAura( unsigned long idx, Aura* aura )
 {
+	if( aura == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyAura *apa = createArcPyAura();
 	apa->auraPtr = aura;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apa );
@@ -53,6 +59,12 @@ void ArcPyTuple::setItemAura( unsigned long idx, Aura* aura )
 
 void ArcPyTuple::setItemGameObject( unsigned long idx, GameObject* gameObject )
 {
+	if( gameObject == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyGameObject *apgo = createArcPyGameObject();
 	apgo->gameObjectPtr = gameObject;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apgo );
@@ -60,6 +72,12 @@ void ArcPyTuple::setItemGameObject( unsigned long idx, GameObject* gameObject )
 
 void ArcPyTuple::setItemGuild( unsigned long idx, Guild* guild )
 {
+	if( guild == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyGuild *apg = createArcPyGuild();
 	apg->guildPtr = guild;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apg );
@@ -67,6 +85,12 @@ void ArcPyTuple::setItemGuild( unsigned long idx, Guild* guild )
 
 void ArcPyTuple::setItemItem( unsigned long idx, Item* item )
 {
+	if( item == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyItem *api = createArcPyItem();
 	api->itemPtr = item;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)api );
@@ -74,6 +98,12 @@ void ArcPyTuple::setItemItem( unsigned long idx, Item* item )
 
 void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
 {
+	if( player == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyPlayer *app = createArcPyPlayer();
 	app->playerPtr = player;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)app );
@@ -81,6 +111,12 @@ void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
 
 void ArcPyTuple::setItemQuest( unsigned long idx, Quest* quest )
 {
+	if( quest == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyQuest *apq = createArcPyQuest();
 	apq->questPtr = quest;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apq );
@@ -88,6 +124,12 @@ void ArcPyTuple::setItemQuest( unsigned long idx, Quest* quest )
 
 void ArcPyTuple::setItemSpell( unsigned long idx, Spell* spell )
 {
+	if( spell == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPySpell *aps = createArcPySpell();
 	aps->spellPtr = spell;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)aps );
@@ -95,6 +137,12 @@ void ArcPyTuple::setItemSpell( unsigned long idx, Spell* spell )
 
 void ArcPyTuple::setItemUnit( unsigned long idx, Unit* unit )
 {
+	if( unit == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyUnit *apu = createArcPyUnit();
 	apu->unitPtr = unit;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apu );
@@ -102,6 +150,12 @@ void ArcPyTuple::setItemUnit( unsigned long idx, Unit* unit )
 
 void ArcPyTuple::setItemWorldSession( unsigned long idx, WorldSession* worldSession )
 {
+	if( worldSession == NULL )
+	{
+		setItemNone( idx );
+		return;
+	}
+
 	ArcPyWorldSession *apws = createArcPyWorldSession();
 	apws->worldSessionPtr = worldSession;
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apws );
