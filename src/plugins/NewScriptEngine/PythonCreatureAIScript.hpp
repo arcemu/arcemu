@@ -35,8 +35,8 @@ public:
 
 	void OnCombatStart( Unit* target );
 	void OnCombatStop( Unit* target );
-
 	void OnDamageTaken( Unit* attacker, uint32 amount );
+	void OnCastSpell( uint32 spellId );
 
 	void OnHit( Unit* target, float amount );
 	void OnDied( Unit* killer );
