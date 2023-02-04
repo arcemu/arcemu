@@ -38,6 +38,11 @@ public:
 	void OnDamageTaken( Unit* attacker, uint32 amount );
 	void OnCastSpell( uint32 spellId );
 
+	void OnTargetParried( Unit* target );
+	void OnTargetDodged( Unit* target );
+	void OnTargetBlocked( Unit* target, int32 amount );
+	void OnTargetCritHit( Unit* mTarget, int32 amount );
+
 	void OnHit( Unit* target, float amount );
 	void OnDied( Unit* killer );
 	void OnTargetDied( Unit* target );

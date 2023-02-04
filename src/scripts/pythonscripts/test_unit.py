@@ -13,6 +13,18 @@ def npc_onDamageTaken( unit, event, attacker, amount ):
 def npc_onCastSpell( unit, event, spellId ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am casting spell " + str( spellId ) )
 	
+def npc_onTargetParried( unit, event, target ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I have parried the attack of " + target.getName() )
+	
+def npc_onTargetDodged( unit, event, target ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I have dodged the attack of " + target.getName() )
+	
+def npc_onTargetBlocked( unit, event, target, amount ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I have blocked " + str( amount ) + " of the attack of " + target.getName() )
+	
+def npc_onTargetCritHit( unit, event, target, amount ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, target.getName() + " has criticall hit me for " + str( amount ) )
+	
 def npc_onHit( unit, event, target, amount ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I have hit " + target.getName() + " for " + str( amount ) )
 	
@@ -31,6 +43,12 @@ arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LEAVE_COMBAT, npc_onComb
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_HIT, npc_onHit )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_DAMAGE_TAKEN, npc_onDamageTaken )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_CAST_SPELL, npc_onCastSpell )
+
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_PARRIED, npc_onTargetParried )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_DODGED, npc_onTargetDodged )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_BLOCKED, npc_onTargetBlocked )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_CRIT_HIT, npc_onTargetCritHit )
+
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_DIED, npc_onDied )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_DIED, npc_onTargetDied )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LOAD, npc_onLoad )

@@ -118,6 +118,80 @@ void PythonCreatureAIScript::OnCastSpell( uint32 spellId )
 	callable.callNoReturn( args );
 }
 
+void PythonCreatureAIScript::OnTargetParried( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_PARRIED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnTargetDodged( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_DODGED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnTargetBlocked( Unit* target, int32 amount )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_BLOCKED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+	args.setItem( 3, amount );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnTargetCritHit( Unit* target, int32 amount )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_CRIT_HIT;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+	args.setItem( 3, amount );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
 void PythonCreatureAIScript::OnHit( Unit* target, float amount )
 {
 	Guard g( ArcPython::getLock() );
