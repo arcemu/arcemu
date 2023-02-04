@@ -34,6 +34,19 @@ public:
 			functions[ i ] = NULL;
 		}
 	}
+
+	bool hasFunction( unsigned long eventType ) const
+	{
+		if( functions[ eventType ] != NULL )
+			return true;
+		else
+			return false;
+	}
+
+	void* getFunction( unsigned long eventType ) const
+	{
+		return functions[ eventType ];
+	}
 };
 
 #endif

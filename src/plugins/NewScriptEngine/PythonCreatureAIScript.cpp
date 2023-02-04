@@ -49,15 +49,17 @@ void PythonCreatureAIScript::OnCombatStart( Unit* target )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT );
+	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -65,15 +67,17 @@ void PythonCreatureAIScript::OnCombatStop( Unit* target )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT );
+	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_LEAVE_COMBAT ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -81,40 +85,36 @@ void PythonCreatureAIScript::OnDamageTaken( Unit* attacker, uint32 amount )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_DAMAGE_TAKEN ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DAMAGE_TAKEN;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_DAMAGE_TAKEN );
+	args.setItem( 1, eventType );
 	args.setItemUnit( 2, attacker );
 	args.setItem( 3, amount );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_DAMAGE_TAKEN ] );
-	PythonValue result = callable.call( args );
-	if( result.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		result.decref();
-	}
+	PythonCallable callable( functions.getFunction( eventType ) );
+	callable.callNoReturn( args );
 }
 
 void PythonCreatureAIScript::OnCastSpell( uint32 spellId )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_CAST_SPELL ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_CAST_SPELL;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_CAST_SPELL );
+	args.setItem( 1, eventType );
 	args.setItem( 2, spellId );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_CAST_SPELL ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -124,7 +124,7 @@ void PythonCreatureAIScript::OnTargetParried( Unit* target )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_PARRIED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -132,7 +132,7 @@ void PythonCreatureAIScript::OnTargetParried( Unit* target )
 	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -142,7 +142,7 @@ void PythonCreatureAIScript::OnTargetDodged( Unit* target )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_DODGED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -150,7 +150,7 @@ void PythonCreatureAIScript::OnTargetDodged( Unit* target )
 	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -160,7 +160,7 @@ void PythonCreatureAIScript::OnTargetBlocked( Unit* target, int32 amount )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_BLOCKED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -169,7 +169,7 @@ void PythonCreatureAIScript::OnTargetBlocked( Unit* target, int32 amount )
 	args.setItemUnit( 2, target );
 	args.setItem( 3, amount );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -179,7 +179,7 @@ void PythonCreatureAIScript::OnTargetCritHit( Unit* target, int32 amount )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_CRIT_HIT;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -188,7 +188,7 @@ void PythonCreatureAIScript::OnTargetCritHit( Unit* target, int32 amount )
 	args.setItemUnit( 2, target );
 	args.setItem( 3, amount );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -196,15 +196,17 @@ void PythonCreatureAIScript::OnTargetDied( Unit* target )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_TARGET_DIED;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_TARGET_DIED );
+	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -215,7 +217,7 @@ void PythonCreatureAIScript::OnParried( Unit* target )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_PARRY;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -223,7 +225,7 @@ void PythonCreatureAIScript::OnParried( Unit* target )
 	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -233,7 +235,7 @@ void PythonCreatureAIScript::OnDodged( Unit* target )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DODGED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -241,7 +243,7 @@ void PythonCreatureAIScript::OnDodged( Unit* target )
 	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -251,7 +253,7 @@ void PythonCreatureAIScript::OnBlocked( Unit* target, int32 amount )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_BLOCKED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -260,7 +262,7 @@ void PythonCreatureAIScript::OnBlocked( Unit* target, int32 amount )
 	args.setItemUnit( 2, target );
 	args.setItem( 3, amount );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -270,7 +272,7 @@ void PythonCreatureAIScript::OnCritHit( Unit* target, int32 amount )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_CRIT_HIT;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -279,7 +281,7 @@ void PythonCreatureAIScript::OnCritHit( Unit* target, int32 amount )
 	args.setItemUnit( 2, target );
 	args.setItem( 3, amount );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -288,16 +290,18 @@ void PythonCreatureAIScript::OnHit( Unit* target, float amount )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_HIT ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_HIT;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_HIT );
+	args.setItem( 1, eventType );
 	args.setItemUnit( 2, target );
 	args.setItem( 3, (unsigned long)amount );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_HIT ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -305,15 +309,17 @@ void PythonCreatureAIScript::OnDied( Unit* killer )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_DIED ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DIED;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_DIED );
+	args.setItem( 1, eventType );
 	args.setItemUnit( 2, killer );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_DIED ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -323,7 +329,7 @@ void PythonCreatureAIScript::OnAssistTargetDied( Unit* assistTarget )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_ASSIST_TARGET_DIED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -331,7 +337,7 @@ void PythonCreatureAIScript::OnAssistTargetDied( Unit* assistTarget )
 	args.setItem( 1, eventType );
 	args.setItemUnit( 2, assistTarget );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -341,7 +347,7 @@ void PythonCreatureAIScript::OnFear( Unit* feared, uint32 spellId )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_FEAR;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -350,7 +356,7 @@ void PythonCreatureAIScript::OnFear( Unit* feared, uint32 spellId )
 	args.setItemUnit( 2, feared );
 	args.setItem( 3, spellId );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -360,7 +366,7 @@ void PythonCreatureAIScript::OnFlee( Unit* flee )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_FLEE;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -368,7 +374,7 @@ void PythonCreatureAIScript::OnFlee( Unit* flee )
 	args.setItem( 1, eventType );
 	args.setItemUnit( 2, flee );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -378,14 +384,14 @@ void PythonCreatureAIScript::OnCallForHelp()
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_CALL_FOR_HELP;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemUnit( 0, _unit );
 	args.setItem( 1, eventType );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -394,14 +400,16 @@ void PythonCreatureAIScript::OnLoad()
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_LOAD ] == NULL )
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_LOAD;
+
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_LOAD );
+	args.setItem( 1, eventType );
 
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_LOAD ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -411,14 +419,14 @@ void PythonCreatureAIScript::OnDespawn()
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DESPAWN;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemUnit( 0, _unit );
 	args.setItem( 1, eventType );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -428,7 +436,7 @@ void PythonCreatureAIScript::OnReachWP( uint32 waypointId, bool forwards )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_REACH_WP;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -437,7 +445,7 @@ void PythonCreatureAIScript::OnReachWP( uint32 waypointId, bool forwards )
 	args.setItem( 2, waypointId );
 	args.setItemBool( 3, forwards );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -447,7 +455,7 @@ void PythonCreatureAIScript::OnLootTaken( Player* player, ItemPrototype* itemPro
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_LOOT_TAKEN;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -456,7 +464,7 @@ void PythonCreatureAIScript::OnLootTaken( Player* player, ItemPrototype* itemPro
 	args.setItemPlayer( 2, player );
 	args.setItem( 3, itemPrototype->ItemId );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -466,14 +474,14 @@ void PythonCreatureAIScript::AIUpdate()
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_AIUPDATE;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemUnit( 0, _unit );
 	args.setItem( 1, eventType );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -483,7 +491,7 @@ void PythonCreatureAIScript::OnEmote( Player* player, EmoteType emote )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_EMOTE;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -492,7 +500,7 @@ void PythonCreatureAIScript::OnEmote( Player* player, EmoteType emote )
 	args.setItemPlayer( 2, player );
 	args.setItem( 3, emote );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -502,13 +510,13 @@ void PythonCreatureAIScript::OnEnterVehicle()
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_ENTER_VEHICLE;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemUnit( 0, _unit );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -518,13 +526,13 @@ void PythonCreatureAIScript::OnExitVehicle()
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_EXIT_VEHICLE;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemUnit( 0, _unit );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -534,14 +542,14 @@ void PythonCreatureAIScript::OnFirstPassengerEntered( Unit* passenger )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_FIRST_PASSENGER_ENTERED;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemUnit( 0, _unit );
 	args.setItemUnit( 1, passenger );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -551,13 +559,13 @@ void PythonCreatureAIScript::OnVehicleFull()
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_VEHICLE_FULL;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemUnit( 0, _unit );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
 
@@ -567,13 +575,13 @@ void PythonCreatureAIScript::OnLastPassengerLeft( Unit* passenger )
 
 	uint32 eventType = PYTHON_CREATURE_EVENT_ON_LAST_PASSENGER_LEFT;
 
-	if( functions.functions[ eventType ] == NULL )
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemUnit( 0, _unit );
 	args.setItemUnit( 1, passenger );
 
-	PythonCallable callable( functions.functions[ eventType ] );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
