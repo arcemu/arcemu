@@ -405,4 +405,97 @@ void PythonCreatureAIScript::OnLoad()
 	callable.callNoReturn( args );
 }
 
+void PythonCreatureAIScript::OnDespawn()
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DESPAWN;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 2 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnReachWP( uint32 waypointId, bool forwards )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_REACH_WP;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItem( 2, waypointId );
+	args.setItemBool( 3, forwards );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnLootTaken( Player* player, ItemPrototype* itemPrototype )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_LOOT_TAKEN;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemPlayer( 2, player );
+	args.setItem( 3, itemPrototype->ItemId );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::AIUpdate()
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_AIUPDATE;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 2 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnEmote( Player* player, EmoteType emote )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_EMOTE;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemPlayer( 2, player );
+	args.setItem( 3, emote );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+
+
 

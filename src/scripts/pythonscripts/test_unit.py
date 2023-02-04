@@ -48,7 +48,7 @@ def npc_onTargetDied( unit, event, target ):
 	
 def npc_onLoad( unit, event ):
 	print( "Loaded creature " + unit.getName() )
-	
+	unit.RegisterAIUpdateEvent( 5000 )	
 	
 def npc_onAssistTargetDied( unit, event, assistTarget ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. " + assistTarget.getName() + " died! :(")
@@ -62,6 +62,26 @@ def npc_onFlee( unit, event, flee ):
 def npc_onCallForHelp( unit, event ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. I'm scared! I'll call for help!")
 	
+def npc_onDespawn( unit, event ):
+	print( unit.getName() + " is being despawned" )
+	
+def npc_onReachWP( unit, event, waypointId, forward ):
+	dir = '';
+	if forward:
+		dir = 'forward'
+	else:
+		dir = 'backwards';
+
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I have reached waypoint " + str( waypointId ) + " while moving " + dir )
+	
+def npc_onLootTaken( unit, event, player, item ):
+	player.sendChatMessage( arcemu.CHAT_MSG_SAY, arcemu.LANG_UNIVERSAL, "I have taken item " + str( item ) + " from " + unit.getName() )
+	
+def npc_onAIUpdate( unit, event ):
+	print( "AIUpdate for " + unit.getName() )
+	
+def npc_onEmote( unit, event, player, emote ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Emote " + str( emote ) + "from " + player.getName() )
 
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_ENTER_COMBAT, npc_onCombatStart )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LEAVE_COMBAT, npc_onCombatStop )
@@ -87,4 +107,8 @@ arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_ASSIST_TARGET_DIED, npc_
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_FEAR, npc_onFear )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_FLEE, npc_onFlee )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_CALL_FOR_HELP, npc_onCallForHelp )
-
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_DESPAWN, npc_onDespawn )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_REACH_WP, npc_onReachWP )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LOOT_TAKEN, npc_onLootTaken )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_AIUPDATE, npc_onAIUpdate )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_EMOTE, npc_onEmote )

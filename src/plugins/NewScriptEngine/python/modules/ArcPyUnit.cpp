@@ -71,10 +71,25 @@ static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *args )
+{
+	uint32 interval;
+
+	if( !PyArg_ParseTuple( args, "k", &interval ) )
+	{
+		return NULL;
+	}
+
+	sEventMgr.AddEvent( TO_CREATURE( self->unitPtr ), &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, interval, 0, 0 );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
 	{ "sendChatMessage", (PyCFunction)ArcPyUnit_sendChatMessage, METH_VARARGS, "Sends a chat message from the Unit" },
+	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyUnit_RegisterAIUpdateEvent, METH_VARARGS, "Registers regular AI updates for the Unit" },
 	{NULL}
 };
 

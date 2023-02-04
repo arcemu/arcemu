@@ -45,13 +45,17 @@ public:
 	void OnCritHit( Unit* target, int32 amount );
 	void OnHit( Unit* target, float amount );
 	void OnDied( Unit* killer );
-
 	void OnAssistTargetDied( Unit* assistTarget );
 	void OnFear( Unit* feared, uint32 spellId );
 	void OnFlee( Unit* flee );
 	void OnCallForHelp();
-
 	void OnLoad();
+
+	void OnDespawn();
+	void OnReachWP( uint32 waypointId, bool forwards );
+	void OnLootTaken( Player* player, ItemPrototype* itemPrototype );
+	void AIUpdate();
+	void OnEmote( Player* player, EmoteType emote );
 
 private:
 	CreatureFunctionTuple functions;
