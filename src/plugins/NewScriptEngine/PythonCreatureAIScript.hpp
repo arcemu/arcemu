@@ -30,20 +30,19 @@ public:
 
 	void setFunctions( CreatureFunctionTuple &functions );
 
-
-
-
 	void OnCombatStart( Unit* target );
 	void OnCombatStop( Unit* target );
 	void OnDamageTaken( Unit* attacker, uint32 amount );
 	void OnCastSpell( uint32 spellId );
-
 	void OnTargetParried( Unit* target );
 	void OnTargetDodged( Unit* target );
 	void OnTargetBlocked( Unit* target, int32 amount );
 	void OnTargetCritHit( Unit* mTarget, int32 amount );
 	void OnTargetDied( Unit* target );
-
+	void OnParried( Unit* target );
+	void OnDodged( Unit* target );
+	void OnBlocked( Unit* target, int32 amount );
+	void OnCritHit( Unit* target, int32 amount );
 	void OnHit( Unit* target, float amount );
 	void OnDied( Unit* killer );
 	

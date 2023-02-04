@@ -208,6 +208,82 @@ void PythonCreatureAIScript::OnTargetDied( Unit* target )
 	callable.callNoReturn( args );
 }
 
+
+void PythonCreatureAIScript::OnParried( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_PARRY;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnDodged( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DODGED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnBlocked( Unit* target, int32 amount )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_BLOCKED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+	args.setItem( 3, amount );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnCritHit( Unit* target, int32 amount )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_CRIT_HIT;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, target );
+	args.setItem( 3, amount );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+
 void PythonCreatureAIScript::OnHit( Unit* target, float amount )
 {
 	Guard g( ArcPython::getLock() );
