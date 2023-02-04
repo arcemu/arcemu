@@ -317,6 +317,79 @@ void PythonCreatureAIScript::OnDied( Unit* killer )
 	callable.callNoReturn( args );
 }
 
+void PythonCreatureAIScript::OnAssistTargetDied( Unit* assistTarget )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_ASSIST_TARGET_DIED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, assistTarget );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnFear( Unit* feared, uint32 spellId )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_FEAR;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 4 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, feared );
+	args.setItem( 3, spellId );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnFlee( Unit* flee )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_FLEE;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+	args.setItemUnit( 2, flee );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnCallForHelp()
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_CALL_FOR_HELP;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 2 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, eventType );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+
 void PythonCreatureAIScript::OnLoad()
 {
 	Guard g( ArcPython::getLock() );

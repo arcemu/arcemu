@@ -49,6 +49,19 @@ def npc_onTargetDied( unit, event, target ):
 def npc_onLoad( unit, event ):
 	print( "Loaded creature " + unit.getName() )
 	
+	
+def npc_onAssistTargetDied( unit, event, assistTarget ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. " + assistTarget.getName() + " died! :(")
+	
+def npc_onFear( unit, event, feared, spellId ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. " + feared.getName() + " scared me with " + str( spellId ) )
+	
+def npc_onFlee( unit, event, flee ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. " + flee.getName() + " scared me!")	
+	
+def npc_onCallForHelp( unit, event ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. I'm scared! I'll call for help!")
+	
 
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_ENTER_COMBAT, npc_onCombatStart )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LEAVE_COMBAT, npc_onCombatStop )
@@ -69,3 +82,9 @@ arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_CRIT_HIT, npc_onCritHit 
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_DIED, npc_onDied )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_TARGET_DIED, npc_onTargetDied )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LOAD, npc_onLoad )
+
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_ASSIST_TARGET_DIED, npc_onAssistTargetDied )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_FEAR, npc_onFear )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_FLEE, npc_onFlee )
+arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_CALL_FOR_HELP, npc_onCallForHelp )
+
