@@ -112,3 +112,26 @@ arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_REACH_WP, npc_onReachWP 
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_LOOT_TAKEN, npc_onLootTaken )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_AIUPDATE, npc_onAIUpdate )
 arcemu.RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_EMOTE, npc_onEmote )
+
+def mohawk_onEnterVehicle( unit ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
+	
+def mohawk_onExitVehicle( unit ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Aw I got booted :(" )
+	
+arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_ENTER_VEHICLE, mohawk_onEnterVehicle )
+arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_EXIT_VEHICLE, mohawk_onExitVehicle )
+
+def horsey_onFirstPassengerEntered( vehicle, passenger ):
+	vehicle.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Finally someone! Hi " + passenger.getName() )
+	
+def horsey_onVehicleFull( vehicle ):
+	vehicle.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Now I feel full!" )
+	
+def horsey_onLastPassengerLeft( vehicle, passenger ):
+	vehicle.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Bye " + passenger.getName() + "!" )
+	vehicle.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "So ronery..." )
+
+arcemu.RegisterUnitEvent( 28605, arcemu.CREATURE_EVENT_ON_FIRST_PASSENGER_ENTERED, horsey_onFirstPassengerEntered )
+arcemu.RegisterUnitEvent( 28605, arcemu.CREATURE_EVENT_ON_VEHICLE_FULL, horsey_onVehicleFull )
+arcemu.RegisterUnitEvent( 28605, arcemu.CREATURE_EVENT_ON_LAST_PASSENGER_LEFT, horsey_onLastPassengerLeft )

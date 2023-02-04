@@ -496,6 +496,84 @@ void PythonCreatureAIScript::OnEmote( Player* player, EmoteType emote )
 	callable.callNoReturn( args );
 }
 
+void PythonCreatureAIScript::OnEnterVehicle()
+{
+	Guard g( ArcPython::getLock() );
 
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_ENTER_VEHICLE;
 
+	if( functions.functions[ eventType ] == NULL )
+		return;
 
+	ArcPyTuple args( 1 );
+	args.setItemUnit( 0, _unit );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnExitVehicle()
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_EXIT_VEHICLE;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 1 );
+	args.setItemUnit( 0, _unit );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnFirstPassengerEntered( Unit* passenger )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_FIRST_PASSENGER_ENTERED;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 2 );
+	args.setItemUnit( 0, _unit );
+	args.setItemUnit( 1, passenger );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnVehicleFull()
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_VEHICLE_FULL;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 1 );
+	args.setItemUnit( 0, _unit );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}
+
+void PythonCreatureAIScript::OnLastPassengerLeft( Unit* passenger )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_LAST_PASSENGER_LEFT;
+
+	if( functions.functions[ eventType ] == NULL )
+		return;
+
+	ArcPyTuple args( 2 );
+	args.setItemUnit( 0, _unit );
+	args.setItemUnit( 1, passenger );
+
+	PythonCallable callable( functions.functions[ eventType ] );
+	callable.callNoReturn( args );
+}

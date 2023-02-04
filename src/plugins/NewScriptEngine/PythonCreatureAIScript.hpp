@@ -50,12 +50,16 @@ public:
 	void OnFlee( Unit* flee );
 	void OnCallForHelp();
 	void OnLoad();
-
 	void OnDespawn();
 	void OnReachWP( uint32 waypointId, bool forwards );
 	void OnLootTaken( Player* player, ItemPrototype* itemPrototype );
 	void AIUpdate();
 	void OnEmote( Player* player, EmoteType emote );
+	void OnEnterVehicle();
+	void OnExitVehicle();
+	void OnFirstPassengerEntered( Unit *passenger );
+	void OnVehicleFull();
+	void OnLastPassengerLeft( Unit *passenger );
 
 private:
 	CreatureFunctionTuple functions;
