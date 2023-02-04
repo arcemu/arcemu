@@ -26,6 +26,7 @@ class PythonValue : public PythonObject
 {
 public:
 	PythonValue( PyObject *obj );
+	PythonValue( const PythonValue &other );
 	~PythonValue();
 	bool isNone();	
 	bool isBool();

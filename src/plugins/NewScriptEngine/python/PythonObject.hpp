@@ -36,7 +36,7 @@ public:
 			return false;
 	}
 
-	PyObject* getObject(){ return obj; }
+	PyObject* getObject() const{ return obj; }
 
 private:
 	PyObject* obj;

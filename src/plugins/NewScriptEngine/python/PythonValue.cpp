@@ -28,6 +28,11 @@ PythonObject( obj )
 {
 }
 
+PythonValue::PythonValue( const PythonValue &other ) :
+PythonObject( other.getObject() )
+{
+}
+
 PythonValue::~PythonValue()
 {
 }
