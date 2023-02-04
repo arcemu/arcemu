@@ -80,6 +80,12 @@ static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *arg
 		return NULL;
 	}
 
+	if( !self->unitPtr->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method can only be called on Creatures" );
+		return NULL;
+	}
+
 	sEventMgr.AddEvent( TO_CREATURE( self->unitPtr ), &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, interval, 0, 0 );
 
 	Py_RETURN_NONE;

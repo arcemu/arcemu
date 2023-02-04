@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPyPlayer.hpp"
+#include "ArcPyUnit.hpp"
 
 static PyObject* ArcPyPlayer_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -66,10 +67,18 @@ static PyObject* ArcPyPlayer_sendChatMessage( ArcPyPlayer *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+static PyObject* ArcPyPlayer_toUnit( ArcPyPlayer *self, PyObject *args )
+{
+	ArcPyUnit *apu = createArcPyUnit();
+	apu->unitPtr = self->playerPtr;
+	return (PyObject*)apu;
+}
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
 	{ "sendChatMessage", (PyCFunction)ArcPyPlayer_sendChatMessage, METH_VARARGS, "Sends a chat message from the Player" },
+	{ "toUnit", (PyCFunction)ArcPyPlayer_toUnit, METH_NOARGS, "Returns the Player object as a Unit" },
 	{NULL}
 };
 
