@@ -42,10 +42,11 @@ public:
 	void OnTargetDodged( Unit* target );
 	void OnTargetBlocked( Unit* target, int32 amount );
 	void OnTargetCritHit( Unit* mTarget, int32 amount );
+	void OnTargetDied( Unit* target );
 
 	void OnHit( Unit* target, float amount );
 	void OnDied( Unit* killer );
-	void OnTargetDied( Unit* target );
+	
 
 	void OnLoad();
 

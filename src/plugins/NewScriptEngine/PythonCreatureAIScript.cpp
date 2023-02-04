@@ -192,6 +192,22 @@ void PythonCreatureAIScript::OnTargetCritHit( Unit* target, int32 amount )
 	callable.callNoReturn( args );
 }
 
+void PythonCreatureAIScript::OnTargetDied( Unit* target )
+{
+	Guard g( ArcPython::getLock() );
+
+	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] == NULL )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_TARGET_DIED );
+	args.setItemUnit( 2, target );
+
+	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] );
+	callable.callNoReturn( args );
+}
+
 void PythonCreatureAIScript::OnHit( Unit* target, float amount )
 {
 	Guard g( ArcPython::getLock() );
@@ -222,22 +238,6 @@ void PythonCreatureAIScript::OnDied( Unit* killer )
 	args.setItemUnit( 2, killer );
 
 	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_DIED ] );
-	callable.callNoReturn( args );
-}
-
-void PythonCreatureAIScript::OnTargetDied( Unit* target )
-{
-	Guard g( ArcPython::getLock() );
-
-	if( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] == NULL )
-		return;
-
-	ArcPyTuple args( 3 );
-	args.setItemUnit( 0, _unit );
-	args.setItem( 1, PYTHON_CREATURE_EVENT_ON_TARGET_DIED );
-	args.setItemUnit( 2, target );
-
-	PythonCallable callable( functions.functions[ PYTHON_CREATURE_EVENT_ON_TARGET_DIED ] );
 	callable.callNoReturn( args );
 }
 
