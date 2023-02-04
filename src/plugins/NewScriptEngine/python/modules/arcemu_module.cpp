@@ -57,7 +57,7 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 	Py_IncRef( callback );
 	ServerHookRegistry::addHook( serverEvent, callback );
 	
-	sLog.Debug( "APE", "Registered handler for server hook event %u", serverEvent );
+	//sLog.Debug( "APE", "Registered handler for server hook event %u", serverEvent );
 
 	Py_RETURN_NONE;
 }
