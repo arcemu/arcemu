@@ -21,6 +21,7 @@
 
 #include "PythonCreatureEventTypes.hpp"
 #include "PythonGOEventTypes.hpp"
+#include "PythonGossipEventTypes.hpp"
 #include "PythonQuestEventTypes.hpp"
 
 #include <Python.h>
@@ -95,6 +96,15 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_YELL", CHAT_MSG_MONSTER_YELL );
 	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_WHISPER", CHAT_MSG_MONSTER_WHISPER );
 	PyModule_AddIntConstant( module, "CHAT_MSG_MONSTER_EMOTE", CHAT_MSG_MONSTER_EMOTE );
+
+	/// Gossip events
+	PyModule_AddIntConstant( module, "GOSSIP_EVENT_HELLO", PYTHON_GOSSIP_EVENT_HELLO );
+	PyModule_AddIntConstant( module, "GOSSIP_EVENT_SELECT", PYTHON_GOSSIP_EVENT_SELECT );
+	PyModule_AddIntConstant( module, "GOSSIP_EVENT_END", PYTHON_GOSSIP_EVENT_END );
+
+	/// Gossip autosend
+	PyModule_AddIntConstant( module, "GOSSIP_AUTOSEND_FALSE", 0 );
+	PyModule_AddIntConstant( module, "GOSSIP_AUTOSEND_TRUE", 1 );
 
 	/// Gossip Icons
 	PyModule_AddIntConstant( module, "ICON_CHAT", Arcemu::Gossip::ICON_CHAT );
