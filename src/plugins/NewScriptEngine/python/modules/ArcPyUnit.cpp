@@ -195,15 +195,87 @@ static PyObject* ArcPyUnit_hasEmptyVehicleSeat( ArcPyUnit *self, PyObject *args 
 		Py_RETURN_FALSE;
 }
 
+static PyObject* ArcPyUnit_enterVehicle( ArcPyUnit *self, PyObject *args )
+{
+	uint64 guid;
+	uint32 delay;
+
+	if( !PyArg_ParseTuple( args, "Kk", &guid, &delay ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a guid and a delay parameter" );
+		return NULL;
+	}
+
+	self->unitPtr->EnterVehicle( guid, delay );
+
+	Py_RETURN_NONE;
+}
+
+static PyObject* ArcPyUnit_exitVehicle( ArcPyUnit *self, PyObject *args )
+{
+	Unit* ptr = self->unitPtr;
+
+	if( ptr->GetCurrentVehicle() != NULL )
+		ptr->GetCurrentVehicle()->EjectPassenger( ptr );
+	else
+	if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+		ptr->RemoveAllAuraType( SPELL_AURA_MOUNTED );
+
+	Py_RETURN_NONE;
+}
+
+static PyObject* ArcPyUnit_getVehicleBase( ArcPyUnit *self, PyObject *args )
+{
+	Unit *vehicleBase = self->unitPtr->GetVehicleBase();
+
+	if( vehicleBase == NULL )
+		Py_RETURN_NONE;
+	else
+	{
+		ArcPyUnit *apu = createArcPyUnit();
+		apu->unitPtr = vehicleBase;
+		return (PyObject*)apu;
+	}
+}
+
+static PyObject* ArcPyUnit_setSpeeds( ArcPyUnit *self, PyObject *args )
+{
+	float speed;
+
+	if( !PyArg_ParseTuple( args, "f", &speed ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a speed parameter" );
+		return NULL;
+	}
+
+	Unit* ptr = self->unitPtr;
+
+	ptr->SetSpeeds( WALK, speed );
+	ptr->SetSpeeds( RUN, speed );
+	ptr->SetSpeeds( FLY, speed );
+
+	Py_RETURN_NONE;
+}
+
+static PyObject* ArcPyUnit_getGUID( ArcPyUnit *self, PyObject *args )
+{
+	return PyLong_FromUnsignedLongLong( self->unitPtr->GetGUID() );
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
+	{ "setSpeeds", (PyCFunction)ArcPyUnit_setSpeeds, METH_VARARGS, "Sets walk, run, and floy speeds of the Unit" },
+	{ "getGUID", (PyCFunction)ArcPyUnit_getGUID, METH_NOARGS, "Returns the GUID of this Unit" },
 	{ "sendChatMessage", (PyCFunction)ArcPyUnit_sendChatMessage, METH_VARARGS, "Sends a chat message from the Unit" },
 	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyUnit_RegisterAIUpdateEvent, METH_VARARGS, "Registers regular AI updates for the Unit" },
 	{ "isOnVehicle", (PyCFunction)ArcPyUnit_isOnVehicle, METH_NOARGS, "Tells if the Unit is on a Vehicle" },
 	{ "dismissVehicle", (PyCFunction)ArcPyUnit_dismissVehicle, METH_NOARGS, "Dismisses the Unit's vehicle" },
 	{ "addVehiclePassenger", (PyCFunction)ArcPyUnit_addVehiclePassenger, METH_VARARGS, "Adds a passenger to the Vehicle" },
 	{ "hasEmptyVehicleSeat", (PyCFunction)ArcPyUnit_hasEmptyVehicleSeat, METH_NOARGS, "Tells if the vehicle has an empty seat" },
+	{ "enterVehicle", (PyCFunction)ArcPyUnit_enterVehicle, METH_VARARGS, "Makes the Unit enter a vehicle" },
+	{ "exitVehicle", (PyCFunction)ArcPyUnit_exitVehicle, METH_NOARGS, "Makes the Unit exit a vehicle" },
+	{ "getVehicleBase", (PyCFunction)ArcPyUnit_getVehicleBase, METH_NOARGS, "Returns the Vehicle the Unit is on" },
 	{NULL}
 };
 

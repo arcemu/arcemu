@@ -11,7 +11,11 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Give me a vehicle!", 1, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Dismiss my vehicle!", 2, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Am I on a vehicle?", 3, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Add a passenger to my vehicle!", 4, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Add a passenger to my vehicle!", 4, 0 )	
+	menu.addItem( arcemu.ICON_CHAT, "Shut up woman and get on my vehicle!", 5, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Get off my vehicle!", 6, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Speed up my vehicle!", 7, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
@@ -48,7 +52,32 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 				unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't event have a free seat, Fool!" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't even have a vehicle, Fool!" )
-
+	
+	elif id == 5:
+		if pu.isOnVehicle():
+			if pu.hasEmptyVehicleSeat():
+				if unit.isOnVehicle():
+					unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am already on a vehicle, Fool!" )
+				else:
+					vb = pu.getVehicleBase()
+					unit.enterVehicle( vb.getGUID(), 0 )
+			else:
+				unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't have an empty seat, Fool!" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are not even on a vehicle, Fool!" )
+			
+	elif id == 6:
+		if unit.isOnVehicle():
+			unit.exitVehicle()
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am NOT on a vehicle, Fool!" )
+			
+	elif id == 7:
+		if pu.isOnVehicle():
+			vb = pu.getVehicleBase()
+			vb.setSpeeds( 100.0 )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are not on a vehicle, Fool!" )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
