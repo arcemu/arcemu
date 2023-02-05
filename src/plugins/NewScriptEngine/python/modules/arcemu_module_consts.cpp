@@ -21,6 +21,7 @@
 
 #include "PythonCreatureEventTypes.hpp"
 #include "PythonGOEventTypes.hpp"
+#include "PythonQuestEventTypes.hpp"
 
 #include <Python.h>
 
@@ -147,4 +148,13 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_LAST_PASSENGER_LEFT", PYTHON_CREATURE_EVENT_ON_LAST_PASSENGER_LEFT );
 	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_CAST_SPELL", PYTHON_CREATURE_EVENT_ON_CAST_SPELL );
 	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_DESPAWN", PYTHON_CREATURE_EVENT_ON_DESPAWN );
+
+	/// Quest events
+	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_ACCEPT", PYTHON_QUEST_EVENT_ON_ACCEPT );
+	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_COMPLETE", PYTHON_QUEST_EVENT_ON_COMPLETE );
+	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_CANCEL", PYTHON_QUEST_EVENT_ON_CANCEL );
+	PyModule_AddIntConstant( module, "QUEST_EVENT_GAMEOBJECT_ACTIVATE", PYTHON_QUEST_EVENT_GAMEOBJECT_ACTIVATE );
+	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_CREATURE_KILL", PYTHON_QUEST_EVENT_ON_CREATURE_KILL );
+	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_EXPLORE_AREA", PYTHON_QUEST_EVENT_ON_EXPLORE_AREA );
+	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_PLAYER_ITEMPICKUP", PYTHON_QUEST_EVENT_ON_PLAYER_ITEMPICKUP );
 }

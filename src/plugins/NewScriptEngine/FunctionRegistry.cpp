@@ -31,6 +31,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::goGossipFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > FunctionRegistry::goFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > FunctionRegistry::creatureFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > FunctionRegistry::questFunctions;
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
 {
@@ -200,6 +201,20 @@ void FunctionRegistry::registerCreatureEventFunction( unsigned int creatureId, u
 	itr->second->functions[ creatureEvent ] = function;
 }
 
+void FunctionRegistry::registerQuestEventFunction( unsigned int questId, unsigned int questEvent, void* function )
+{
+	ARCEMU_ASSERT( questEvent < PYTHON_QUEST_EVENT_COUNT );
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* >::iterator itr = questFunctions.find( questId );
+	if( itr == questFunctions.end() )
+	{
+		QuestFunctionTuple* tuple = new QuestFunctionTuple();
+		itr = questFunctions.insert( std::pair< unsigned int, QuestFunctionTuple* >( questId, tuple ) ).first;
+	}
+
+	itr->second->functions[ questEvent ] = function;
+}
+
 void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = creatureGossipFunctions.begin();
@@ -245,6 +260,16 @@ void FunctionRegistry::visitCreatureEventFunctions( CreatureFunctionTupleVisitor
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator itr = creatureFunctions.begin();
 	while( itr != creatureFunctions.end() )
+	{
+		visitor->visit( itr->first, *(itr->second) );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* >::iterator itr = questFunctions.begin();
+	while( itr != questFunctions.end() )
 	{
 		visitor->visit( itr->first, *(itr->second) );
 		++itr;
@@ -371,6 +396,28 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	creatureFunctions.clear();
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* >::iterator questFunctionsItr = questFunctions.begin();
+	while( questFunctionsItr != questFunctions.end() )
+	{
+		QuestFunctionTuple* tuple = questFunctionsItr->second;
+
+		for( int i = 0; i < PYTHON_QUEST_EVENT_COUNT; i++ )
+		{
+			if( tuple->functions[ i ] != NULL )
+			{
+				Py_DecRef( (PyObject*) tuple->functions[ i ] );
+				tuple->functions[ i ] = NULL;
+			}
+		}
+
+		delete questFunctionsItr->second;
+		questFunctionsItr->second = NULL;
+
+		++questFunctionsItr;
+	}
+
+	questFunctions.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
@@ -390,3 +437,13 @@ CreatureFunctionTuple* FunctionRegistry::getCreatureEventFunctions( unsigned int
 	else
 		return itr->second;
 }
+
+QuestFunctionTuple* FunctionRegistry::getQuestFunctions( unsigned int questId )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* >::iterator itr = questFunctions.find( questId );
+	if( itr == questFunctions.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+

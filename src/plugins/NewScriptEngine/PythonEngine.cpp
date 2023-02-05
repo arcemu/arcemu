@@ -34,9 +34,11 @@
 #include "GOGossipScriptReleaser.hpp"
 #include "ItemGossipScriptRegisterer.hpp"
 #include "ItemGossipScriptReleaser.hpp"
+#include "QuestScriptRegisterer.hpp"
 
 #include "PythonCreatureAIScriptFactory.hpp"
 #include "PythonGameObjectAIScriptFactory.hpp"
+#include "PythonQuestScriptFactory.hpp"
 
 void register_arcemu_extensions();
 
@@ -54,6 +56,7 @@ PythonEngine::~PythonEngine()
 {
 	PythonCreatureAIScriptFactory::onShutdown();
 	PythonGameObjectAIScriptFactory::onShutdown();
+	PythonQuestScriptFactory::onShutDown();
 
 	ServerHookRegistry::releaseHooks();
 	FunctionRegistry::releaseFunctions();
@@ -94,6 +97,7 @@ void PythonEngine::onReload()
 
 	PythonCreatureAIScriptFactory::onReload();
 	PythonGameObjectAIScriptFactory::onReload();
+	PythonQuestScriptFactory::onReload();
 }
 
 int PythonEngine::loadScript( const char *fileName )
@@ -187,5 +191,8 @@ void PythonEngine::registerScripts()
 
 	CreatureFunctionRegisterer creatureFunctionRegisterer( this->mgr );
 	FunctionRegistry::visitCreatureEventFunctions( &creatureFunctionRegisterer );
+
+	QuestScriptRegisterer questScriptRegisterer( this->mgr );
+	FunctionRegistry::visitQuestEventFunctions( &questScriptRegisterer );
 }
 

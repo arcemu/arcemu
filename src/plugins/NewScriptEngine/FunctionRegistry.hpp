@@ -29,6 +29,9 @@
 #include "GOFunctionTuple.hpp"
 #include "GOFunctionTupleVisitor.hpp"
 
+#include "QuestFunctionTuple.hpp"
+#include "QuestFunctionTupleVisitor.hpp"
+
 class FunctionRegistry
 {
 public:
@@ -42,7 +45,7 @@ public:
 
 	static void registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function );
 	static void registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function );
-
+	static void registerQuestEventFunction( unsigned int questId, unsigned int questEvent, void* function );
 
 
 	static void visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor );
@@ -55,6 +58,7 @@ public:
 
 	static void visitGOEventFunctions( GOFunctionTupleVisitor *visitor );
 	static void visitCreatureEventFunctions( CreatureFunctionTupleVisitor *visitor );
+	static void visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor );
 
 
 	static void releaseFunctions();
@@ -62,6 +66,7 @@ public:
 
 	static GOFunctionTuple* getGOEventFunctions( unsigned int goId );
 	static CreatureFunctionTuple* getCreatureEventFunctions( unsigned int creatureId );
+	static QuestFunctionTuple* getQuestFunctions( unsigned int questId );
 
 private:
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > creatureGossipFunctions;
@@ -70,6 +75,7 @@ private:
 
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > goFunctions;
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > creatureFunctions;
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > questFunctions;
 };
 
 #endif

@@ -177,6 +177,30 @@ static PyObject* arcemu_RegisterUnitEvent( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+static PyObject* arcemu_RegisterQuestEvent( PyObject *self, PyObject *args )
+{
+	unsigned long questId = 0;
+	unsigned long questEvent = 0;
+	PyObject *callback = NULL;
+
+
+	if( !PyArg_ParseTuple( args, "IIO", &questId, &questEvent, &callback ) )
+	{
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Third argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	FunctionRegistry::registerQuestEventFunction( questId, questEvent, callback );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
 	{ "RegisterUnitGossipEvent", arcemu_RegisterUnitGossipEvent, METH_VARARGS, "Registers a Unit gossip event" },
@@ -184,6 +208,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterGOGossipEvent", arcemu_RegisterGOGossipEvent, METH_VARARGS, "Registers a GO gossip event" },
 	{ "RegisterGameObjectEvent", arcemu_RegisterGameObjectEvent, METH_VARARGS, "Registers a GameObject event" },
 	{ "RegisterUnitEvent", arcemu_RegisterUnitEvent, METH_VARARGS, "Registers a Unit event" },
+	{ "RegisterQuestEvent", arcemu_RegisterQuestEvent, METH_VARARGS, "Registers a Quest event" },
 	{NULL, NULL, 0, NULL }
 };
 
