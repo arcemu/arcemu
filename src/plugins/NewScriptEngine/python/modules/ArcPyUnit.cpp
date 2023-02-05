@@ -91,11 +91,119 @@ static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *arg
 	Py_RETURN_NONE;
 }
 
+static PyObject* ArcPyUnit_isOnVehicle( ArcPyUnit *self, PyObject *args )
+{
+	Unit* ptr = self->unitPtr;
+	if( ( ptr->GetCurrentVehicle() != NULL ) || ( ptr->IsPlayer() && ptr->IsVehicle() ) )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
+static PyObject* ArcPyUnit_dismissVehicle( ArcPyUnit *self, PyObject *args )
+{
+	Unit* ptr = self->unitPtr;
+
+	Vehicle *v = NULL;
+	
+	if( ptr->GetCurrentVehicle() != NULL )
+		v = ptr->GetCurrentVehicle();
+	else
+	if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+		v = ptr->GetVehicleComponent();
+	
+	if( v == NULL )
+		Py_RETURN_NONE;
+	
+	v->EjectAllPassengers();
+	Unit *o = v->GetOwner();
+	
+	if( o->IsPlayer() )
+		o->RemoveAllAuraType( SPELL_AURA_MOUNTED );
+	else
+		o->Delete();
+
+	Py_RETURN_NONE;
+}
+
+static PyObject* ArcPyUnit_addVehiclePassenger( ArcPyUnit *self, PyObject *args )
+{
+	unsigned long creatureId;
+
+	if( !PyArg_ParseTuple( args, "k", &creatureId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a creatureId." );
+		return NULL;
+	}
+
+	Unit *ptr = self->unitPtr;
+
+	Vehicle *v = NULL;
+	
+	if( ptr->GetCurrentVehicle() != NULL )
+		v = ptr->GetCurrentVehicle();
+	else
+	if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+		v = ptr->GetVehicleComponent();
+	
+	if( v == NULL )
+		Py_RETURN_NONE;
+	
+	if( !v->HasEmptySeat() )
+		Py_RETURN_NONE;
+	
+	CreatureInfo  *ci = CreatureNameStorage.LookupEntry( creatureId );
+	CreatureProto *cp = CreatureProtoStorage.LookupEntry( creatureId );
+	
+	if( ( ci == NULL ) || ( cp == NULL ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a creature that exists." );
+		return NULL;
+	}
+	
+	Unit *u = v->GetOwner();
+	
+	Creature *c = u->GetMapMgr()->CreateCreature( creatureId );
+	c->Load( cp, u->GetPositionX(), u->GetPositionY(), u->GetPositionZ(), u->GetOrientation() );
+	c->PushToWorld( u->GetMapMgr() );
+	c->EnterVehicle( u->GetGUID(), 1 );
+
+	Py_RETURN_NONE;
+}
+
+static PyObject* ArcPyUnit_hasEmptyVehicleSeat( ArcPyUnit *self, PyObject *args )
+{
+	Unit* ptr = self->unitPtr;
+
+	Vehicle *v = NULL;
+
+	if( ptr->GetCurrentVehicle() != NULL )
+		v = ptr->GetCurrentVehicle();
+	else
+	if( ptr->IsPlayer() && ( ptr->GetVehicleComponent() != NULL ) )
+		v = ptr->GetVehicleComponent();
+
+	if( v == NULL )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a vehicle." );
+		return NULL;
+	}
+	
+	if( v->HasEmptySeat() )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
 	{ "sendChatMessage", (PyCFunction)ArcPyUnit_sendChatMessage, METH_VARARGS, "Sends a chat message from the Unit" },
 	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyUnit_RegisterAIUpdateEvent, METH_VARARGS, "Registers regular AI updates for the Unit" },
+	{ "isOnVehicle", (PyCFunction)ArcPyUnit_isOnVehicle, METH_NOARGS, "Tells if the Unit is on a Vehicle" },
+	{ "dismissVehicle", (PyCFunction)ArcPyUnit_dismissVehicle, METH_NOARGS, "Dismisses the Unit's vehicle" },
+	{ "addVehiclePassenger", (PyCFunction)ArcPyUnit_addVehiclePassenger, METH_VARARGS, "Adds a passenger to the Vehicle" },
+	{ "hasEmptyVehicleSeat", (PyCFunction)ArcPyUnit_hasEmptyVehicleSeat, METH_NOARGS, "Tells if the vehicle has an empty seat" },
 	{NULL}
 };
 

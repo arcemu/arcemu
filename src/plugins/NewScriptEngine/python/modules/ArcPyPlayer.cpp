@@ -74,11 +74,69 @@ static PyObject* ArcPyPlayer_toUnit( ArcPyPlayer *self, PyObject *args )
 	return (PyObject*)apu;
 }
 
+static PyObject* ArcPyPlayer_spawnAndEnterVehicle( ArcPyPlayer *self, PyObject *args )
+{
+	unsigned long creatureId;
+	unsigned long delay;
+
+	if( ! PyArg_ParseTuple( args, "kk", &creatureId, &delay ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a creatureId, and a delay." );
+		return NULL;
+	}
+
+	Player *ptr = self->playerPtr;
+
+	if( delay < 1 * 1000 )
+		delay = 1 * 1000;
+	
+	if( creatureId == 0 )
+	{
+		PyErr_SetString( PyExc_ValueError, "The the creature Id must not be " );
+		return NULL;
+	}
+	
+	if( ( ptr->GetCurrentVehicle() != NULL ) && ( !ptr->IsPlayer() || !ptr->IsVehicle() ) )
+		Py_RETURN_NONE;
+	
+	CreatureInfo *ci = CreatureNameStorage.LookupEntry( creatureId );
+	if( ci == NULL )
+	{
+		PyErr_SetString( PyExc_ValueError, "The creature must exist" );
+		return NULL;
+	}
+	
+	CreatureProto *cp = CreatureProtoStorage.LookupEntry( creatureId );
+	if( cp == NULL )
+	{
+		PyErr_SetString( PyExc_ValueError, "The creature must exist" );
+		return NULL;
+	}
+	
+	if( ( cp->vehicleid == 0 )  )
+	{
+		PyErr_SetString( PyExc_ValueError, "Creature must have vehicle data" );
+		return NULL;
+	}
+	
+	LocationVector v( ptr->GetPosition() );
+	Creature *c = ptr->GetMapMgr()->CreateCreature( cp->Id );
+	c->Load( cp, v.x, v.y, v.z, v.o );
+	c->RemoveFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK );
+	c->PushToWorld( ptr->GetMapMgr() );
+	
+	// Need to delay this a bit since first the client needs to see the vehicle
+	ptr->EnterVehicle( c->GetGUID(), delay );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
 	{ "sendChatMessage", (PyCFunction)ArcPyPlayer_sendChatMessage, METH_VARARGS, "Sends a chat message from the Player" },
 	{ "toUnit", (PyCFunction)ArcPyPlayer_toUnit, METH_NOARGS, "Returns the Player object as a Unit" },
+	{ "spawnAndEnterVehicle", (PyCFunction)ArcPyPlayer_spawnAndEnterVehicle, METH_VARARGS, "Spawns a vehicle and makes the player enter it" },
 	{NULL}
 };
 
