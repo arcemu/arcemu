@@ -131,12 +131,33 @@ static PyObject* ArcPyPlayer_spawnAndEnterVehicle( ArcPyPlayer *self, PyObject *
 	Py_RETURN_NONE;
 }
 
+static PyObject* ArcPyPlayer_teleport( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 map;
+	float x;
+	float y;
+	float z;
+	float orientation = 0.0f;
+
+	if( ! PyArg_ParseTuple( args, "kfff|f", &map, &x, &y, &z, &orientation ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a map Id, and x,y,x coordinates." );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	player->SafeTeleport( map, 0, x, y, z, orientation );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
 	{ "sendChatMessage", (PyCFunction)ArcPyPlayer_sendChatMessage, METH_VARARGS, "Sends a chat message from the Player" },
 	{ "toUnit", (PyCFunction)ArcPyPlayer_toUnit, METH_NOARGS, "Returns the Player object as a Unit" },
 	{ "spawnAndEnterVehicle", (PyCFunction)ArcPyPlayer_spawnAndEnterVehicle, METH_VARARGS, "Spawns a vehicle and makes the player enter it" },
+	{ "teleport", (PyCFunction)ArcPyPlayer_teleport, METH_VARARGS, "Teleports the player to the given map's given coordinates" },
 	{NULL}
 };
 
