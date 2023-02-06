@@ -7,7 +7,7 @@ def go_onCreate( go ):
 	
 def go_onSpawn( go ):
 	print( "GameObject being spawned: " + go.getName() + "(" + str( go.getId() ) + ")" )
-	go.RegisterAIUpdateEvent( 5000 )
+	#go.RegisterAIUpdateEvent( 5000 )
 	
 def go_onDespawn( go ):
 	print( "GameObject being despawned: " + go.getName() + "(" + str( go.getId() ) + ")" )

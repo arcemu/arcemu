@@ -48,7 +48,7 @@ def npc_onTargetDied( unit, event, target ):
 	
 def npc_onLoad( unit, event ):
 	print( "Loaded creature " + unit.getName() )
-	unit.RegisterAIUpdateEvent( 5000 )	
+	#unit.RegisterAIUpdateEvent( 5000 )	
 	
 def npc_onAssistTargetDied( unit, event, assistTarget ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ayieee. " + assistTarget.getName() + " died! :(")
