@@ -102,7 +102,7 @@ void PythonEngine::onReload()
 
 int PythonEngine::loadScript( const char *fileName )
 {
-	sLog.Success( "APE", "Loading %s...", fileName );
+	//sLog.Success( "APE", "Loading %s...", fileName );
 
 	int val = python->runSimpleFile( fileName );
 	if( val == 0 )
