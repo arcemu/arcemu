@@ -1,9 +1,9 @@
-if(NOT BUILD_NEW_SCRIPT_ENGINE )
-  message("\tNewScriptEngine was skipped because BUILD_NEW_SCRIPT_ENGINE is unchecked.")
+if(NOT BUILD_PYTHONENGINE )
+  message("\tArcemu Python Engine (APE) was skipped because BUILD_PYTHONENGINE is unchecked.")
   return()
-endif(NOT BUILD_NEW_SCRIPT_ENGINE)
+endif(NOT BUILD_PYTHONENGINE)
 
-project(NewScriptEngine)
+project(PythonEngine)
 
 #prefix variable - points to the folder which contains the source files.
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )

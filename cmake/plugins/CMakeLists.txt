@@ -22,7 +22,7 @@ SET( BUILD_QUESTSCRIPTS TRUE CACHE BOOL "Build arcQuestScripts.")
 SET( BUILD_MISCSCRIPTS TRUE CACHE BOOL "Build arcMiscScripts." )
 SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE TRUE CACHE BOOL "Build Arcemu Lua Engine ( ALE ).")
-SET( BUILD_NEW_SCRIPT_ENGINE TRUE CACHE BOOL "Build the New Script Engine (NSE).")
+SET( BUILD_PYTHONENGINE TRUE CACHE BOOL "Build Arcemu Python Engine (APE).")
 
 add_subdirectory( eventscripts)
 add_subdirectory( instancescripts )
@@ -34,9 +34,9 @@ add_subdirectory( serverstatusplugin )
 add_subdirectory( lualib ) #Used by luaengine module.
 add_subdirectory( luaengine )
 
-IF( BUILD_NEW_SCRIPT_ENGINE )
+IF( BUILD_PYTHONENGINE )
 	add_subdirectory( python34 )
-	add_subdirectory( new_script_engine )
+	add_subdirectory( pythonengine )
 ENDIF()
 
 unset(SCRIPTS_PATH)
