@@ -19,7 +19,6 @@
  */
 
 #include "StdAfx.h"
-#include "engine.h"
 
 #include <ScriptSetup.h>
 

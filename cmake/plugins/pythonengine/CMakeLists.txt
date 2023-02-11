@@ -57,7 +57,6 @@ ${prefix}/ServerHookHandler.cpp
 )
 
 SET( HEADERS
-${prefix}/engine.h
 ${prefix}/python/ArcPyTuple.hpp
 ${prefix}/python/ArcPython.hpp
 ${prefix}/python/Python.hpp
