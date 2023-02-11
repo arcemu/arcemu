@@ -5,13 +5,31 @@ endif(NOT BUILD_PYTHONENGINE)
 
 project(PythonEngine)
 
-#prefix variable - points to the folder which contains the source files.
 SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 
-#SRCS - contains the source files that compose this project.
 SET( SRCS
+${prefix}/creature/CreatureFunctionRegisterer.cpp
+${prefix}/creature/CreatureGossipScriptRegisterer.cpp
+${prefix}/creature/CreatureGossipScriptReleaser.cpp
+${prefix}/creature/PythonCreatureAIScript.cpp
+${prefix}/creature/PythonCreatureAIScriptFactory.cpp
+${prefix}/engine/FunctionRegistry.cpp
 ${prefix}/engine/plugin.cpp
+${prefix}/engine/PythonEngine.cpp
+${prefix}/gameobject/GOScriptRegisterer.cpp
+${prefix}/gameobject/GOGossipScriptRegisterer.cpp
+${prefix}/gameobject/GOGossipScriptReleaser.cpp
+${prefix}/gameobject/PythonGameObjectAIScript.cpp
+${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
+${prefix}/gossip/PythonGossipScript.cpp
+${prefix}/instance/InstanceScriptRegisterer.cpp
+${prefix}/instance/PythonInstanceScript.cpp
+${prefix}/instance/PythonInstanceScriptFactory.cpp
+${prefix}/item/ItemGossipScriptRegisterer.cpp
+${prefix}/item/ItemGossipScriptReleaser.cpp
 ${prefix}/python/arcemu_extensions.cpp
+${prefix}/python/ArcPyTuple.cpp
+${prefix}/python/ArcPython.cpp
 ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/arcemu_module_consts.cpp
 ${prefix}/python/modules/ArcPyAura.cpp
@@ -24,39 +42,49 @@ ${prefix}/python/modules/ArcPyPlayer.cpp
 ${prefix}/python/modules/ArcPyQuest.cpp
 ${prefix}/python/modules/ArcPySpell.cpp
 ${prefix}/python/modules/ArcPyWorldSession.cpp
-${prefix}/python/ArcPyTuple.cpp
-${prefix}/python/ArcPython.cpp
 ${prefix}/python/Python.cpp
 ${prefix}/python/PythonCallable.cpp
 ${prefix}/python/PythonObject.cpp
 ${prefix}/python/PythonTuple.cpp
 ${prefix}/python/PythonValue.cpp
-${prefix}/creature/PythonCreatureAIScript.cpp
-${prefix}/creature/PythonCreatureAIScriptFactory.cpp
-${prefix}/engine/PythonEngine.cpp
-${prefix}/gameobject/PythonGameObjectAIScript.cpp
-${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
-${prefix}/instance/PythonInstanceScript.cpp
-${prefix}/instance/PythonInstanceScriptFactory.cpp
-${prefix}/gossip/PythonGossipScript.cpp
 ${prefix}/quest/PythonQuestScriptFactory.cpp
 ${prefix}/quest/PythonQuestScript.cpp
-${prefix}/creature/CreatureFunctionRegisterer.cpp
-${prefix}/creature/CreatureGossipScriptRegisterer.cpp
-${prefix}/creature/CreatureGossipScriptReleaser.cpp
-${prefix}/engine/FunctionRegistry.cpp
-${prefix}/gameobject/GOScriptRegisterer.cpp
-${prefix}/gameobject/GOGossipScriptRegisterer.cpp
-${prefix}/gameobject/GOGossipScriptReleaser.cpp
-${prefix}/instance/InstanceScriptRegisterer.cpp
-${prefix}/item/ItemGossipScriptRegisterer.cpp
-${prefix}/item/ItemGossipScriptReleaser.cpp
 ${prefix}/quest/QuestScriptRegisterer.cpp
 ${prefix}/serverhooks/ServerHookRegistry.cpp
 ${prefix}/serverhooks/ServerHookHandler.cpp
 )
 
 SET( HEADERS
+${prefix}/creature/CreatureFunctionRegisterer.hpp
+${prefix}/creature/CreatureFunctionTuple.hpp
+${prefix}/creature/CreatureFunctionTupleVisitor.hpp
+${prefix}/creature/CreatureGossipScriptRegisterer.hpp
+${prefix}/creature/CreatureGossipScriptReleaser.hpp
+${prefix}/creature/PythonCreatureAIScript.hpp
+${prefix}/creature/PythonCreatureAIScriptFactory.hpp
+${prefix}/creature/PythonCreatureEventTypes.hpp
+${prefix}/engine/FunctionRegistry.hpp
+${prefix}/engine/PythonEngine.hpp
+${prefix}/gameobject/GOFunctionTuple.hpp
+${prefix}/gameobject/GOFunctionTupleVisitor.hpp
+${prefix}/gameobject/GOGossipScriptRegisterer.hpp
+${prefix}/gameobject/GOGossipScriptReleaser.hpp
+${prefix}/gameobject/GOScriptRegisterer.hpp
+${prefix}/gameobject/PythonGameObjectAIScript.hpp
+${prefix}/gameobject/PythonGameObjectAIScriptFactory.hpp
+${prefix}/gameobject/PythonGOEventTypes.hpp
+${prefix}/gossip/GossipFunctionTuple.hpp
+${prefix}/gossip/GossipFunctionTupleVisitor.hpp
+${prefix}/gossip/PythonGossipEventTypes.hpp
+${prefix}/gossip/PythonGossipScript.hpp
+${prefix}/instance/InstanceFunctionTuple.hpp
+${prefix}/instance/InstanceFunctionTupleVisitor.hpp
+${prefix}/instance/InstanceScriptRegisterer.hpp
+${prefix}/instance/PythonInstanceEventTypes.hpp
+${prefix}/instance/PythonInstanceScript.hpp
+${prefix}/instance/PythonInstanceScriptFactory.hpp
+${prefix}/item/ItemGossipScriptRegisterer.hpp
+${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/python/ArcPyTuple.hpp
 ${prefix}/python/ArcPython.hpp
 ${prefix}/python/Python.hpp
@@ -74,39 +102,9 @@ ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/python/modules/ArcPyQuest.hpp
 ${prefix}/python/modules/ArcPySpell.hpp
 ${prefix}/python/modules/ArcPyWorldSession.hpp
-${prefix}/creature/PythonCreatureEventTypes.hpp
-${prefix}/engine/PythonEngine.hpp
-${prefix}/creature/PythonCreatureAIScript.hpp
-${prefix}/creature/PythonCreatureAIScriptFactory.hpp
-${prefix}/gameobject/PythonGameObjectAIScript.hpp
-${prefix}/gameobject/PythonGameObjectAIScriptFactory.hpp
-${prefix}/gameobject/PythonGOEventTypes.hpp
-${prefix}/gossip/PythonGossipEventTypes.hpp
-${prefix}/gossip/PythonGossipScript.hpp
-${prefix}/instance/PythonInstanceEventTypes.hpp
-${prefix}/instance/PythonInstanceScript.hpp
-${prefix}/instance/PythonInstanceScriptFactory.hpp
 ${prefix}/quest/PythonQuestEventTypes.hpp
 ${prefix}/quest/PythonQuestScript.hpp
 ${prefix}/quest/PythonQuestScriptFactory.hpp
-${prefix}/creature/CreatureFunctionRegisterer.hpp
-${prefix}/creature/CreatureFunctionTuple.hpp
-${prefix}/creature/CreatureFunctionTupleVisitor.hpp
-${prefix}/creature/CreatureGossipScriptRegisterer.hpp
-${prefix}/creature/CreatureGossipScriptReleaser.hpp
-${prefix}/engine/FunctionRegistry.hpp
-${prefix}/gameobject/GOFunctionTuple.hpp
-${prefix}/gameobject/GOFunctionTupleVisitor.hpp
-${prefix}/gossip/GossipFunctionTuple.hpp
-${prefix}/gossip/GossipFunctionTupleVisitor.hpp
-${prefix}/gameobject/GOScriptRegisterer.hpp
-${prefix}/gameobject/GOGossipScriptRegisterer.hpp
-${prefix}/gameobject/GOGossipScriptReleaser.hpp
-${prefix}/instance/InstanceFunctionTuple.hpp
-${prefix}/instance/InstanceFunctionTupleVisitor.hpp
-${prefix}/instance/InstanceScriptRegisterer.hpp
-${prefix}/item/ItemGossipScriptRegisterer.hpp
-${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/quest/QuestFunctionTuple.hpp
 ${prefix}/quest/QuestFunctionTupleVisitor.hpp
 ${prefix}/quest/QuestScriptRegisterer.hpp
@@ -142,7 +140,6 @@ SET( PYTHON_SCRIPTS_PATH ${ROOT_PATH}/src/scripts/pythonscripts )
 FILE( GLOB PYTHON_SCRIPTS ${PYTHON_SCRIPTS_PATH}/*.py )
 INSTALL(FILES ${PYTHON_SCRIPTS} DESTINATION ./pythonscripts )
 
-#Cleap up our variables(Not required.)
 UNSET(PYTHON_SCRIPTS)
 unset( prefix)
 unset( SRCS )
