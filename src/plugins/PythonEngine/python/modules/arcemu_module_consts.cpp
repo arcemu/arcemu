@@ -22,6 +22,7 @@
 #include "PythonCreatureEventTypes.hpp"
 #include "PythonGOEventTypes.hpp"
 #include "PythonGossipEventTypes.hpp"
+#include "PythonInstanceEventTypes.hpp"
 #include "PythonQuestEventTypes.hpp"
 
 #include <Python.h>
@@ -167,4 +168,16 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_CREATURE_KILL", PYTHON_QUEST_EVENT_ON_CREATURE_KILL );
 	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_EXPLORE_AREA", PYTHON_QUEST_EVENT_ON_EXPLORE_AREA );
 	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_PLAYER_ITEMPICKUP", PYTHON_QUEST_EVENT_ON_PLAYER_ITEMPICKUP );
+
+	/// Instance events
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_PLAYER_DEATH", PYTHON_INSTANCE_EVENT_ON_PLAYER_DEATH );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_PLAYER_ENTER", PYTHON_INSTANCE_EVENT_ON_PLAYER_ENTER );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_AREA_TRIGGER", PYTHON_INSTANCE_EVENT_ON_AREA_TRIGGER );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_ZONE_CHANGE", PYTHON_INSTANCE_EVENT_ON_ZONE_CHANGE );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_CREATURE_DEATH", PYTHON_INSTANCE_EVENT_ON_CREATURE_DEATH );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_CREATURE_PUSH", PYTHON_INSTANCE_EVENT_ON_CREATURE_PUSH );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_GO_ACTIVATE", PYTHON_INSTANCE_EVENT_ON_GO_ACTIVATE );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_GO_PUSH", PYTHON_INSTANCE_EVENT_ON_GO_PUSH );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ONLOAD", PYTHON_INSTANCE_EVENT_ONLOAD );
+	PyModule_AddIntConstant( module, "INSTANCE_EVENT_DESTROY", PYTHON_INSTANCE_EVENT_DESTROY );
 }

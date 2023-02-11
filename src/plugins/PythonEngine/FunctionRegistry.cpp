@@ -30,6 +30,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::itemGossipFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::goGossipFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > FunctionRegistry::goFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* > FunctionRegistry::instanceFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > FunctionRegistry::creatureFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > FunctionRegistry::questFunctions;
 
@@ -215,6 +216,20 @@ void FunctionRegistry::registerQuestEventFunction( unsigned int questId, unsigne
 	itr->second->functions[ questEvent ] = function;
 }
 
+void FunctionRegistry::registerInstanceEventFunction( unsigned int mapId, unsigned int instanceEvent, void* function )
+{
+	ARCEMU_ASSERT( instanceEvent < PYTHON_INSTANCE_EVENT_COUNT );
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator itr = instanceFunctions.find( mapId );
+	if( itr == instanceFunctions.end() )
+	{
+		InstanceFunctionTuple* tuple = new InstanceFunctionTuple();
+		itr = instanceFunctions.insert( std::pair< unsigned int, InstanceFunctionTuple* >( mapId, tuple ) ).first;
+	}
+
+	itr->second->functions[ instanceEvent ] = function;
+}
+
 void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = creatureGossipFunctions.begin();
@@ -229,6 +244,16 @@ void FunctionRegistry::visitGOGossipFunctions( GossipFunctionTupleVisitor *visit
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = goGossipFunctions.begin();
 	while( itr != goGossipFunctions.end() )
+	{
+		visitor->visit( itr->first, *(itr->second) );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitInstanceEventFunctions( InstanceFunctionTupleVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator itr = instanceFunctions.begin();
+	while( itr != instanceFunctions.end() )
 	{
 		visitor->visit( itr->first, *(itr->second) );
 		++itr;
@@ -418,6 +443,30 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	questFunctions.clear();
+
+
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator instanceFunctionsItr = instanceFunctions.begin();
+	while( instanceFunctionsItr != instanceFunctions.end() )
+	{
+		InstanceFunctionTuple* tuple = instanceFunctionsItr->second;
+
+		for( int i = 0; i < PYTHON_INSTANCE_EVENT_COUNT; i++ )
+		{
+			if( tuple->functions[ i ] != NULL )
+			{
+				Py_DecRef( (PyObject*) tuple->functions[ i ] );
+				tuple->functions[ i ] = NULL;
+			}
+		}
+
+		delete instanceFunctionsItr->second;
+		instanceFunctionsItr->second = NULL;
+
+		++instanceFunctionsItr;
+	}
+
+	instanceFunctions.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
@@ -447,3 +496,11 @@ QuestFunctionTuple* FunctionRegistry::getQuestFunctions( unsigned int questId )
 		return itr->second;
 }
 
+InstanceFunctionTuple* FunctionRegistry::getInstanceFunctions( unsigned int mapId )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator itr = instanceFunctions.find( mapId );
+	if( itr == instanceFunctions.end() )
+		return NULL;
+	else
+		return itr->second;
+}

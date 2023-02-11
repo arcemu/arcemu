@@ -32,12 +32,14 @@
 #include "GOScriptRegisterer.hpp"
 #include "GOGossipScriptRegisterer.hpp"
 #include "GOGossipScriptReleaser.hpp"
+#include "InstanceScriptRegisterer.hpp"
 #include "ItemGossipScriptRegisterer.hpp"
 #include "ItemGossipScriptReleaser.hpp"
 #include "QuestScriptRegisterer.hpp"
 
 #include "PythonCreatureAIScriptFactory.hpp"
 #include "PythonGameObjectAIScriptFactory.hpp"
+#include "PythonInstanceScriptFactory.hpp"
 #include "PythonQuestScriptFactory.hpp"
 
 void register_arcemu_extensions();
@@ -57,6 +59,7 @@ PythonEngine::~PythonEngine()
 	PythonCreatureAIScriptFactory::onShutdown();
 	PythonGameObjectAIScriptFactory::onShutdown();
 	PythonQuestScriptFactory::onShutDown();
+	PythonInstanceScriptFactory::onShutdown();
 
 	ServerHookRegistry::releaseHooks();
 	FunctionRegistry::releaseFunctions();
@@ -97,6 +100,7 @@ void PythonEngine::onReload()
 
 	PythonCreatureAIScriptFactory::onReload();
 	PythonGameObjectAIScriptFactory::onReload();
+	PythonInstanceScriptFactory::onReload();
 	PythonQuestScriptFactory::onReload();
 }
 
@@ -185,6 +189,9 @@ void PythonEngine::registerScripts()
 
 	ItemGossipScriptRegisterer itemGossipRegisterer( this->mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipRegisterer );
+
+	InstanceScriptRegisterer instanceScriptRegisterer( this->mgr );
+	FunctionRegistry::visitInstanceEventFunctions( &instanceScriptRegisterer );
 
 	GOScriptRegisterer goScriptRegisterer( this->mgr );
 	FunctionRegistry::visitGOEventFunctions( &goScriptRegisterer );
