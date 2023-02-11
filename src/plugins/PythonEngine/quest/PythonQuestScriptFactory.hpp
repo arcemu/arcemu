@@ -20,7 +20,7 @@
 #ifndef PYTHON_QUESTSCRIPT_FACTORY_H
 #define PYTHON_QUESTSCRIPT_FACTORY_H
 
-#include "PythonQuestScript.hpp"
+#include "quest/PythonQuestScript.hpp"
 
 class PythonQuestScriptFactory
 {

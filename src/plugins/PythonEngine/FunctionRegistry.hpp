@@ -32,8 +32,8 @@
 #include "InstanceFunctionTuple.hpp"
 #include "InstanceFunctionTupleVisitor.hpp"
 
-#include "QuestFunctionTuple.hpp"
-#include "QuestFunctionTupleVisitor.hpp"
+#include "quest/QuestFunctionTuple.hpp"
+#include "quest/QuestFunctionTupleVisitor.hpp"
 
 class FunctionRegistry
 {

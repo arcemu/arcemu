@@ -23,7 +23,7 @@
 #include "gameobject/PythonGOEventTypes.hpp"
 #include "PythonGossipEventTypes.hpp"
 #include "PythonInstanceEventTypes.hpp"
-#include "PythonQuestEventTypes.hpp"
+#include "quest/PythonQuestEventTypes.hpp"
 
 #include <Python.h>
 

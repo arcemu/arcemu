@@ -39,8 +39,8 @@ ${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
 ${prefix}/PythonInstanceScript.cpp
 ${prefix}/PythonInstanceScriptFactory.cpp
 ${prefix}/PythonGossipScript.cpp
-${prefix}/PythonQuestScriptFactory.cpp
-${prefix}/PythonQuestScript.cpp
+${prefix}/quest/PythonQuestScriptFactory.cpp
+${prefix}/quest/PythonQuestScript.cpp
 ${prefix}/creature/CreatureFunctionRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptReleaser.cpp
@@ -51,7 +51,7 @@ ${prefix}/gameobject/GOGossipScriptReleaser.cpp
 ${prefix}/InstanceScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptReleaser.cpp
-${prefix}/QuestScriptRegisterer.cpp
+${prefix}/quest/QuestScriptRegisterer.cpp
 ${prefix}/ServerHookRegistry.cpp
 ${prefix}/ServerHookHandler.cpp
 )
@@ -86,9 +86,9 @@ ${prefix}/PythonGossipScript.hpp
 ${prefix}/PythonInstanceEventTypes.hpp
 ${prefix}/PythonInstanceScript.hpp
 ${prefix}/PythonInstanceScriptFactory.hpp
-${prefix}/PythonQuestEventTypes.hpp
-${prefix}/PythonQuestScript.hpp
-${prefix}/PythonQuestScriptFactory.hpp
+${prefix}/quest/PythonQuestEventTypes.hpp
+${prefix}/quest/PythonQuestScript.hpp
+${prefix}/quest/PythonQuestScriptFactory.hpp
 ${prefix}/creature/CreatureFunctionRegisterer.hpp
 ${prefix}/creature/CreatureFunctionTuple.hpp
 ${prefix}/creature/CreatureFunctionTupleVisitor.hpp
@@ -107,9 +107,9 @@ ${prefix}/InstanceFunctionTupleVisitor.hpp
 ${prefix}/InstanceScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptReleaser.hpp
-${prefix}/QuestFunctionTuple.hpp
-${prefix}/QuestFunctionTupleVisitor.hpp
-${prefix}/QuestScriptRegisterer.hpp
+${prefix}/quest/QuestFunctionTuple.hpp
+${prefix}/quest/QuestFunctionTupleVisitor.hpp
+${prefix}/quest/QuestScriptRegisterer.hpp
 ${prefix}/ServerHookRegistry.hpp
 ${prefix}/ServerHookHandler.hpp
 )

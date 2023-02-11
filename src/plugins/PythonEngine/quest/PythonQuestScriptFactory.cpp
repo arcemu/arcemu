@@ -18,7 +18,7 @@
  */
 
 #include "StdAfx.h"
-#include "PythonQuestScriptFactory.hpp"
+#include "quest/PythonQuestScriptFactory.hpp"
 #include "FunctionRegistry.hpp"
 
 class FactoryCreatedPythonQuestScript : public PythonQuestScript

@@ -20,8 +20,8 @@
 #ifndef ARCPY_Q_G_S_R_H
 #define ARCPY_Q_G_S_R_H
 
-#include "QuestFunctionTuple.hpp"
-#include "QuestFunctionTupleVisitor.hpp"
+#include "quest/QuestFunctionTuple.hpp"
+#include "quest/QuestFunctionTupleVisitor.hpp"
 
 class QuestScriptRegisterer : public QuestFunctionTupleVisitor
 {

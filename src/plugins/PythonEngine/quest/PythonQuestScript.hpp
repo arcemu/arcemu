@@ -20,7 +20,7 @@
 #ifndef P_QUEST_SCRIPT_H
 #define P_QUEST_SCRIPT_H
 
-#include "QuestFunctionTuple.hpp"
+#include "quest/QuestFunctionTuple.hpp"
 
 class PythonQuestScript : public QuestScript
 {

@@ -35,12 +35,12 @@
 #include "InstanceScriptRegisterer.hpp"
 #include "item/ItemGossipScriptRegisterer.hpp"
 #include "item/ItemGossipScriptReleaser.hpp"
-#include "QuestScriptRegisterer.hpp"
+#include "quest/QuestScriptRegisterer.hpp"
 
 #include "creature/PythonCreatureAIScriptFactory.hpp"
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 #include "PythonInstanceScriptFactory.hpp"
-#include "PythonQuestScriptFactory.hpp"
+#include "quest/PythonQuestScriptFactory.hpp"
 
 void register_arcemu_extensions();
 

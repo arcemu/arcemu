@@ -18,9 +18,9 @@
  */
 
 #include "StdAfx.h"
-#include "QuestScriptRegisterer.hpp"
-#include "PythonQuestScript.hpp"
-#include "PythonQuestScriptFactory.hpp"
+#include "quest/QuestScriptRegisterer.hpp"
+#include "quest/PythonQuestScript.hpp"
+#include "quest/PythonQuestScriptFactory.hpp"
 
 void QuestScriptRegisterer::visit( unsigned int questId, QuestFunctionTuple &tuple )
 {

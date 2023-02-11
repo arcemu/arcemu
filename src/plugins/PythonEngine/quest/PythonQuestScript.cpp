@@ -18,7 +18,7 @@
  */
 
 #include "StdAfx.h"
-#include "PythonQuestScript.hpp"
+#include "quest/PythonQuestScript.hpp"
 
 #include "Python.h"
 #include "python/ArcPython.hpp"
