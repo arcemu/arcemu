@@ -17,24 +17,16 @@
  *
  */
 
-#ifndef ARCPY_CREATURE_S_R_H
-#define ARCPY_CREATURE_S_R_H
+#include "StdAfx.h"
 
-#include "CreatureFunctionTuple.hpp"
-#include "CreatureFunctionTupleVisitor.hpp"
+#include "creature/CreatureFunctionRegisterer.hpp"
 
-class CreatureFunctionRegisterer : public CreatureFunctionTupleVisitor
+#include "creature/PythonCreatureAIScriptFactory.hpp"
+
+void CreatureFunctionRegisterer::visit( unsigned int id, CreatureFunctionTuple &tuple )
 {
-private:
-	ScriptMgr *mgr;
-
-public:
-	CreatureFunctionRegisterer( ScriptMgr *mgr )
-	{
-		this->mgr = mgr;
-	}
-
-	void visit( unsigned int id, CreatureFunctionTuple &tuple );
-};
-
-#endif
+	/// If we already have a script factory for this Creature then either it's from another source, or we're reloading.
+	/// Nevertheless, let's not try to add the script factory then
+	if( !mgr->has_creature_script( id ) )
+		mgr->register_creature_script( id, &PythonCreatureAIScriptFactory::createScript );
+}

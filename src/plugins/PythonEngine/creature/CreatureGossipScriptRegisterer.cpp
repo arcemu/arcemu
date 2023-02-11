@@ -19,14 +19,24 @@
 
 #include "StdAfx.h"
 
-#include "CreatureFunctionRegisterer.hpp"
+#include "creature/CreatureGossipScriptRegisterer.hpp"
 
-#include "PythonCreatureAIScriptFactory.hpp"
+#include "PythonGossipScript.hpp"
 
-void CreatureFunctionRegisterer::visit( unsigned int id, CreatureFunctionTuple &tuple )
+void CreatureGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
-	/// If we already have a script factory for this Creature then either it's from another source, or we're reloading.
-	/// Nevertheless, let's not try to add the script factory then
-	if( !mgr->has_creature_script( id ) )
-		mgr->register_creature_script( id, &PythonCreatureAIScriptFactory::createScript );
+	Arcemu::Gossip::Script* script = mgr->get_creature_gossip( id );
+	if( script == NULL )
+	{
+		PythonGossipScript *script = new PythonGossipScript( tuple );
+		mgr->register_creature_gossip( id, script );
+	}
+	else
+	{
+		PythonGossipScript* pythonScript = dynamic_cast< PythonGossipScript* >( script );
+		if( pythonScript != NULL )
+		{
+			pythonScript->setFunctions( tuple );
+		}
+	}
 }

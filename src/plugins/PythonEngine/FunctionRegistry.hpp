@@ -20,8 +20,8 @@
 #ifndef _FUNCTION_REGISTRY_H_
 #define _FUNCTION_REGISTRY_H_
 
-#include "CreatureFunctionTuple.hpp"
-#include "CreatureFunctionTupleVisitor.hpp"
+#include "creature/CreatureFunctionTuple.hpp"
+#include "creature/CreatureFunctionTupleVisitor.hpp"
 
 #include "GossipFunctionTuple.hpp"
 #include "GossipFunctionTupleVisitor.hpp"

@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-#include "PythonCreatureEventTypes.hpp"
+#include "creature/PythonCreatureEventTypes.hpp"
 #include "PythonGOEventTypes.hpp"
 #include "PythonGossipEventTypes.hpp"
 #include "PythonInstanceEventTypes.hpp"

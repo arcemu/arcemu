@@ -17,26 +17,24 @@
  *
  */
 
-#include "StdAfx.h"
+#ifndef ARCPY_CREATURE_S_R_H
+#define ARCPY_CREATURE_S_R_H
 
-#include "CreatureGossipScriptRegisterer.hpp"
+#include "creature/CreatureFunctionTuple.hpp"
+#include "creature/CreatureFunctionTupleVisitor.hpp"
 
-#include "PythonGossipScript.hpp"
-
-void CreatureGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
+class CreatureFunctionRegisterer : public CreatureFunctionTupleVisitor
 {
-	Arcemu::Gossip::Script* script = mgr->get_creature_gossip( id );
-	if( script == NULL )
+private:
+	ScriptMgr *mgr;
+
+public:
+	CreatureFunctionRegisterer( ScriptMgr *mgr )
 	{
-		PythonGossipScript *script = new PythonGossipScript( tuple );
-		mgr->register_creature_gossip( id, script );
+		this->mgr = mgr;
 	}
-	else
-	{
-		PythonGossipScript* pythonScript = dynamic_cast< PythonGossipScript* >( script );
-		if( pythonScript != NULL )
-		{
-			pythonScript->setFunctions( tuple );
-		}
-	}
-}
+
+	void visit( unsigned int id, CreatureFunctionTuple &tuple );
+};
+
+#endif

@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-#include "CreatureGossipScriptReleaser.hpp"
+#include "creature/CreatureGossipScriptReleaser.hpp"
 
 #include "PythonGossipScript.hpp"
 

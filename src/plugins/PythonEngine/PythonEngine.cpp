@@ -26,9 +26,9 @@
 
 #include "FunctionRegistry.hpp"
 
-#include "CreatureFunctionRegisterer.hpp"
-#include "CreatureGossipScriptRegisterer.hpp"
-#include "CreatureGossipScriptReleaser.hpp"
+#include "creature/CreatureFunctionRegisterer.hpp"
+#include "creature/CreatureGossipScriptRegisterer.hpp"
+#include "creature/CreatureGossipScriptReleaser.hpp"
 #include "GOScriptRegisterer.hpp"
 #include "GOGossipScriptRegisterer.hpp"
 #include "GOGossipScriptReleaser.hpp"
@@ -37,7 +37,7 @@
 #include "ItemGossipScriptReleaser.hpp"
 #include "QuestScriptRegisterer.hpp"
 
-#include "PythonCreatureAIScriptFactory.hpp"
+#include "creature/PythonCreatureAIScriptFactory.hpp"
 #include "PythonGameObjectAIScriptFactory.hpp"
 #include "PythonInstanceScriptFactory.hpp"
 #include "PythonQuestScriptFactory.hpp"

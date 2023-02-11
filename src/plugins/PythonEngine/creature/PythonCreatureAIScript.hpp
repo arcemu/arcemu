@@ -20,7 +20,7 @@
 #ifndef P_CREATURE_AI_SCRIPT_H
 #define P_CREATURE_AI_SCRIPT_H
 
-#include "CreatureFunctionTuple.hpp"
+#include "creature/CreatureFunctionTuple.hpp"
 
 class PythonCreatureAIScript : public CreatureAIScript
 {

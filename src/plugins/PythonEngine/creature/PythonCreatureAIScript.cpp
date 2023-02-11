@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-#include "PythonCreatureAIScript.hpp"
+#include "creature/PythonCreatureAIScript.hpp"
 
-#include "PythonCreatureEventTypes.hpp"
+#include "creature/PythonCreatureEventTypes.hpp"
 
 #include "Python.h"
 #include "python/ArcPython.hpp"
