@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-#include "ItemGossipScriptRegisterer.hpp"
+#include "item/ItemGossipScriptRegisterer.hpp"
 
 #include "PythonGossipScript.hpp"
 

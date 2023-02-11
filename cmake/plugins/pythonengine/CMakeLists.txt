@@ -49,8 +49,8 @@ ${prefix}/gameobject/GOScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptReleaser.cpp
 ${prefix}/InstanceScriptRegisterer.cpp
-${prefix}/ItemGossipScriptRegisterer.cpp
-${prefix}/ItemGossipScriptReleaser.cpp
+${prefix}/item/ItemGossipScriptRegisterer.cpp
+${prefix}/item/ItemGossipScriptReleaser.cpp
 ${prefix}/QuestScriptRegisterer.cpp
 ${prefix}/ServerHookRegistry.cpp
 ${prefix}/ServerHookHandler.cpp
@@ -105,8 +105,8 @@ ${prefix}/gameobject/GOGossipScriptReleaser.hpp
 ${prefix}/InstanceFunctionTuple.hpp
 ${prefix}/InstanceFunctionTupleVisitor.hpp
 ${prefix}/InstanceScriptRegisterer.hpp
-${prefix}/ItemGossipScriptRegisterer.hpp
-${prefix}/ItemGossipScriptReleaser.hpp
+${prefix}/item/ItemGossipScriptRegisterer.hpp
+${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/QuestFunctionTuple.hpp
 ${prefix}/QuestFunctionTupleVisitor.hpp
 ${prefix}/QuestScriptRegisterer.hpp

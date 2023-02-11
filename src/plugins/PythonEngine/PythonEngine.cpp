@@ -33,8 +33,8 @@
 #include "gameobject/GOGossipScriptRegisterer.hpp"
 #include "gameobject/GOGossipScriptReleaser.hpp"
 #include "InstanceScriptRegisterer.hpp"
-#include "ItemGossipScriptRegisterer.hpp"
-#include "ItemGossipScriptReleaser.hpp"
+#include "item/ItemGossipScriptRegisterer.hpp"
+#include "item/ItemGossipScriptReleaser.hpp"
 #include "QuestScriptRegisterer.hpp"
 
 #include "creature/PythonCreatureAIScriptFactory.hpp"
