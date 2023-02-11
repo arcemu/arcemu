@@ -169,7 +169,7 @@ void ScriptMgr::LoadScripts()
 	Arcemu::FindFilesResult findres;
 	std::vector< ScriptingEngine_dl > Engines;
 
-	Arcemu::FindFiles(Path.c_str(), FileMask.c_str(), findres);
+	Arcemu::FileUtils::FindFilesByMask(Path.c_str(), FileMask.c_str(), findres);
 	uint32 count = 0;
 
 	while(findres.HasNext())
@@ -182,8 +182,9 @@ void ScriptMgr::LoadScripts()
 
 		if(!dl->Load())
 		{
-			loadmessage << "ERROR: Cannot open library.";
+			loadmessage << "Cannot open library:";
 			LOG_ERROR(loadmessage.str().c_str());
+			LOG_ERROR( dl->GetLastError().c_str() );
 			delete dl;
 			continue;
 

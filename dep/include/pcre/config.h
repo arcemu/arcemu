@@ -51,8 +51,10 @@ them both to 0; an emulation function will be used. */
 #endif
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#ifndef HAVE_INTTYPES_H
-#define HAVE_INTTYPES_H 1
+#ifndef WIN32
+	#ifndef HAVE_INTTYPES_H
+		#define HAVE_INTTYPES_H 1
+	#endif
 #endif
 
 /* Define to 1 if you have the <limits.h> header file. */
@@ -129,8 +131,10 @@ them both to 0; an emulation function will be used. */
 /* #undef HAVE_TYPE_TRAITS_H */
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#ifndef HAVE_UNISTD_H
-#define HAVE_UNISTD_H 1
+#ifndef WIN32
+	#ifndef HAVE_UNISTD_H
+		#define HAVE_UNISTD_H 1
+	#endif
 #endif
 
 /* Define to 1 if the system has the type `unsigned long long'. */

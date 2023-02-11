@@ -122,6 +122,9 @@ namespace Arcemu{
 		}
 
 
+		std::string GetLastError();
+
+
 		//////////////////////////////////////////////////////
 		//std::string GetName()
 		//  Returns the name of the library loaded
