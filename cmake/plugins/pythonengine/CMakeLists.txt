@@ -10,7 +10,7 @@ SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 
 #SRCS - contains the source files that compose this project.
 SET( SRCS
-${prefix}/engine.cpp
+${prefix}/plugin.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/arcemu_module_consts.cpp
