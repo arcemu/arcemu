@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-#include "PythonGameObjectAIScript.hpp"
+#include "gameobject/PythonGameObjectAIScript.hpp"
 
-#include "PythonGOEventTypes.hpp"
+#include "gameobject/PythonGOEventTypes.hpp"
 
 #include "Python.h"
 #include "python/ArcPython.hpp"

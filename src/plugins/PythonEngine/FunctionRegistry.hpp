@@ -26,8 +26,8 @@
 #include "GossipFunctionTuple.hpp"
 #include "GossipFunctionTupleVisitor.hpp"
 
-#include "GOFunctionTuple.hpp"
-#include "GOFunctionTupleVisitor.hpp"
+#include "gameobject/GOFunctionTuple.hpp"
+#include "gameobject/GOFunctionTupleVisitor.hpp"
 
 #include "InstanceFunctionTuple.hpp"
 #include "InstanceFunctionTupleVisitor.hpp"

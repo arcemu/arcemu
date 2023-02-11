@@ -20,7 +20,7 @@
 #include "StdAfx.h"
 
 #include "creature/PythonCreatureEventTypes.hpp"
-#include "PythonGOEventTypes.hpp"
+#include "gameobject/PythonGOEventTypes.hpp"
 #include "PythonGossipEventTypes.hpp"
 #include "PythonInstanceEventTypes.hpp"
 #include "PythonQuestEventTypes.hpp"

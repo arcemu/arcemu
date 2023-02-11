@@ -17,26 +17,32 @@
  *
  */
 
-#include "StdAfx.h"
+#ifndef P_GO_AI_SCRIPT_H
+#define P_GO_AI_SCRIPT_H
 
-#include "GOGossipScriptRegisterer.hpp"
+#include "gameobject/GOFunctionTuple.hpp"
 
-#include "PythonGossipScript.hpp"
-
-void GOGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
+class PythonGameObjectAIScript : public GameObjectAIScript
 {
-	Arcemu::Gossip::Script* script = mgr->get_go_gossip( id );
-	if( script == NULL )
-	{
-		PythonGossipScript *script = new PythonGossipScript( tuple );
-		mgr->register_go_gossip( id, script );
-	}
-	else
-	{
-		PythonGossipScript* pythonScript = dynamic_cast< PythonGossipScript* >( script );
-		if( pythonScript != NULL )
-		{
-			pythonScript->setFunctions( tuple );
-		}
-	}
-}
+public:
+	PythonGameObjectAIScript( GameObject* src, GOFunctionTuple &functions );
+	virtual ~PythonGameObjectAIScript();
+
+	void setFunctions( GOFunctionTuple &functions );
+	
+	void OnCreate();
+	void OnSpawn();
+	void OnDespawn();
+	void OnLootTaken( Player* looter, ItemPrototype* itemInfo);
+	void OnActivate( Player* player );
+	void OnDamaged( uint32 damage );
+	void OnDestroyed();
+	void AIUpdate();
+
+	GameObject* getGameObject(){ return _gameobject; }
+
+private:
+	GOFunctionTuple functions;
+};
+
+#endif

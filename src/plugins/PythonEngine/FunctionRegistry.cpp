@@ -21,7 +21,7 @@
 
 #include "FunctionRegistry.hpp"
 
-#include "PythonGOEventTypes.hpp"
+#include "gameobject/PythonGOEventTypes.hpp"
 #include "PythonGossipEventTypes.hpp"
 
 #include "Python.h"

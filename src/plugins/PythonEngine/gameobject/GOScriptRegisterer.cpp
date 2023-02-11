@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-#include "GOScriptRegisterer.hpp"
+#include "gameobject/GOScriptRegisterer.hpp"
 
-#include "PythonGameObjectAIScriptFactory.hpp"
+#include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 
 void GOScriptRegisterer::visit( unsigned int id, GOFunctionTuple &tuple )
 {

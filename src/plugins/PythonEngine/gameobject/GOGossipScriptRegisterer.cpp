@@ -17,24 +17,26 @@
  *
  */
 
-#ifndef ARCPY_GO_S_R_H
-#define ARCPY_GO_S_R_H
+#include "StdAfx.h"
 
-#include "GOFunctionTuple.hpp"
-#include "GOFunctionTupleVisitor.hpp"
+#include "gameobject/GOGossipScriptRegisterer.hpp"
 
-class GOScriptRegisterer : public GOFunctionTupleVisitor
+#include "PythonGossipScript.hpp"
+
+void GOGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
-private:
-	ScriptMgr *mgr;
-
-public:
-	GOScriptRegisterer( ScriptMgr *mgr )
+	Arcemu::Gossip::Script* script = mgr->get_go_gossip( id );
+	if( script == NULL )
 	{
-		this->mgr = mgr;
+		PythonGossipScript *script = new PythonGossipScript( tuple );
+		mgr->register_go_gossip( id, script );
 	}
-
-	void visit( unsigned int id, GOFunctionTuple &tuple );
-};
-
-#endif
+	else
+	{
+		PythonGossipScript* pythonScript = dynamic_cast< PythonGossipScript* >( script );
+		if( pythonScript != NULL )
+		{
+			pythonScript->setFunctions( tuple );
+		}
+	}
+}

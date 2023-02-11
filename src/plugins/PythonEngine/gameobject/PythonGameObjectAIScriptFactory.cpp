@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-#include "PythonGameObjectAIScriptFactory.hpp"
+#include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 
-#include "PythonGameObjectAIScript.hpp"
+#include "gameobject/PythonGameObjectAIScript.hpp"
 
 #include "FunctionRegistry.hpp"
 
