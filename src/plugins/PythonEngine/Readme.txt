@@ -1,4 +1,3 @@
-New Script Engine
-Arcemu's Python scripting engine
+This is Arcemu Python Engine (APE)
 
-Requires Python 3.4
+It allows you to extend Arcemu's functionality with Python 3 scripts.
