@@ -82,56 +82,7 @@ void FunctionRegistry::registerGOEventFunction( unsigned int goId, unsigned int 
 		itr = goFunctions.insert( std::pair< unsigned int, GOFunctionTuple* >( goId, tuple ) ).first;
 	}
 
-	switch( goEvent )
-	{
-	case PYTHON_GO_EVENT_ON_CREATE:
-		{
-			itr->second->onCreate = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_SPAWN:
-		{
-			itr->second->onSpawn = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_LOOT_TAKEN:
-		{
-			itr->second->onLootTaken = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_USE:
-		{
-			itr->second->onUse = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_AIUPDATE:
-		{
-			itr->second->onAIUpdate = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_DESPAWN:
-		{
-			itr->second->onDespawn = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_DAMAGED:
-		{
-			itr->second->onDamaged = function;
-			break;
-		}
-
-	case PYTHON_GO_EVENT_ON_DESTROYED:
-		{
-			itr->second->onDestroyed = function;
-			break;
-		}
-	}
+	itr->second->setFunction( goEvent, function );
 }
 
 void FunctionRegistry::registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function )
@@ -320,29 +271,16 @@ void FunctionRegistry::releaseFunctions()
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator goFunctionsItr = goFunctions.begin();
 	while( goFunctionsItr != goFunctions.end() )
 	{
-		if( goFunctionsItr->second->onAIUpdate != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onAIUpdate );
-
-		if( goFunctionsItr->second->onCreate != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onCreate );
-
-		if( goFunctionsItr->second->onDamaged != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onDamaged );
-
-		if( goFunctionsItr->second->onDespawn != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onDespawn );
-
-		if( goFunctionsItr->second->onDestroyed != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onDestroyed );
-
-		if( goFunctionsItr->second->onLootTaken != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onLootTaken );
-
-		if( goFunctionsItr->second->onSpawn != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onSpawn );
-
-		if( goFunctionsItr->second->onUse != NULL )
-			Py_DecRef( (PyObject*)goFunctionsItr->second->onUse );
+		for( int i = 0; i < PYTHON_GO_EVENT_COUNT; i++ )
+		{
+			void *f = goFunctionsItr->second->getFunction( i );
+			if( f != NULL )
+			{
+				Py_DecRef( (PyObject*)f );
+			}
+		}		
+		
+		goFunctionsItr->second->clearFunctions();
 
 		delete goFunctionsItr->second;
 		goFunctionsItr->second = NULL;

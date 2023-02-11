@@ -40,27 +40,24 @@ PythonGameObjectAIScript::~PythonGameObjectAIScript()
 
 void PythonGameObjectAIScript::setFunctions( GOFunctionTuple &functions )
 {
-	this->functions.onAIUpdate = functions.onAIUpdate;
-	this->functions.onCreate = functions.onCreate;
-	this->functions.onDamaged = functions.onDamaged;
-	this->functions.onDespawn = functions.onDespawn;
-	this->functions.onDestroyed = functions.onDestroyed;
-	this->functions.onLootTaken = functions.onLootTaken;
-	this->functions.onSpawn = functions.onSpawn;
-	this->functions.onUse = functions.onUse;
+	for( int i = 0; i < PYTHON_GO_EVENT_COUNT; i++ )
+	{
+		this->functions.setFunction( i, functions.getFunction( i ) );
+	}
 }
 
 void PythonGameObjectAIScript::OnCreate()
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onCreate == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_CREATE;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemGameObject( 0, _gameobject );
 
-	PythonCallable callable( functions.onCreate );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )
@@ -77,13 +74,14 @@ void PythonGameObjectAIScript::OnSpawn()
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onSpawn == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_SPAWN;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemGameObject( 0, _gameobject );
 
-	PythonCallable callable( functions.onSpawn );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )
@@ -100,13 +98,14 @@ void PythonGameObjectAIScript::OnDespawn()
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onDespawn == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_DESPAWN;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemGameObject( 0, _gameobject );
 
-	PythonCallable callable( functions.onDespawn );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )
@@ -123,7 +122,8 @@ void PythonGameObjectAIScript::OnLootTaken( Player* looter, ItemPrototype* itemP
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onLootTaken == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_LOOT_TAKEN;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 4 );
@@ -132,7 +132,7 @@ void PythonGameObjectAIScript::OnLootTaken( Player* looter, ItemPrototype* itemP
 	args.setItemPlayer( 2, looter );
 	args.setItem( 3, itemProto->ItemId );
 
-	PythonCallable callable( functions.onLootTaken );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )
@@ -149,7 +149,8 @@ void PythonGameObjectAIScript::OnActivate( Player* player )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onUse == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_USE;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 3 );
@@ -157,7 +158,7 @@ void PythonGameObjectAIScript::OnActivate( Player* player )
 	args.setItem( 1, PYTHON_GO_EVENT_ON_USE );
 	args.setItemPlayer( 2, player );
 
-	PythonCallable callable( functions.onUse );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 	
 	if( value.isEmpty() )
@@ -174,14 +175,15 @@ void PythonGameObjectAIScript::OnDamaged( uint32 damage )
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onDamaged == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_DAMAGED;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 2 );
 	args.setItemGameObject( 0, _gameobject );
 	args.setItem( 1, damage );
 
-	PythonCallable callable( functions.onDamaged );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )
@@ -198,13 +200,14 @@ void PythonGameObjectAIScript::OnDestroyed()
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onDestroyed == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_DESTROYED;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemGameObject( 0, _gameobject );
 
-	PythonCallable callable( functions.onDestroyed );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )
@@ -221,13 +224,14 @@ void PythonGameObjectAIScript::AIUpdate()
 {
 	Guard g( ArcPython::getLock() );
 
-	if( functions.onAIUpdate == NULL )
+	uint32 eventType = PYTHON_GO_EVENT_ON_AIUPDATE;
+	if( !functions.hasFunction( eventType ) )
 		return;
 
 	ArcPyTuple args( 1 );
 	args.setItemGameObject( 0, _gameobject );
 
-	PythonCallable callable( functions.onAIUpdate );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 
 	if( value.isEmpty() )

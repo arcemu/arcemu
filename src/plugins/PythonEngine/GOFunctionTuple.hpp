@@ -20,29 +20,45 @@
 #ifndef GOFUNCTION_TUPLE_H
 #define GOFUNCTION_TUPLE_H
 
+#include "PythonGOEventTypes.hpp"
+
 class GOFunctionTuple
 {
 public:
-	void* onCreate;
-	void* onSpawn;
-	void* onLootTaken;
-	void* onUse;
-	void* onAIUpdate;
-	void* onDespawn;
-	void* onDamaged;
-	void* onDestroyed;
 
 	GOFunctionTuple()
 	{
-		onCreate    = NULL;
-		onSpawn     = NULL;
-		onLootTaken = NULL;
-		onUse       = NULL;
-		onAIUpdate  = NULL;
-		onDespawn   = NULL;
-		onDamaged   = NULL;
-		onDestroyed = NULL;
+		clearFunctions();
 	}
+
+	void clearFunctions()
+	{
+		for( int i = 0; i < PYTHON_GO_EVENT_COUNT; i++ )
+		{
+			functions[ i ] = NULL;
+		}
+	}
+
+	bool hasFunction( unsigned long eventType ) const
+	{
+		if( functions[ eventType ] != NULL )
+			return true;
+		else
+			return false;
+	}
+
+	void setFunction( unsigned long eventType, void* function )
+	{
+		functions[ eventType ] = function;
+	}
+
+	void* getFunction( unsigned long eventType ) const
+	{
+		return functions[ eventType ];
+	}
+
+private:
+	void* functions[ PYTHON_GO_EVENT_COUNT ];
 };
 
 #endif
