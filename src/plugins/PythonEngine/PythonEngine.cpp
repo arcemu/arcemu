@@ -21,8 +21,8 @@
 #include <Python.h>
 #include "PythonEngine.hpp"
 #include "python/ArcPython.hpp"
-#include "ServerHookRegistry.hpp"
-#include "ServerHookHandler.hpp"
+#include "serverhooks/ServerHookRegistry.hpp"
+#include "serverhooks/ServerHookHandler.hpp"
 
 #include "FunctionRegistry.hpp"
 

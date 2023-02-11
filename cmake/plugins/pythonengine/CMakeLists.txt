@@ -52,8 +52,8 @@ ${prefix}/instance/InstanceScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptReleaser.cpp
 ${prefix}/quest/QuestScriptRegisterer.cpp
-${prefix}/ServerHookRegistry.cpp
-${prefix}/ServerHookHandler.cpp
+${prefix}/serverhooks/ServerHookRegistry.cpp
+${prefix}/serverhooks/ServerHookHandler.cpp
 )
 
 SET( HEADERS
@@ -110,8 +110,8 @@ ${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/quest/QuestFunctionTuple.hpp
 ${prefix}/quest/QuestFunctionTupleVisitor.hpp
 ${prefix}/quest/QuestScriptRegisterer.hpp
-${prefix}/ServerHookRegistry.hpp
-${prefix}/ServerHookHandler.hpp
+${prefix}/serverhooks/ServerHookRegistry.hpp
+${prefix}/serverhooks/ServerHookHandler.hpp
 )
 
 IF( IS_LINUX )

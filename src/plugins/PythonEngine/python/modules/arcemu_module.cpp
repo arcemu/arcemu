@@ -21,7 +21,7 @@
 
 #include <Python.h>
 
-#include "ServerHookRegistry.hpp"
+#include "serverhooks/ServerHookRegistry.hpp"
 
 #include "FunctionRegistry.hpp"
 

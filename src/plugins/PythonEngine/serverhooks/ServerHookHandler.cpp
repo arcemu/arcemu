@@ -28,9 +28,8 @@
 
 #include "python/ArcPyTuple.hpp"
 
-#include "ServerHookRegistry.hpp"
-
-#include "ServerHookHandler.hpp"
+#include "serverhooks/ServerHookRegistry.hpp"
+#include "serverhooks/ServerHookHandler.hpp"
 
 #include "python/modules/ArcPyAura.hpp"
 #include "python/modules/ArcPyGameObject.hpp"

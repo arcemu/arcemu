@@ -19,7 +19,7 @@
 
 #include "Python.h"
 
-#include "ServerHookRegistry.hpp"
+#include "serverhooks/ServerHookRegistry.hpp"
 
 std::multimap< unsigned long, void* > ServerHookRegistry::hooks;
 
