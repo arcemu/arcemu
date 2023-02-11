@@ -21,7 +21,7 @@
 
 #include "creature/CreatureGossipScriptRegisterer.hpp"
 
-#include "PythonGossipScript.hpp"
+#include "gossip/PythonGossipScript.hpp"
 
 void CreatureGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {

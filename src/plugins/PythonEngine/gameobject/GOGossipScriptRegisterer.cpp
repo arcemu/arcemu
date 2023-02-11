@@ -21,7 +21,7 @@
 
 #include "gameobject/GOGossipScriptRegisterer.hpp"
 
-#include "PythonGossipScript.hpp"
+#include "gossip/PythonGossipScript.hpp"
 
 void GOGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {

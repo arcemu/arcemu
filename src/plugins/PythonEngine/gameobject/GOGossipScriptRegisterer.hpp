@@ -20,8 +20,8 @@
 #ifndef ARCPY_GO_G_S_R_H
 #define ARCPY_GO_G_S_R_H
 
-#include "GossipFunctionTuple.hpp"
-#include "GossipFunctionTupleVisitor.hpp"
+#include "gossip/GossipFunctionTuple.hpp"
+#include "gossip/GossipFunctionTupleVisitor.hpp"
 
 class GOGossipScriptRegisterer : public GossipFunctionTupleVisitor
 {

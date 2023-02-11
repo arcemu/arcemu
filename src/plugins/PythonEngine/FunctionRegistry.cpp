@@ -22,7 +22,7 @@
 #include "FunctionRegistry.hpp"
 
 #include "gameobject/PythonGOEventTypes.hpp"
-#include "PythonGossipEventTypes.hpp"
+#include "gossip/PythonGossipEventTypes.hpp"
 
 #include "Python.h"
 

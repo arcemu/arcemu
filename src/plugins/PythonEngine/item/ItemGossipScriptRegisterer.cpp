@@ -21,7 +21,7 @@
 
 #include "item/ItemGossipScriptRegisterer.hpp"
 
-#include "PythonGossipScript.hpp"
+#include "gossip/PythonGossipScript.hpp"
 
 void ItemGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {

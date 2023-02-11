@@ -21,7 +21,7 @@
 
 #include "creature/PythonCreatureEventTypes.hpp"
 #include "gameobject/PythonGOEventTypes.hpp"
-#include "PythonGossipEventTypes.hpp"
+#include "gossip/PythonGossipEventTypes.hpp"
 #include "instance/PythonInstanceEventTypes.hpp"
 #include "quest/PythonQuestEventTypes.hpp"
 

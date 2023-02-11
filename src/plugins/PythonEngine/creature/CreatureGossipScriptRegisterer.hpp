@@ -20,8 +20,8 @@
 #ifndef ARCPY_C_G_S_R_H
 #define ARCPY_C_G_S_R_H
 
-#include "GossipFunctionTuple.hpp"
-#include "GossipFunctionTupleVisitor.hpp"
+#include "gossip/GossipFunctionTuple.hpp"
+#include "gossip/GossipFunctionTupleVisitor.hpp"
 
 class CreatureGossipScriptRegisterer : public GossipFunctionTupleVisitor
 {

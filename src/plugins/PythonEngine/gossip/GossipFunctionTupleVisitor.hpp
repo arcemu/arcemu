@@ -20,7 +20,7 @@
 #ifndef ARCPY_G_F_T_V_H
 #define ARCPY_G_F_T_V_H
 
-#include "GossipFunctionTuple.hpp"
+#include "gossip/GossipFunctionTuple.hpp"
 
 class GossipFunctionTupleVisitor
 {

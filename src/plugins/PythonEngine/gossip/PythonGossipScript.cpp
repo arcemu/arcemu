@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-#include "GossipFunctionTuple.hpp"
+#include "gossip/GossipFunctionTuple.hpp"
 
-#include "PythonGossipScript.hpp"
+#include "gossip/PythonGossipScript.hpp"
 
 #include <Python.h>
 

@@ -23,8 +23,8 @@
 #include "creature/CreatureFunctionTuple.hpp"
 #include "creature/CreatureFunctionTupleVisitor.hpp"
 
-#include "GossipFunctionTuple.hpp"
-#include "GossipFunctionTupleVisitor.hpp"
+#include "gossip/GossipFunctionTuple.hpp"
+#include "gossip/GossipFunctionTupleVisitor.hpp"
 
 #include "gameobject/GOFunctionTuple.hpp"
 #include "gameobject/GOFunctionTupleVisitor.hpp"

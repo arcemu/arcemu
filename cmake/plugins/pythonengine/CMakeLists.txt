@@ -38,7 +38,7 @@ ${prefix}/gameobject/PythonGameObjectAIScript.cpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
 ${prefix}/instance/PythonInstanceScript.cpp
 ${prefix}/instance/PythonInstanceScriptFactory.cpp
-${prefix}/PythonGossipScript.cpp
+${prefix}/gossip/PythonGossipScript.cpp
 ${prefix}/quest/PythonQuestScriptFactory.cpp
 ${prefix}/quest/PythonQuestScript.cpp
 ${prefix}/creature/CreatureFunctionRegisterer.cpp
@@ -81,8 +81,8 @@ ${prefix}/creature/PythonCreatureAIScriptFactory.hpp
 ${prefix}/gameobject/PythonGameObjectAIScript.hpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.hpp
 ${prefix}/gameobject/PythonGOEventTypes.hpp
-${prefix}/PythonGossipEventTypes.hpp
-${prefix}/PythonGossipScript.hpp
+${prefix}/gossip/PythonGossipEventTypes.hpp
+${prefix}/gossip/PythonGossipScript.hpp
 ${prefix}/instance/PythonInstanceEventTypes.hpp
 ${prefix}/instance/PythonInstanceScript.hpp
 ${prefix}/instance/PythonInstanceScriptFactory.hpp
@@ -97,8 +97,8 @@ ${prefix}/creature/CreatureGossipScriptReleaser.hpp
 ${prefix}/FunctionRegistry.hpp
 ${prefix}/gameobject/GOFunctionTuple.hpp
 ${prefix}/gameobject/GOFunctionTupleVisitor.hpp
-${prefix}/GossipFunctionTuple.hpp
-${prefix}/GossipFunctionTupleVisitor.hpp
+${prefix}/gossip/GossipFunctionTuple.hpp
+${prefix}/gossip/GossipFunctionTupleVisitor.hpp
 ${prefix}/gameobject/GOScriptRegisterer.hpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.hpp
 ${prefix}/gameobject/GOGossipScriptReleaser.hpp

@@ -21,7 +21,7 @@
 
 #include "gameobject/GOGossipScriptReleaser.hpp"
 
-#include "PythonGossipScript.hpp"
+#include "gossip/PythonGossipScript.hpp"
 
 void GOGossipScriptReleaser::visit( unsigned int id, GossipFunctionTuple &tuple )
 {

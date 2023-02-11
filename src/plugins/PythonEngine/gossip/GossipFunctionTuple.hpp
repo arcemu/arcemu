@@ -20,7 +20,7 @@
 #ifndef GOSSIPFUNCTION_TUPLE_H
 #define GOSSIPFUNCTION_TUPLE_H
 
-#include "PythonGossipEventTypes.hpp"
+#include "gossip/PythonGossipEventTypes.hpp"
 
 class GossipFunctionTuple
 {
