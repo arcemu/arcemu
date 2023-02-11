@@ -94,15 +94,7 @@ void ServerHookHandler::hookOnKillPlayer( Player* killer, Player* victim )
 		args.setItemPlayer( 1, victim );
 
 		PythonCallable callable( *itr );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -121,15 +113,7 @@ void ServerHookHandler::hookOnFirstEnterWorld( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -148,15 +132,7 @@ void ServerHookHandler::hookOnEnterWorld( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -176,15 +152,7 @@ void ServerHookHandler::hookOnGuildJoin( Player* player, Guild* guild )
 		args.setItemGuild( 1, guild );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -203,15 +171,7 @@ void ServerHookHandler::hookOnPlayerDeath( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -282,15 +242,7 @@ void ServerHookHandler::hookOnEmote( Player* player, uint32 emote, Unit* unit )
 		}
 
 		PythonCallable callable( *itr );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -309,15 +261,7 @@ void ServerHookHandler::hookOnEnterCombat( Player* player, Unit* unit )
 		args.setItemUnit( 1, unit );
 
 		PythonCallable callable( *itr );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -338,15 +282,7 @@ bool ServerHookHandler::hookOnCastSpell( Player* player, SpellEntry* spe, Spell*
 		args.setItemSpell( 2, spell );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 
 	return true;
@@ -401,15 +337,7 @@ void ServerHookHandler::hookOnLogout( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -459,15 +387,7 @@ void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object*
 		}
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -488,15 +408,7 @@ void ServerHookHandler::hookOnZoneChange( Player* player, uint32 oldZone, uint32
 		args.setItem( 2, newZone );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -566,15 +478,7 @@ void ServerHookHandler::hookOnLoot( Player* player, Unit* unit, uint32 money, ui
 		args.setItem( 3, itemId );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -594,15 +498,7 @@ void ServerHookHandler::hookOnGuildCreate( Player* leader, Guild* guild )
 		args.setItemGuild( 1, guild );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -621,15 +517,7 @@ void ServerHookHandler::hookOnFullLogin( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -648,15 +536,7 @@ void ServerHookHandler::hookOnCharacterCreated( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -676,15 +556,7 @@ void ServerHookHandler::hookOnQuestCancelled( Player* player, Quest* quest )
 		args.setItemQuest( 1, quest );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -732,15 +604,7 @@ void ServerHookHandler::hookOnQuestFinished( Player* player, Quest* quest, Objec
 		}
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -760,15 +624,7 @@ void ServerHookHandler::hookOnHonorableKill( Player* killer, Player *victim )
 		args.setItemPlayer( 1, victim );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -797,15 +653,7 @@ void ServerHookHandler::hookOnArenaFinish( Player* player, ArenaTeam* arenaTeam,
 		args.setItemBool( 3, rated );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -865,15 +713,7 @@ void ServerHookHandler::hookOnObjectLoot( Player* player, Object* target, uint32
 		args.setItem( 3, itemId );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -893,15 +733,7 @@ void ServerHookHandler::hookOnAreaTrigger( Player* player, uint32 areaTriggerId 
 		args.setItem( 1, areaTriggerId );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -955,15 +787,7 @@ void ServerHookHandler::hookOnLevelUp( Player* player )
 		args.setItemPlayer( 0, player );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -1012,15 +836,7 @@ void ServerHookHandler::hookOnAdvanceSkillLine( Player* player, uint32 skill, ui
 		args.setItem( 2, value );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -1040,15 +856,7 @@ void ServerHookHandler::hookOnDuelFinished( Player* winner, Player* loser )
 		args.setItemPlayer( 1, loser );		
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
@@ -1067,15 +875,7 @@ void ServerHookHandler::hookOnAuraRemove( Aura* aura )
 		args.setItemAura( 0, aura );
 
 		PythonCallable callable( handler );
-		PythonValue value = callable.call( args );
-		if( value.isEmpty() )
-		{
-			Python::printError();
-		}
-		else
-		{
-			value.decref();
-		}
+		callable.callNoReturn( args );
 	}
 }
 
