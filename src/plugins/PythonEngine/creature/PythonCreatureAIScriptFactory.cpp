@@ -40,8 +40,12 @@ public:
 
 HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* > PythonCreatureAIScriptFactory::createdScripts;
 
+Mutex PythonCreatureAIScriptFactory::lock;
+
 CreatureAIScript* PythonCreatureAIScriptFactory::createScript( Creature* src )
 {
+	Guard g( lock );
+
 	uint32 id = src->GetProto()->Id;
 	PythonCreatureAIScript* script = NULL;
 	
@@ -64,6 +68,8 @@ CreatureAIScript* PythonCreatureAIScriptFactory::createScript( Creature* src )
 
 void PythonCreatureAIScriptFactory::onReload()
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{
@@ -86,11 +92,15 @@ void PythonCreatureAIScriptFactory::onReload()
 
 void PythonCreatureAIScriptFactory::onShutdown()
 {
+	Guard g( lock );
+
 	createdScripts.clear();
 }
 
 void PythonCreatureAIScriptFactory::removeScript( CreatureAIScript *script )
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* >::iterator itr = createdScripts.find( script );
 	if( itr != createdScripts.end() )
 	{

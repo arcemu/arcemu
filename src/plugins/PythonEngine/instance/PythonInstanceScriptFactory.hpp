@@ -31,6 +31,8 @@ public:
 
 private:
 	static HM_NAMESPACE::HM_HASH_SET< InstanceScript* > createdScripts;
+
+	static Mutex lock;
 };
 
 #endif

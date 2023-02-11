@@ -40,8 +40,12 @@ public:
 
 HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* > PythonGameObjectAIScriptFactory::createdScripts;
 
+Mutex PythonGameObjectAIScriptFactory::lock;
+
 GameObjectAIScript* PythonGameObjectAIScriptFactory::createScript( GameObject* src )
 {
+	Guard g( lock );
+
 	uint32 id = src->GetInfo()->ID;
 	PythonGameObjectAIScript* script = NULL;
 	
@@ -64,6 +68,8 @@ GameObjectAIScript* PythonGameObjectAIScriptFactory::createScript( GameObject* s
 
 void PythonGameObjectAIScriptFactory::onReload()
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{
@@ -86,11 +92,15 @@ void PythonGameObjectAIScriptFactory::onReload()
 
 void PythonGameObjectAIScriptFactory::onShutdown()
 {
+	Guard g( lock );
+
 	createdScripts.clear();
 }
 
 void PythonGameObjectAIScriptFactory::removeScript( GameObjectAIScript *script )
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* >::iterator itr = createdScripts.find( script );
 	if( itr != createdScripts.end() )
 	{

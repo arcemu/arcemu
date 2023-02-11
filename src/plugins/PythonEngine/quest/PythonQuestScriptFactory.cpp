@@ -43,8 +43,12 @@ private:
 
 HM_NAMESPACE::HM_HASH_SET< PythonQuestScript* > PythonQuestScriptFactory::createdScripts;
 
+Mutex PythonQuestScriptFactory::lock;
+
 PythonQuestScript* PythonQuestScriptFactory::createQuestScript( unsigned int questId )
 {
+	Guard g( lock );
+
 	QuestFunctionTuple *tuple = FunctionRegistry::getQuestFunctions( questId );
 	FactoryCreatedPythonQuestScript *script = new FactoryCreatedPythonQuestScript( *tuple, questId );
 	createdScripts.insert( script );
@@ -53,6 +57,8 @@ PythonQuestScript* PythonQuestScriptFactory::createQuestScript( unsigned int que
 
 void PythonQuestScriptFactory::onReload()
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< PythonQuestScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{
@@ -74,11 +80,15 @@ void PythonQuestScriptFactory::onReload()
 
 void PythonQuestScriptFactory::onShutDown()
 {
+	Guard g( lock );
+
 	createdScripts.clear();
 }
 
 void PythonQuestScriptFactory::removeScript( PythonQuestScript* script )
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< PythonQuestScript* >::iterator itr = createdScripts.find( script );
 	if( itr != createdScripts.end() )
 	{

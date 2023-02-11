@@ -35,8 +35,12 @@ public:
 
 HM_NAMESPACE::HM_HASH_SET< InstanceScript* > PythonInstanceScriptFactory::createdScripts;
 
+Mutex PythonInstanceScriptFactory::lock;
+
 InstanceScript* PythonInstanceScriptFactory::createInstanceScript( MapMgr* mgr )
 {
+	Guard g( lock );
+
 	InstanceFunctionTuple *functions = FunctionRegistry::getInstanceFunctions( mgr->GetMapId() );
 	FactoryCreatedPythonInstanceScript *script = NULL;
 
@@ -57,11 +61,15 @@ InstanceScript* PythonInstanceScriptFactory::createInstanceScript( MapMgr* mgr )
 
 void PythonInstanceScriptFactory::onShutdown()
 {
+	Guard g( lock );
+
 	createdScripts.clear();
 }
 
 void PythonInstanceScriptFactory::onReload()
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< InstanceScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{
@@ -83,6 +91,8 @@ void PythonInstanceScriptFactory::onReload()
 
 void PythonInstanceScriptFactory::removeScript( InstanceScript* script )
 {
+	Guard g( lock );
+
 	HM_NAMESPACE::HM_HASH_SET< InstanceScript* >::iterator itr = createdScripts.find( script );
 	if( itr != createdScripts.end() )
 	{
