@@ -58,16 +58,7 @@ void PythonGameObjectAIScript::OnCreate()
 	args.setItemGameObject( 0, _gameobject );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::OnSpawn()
@@ -82,16 +73,7 @@ void PythonGameObjectAIScript::OnSpawn()
 	args.setItemGameObject( 0, _gameobject );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::OnDespawn()
@@ -106,16 +88,7 @@ void PythonGameObjectAIScript::OnDespawn()
 	args.setItemGameObject( 0, _gameobject );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::OnLootTaken( Player* looter, ItemPrototype* itemProto )
@@ -133,16 +106,7 @@ void PythonGameObjectAIScript::OnLootTaken( Player* looter, ItemPrototype* itemP
 	args.setItem( 3, itemProto->ItemId );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::OnActivate( Player* player )
@@ -159,16 +123,7 @@ void PythonGameObjectAIScript::OnActivate( Player* player )
 	args.setItemPlayer( 2, player );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-	
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::OnDamaged( uint32 damage )
@@ -184,16 +139,7 @@ void PythonGameObjectAIScript::OnDamaged( uint32 damage )
 	args.setItem( 1, damage );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::OnDestroyed()
@@ -208,16 +154,7 @@ void PythonGameObjectAIScript::OnDestroyed()
 	args.setItemGameObject( 0, _gameobject );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
 void PythonGameObjectAIScript::AIUpdate()
@@ -232,15 +169,6 @@ void PythonGameObjectAIScript::AIUpdate()
 	args.setItemGameObject( 0, _gameobject );
 
 	PythonCallable callable( functions.getFunction( eventType ) );
-	PythonValue value = callable.call( args );
-
-	if( value.isEmpty() )
-	{
-		Python::printError();
-	}
-	else
-	{
-		value.decref();
-	}
+	callable.callNoReturn( args );
 }
 
