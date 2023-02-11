@@ -31,7 +31,14 @@ public:
 	void setFunctions( const InstanceFunctionTuple &tuple );
 	void clearFunctions();
 
-
+	void OnPlayerDeath( Player* victim, Unit* killer );
+	void OnPlayerEnter( Player* player );
+	void OnAreaTrigger( Player* player, uint32 areaId );
+	void OnZoneChange( Player* player, uint32 newZone, uint32 oldZone );
+	void OnCreatureDeath( Creature* victim, Unit* killer );
+	void OnCreaturePushToWorld( Creature* creature );
+	void OnGameObjectActivate( GameObject* gameObject, Player* player );
+	void OnGameObjectPushToWorld( GameObject* gameObject );
 	void OnLoad();
 	void Destroy();
 
