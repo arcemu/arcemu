@@ -32,14 +32,14 @@
 #include "gameobject/GOScriptRegisterer.hpp"
 #include "gameobject/GOGossipScriptRegisterer.hpp"
 #include "gameobject/GOGossipScriptReleaser.hpp"
-#include "InstanceScriptRegisterer.hpp"
+#include "instance/InstanceScriptRegisterer.hpp"
 #include "item/ItemGossipScriptRegisterer.hpp"
 #include "item/ItemGossipScriptReleaser.hpp"
 #include "quest/QuestScriptRegisterer.hpp"
 
 #include "creature/PythonCreatureAIScriptFactory.hpp"
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
-#include "PythonInstanceScriptFactory.hpp"
+#include "instance/PythonInstanceScriptFactory.hpp"
 #include "quest/PythonQuestScriptFactory.hpp"
 
 void register_arcemu_extensions();

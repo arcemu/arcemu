@@ -18,7 +18,7 @@
  */
 
 #include "StdAfx.h"
-#include "PythonInstanceScript.hpp"
+#include "instance/PythonInstanceScript.hpp"
 
 #include "Python.h"
 

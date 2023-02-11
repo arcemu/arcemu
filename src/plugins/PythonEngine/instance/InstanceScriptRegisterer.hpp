@@ -20,8 +20,8 @@
 #ifndef ARCPY_IS_R_H
 #define ARCPY_IS_R_H
 
-#include "InstanceFunctionTuple.hpp"
-#include "InstanceFunctionTupleVisitor.hpp"
+#include "instance/InstanceFunctionTuple.hpp"
+#include "instance/InstanceFunctionTupleVisitor.hpp"
 
 class InstanceScriptRegisterer : public InstanceFunctionTupleVisitor
 {

@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-#include "InstanceScriptRegisterer.hpp"
+#include "instance/InstanceScriptRegisterer.hpp"
 
-#include "PythonInstanceScriptFactory.hpp"
+#include "instance/PythonInstanceScriptFactory.hpp"
 
 void InstanceScriptRegisterer::visit( unsigned int id, InstanceFunctionTuple &tuple )
 {

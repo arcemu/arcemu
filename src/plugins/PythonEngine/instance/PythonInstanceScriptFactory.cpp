@@ -18,8 +18,8 @@
  */
 
 #include "StdAfx.h"
-#include "PythonInstanceScriptFactory.hpp"
-#include "PythonInstanceScript.hpp"
+#include "instance/PythonInstanceScriptFactory.hpp"
+#include "instance/PythonInstanceScript.hpp"
 #include "FunctionRegistry.hpp"
 
 class FactoryCreatedPythonInstanceScript : public PythonInstanceScript

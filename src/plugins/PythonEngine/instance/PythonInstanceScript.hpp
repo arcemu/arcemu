@@ -20,7 +20,7 @@
 #ifndef PYTHON_INSTANCE_SCRIPT_H
 #define PYTHON_INSTANCE_SCRIPT_H
 
-#include "InstanceFunctionTuple.hpp"
+#include "instance/InstanceFunctionTuple.hpp"
 
 class PythonInstanceScript : public InstanceScript
 {

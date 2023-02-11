@@ -36,8 +36,8 @@ ${prefix}/creature/PythonCreatureAIScriptFactory.cpp
 ${prefix}/PythonEngine.cpp
 ${prefix}/gameobject/PythonGameObjectAIScript.cpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
-${prefix}/PythonInstanceScript.cpp
-${prefix}/PythonInstanceScriptFactory.cpp
+${prefix}/instance/PythonInstanceScript.cpp
+${prefix}/instance/PythonInstanceScriptFactory.cpp
 ${prefix}/PythonGossipScript.cpp
 ${prefix}/quest/PythonQuestScriptFactory.cpp
 ${prefix}/quest/PythonQuestScript.cpp
@@ -48,7 +48,7 @@ ${prefix}/FunctionRegistry.cpp
 ${prefix}/gameobject/GOScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptReleaser.cpp
-${prefix}/InstanceScriptRegisterer.cpp
+${prefix}/instance/InstanceScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptReleaser.cpp
 ${prefix}/quest/QuestScriptRegisterer.cpp
@@ -83,9 +83,9 @@ ${prefix}/gameobject/PythonGameObjectAIScriptFactory.hpp
 ${prefix}/gameobject/PythonGOEventTypes.hpp
 ${prefix}/PythonGossipEventTypes.hpp
 ${prefix}/PythonGossipScript.hpp
-${prefix}/PythonInstanceEventTypes.hpp
-${prefix}/PythonInstanceScript.hpp
-${prefix}/PythonInstanceScriptFactory.hpp
+${prefix}/instance/PythonInstanceEventTypes.hpp
+${prefix}/instance/PythonInstanceScript.hpp
+${prefix}/instance/PythonInstanceScriptFactory.hpp
 ${prefix}/quest/PythonQuestEventTypes.hpp
 ${prefix}/quest/PythonQuestScript.hpp
 ${prefix}/quest/PythonQuestScriptFactory.hpp
@@ -102,9 +102,9 @@ ${prefix}/GossipFunctionTupleVisitor.hpp
 ${prefix}/gameobject/GOScriptRegisterer.hpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.hpp
 ${prefix}/gameobject/GOGossipScriptReleaser.hpp
-${prefix}/InstanceFunctionTuple.hpp
-${prefix}/InstanceFunctionTupleVisitor.hpp
-${prefix}/InstanceScriptRegisterer.hpp
+${prefix}/instance/InstanceFunctionTuple.hpp
+${prefix}/instance/InstanceFunctionTupleVisitor.hpp
+${prefix}/instance/InstanceScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/quest/QuestFunctionTuple.hpp

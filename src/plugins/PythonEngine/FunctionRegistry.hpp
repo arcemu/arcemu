@@ -29,8 +29,8 @@
 #include "gameobject/GOFunctionTuple.hpp"
 #include "gameobject/GOFunctionTupleVisitor.hpp"
 
-#include "InstanceFunctionTuple.hpp"
-#include "InstanceFunctionTupleVisitor.hpp"
+#include "instance/InstanceFunctionTuple.hpp"
+#include "instance/InstanceFunctionTupleVisitor.hpp"
 
 #include "quest/QuestFunctionTuple.hpp"
 #include "quest/QuestFunctionTupleVisitor.hpp"
