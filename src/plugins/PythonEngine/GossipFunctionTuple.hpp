@@ -20,19 +20,45 @@
 #ifndef GOSSIPFUNCTION_TUPLE_H
 #define GOSSIPFUNCTION_TUPLE_H
 
+#include "PythonGossipEventTypes.hpp"
+
 class GossipFunctionTuple
 {
 public:
-	void* onHelloFunction;
-	void* onSelectionFunction;
-	void* onEndFunction;
 
 	GossipFunctionTuple()
 	{
-		onHelloFunction = NULL;
-		onSelectionFunction = NULL;
-		onEndFunction = NULL;
+		clearFunctions();
 	}
+
+	void clearFunctions()
+	{
+		for( int i = 0; i < PYTHON_GOSSIP_EVENT_COUNT; i++ )
+		{
+			functions[ i ] = NULL;
+		}
+	}
+
+	bool hasFunction( unsigned long eventType ) const
+	{
+		if( functions[ eventType ] != NULL )
+			return true;
+		else
+			return false;
+	}
+
+	void setFunction( unsigned long eventType, void* function )
+	{
+		functions[ eventType ] = function;
+	}
+
+	void* getFunction( unsigned long eventType ) const
+	{
+		return functions[ eventType ];
+	}
+
+private:
+	void* functions[ PYTHON_GOSSIP_EVENT_COUNT ];
 };
 
 #endif

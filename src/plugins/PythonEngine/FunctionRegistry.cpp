@@ -43,26 +43,8 @@ void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, 
 		itr = creatureGossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple* >( creatureId, tuple ) ).first;
 	}
 
-	switch( gossipEvent )
-	{
-	case PYTHON_GOSSIP_EVENT_HELLO:
-		{
-			itr->second->onHelloFunction = function;
-			break;
-		}
-
-	case PYTHON_GOSSIP_EVENT_SELECT:
-		{
-			itr->second->onSelectionFunction = function;
-			break;
-		}
-
-	case PYTHON_GOSSIP_EVENT_END:
-		{
-			itr->second->onEndFunction = function;
-			break;
-		}
-	}
+	GossipFunctionTuple *tuple = itr->second;
+	tuple->setFunction( gossipEvent, function );
 }
 
 void FunctionRegistry::registerGOGossipFunction( unsigned int goId, unsigned int gossipEvent, void* function )
@@ -74,26 +56,8 @@ void FunctionRegistry::registerGOGossipFunction( unsigned int goId, unsigned int
 		itr = goGossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple* >( goId, tuple ) ).first;
 	}
 
-	switch( gossipEvent )
-	{
-	case PYTHON_GOSSIP_EVENT_HELLO:
-		{
-			itr->second->onHelloFunction = function;
-			break;
-		}
-
-	case PYTHON_GOSSIP_EVENT_SELECT:
-		{
-			itr->second->onSelectionFunction = function;
-			break;
-		}
-
-	case PYTHON_GOSSIP_EVENT_END:
-		{
-			itr->second->onEndFunction = function;
-			break;
-		}
-	}
+	GossipFunctionTuple *tuple = itr->second;
+	tuple->setFunction( gossipEvent, function );
 }
 
 void FunctionRegistry::registerItemGossipFunction( unsigned int itemId, unsigned int gossipEvent, void* function )
@@ -105,26 +69,8 @@ void FunctionRegistry::registerItemGossipFunction( unsigned int itemId, unsigned
 		itr = itemGossipFunctions.insert( std::pair< unsigned int, GossipFunctionTuple* >( itemId, tuple ) ).first;
 	}
 
-	switch( gossipEvent )
-	{
-	case PYTHON_GOSSIP_EVENT_HELLO:
-		{
-			itr->second->onHelloFunction = function;
-			break;
-		}
-
-	case PYTHON_GOSSIP_EVENT_SELECT:
-		{
-			itr->second->onSelectionFunction = function;
-			break;
-		}
-
-	case PYTHON_GOSSIP_EVENT_END:
-		{
-			itr->second->onEndFunction = function;
-			break;
-		}
-	}
+	GossipFunctionTuple *tuple = itr->second;
+	tuple->setFunction( gossipEvent, function );
 }
 
 void FunctionRegistry::registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function )
@@ -308,14 +254,16 @@ void FunctionRegistry::releaseFunctions()
 	itr = creatureGossipFunctions.begin();
 	while( itr != creatureGossipFunctions.end() )
 	{
-		if( itr->second->onHelloFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onHelloFunction );
+		for( int i = 0; i < PYTHON_GOSSIP_EVENT_COUNT; i++ )
+		{
+			void *f = itr->second->getFunction( i );
+			if( f != NULL )
+			{
+				Py_DecRef( (PyObject*)f );
+			}
+		}
 
-		if( itr->second->onSelectionFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onSelectionFunction );
-		
-		if( itr->second->onEndFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onEndFunction );
+		itr->second->clearFunctions();
 
 		delete itr->second;
 		itr->second = NULL;
@@ -328,14 +276,16 @@ void FunctionRegistry::releaseFunctions()
 	itr = itemGossipFunctions.begin();
 	while( itr != itemGossipFunctions.end() )
 	{
-		if( itr->second->onHelloFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onHelloFunction );
+		for( int i = 0; i < PYTHON_GOSSIP_EVENT_COUNT; i++ )
+		{
+			void *f = itr->second->getFunction( i );
+			if( f != NULL )
+			{
+				Py_DecRef( (PyObject*)f );
+			}
+		}
 
-		if( itr->second->onSelectionFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onSelectionFunction );
-		
-		if( itr->second->onEndFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onEndFunction );
+		itr->second->clearFunctions();
 
 		delete itr->second;
 		itr->second = NULL;
@@ -348,14 +298,16 @@ void FunctionRegistry::releaseFunctions()
 	itr = goGossipFunctions.begin();
 	while( itr != goGossipFunctions.end() )
 	{
-		if( itr->second->onHelloFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onHelloFunction );
+		for( int i = 0; i < PYTHON_GOSSIP_EVENT_COUNT; i++ )
+		{
+			void *f = itr->second->getFunction( i );
+			if( f != NULL )
+			{
+				Py_DecRef( (PyObject*)f );
+			}
+		}
 
-		if( itr->second->onSelectionFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onSelectionFunction );
-		
-		if( itr->second->onEndFunction != NULL )
-			Py_DecRef( (PyObject*)itr->second->onEndFunction );
+		itr->second->clearFunctions();
 
 		delete itr->second;
 		itr->second = NULL;

@@ -39,24 +39,27 @@ PythonGossipScript::PythonGossipScript( GossipFunctionTuple &tuple )
 
 void PythonGossipScript::clearFunctions()
 {
-	functions.onHelloFunction = NULL;
-	functions.onSelectionFunction = NULL;
-	functions.onEndFunction = NULL;
+	functions.clearFunctions();
 }
 
 void PythonGossipScript::setFunctions( GossipFunctionTuple &functions )
 {
-	this->functions.onHelloFunction = functions.onHelloFunction;
-	this->functions.onSelectionFunction = functions.onSelectionFunction;
-	this->functions.onEndFunction = functions.onEndFunction;
+	for( int i = 0; i < PYTHON_GOSSIP_EVENT_COUNT; i++ )
+	{
+		this->functions.setFunction( i, functions.getFunction( i ) );
+	}
 }
 
 void PythonGossipScript::OnHello( Object* object, Player* player )
 {
-	if( functions.onHelloFunction == NULL )
-		return;
-
 	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_GOSSIP_EVENT_HELLO;
+
+	if( !functions.hasFunction( eventType ) )
+	{
+		return;
+	}
 
 	ArcPyTuple args( 3 );
 	
@@ -84,7 +87,7 @@ void PythonGossipScript::OnHello( Object* object, Player* player )
 	args.setItem( 1, 1 );
 	args.setItemPlayer( 2, player );
 
-	PythonCallable callable( functions.onHelloFunction );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 	if( value.isEmpty() )
 	{
@@ -98,10 +101,14 @@ void PythonGossipScript::OnHello( Object* object, Player* player )
 
 void PythonGossipScript::OnSelectOption( Object* object, Player* player, uint32 id, const char* enteredCode )
 {
-	if( functions.onSelectionFunction == NULL )
-		return;
-
 	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_GOSSIP_EVENT_SELECT;
+
+	if( !functions.hasFunction( eventType ) )
+	{
+		return;
+	}
 
 	ArcPyTuple args( 4 );
 
@@ -134,7 +141,7 @@ void PythonGossipScript::OnSelectOption( Object* object, Player* player, uint32 
 	else
 		args.setItem( 3, "" );
 
-	PythonCallable callable( functions.onSelectionFunction );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 	if( value.isEmpty() )
 	{
@@ -148,10 +155,14 @@ void PythonGossipScript::OnSelectOption( Object* object, Player* player, uint32 
 
 void PythonGossipScript::OnEnd( Object* object, Player* player )
 {
-	if( functions.onEndFunction == NULL )
-		return;
-
 	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_GOSSIP_EVENT_SELECT;
+
+	if( !functions.hasFunction( eventType ) )
+	{
+		return;
+	}
 
 	ArcPyTuple args( 2 );
 	
@@ -178,7 +189,7 @@ void PythonGossipScript::OnEnd( Object* object, Player* player )
 
 	args.setItemPlayer( 1, player );
 
-	PythonCallable callable( functions.onEndFunction );
+	PythonCallable callable( functions.getFunction( eventType ) );
 	PythonValue value = callable.call( args );
 	if( value.isEmpty() )
 	{
