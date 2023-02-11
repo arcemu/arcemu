@@ -23,7 +23,7 @@
 
 #include "PythonCreatureAIScript.hpp"
 
-#include "FunctionRegistry.hpp"
+#include "engine/FunctionRegistry.hpp"
 
 
 class FactoryManagedPythonCreatureAIScript : public PythonCreatureAIScript

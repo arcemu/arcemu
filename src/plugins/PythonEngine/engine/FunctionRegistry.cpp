@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-#include "FunctionRegistry.hpp"
+#include "engine/FunctionRegistry.hpp"
 
 #include "gameobject/PythonGOEventTypes.hpp"
 #include "gossip/PythonGossipEventTypes.hpp"

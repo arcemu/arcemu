@@ -10,7 +10,7 @@ SET( prefix ${SCRIPTS_PATH}/${PROJECT_NAME} )
 
 #SRCS - contains the source files that compose this project.
 SET( SRCS
-${prefix}/plugin.cpp
+${prefix}/engine/plugin.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/arcemu_module_consts.cpp
@@ -33,7 +33,7 @@ ${prefix}/python/PythonTuple.cpp
 ${prefix}/python/PythonValue.cpp
 ${prefix}/creature/PythonCreatureAIScript.cpp
 ${prefix}/creature/PythonCreatureAIScriptFactory.cpp
-${prefix}/PythonEngine.cpp
+${prefix}/engine/PythonEngine.cpp
 ${prefix}/gameobject/PythonGameObjectAIScript.cpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
 ${prefix}/instance/PythonInstanceScript.cpp
@@ -44,7 +44,7 @@ ${prefix}/quest/PythonQuestScript.cpp
 ${prefix}/creature/CreatureFunctionRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptReleaser.cpp
-${prefix}/FunctionRegistry.cpp
+${prefix}/engine/FunctionRegistry.cpp
 ${prefix}/gameobject/GOScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptReleaser.cpp
@@ -75,7 +75,7 @@ ${prefix}/python/modules/ArcPyQuest.hpp
 ${prefix}/python/modules/ArcPySpell.hpp
 ${prefix}/python/modules/ArcPyWorldSession.hpp
 ${prefix}/creature/PythonCreatureEventTypes.hpp
-${prefix}/PythonEngine.hpp
+${prefix}/engine/PythonEngine.hpp
 ${prefix}/creature/PythonCreatureAIScript.hpp
 ${prefix}/creature/PythonCreatureAIScriptFactory.hpp
 ${prefix}/gameobject/PythonGameObjectAIScript.hpp
@@ -94,7 +94,7 @@ ${prefix}/creature/CreatureFunctionTuple.hpp
 ${prefix}/creature/CreatureFunctionTupleVisitor.hpp
 ${prefix}/creature/CreatureGossipScriptRegisterer.hpp
 ${prefix}/creature/CreatureGossipScriptReleaser.hpp
-${prefix}/FunctionRegistry.hpp
+${prefix}/engine/FunctionRegistry.hpp
 ${prefix}/gameobject/GOFunctionTuple.hpp
 ${prefix}/gameobject/GOFunctionTupleVisitor.hpp
 ${prefix}/gossip/GossipFunctionTuple.hpp

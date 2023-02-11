@@ -20,10 +20,8 @@
 #include "StdAfx.h"
 
 #include <Python.h>
-
 #include "serverhooks/ServerHookRegistry.hpp"
-
-#include "FunctionRegistry.hpp"
+#include "engine/FunctionRegistry.hpp"
 
 extern void registerArcemuConstants( PyObject *module );
 

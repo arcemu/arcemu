@@ -20,7 +20,7 @@
 #include "StdAfx.h"
 #include "instance/PythonInstanceScriptFactory.hpp"
 #include "instance/PythonInstanceScript.hpp"
-#include "FunctionRegistry.hpp"
+#include "engine/FunctionRegistry.hpp"
 
 class FactoryCreatedPythonInstanceScript : public PythonInstanceScript
 {

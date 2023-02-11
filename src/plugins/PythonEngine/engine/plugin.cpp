@@ -22,7 +22,7 @@
 
 #include <ScriptSetup.h>
 
-#include "PythonEngine.hpp"
+#include "engine/PythonEngine.hpp"
 
 static PythonEngine *pythonEngine = NULL;
 

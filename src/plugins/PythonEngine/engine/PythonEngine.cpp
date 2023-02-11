@@ -19,12 +19,12 @@
 
 #include "StdAfx.h"
 #include <Python.h>
-#include "PythonEngine.hpp"
+#include "engine/PythonEngine.hpp"
 #include "python/ArcPython.hpp"
 #include "serverhooks/ServerHookRegistry.hpp"
 #include "serverhooks/ServerHookHandler.hpp"
 
-#include "FunctionRegistry.hpp"
+#include "engine/FunctionRegistry.hpp"
 
 #include "creature/CreatureFunctionRegisterer.hpp"
 #include "creature/CreatureGossipScriptRegisterer.hpp"
