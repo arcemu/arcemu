@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,22 +22,34 @@
 
 #include "python/PythonObject.hpp"
 
+/// A Python Tuple object
+///   A Tuple is an object that can contain exactly N arbitrary typed values
+///
 class PythonTuple
 {
 public:
 	PythonTuple( unsigned long size );
 	~PythonTuple();
 
+	/// Set a long value at the specified index
 	void setItem( unsigned long idx, long value );
+
+	/// Set a Python object value at the specified index
 	void setItem( unsigned long idx, PythonObject &object );
+
+	/// Set a C-String value at the specified index
 	void setItem( unsigned long idx, const char* value );
 	
+	/// Set a boolean value at the specified index
 	void setItemBool( unsigned long idx, bool value );
 
+	/// Set a None value at the specified index
 	void setItemNone( unsigned long idx );
 
+	/// Returns the size of this Tuple
 	unsigned long getSize(){ return size; }
 
+	/// Returns the underlying Python object
 	PyObject* getObject() const{ return obj; }
 
 private:

@@ -22,12 +22,16 @@
 
 class Aura;
 
+/// Arcemu Aura Python type
 typedef struct
 {
 	PyObject_HEAD
+
+	/// Pointer to the Arcemu Aura
 	Aura* auraPtr;
 } ArcPyAura;
 
+/// Creates and returns a new empty ArcPyAura object
 ArcPyAura* createArcPyAura();
 
 #endif

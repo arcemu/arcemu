@@ -20,14 +20,21 @@
 #ifndef PYTHONOBJECT_H_
 #define PYTHONOBJECT_H_
 
+/// Represents a Python Object, hiding Python details
 class PythonObject
 {
 public:
 	PythonObject( PyObject* obj );
 	~PythonObject();
+
+	/// Increase the reference count of the object
 	void incref();
+
+	/// Decrease the reference count of the object.
+	/// When it reaches zero the object is destroyed
 	void decref();
 
+	/// Is there an object in this wrapper class?
 	bool isEmpty()
 	{
 		if( obj == NULL )
@@ -36,6 +43,7 @@ public:
 			return false;
 	}
 
+	/// Get the wrapped Python object
 	PyObject* getObject() const{ return obj; }
 
 private:

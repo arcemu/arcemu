@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -56,6 +56,8 @@ bool PythonValue::isBool()
 
 bool PythonValue::getBoolValue()
 {
+	/// Python has only one instance of a True and a False value
+	/// Therefore we can compare to one of them here
 	PyObject* tr = Py_True;
 
 	if( getObject() == tr )

@@ -22,22 +22,39 @@
 
 #include "python/PythonTuple.hpp"
 
+/// A Python Tuple with Arcemu value support
 class ArcPyTuple : public PythonTuple
 {
 public:
 	ArcPyTuple( unsigned long size );
 	~ArcPyTuple();
 
+	/// Set an Aura value at the specified index
 	void setItemAura( unsigned long idx, Aura* aura );
+
+	/// Set a GameObject value at the specified index
 	void setItemGameObject( unsigned long idx, GameObject* gameObject );
+
+	/// Set a Guild value at the specified index
 	void setItemGuild( unsigned long idx, Guild* guild );
+
+	/// Set an Item value at the specified index
 	void setItemItem( unsigned long idx, Item* item );
+
+	/// Set a Player value at the specified index
 	void setItemPlayer( unsigned long idx, Player* player );
+
+	/// Set a Quest value at the specified index
 	void setItemQuest( unsigned long idx, Quest* quest );
+
+	/// Set a Spell value at the specified index
 	void setItemSpell( unsigned long idx, Spell* spell );
+
+	/// Set a Unit value at the specified index
 	void setItemUnit( unsigned long idx, Unit* unit );
-	void setItemWorldSession( unsigned long idx, WorldSession* worldSession );
-	
+
+	/// Set a WorldSession value at the specified index
+	void setItemWorldSession( unsigned long idx, WorldSession* worldSession );	
 };
 
 #endif

@@ -23,13 +23,20 @@
 #include "python/PythonTuple.hpp"
 #include "python/PythonValue.hpp"
  
+/// Represents a callable Python object (like a function)
  class PythonCallable : public PythonObject
  {
  public:
+	 /// Initialize with a function reference loaded from scripts
 	 PythonCallable( void* callable );
+
 	 ~PythonCallable();
 	 
+	 /// Call this callable, with a Tuple as argument. Returns a value object.
 	 PythonValue call( PythonTuple &args );
+
+	 /// Call this callable, with a Tuple argument.
+	 /// Used as a convenience method for when a return value is not expected.
 	 void callNoReturn( PythonTuple &args );
  };
  

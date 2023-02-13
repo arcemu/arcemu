@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008-2022 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,16 +22,21 @@
 
 #include "python/PythonObject.hpp"
 
+/// Represents a Python value object
 class PythonValue : public PythonObject
 {
 public:
 	PythonValue( PyObject *obj );
 	PythonValue( const PythonValue &other );
 	~PythonValue();
-	bool isNone();	
+
+	/// Is this a None object?
+	bool isNone();
+
+	/// Is this a Boolean object?
 	bool isBool();
 
-
+	/// Retrieves the boolean value of the object
 	bool getBoolValue();
 };
 
