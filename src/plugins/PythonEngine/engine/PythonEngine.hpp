@@ -23,27 +23,34 @@
 class ArcPython;
 class ScriptMgr;
 
+/// Arcemu Python Engine (APE)
 class PythonEngine
 {
 public:
 	PythonEngine( ScriptMgr *mgr );
 	~PythonEngine();
 
+	/// Executes the startup tasks: loads script files and registers the scripts
 	void onStartup();
 
+	/// Executes the reload tasks: clears registered script functions, loads current scripts and registers the functions from them
 	void onReload();
 
 private:
+	/// Load a single script
 	int loadScript( const char *fileName );
 
+	/// Load all current scripts from the script directory
 	int loadScripts();
 
+	/// Register server hooks
 	void registerHooks();
+
+	/// Register loaded script functions in ScriptManager
 	void registerScripts();
 
 private:
 	ArcPython *python;
-
 	ScriptMgr *mgr;
 };
 

@@ -22,15 +22,19 @@
 
 #include "python/Python.hpp"
 
+/// Python wrapper with Arcemu extensions
 class ArcPython : public Python
 {
 public:
 	ArcPython();
 	~ArcPython();
 
+	/// Returns Arcemu's Python global lock
 	static Mutex& getLock();
 
 private:
+	/// Global lock that protects the Python interpreter
+	/// Must be locked every time a thread accesses the interpreter
 	static Mutex lock;
 };
 

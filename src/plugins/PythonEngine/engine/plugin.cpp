@@ -19,13 +19,12 @@
  */
 
 #include "StdAfx.h"
-
 #include <ScriptSetup.h>
-
 #include "engine/PythonEngine.hpp"
 
 static PythonEngine *pythonEngine = NULL;
 
+/// These are the functions that Arcemu calls when starting, stopping, reloading the plugin
 
 extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 {
@@ -34,30 +33,45 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 
 extern "C" SCRIPT_DECL void _exp_script_register( ScriptMgr *mgr )
 {
-	sLog.Success( "APE", "Starting up...");
-	
-	pythonEngine = new PythonEngine(mgr);
-	pythonEngine->onStartup();
-
-	sLog.Success( "APE", "Startup complete.");
+	if( pythonEngine == NULL )
+	{
+		sLog.Success( "APE", "Starting up...");
+		pythonEngine = new PythonEngine(mgr);
+		pythonEngine->onStartup();
+		sLog.Success( "APE", "Startup complete.");
+	}
+	else
+	{
+		sLog.Error( "APE", "Trying to start up after starting up." );
+	}
 }
 
 extern "C" SCRIPT_DECL void _exp_engine_unload()
 {
-	sLog.Success( "APE", "Shutting down...");
-
-	delete pythonEngine;
-	pythonEngine = NULL;
-	
-	sLog.Success( "APE", "Shutdown complete.");
+	if( pythonEngine != NULL )
+	{
+		sLog.Success( "APE", "Shutting down...");
+		delete pythonEngine;
+		pythonEngine = NULL;
+		sLog.Success( "APE", "Shutdown complete.");
+	}
+	else
+	{
+		sLog.Error( "APE", "Trying to shut down before starting up." );
+	}
 }
 
 extern "C" SCRIPT_DECL void _export_engine_reload()
 {
-	sLog.Success( "APE", "Reloading");
-	
-	pythonEngine->onReload();
-
-	sLog.Success( "APE", "Done reloading.");
+	if( pythonEngine != NULL )
+	{
+		sLog.Success( "APE", "Reloading");
+		pythonEngine->onReload();
+		sLog.Success( "APE", "Done reloading.");
+	}
+	else
+	{
+		sLog.Error( "APE", "Trying to reload before starting up." );
+	}
 }
 

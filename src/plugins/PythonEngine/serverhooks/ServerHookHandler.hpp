@@ -20,6 +20,9 @@
  #ifndef SERVERHOOK_HANDLER_H_
  #define SERVERHOOK_HANDLER_H_
 
+/// Implements server event hook handlers.
+/// These are basically global functions that Arcemu core calls when something happens.
+/// Each of the methods call the Python function(s) that are registered to handle them
 class ServerHookHandler
 {
 public:

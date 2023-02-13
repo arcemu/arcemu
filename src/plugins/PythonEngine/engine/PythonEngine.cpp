@@ -18,14 +18,13 @@
  */
 
 #include "StdAfx.h"
+
 #include <Python.h>
 #include "engine/PythonEngine.hpp"
 #include "python/ArcPython.hpp"
 #include "serverhooks/ServerHookRegistry.hpp"
 #include "serverhooks/ServerHookHandler.hpp"
-
 #include "engine/FunctionRegistry.hpp"
-
 #include "creature/CreatureFunctionRegisterer.hpp"
 #include "creature/CreatureGossipScriptRegisterer.hpp"
 #include "creature/CreatureGossipScriptReleaser.hpp"
@@ -36,7 +35,6 @@
 #include "item/ItemGossipScriptRegisterer.hpp"
 #include "item/ItemGossipScriptReleaser.hpp"
 #include "quest/QuestScriptRegisterer.hpp"
-
 #include "creature/PythonCreatureAIScriptFactory.hpp"
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 #include "instance/PythonInstanceScriptFactory.hpp"
@@ -44,11 +42,12 @@
 
 void register_arcemu_extensions();
 
-
 PythonEngine::PythonEngine( ScriptMgr *mgr )
 {
+	/// First we extend Python with our own types, constants, and functions
 	register_arcemu_extensions();
 
+	/// Then start Python
 	Python::setPath( L"./pythonlibs" );
 	python = new ArcPython();
 	this->mgr = mgr;
@@ -56,48 +55,52 @@ PythonEngine::PythonEngine( ScriptMgr *mgr )
 
 PythonEngine::~PythonEngine()
 {
+	/// First release the functions we loaded from scripts
 	PythonCreatureAIScriptFactory::onShutdown();
 	PythonGameObjectAIScriptFactory::onShutdown();
 	PythonQuestScriptFactory::onShutDown();
 	PythonInstanceScriptFactory::onShutdown();
-
 	ServerHookRegistry::releaseHooks();
 	FunctionRegistry::releaseFunctions();
 
+	/// then shut Python down
 	delete python;
 	python = NULL;
 }
 
 void PythonEngine::onStartup()
 {
+	/// First load scripts
 	loadScripts();
 
+	/// then register the functions from the loaded scripts
 	registerHooks();
-
 	registerScripts();
 }
 
 void PythonEngine::onReload()
 {
+	/// We don't want any script execution, or Python state change while reloading
 	Guard g( ArcPython::getLock() );
 
-	ServerHookRegistry::releaseHooks();
-	
+	/// First release functions that we loaded
+	ServerHookRegistry::releaseHooks();	
 	CreatureGossipScriptReleaser creatureGossipReleaser( mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
-
 	GOGossipScriptReleaser goGossipReleaser( mgr );
 	FunctionRegistry::visitGOGossipFunctions( &goGossipReleaser );
-
 	ItemGossipScriptReleaser itemGossipReleaser( mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipReleaser );
-
 	FunctionRegistry::releaseFunctions();
 
+	/// Load current scripts
 	loadScripts();
 
+	/// Register functions from loaded scripts
 	registerScripts();
 
+	/// Unfortunately there's no way to remove the script classes that we have already created for spawned entities
+	/// So the best we can do is to change the functions in them, or set NULL if the script function was removed
 	PythonCreatureAIScriptFactory::onReload();
 	PythonGameObjectAIScriptFactory::onReload();
 	PythonInstanceScriptFactory::onReload();
@@ -108,6 +111,11 @@ int PythonEngine::loadScript( const char *fileName )
 {
 	//sLog.Success( "APE", "Loading %s...", fileName );
 
+	/// This is where magic happens:
+	/// Before starting it, we extended Python with functions that register hook and event handlers.
+	/// When executing the Python scripts Python loads the functions we defined, and runs the functions we call in the scripts
+	/// If a hook, or event handler registry function is called Python calls the functions we added, and those functions register the handler functions in the engine,
+	///  keeping the function reference to the handlers, so that we can create script classes and call them when needed
 	int val = python->runSimpleFile( fileName );
 	if( val == 0 )
 	{
@@ -126,9 +134,11 @@ int PythonEngine::loadScripts()
 	sLog.Success( "APE", "Loading Python scripts..." );
 	int c = 0;
 
+	/// Find files with the extensions .py
 	std::vector< std::string > pythonFiles;
 	Arcemu::FileUtils::findFilesByExtension( "pythonscripts", "py", pythonFiles ); 
 
+	/// Run all the files we've found
 	for( std::vector< std::string >::iterator itr = pythonFiles.begin(); itr != pythonFiles.end(); ++itr )
 	{
 		const std::string &fileName = *itr;
@@ -145,6 +155,9 @@ int PythonEngine::loadScripts()
 
 void PythonEngine::registerHooks()
 {
+	/// We register the hook handler functions in Arcemu here
+	/// Aremu calls these when specific events happen, and these functions call the event handlers we loaded from Python scripts
+
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_NEW_CHARACTER, (void*)(&ServerHookHandler::hookOnNewCharacter) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)(&ServerHookHandler::hookOnKillPlayer) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, (void*)(&ServerHookHandler::hookOnFirstEnterWorld) );
@@ -155,7 +168,7 @@ void PythonEngine::registerHooks()
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_EMOTE, (void*)(&ServerHookHandler::hookOnEmote) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_ENTER_COMBAT, (void*)(&ServerHookHandler::hookOnEnterCombat) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_CAST_SPELL, (void*)(&ServerHookHandler::hookOnCastSpell ) );
-	/// Will not implement SERVER_HOOK_EVENT_ON_TICK
+	/// Will not implement SERVER_HOOK_EVENT_ON_TICK, as it is not implemented in Arcemu either
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST, (void*)(&ServerHookHandler::hookOnLogoutRequest) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)(&ServerHookHandler::hookOnLogout) );
 	REGISTER_SERVER_HOOK( SERVER_HOOK_EVENT_ON_QUEST_ACCEPT, (void*)(&ServerHookHandler::hookOnAcceptQuest) );
@@ -181,6 +194,8 @@ void PythonEngine::registerHooks()
 
 void PythonEngine::registerScripts()
 {
+	/// We register the functions that we loaded from Python scripts here
+
 	CreatureGossipScriptRegisterer registerer( this->mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &registerer );
 

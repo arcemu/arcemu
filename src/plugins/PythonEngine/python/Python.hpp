@@ -20,16 +20,23 @@
 #ifndef PYTHON_WRAPPER_H_
 #define PYTHON_WRAPPER_H_
 
+/// Python C++ wrapper class
 class Python
 {
 public:
+	/// Initializes the Python interpreter
 	Python();
+
+	/// Deinitializes the Python interpreter
 	~Python();
 
+	/// Print the last Python exception's error message if there' any
 	static void printError();
 
+	/// Sets the Python standard library path
 	static void setPath( const wchar_t *path );
 
+	/// Execute a Python script. Output will go to the console.
 	int runSimpleFile( const char *fileName );
 };
 

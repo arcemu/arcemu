@@ -19,6 +19,7 @@
 
 #include <Python.h>
 
+/// Initializes the Arcemu Python module. See arcemu_module.cpp
 PyObject* PyInit_Arcemu(void);
 
 class PythonExtensionRegistrar
@@ -39,6 +40,7 @@ public:
 	}
 };
 
+/// Registers the Arcemu Python extensions
 void register_arcemu_extensions()
 {
 	PythonExtensionRegistrar::registerExtensions();

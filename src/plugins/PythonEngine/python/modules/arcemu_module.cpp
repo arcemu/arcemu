@@ -23,8 +23,9 @@
 #include "serverhooks/ServerHookRegistry.hpp"
 #include "engine/FunctionRegistry.hpp"
 
-extern void registerArcemuConstants( PyObject *module );
 
+/// These are all in their own files
+extern void registerArcemuConstants( PyObject *module );
 extern int registerArcPyAura( PyObject *module );
 extern int registerArcPyGameObject( PyObject *module );
 extern int registerArcPyGossipMenu( PyObject *module );
@@ -36,6 +37,17 @@ extern int registerArcPyQuest( PyObject *module );
 extern int registerArcPySpell( PyObject *module );
 extern int registerArcPyWorldSession( PyObject *module );
 
+
+/// RegisterServerHook
+///   Registers a server event handler
+///
+/// Parameters:
+///   eventType  -  The server event we're registering handler for
+///   function   -  The Python function's name that will handle the event
+///
+/// Example:
+///  RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_PRE_DIE, onPreDie )
+///
 static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 {
 	unsigned long serverEvent = 0;
@@ -60,6 +72,18 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// RegisterUnitGossipEvent
+///   Registers a Unit (Creature) gossip event handler
+///
+/// Parameters:
+///   goId         - The numerical identifier of the Unit (Creature)
+///   eventType    - The type of the gossip event handler we're registering
+///   function     - The Python function's name that will handle this event
+///
+/// Example:
+///   RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_SELECT, mohawk_onSelectOption )
+///
 static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args )
 {
 	unsigned long creatureId = 0;
@@ -83,6 +107,18 @@ static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+
+/// RegisterItemGossipEvent
+///   Registers an Item gossip event handler
+///
+/// Parameters:
+///   goId         - The numerical identifier of the item
+///   eventType    - The type of the gossip event handler we're registering
+///   function     - The Python function's name that will handle this event
+///
+/// Example:
+///   RegisterItemGossipEvent( 8051, arcemu.GOSSIP_EVENT_HELLO, item_onHello )
+///
 static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args )
 {
 	unsigned long itemId = 0;
@@ -106,6 +142,17 @@ static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+/// RegisterGOGossipEvent
+///   Registers a GameObject gossip event handler
+///
+/// Parameters:
+///   goId         - The numerical identifier of the gameobject
+///   eventType    - The type of the gossip event handler we're registering
+///   function     - The Python function's name that will handle this event
+///
+/// Example:
+///   RegisterGOGossipEvent( 202242, arcemu.GOSSIP_EVENT_SELECT, go_onSelectOption )
+///
 static PyObject* arcemu_RegisterGOGossipEvent( PyObject *self, PyObject *args )
 {
 	unsigned long goId = 0;
@@ -129,6 +176,18 @@ static PyObject* arcemu_RegisterGOGossipEvent( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// RegisterGameObjectEvent
+///   Registers a GameObject event handler
+///
+/// Parameters:
+///   goId         - The numerical identifier of the gameobject
+///   eventType    - The type of the event handler we're registering
+///   function     - The Python function's name that will handle this event
+///
+/// Example:
+///   RegisterGameObjectEvent( 190375, arcemu.GO_EVENT_ON_DAMAGED, fortressDoor_onDamaged )
+///
 static PyObject* arcemu_RegisterGameObjectEvent( PyObject *self, PyObject *args )
 {
 	unsigned long goId = 0;
@@ -152,6 +211,18 @@ static PyObject* arcemu_RegisterGameObjectEvent( PyObject *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+
+/// RegisterUnitEvent
+///   Registers a Unit (Creature) event handler
+///
+/// Parameters:
+///   creatureId   - The numerical identifier of the creature
+///   eventType    - The type of the event handler we're registering
+///   function     - The Python function's name that will handle this event
+///
+/// Example:
+///   RegisterUnitEvent( 113, arcemu.CREATURE_EVENT_ON_CALL_FOR_HELP, npc_onCallForHelp )
+///
 static PyObject* arcemu_RegisterUnitEvent( PyObject *self, PyObject *args )
 {
 	unsigned long creatureId = 0;
@@ -175,6 +246,17 @@ static PyObject* arcemu_RegisterUnitEvent( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// RegisterQuestEvent function.
+///   Registers a Quest event handler
+///
+/// Parameters:
+///   questId   - The numerical identifier of the quest
+///   eventType - The type of the event handler we're registering
+///   function  - The Python function's name that will handle this event
+///
+/// Example:
+///  RegisterQuestEvent( 7, arcemu.QUEST_EVENT_ON_CREATURE_KILL, quest_onCreatureKill )
+///
 static PyObject* arcemu_RegisterQuestEvent( PyObject *self, PyObject *args )
 {
 	unsigned long questId = 0;
@@ -199,6 +281,17 @@ static PyObject* arcemu_RegisterQuestEvent( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// RegisterInstanceEvent
+///   Registers an Instance event handler
+///
+/// Parameters:
+///   mapId     - The numerical identifier of the map
+///   eventType - The type of the event handler we're registering
+///   function  - The Python function's name that will handle this event
+///
+/// Example:
+///   RegisterInstanceEvent( 34, arcemu.INSTANCE_EVENT_ON_GO_ACTIVATE, instance_onGOActivated ) 
+///
 static PyObject* arcemu_RegisterInstanceEvent( PyObject *self, PyObject *args )
 {
 	unsigned long mapId = 0;
@@ -223,6 +316,7 @@ static PyObject* arcemu_RegisterInstanceEvent( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// This is where we assign the Arcemu Python module's function names to functions, and properties
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
 	{ "RegisterUnitGossipEvent", arcemu_RegisterUnitGossipEvent, METH_VARARGS, "Registers a Unit gossip event" },
@@ -240,12 +334,15 @@ static PyModuleDef ArcemuModule = {
 	NULL, NULL, NULL, NULL
 };
 
+/// Initializes the Arcemu Python module
 PyObject* PyInit_Arcemu(void)
 {
 	PyObject *module = PyModule_Create(&ArcemuModule);
 
+	/// Register Arcemu constants in Python
 	registerArcemuConstants( module );
 
+	/// Register Arcemu objects in Python
 	registerArcPyAura( module );
 	registerArcPyGameObject( module );
 	registerArcPyGossipMenu( module );
