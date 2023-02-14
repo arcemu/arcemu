@@ -42,6 +42,15 @@ static void ArcPyAura_dealloc( ArcPyAura* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+/// getSpellName
+///   Returns the name of the spell that created this Aura
+///
+/// Parameters:
+///   No parameters
+///
+/// Example:
+///   name = a.getSpellName()
+///
 static PyObject* ArcPyAura_getSpellName( ArcPyAura *self, PyObject *args )
 {
 	Aura* aura = self->auraPtr;
@@ -49,6 +58,19 @@ static PyObject* ArcPyAura_getSpellName( ArcPyAura *self, PyObject *args )
 	return name;
 }
 
+
+/// getSpellId
+///   Returns the Id of the spell that created this Aura
+///
+/// Parameters:
+///   No parameters
+///
+/// Return value:
+///   Returns the Id of the spell that created this Aura
+///
+/// Example:
+///   id = a.getSpellId()
+///
 static PyObject* ArcPyAura_getSpellId( ArcPyAura* self, PyObject* args )
 {
 	Aura* aura = self->auraPtr;
@@ -56,6 +78,19 @@ static PyObject* ArcPyAura_getSpellId( ArcPyAura* self, PyObject* args )
 	return id;
 }
 
+
+/// getAuraSlot
+///   Returns the Id of the Aura slot this Aura is in
+///
+/// Parameters:
+///   No parameters
+///
+/// Return value:
+///   Returns the Id of the Aura slot this Aura is in
+///
+/// Example:
+///   slot = a.getAuraSlot()
+///
 static PyObject* ArcPyAura_getAuraSlot( ArcPyAura* self, PyObject* args )
 {
 	Aura* aura = self->auraPtr;
