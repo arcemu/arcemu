@@ -104,7 +104,62 @@ static PyObject* ArcPyGameObject_RegisterAIUpdateEvent( ArcPyGameObject* self, P
 		return NULL;
 	}
 
-	sEventMgr.AddEvent(gameObject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, interval, 0, 0);
+	if( sEventMgr.HasEvent( gameObject, EVENT_SCRIPT_UPDATE_EVENT ) )
+	{
+		Py_RETURN_NONE;
+	}
+
+	sEventMgr.AddEvent( gameObject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, interval, 0, 0 );
+
+	Py_RETURN_NONE;
+}
+
+
+/// ModifyAIUpdateEvent
+///   Modifies the AI update interval of the GameObject
+///
+/// Parameters:
+///   interval   -  Update interval in milliseconds
+///
+/// Return value
+///   No return value
+///
+/// Example:
+///   go.ModifyAIUpdateEvent( 2500 )
+///
+static PyObject* ArcPyGameObject_ModifyAIUpdateEvent( ArcPyGameObject* self, PyObject* args )
+{
+	GameObject *gameObject = self->gameObjectPtr;
+
+	uint32 interval;
+
+	if( !PyArg_ParseTuple( args, "k", &interval ) )
+	{
+		return NULL;
+	}
+
+	sEventMgr.ModifyEventTimeAndTimeLeft(gameObject, EVENT_SCRIPT_UPDATE_EVENT, interval);
+
+	Py_RETURN_NONE;
+}
+
+/// RemoveAIUpdateEvent
+///   Stops AI updates of the GameObject
+///
+/// Parameters:
+///   None
+///
+/// Return value
+///   No return value
+///
+/// Example:
+///   go.RemoveAIUpdateEvent()
+///
+static PyObject* ArcPyGameObject_RemoveAIUpdateEvent( ArcPyGameObject* self, PyObject* args )
+{
+	GameObject *gameObject = self->gameObjectPtr;
+
+	sEventMgr.RemoveEvents(gameObject, EVENT_SCRIPT_UPDATE_EVENT);
 
 	Py_RETURN_NONE;
 }
@@ -114,6 +169,9 @@ static PyMethodDef ArcPyGameObject_methods[] =
 	{ "getName", (PyCFunction)ArcPyGameObject_getName, METH_NOARGS, "Returns the name of the GameObject" },
 	{ "getId", (PyCFunction)ArcPyGameObject_getId, METH_NOARGS, "Returns the Id of the GameObject" },
 	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyGameObject_RegisterAIUpdateEvent, METH_VARARGS, "Registers AI Updates for the GameObject" },
+	{ "ModifyAIUpdateEvent", (PyCFunction)ArcPyGameObject_ModifyAIUpdateEvent, METH_VARARGS, "Modifies the interval of the AI Updates of the GameObject" },
+	{ "RemoveAIUpdateEvent", (PyCFunction)ArcPyGameObject_RemoveAIUpdateEvent, METH_VARARGS, "Stops AI Updates of the GameObject" },
+
 	{NULL}
 };
 
