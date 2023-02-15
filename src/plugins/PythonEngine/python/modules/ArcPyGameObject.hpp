@@ -22,12 +22,14 @@
 
 class GameObject;
 
+/// Arcemu Python GameObject type
 typedef struct
 {
 	PyObject_HEAD
 	GameObject* gameObjectPtr;
 } ArcPyGameObject;
 
+/// Creates a new Arcemu Python GameObject
 ArcPyGameObject* createArcPyGameObject();
 
 #endif

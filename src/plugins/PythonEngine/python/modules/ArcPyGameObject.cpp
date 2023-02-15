@@ -42,6 +42,18 @@ static void ArcPyGameObject_dealloc( ArcPyGameObject* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+/// getName
+///   Returns the name of the GameObject
+///
+/// Parameters
+///   No parameters
+///
+/// Return value
+///   Returns a string that contains the name of the GameObject
+///
+/// Example:
+///   n = go.getName()
+///
 static PyObject* ArcPyGameObject_getName( ArcPyGameObject *self, PyObject *args )
 {
 	GameObject* gameObject = self->gameObjectPtr;
@@ -49,6 +61,19 @@ static PyObject* ArcPyGameObject_getName( ArcPyGameObject *self, PyObject *args 
 	return name;
 }
 
+
+/// getId
+///   Returns the Id of the GameObject
+///
+/// Parameters
+///   No parameters
+///
+/// Return value
+///   Returns an integer that contains the Id of the GameObject
+///
+/// Example:
+///   id = go.getId()
+///
 static PyObject* ArcPyGameObject_getId( ArcPyGameObject* self, PyObject* args )
 {
 	GameObject *gameObject = self->gameObjectPtr;
@@ -56,6 +81,18 @@ static PyObject* ArcPyGameObject_getId( ArcPyGameObject* self, PyObject* args )
 	return id;
 }
 
+/// RegisterAIUpdateEvent
+///   Registers periodical updates for the GameObject
+///
+/// Parameters:
+///   interval   -  Update interval in milliseconds
+///
+/// Return value
+///   No return value
+///
+/// Example:
+///   go.RegisterAIUpdateEvent( 1000 )
+///
 static PyObject* ArcPyGameObject_RegisterAIUpdateEvent( ArcPyGameObject* self, PyObject* args )
 {
 	GameObject *gameObject = self->gameObjectPtr;
