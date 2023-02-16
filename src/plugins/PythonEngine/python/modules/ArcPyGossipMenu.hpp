@@ -28,12 +28,14 @@ namespace Arcemu
 	};
 };
 
+/// Arcemu GossipMenu Python object
 typedef struct
 {
 	PyObject_HEAD
 	Arcemu::Gossip::Menu* gossipMenuPtr;
 } ArcPyGossipMenu;
 
+/// Creates a new empty ArcPyGossipMenu object
 ArcPyGossipMenu* createArcPyGossipMenu();
 
 #endif

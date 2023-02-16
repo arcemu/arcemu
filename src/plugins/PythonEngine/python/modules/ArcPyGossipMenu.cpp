@@ -36,6 +36,20 @@ static PyObject* ArcPyGossipMenu_new( PyTypeObject *type, PyObject *args, PyObje
 	return (PyObject*)self;
 }
 
+/// GossipMenu
+///   Creates a new GossipMenu
+///
+/// Parameters
+///   textId    -  The text to show in the menu
+///   unit      -  The GossipMenu's owner object. It's portrait will be shown in the menu.
+///   autosend  -  Should the menu be automatically sent? It's not implemented here.
+///
+/// Return value
+///   Returns the constructed GossipMenu
+///
+/// Example:
+///   menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+///
 static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject *keywords )
 {
 	unsigned long textId = 0;
@@ -76,6 +90,25 @@ static void ArcPyGossipMenu_dealloc( ArcPyGossipMenu* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+/// addItem
+///   Adds a menu item to a GossipMenu
+///
+/// Parameters
+///   icon        - Icon Id for the menu item. See the Icons enum for possible values.
+///   text        - Text of the menu item
+///   option      - Sequence number of this menu item
+///   coded       - When True (1) selecting this option requires a code to be entered
+///   boxMessage  - (optional) Text shown with the cost of selecting this item
+///   boxMoney    - (optional) Cost (in copper) of selecting this item
+///
+/// Return value
+///   None
+///
+/// Examples
+///   menu.addItem( arcemu.ICON_CHAT, "Something0", 7, 0 )
+///   menu.addItem( arcemu.ICON_VENDOR, "Something1", 8, 0, "Some message", 123456 )
+///	  menu.addItem( arcemu.ICON_DOT, "Something2", 9, 1 )
+///
 static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args )
 {
 	unsigned long icon = 0;
@@ -103,6 +136,18 @@ static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+/// sendToPlayer
+///   Sends the menu to a Player
+///
+/// Parameters
+///   player  -  The Player we will send this menu to
+///
+/// Return value
+///   None
+///
+/// Example
+///   menu.sendToPlayer( player )
+///
 static PyObject* ArcPyGossipMenu_sendToPlayer( ArcPyGossipMenu* self, PyObject* args )
 {
 	PyObject* playerObj = NULL;
@@ -122,6 +167,19 @@ static PyObject* ArcPyGossipMenu_sendToPlayer( ArcPyGossipMenu* self, PyObject* 
 	Py_RETURN_NONE;
 }
 
+
+/// complete
+///   Close the gossip menu for the Player
+///
+/// Parameters
+///   player  -  The Player we will close the menu for
+///
+/// Return value
+///   None
+///
+/// Example
+///   GossipMenu.complete( player )
+///
 static PyObject* ArcPyGossipMenu_complete( ArcPyGossipMenu* /*self*/, PyObject* args )
 {
 	PyObject* playerObj = NULL;
