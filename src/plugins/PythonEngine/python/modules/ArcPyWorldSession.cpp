@@ -42,6 +42,18 @@ static void ArcPyWorldSession_dealloc( ArcPyWorldSession* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+/// getAccountName
+///   Returns the account name of the user who initiated this WorldSession
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a String that contains the account name of the player who initiated this WorldSession
+///
+/// Example
+///   account = ws.getAccountName()
+///
 static PyObject* ArcPyWorldSession_getAccountName( ArcPyWorldSession *self, PyObject *args )
 {
 	WorldSession *session = self->worldSessionPtr;
@@ -49,6 +61,18 @@ static PyObject* ArcPyWorldSession_getAccountName( ArcPyWorldSession *self, PyOb
 	return name;
 }
 
+/// getAccountId
+///   Returns the account Id of the user who initiated this WorldSession
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns an integer that contains the account Id of the player who initiated this WorldSession
+///
+/// Example
+///   accountId = ws.getAccountId()
+///
 static PyObject* ArcPyWorldSession_getAccountId( ArcPyWorldSession* self, PyObject* args )
 {
 	WorldSession *session = self->worldSessionPtr;

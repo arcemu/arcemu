@@ -22,12 +22,14 @@
 
 class WorldSession;
 
+/// Arcemu WorldSession Python object
 typedef struct
 {
 	PyObject_HEAD
 	WorldSession* worldSessionPtr;
 } ArcPyWorldSession;
 
+/// Returns a new empty ArcPyWorldSession object
 ArcPyWorldSession* createArcPyWorldSession();
 
 #endif

@@ -42,6 +42,18 @@ static void ArcPyQuest_dealloc( ArcPyQuest* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+/// getTitle
+///   Returns the title of this Quest
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a string that contains the title of this Quest
+///
+/// Example
+///   title = quest.getTitle()
+///
 static PyObject* ArcPyQuest_getTitle( ArcPyQuest *self, PyObject *args )
 {
 	Quest* quest = self->questPtr;
@@ -49,6 +61,19 @@ static PyObject* ArcPyQuest_getTitle( ArcPyQuest *self, PyObject *args )
 	return name;
 }
 
+
+/// getId
+///   Returns the Id of this Quest
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns an integer that contains the Id of this Quest
+///
+/// Example
+///   id = quest.getId()
+///
 static PyObject* ArcPyQuest_getId( ArcPyQuest* self, PyObject* args )
 {
 	Quest* quest = self->questPtr;

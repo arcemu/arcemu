@@ -22,12 +22,15 @@
 
 struct Quest;
 
+/// Arcemu Quest type for Python
 typedef struct
 {
 	PyObject_HEAD
 	Quest* questPtr;
 } ArcPyQuest;
 
+
+/// Creates an empty ArcPyQuest object
 ArcPyQuest* createArcPyQuest();
 
 #endif

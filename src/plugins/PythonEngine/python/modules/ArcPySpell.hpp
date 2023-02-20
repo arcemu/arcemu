@@ -22,12 +22,15 @@
 
 class Spell;
 
+/// Arcemu Spell Python type
 typedef struct
 {
 	PyObject_HEAD
 	Spell* spellPtr;
 } ArcPySpell;
 
+
+/// Returns an empty ArcPySpell object
 ArcPySpell* createArcPySpell();
 
 #endif

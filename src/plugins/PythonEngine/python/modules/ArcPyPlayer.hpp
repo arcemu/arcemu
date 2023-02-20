@@ -22,12 +22,14 @@
 
 class Player;
 
+/// Arcemu Player type for Python
 typedef struct
 {
 	PyObject_HEAD
 	Player* playerPtr;
 } ArcPyPlayer;
 
+/// Creates an empty ArcPyPlayer object
 ArcPyPlayer* createArcPyPlayer();
 
 #endif

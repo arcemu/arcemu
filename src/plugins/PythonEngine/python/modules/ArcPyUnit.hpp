@@ -22,12 +22,14 @@
 
 class Unit;
 
+/// Arcemu Unit type for Python
 typedef struct
 {
 	PyObject_HEAD
 	Unit* unitPtr;
 } ArcPyUnit;
 
+/// Create an empty ArcPyUnit object
 ArcPyUnit* createArcPyUnit();
 
 #endif

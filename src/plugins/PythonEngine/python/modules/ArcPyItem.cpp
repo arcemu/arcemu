@@ -42,6 +42,19 @@ static void ArcPyItem_dealloc( ArcPyItem* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+
+/// getName
+///   Returns the name of this Item
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a String that contains the name of this item.
+///
+/// Example
+///   name = item.getName()
+///
 static PyObject* ArcPyItem_getName( ArcPyItem *self, PyObject *args )
 {
 	Item* item = self->itemPtr;
@@ -49,6 +62,19 @@ static PyObject* ArcPyItem_getName( ArcPyItem *self, PyObject *args )
 	return name;
 }
 
+
+/// getId
+///   Returns the Id of this item
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns an integer that contains the Id of this Item
+///
+/// Example
+///   id = item.getId()
+///
 static PyObject* ArcPyItem_getId( ArcPyItem* self, PyObject* args )
 {
 	Item* item = self->itemPtr;

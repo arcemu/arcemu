@@ -42,6 +42,19 @@ static void ArcPyUnit_dealloc( ArcPyUnit* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+
+/// getName
+///   Returns the name of this Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a String that contains the name of this Unit
+///
+/// Example
+///   name = unit.getName()
+///
 static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
 {
 	PyObject *name = NULL;
@@ -54,6 +67,21 @@ static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
 	return name;
 }
 
+
+/// sendChatMessage
+///   Sends a chat message for this Unit (Creature)
+///
+/// Parameters
+///   type        -  Chat message type (integer). See constants.
+///   lang        -  The language of this chat message (integer). See constants.
+///   msg         -  The message (string)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, 'Hello, I am a creature' )
+///
 static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
 {
 	unsigned long type = 0;
@@ -71,6 +99,18 @@ static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// RegisterAIUpdateEvent
+///   Initiates regular updates for this Unit (Creature)
+///
+/// Parameters
+///   period        -  The time that must pass between updates in milliseconds (integer)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.RegisterAIUpdateEvent( 1000 )
+///
 static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *args )
 {
 	uint32 interval;
@@ -91,6 +131,19 @@ static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *arg
 	Py_RETURN_NONE;
 }
 
+/// isOnVehicle
+///   Tells if the Unit is on a vehicle
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns True if the Unit is on a vehicle. Returns False otherwise.
+///
+/// Example
+///   if unit.isOnVehicle():
+///       print( "The unit is on a vehicle" )
+///
 static PyObject* ArcPyUnit_isOnVehicle( ArcPyUnit *self, PyObject *args )
 {
 	Unit* ptr = self->unitPtr;
@@ -100,6 +153,19 @@ static PyObject* ArcPyUnit_isOnVehicle( ArcPyUnit *self, PyObject *args )
 		Py_RETURN_FALSE;
 }
 
+
+/// dismissVehicle
+///   Dismisses the vehicle that the Unit is on
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.dismissVehicle()
+///
 static PyObject* ArcPyUnit_dismissVehicle( ArcPyUnit *self, PyObject *args )
 {
 	Unit* ptr = self->unitPtr;
@@ -126,6 +192,18 @@ static PyObject* ArcPyUnit_dismissVehicle( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// addVehiclePassenger
+///   Spawns a creature and makes it enter the vehicle
+///
+/// Parameters
+///   creatureId   -  The Id of the creature to spawn and add to the vehicle
+///
+/// Return value
+///   None
+///
+/// Example
+///   vehicle.addVehiclePassenger( 31111 )
+///
 static PyObject* ArcPyUnit_addVehiclePassenger( ArcPyUnit *self, PyObject *args )
 {
 	unsigned long creatureId;
@@ -171,6 +249,19 @@ static PyObject* ArcPyUnit_addVehiclePassenger( ArcPyUnit *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+/// hasEmptyVehicleSeat
+///   Tells if the vehicle has an empty seat
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns True if the Vehicle has an empty seat. Otherwise returns False.
+///
+/// Example
+///   if vehicle.hasEmptyVehicleSeat():
+///       print( "Vehicle has an empty seat" )
+///
 static PyObject* ArcPyUnit_hasEmptyVehicleSeat( ArcPyUnit *self, PyObject *args )
 {
 	Unit* ptr = self->unitPtr;
@@ -195,6 +286,20 @@ static PyObject* ArcPyUnit_hasEmptyVehicleSeat( ArcPyUnit *self, PyObject *args 
 		Py_RETURN_FALSE;
 }
 
+
+/// enterVehicle
+///   Makes the Unit enter the vehicle after the specified delay
+///
+/// Parameters
+///   guid    -   The GUID of the Vehicle (integer)
+///   delay   -   The time to wait in milliseconds before entering the vehicle (integer)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.enterVehicle( guid, 1000 )
+///
 static PyObject* ArcPyUnit_enterVehicle( ArcPyUnit *self, PyObject *args )
 {
 	uint64 guid;
@@ -211,6 +316,19 @@ static PyObject* ArcPyUnit_enterVehicle( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// exitVehicle
+///   Makes the Unit exit it's current vehicle
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.exitVehicle()
+///
 static PyObject* ArcPyUnit_exitVehicle( ArcPyUnit *self, PyObject *args )
 {
 	Unit* ptr = self->unitPtr;
@@ -224,6 +342,18 @@ static PyObject* ArcPyUnit_exitVehicle( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getVehicleBase
+///   Returns the Vehicle of the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the vehicle (unit) of the unit, or return None
+///
+/// Example
+///   vehicle = unit.getVehicleBase()
+///
 static PyObject* ArcPyUnit_getVehicleBase( ArcPyUnit *self, PyObject *args )
 {
 	Unit *vehicleBase = self->unitPtr->GetVehicleBase();
@@ -238,6 +368,18 @@ static PyObject* ArcPyUnit_getVehicleBase( ArcPyUnit *self, PyObject *args )
 	}
 }
 
+/// setSpeeds
+///   Sets the walk, run, and fly speeds of the Unit
+///
+/// Parameters
+///   speed   -  The speed we'd like to set (float)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setSpeeds( 10.0 )
+///
 static PyObject* ArcPyUnit_setSpeeds( ArcPyUnit *self, PyObject *args )
 {
 	float speed;
@@ -257,6 +399,18 @@ static PyObject* ArcPyUnit_setSpeeds( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getGuid
+///   Returns the GUID of this Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns an integer that contains the GUID of the Unit
+///
+/// Example
+///   guid = unit.getGUID()
+///
 static PyObject* ArcPyUnit_getGUID( ArcPyUnit *self, PyObject *args )
 {
 	return PyLong_FromUnsignedLongLong( self->unitPtr->GetGUID() );

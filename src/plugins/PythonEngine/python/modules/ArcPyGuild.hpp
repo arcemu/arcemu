@@ -22,12 +22,14 @@
 
 class Guild;
 
+/// Arcemu Python Guild object
 typedef struct
 {
 	PyObject_HEAD
 	Guild* guildPtr;
 } ArcPyGuild;
 
+/// Create a new empty Arcemu Python object
 ArcPyGuild* createArcPyGuild();
 
 #endif

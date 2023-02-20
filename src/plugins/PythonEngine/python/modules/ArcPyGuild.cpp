@@ -42,6 +42,19 @@ static void ArcPyGuild_dealloc( ArcPyGuild* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+
+/// getGuildName
+///   Returns the name of this Guild
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a string that contains the name of this Guild
+///
+/// Example
+///   name = g.getGuildName()
+///
 static PyObject* ArcPyGuild_getGuildName( ArcPyGuild *self, PyObject *args )
 {
 	Guild* guild = self->guildPtr;
@@ -49,6 +62,19 @@ static PyObject* ArcPyGuild_getGuildName( ArcPyGuild *self, PyObject *args )
 	return name;
 }
 
+
+/// getGuildId
+///   Returns the Id of this Guild
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns an integer that contains the Id of this Guild
+///
+/// Example
+///   id = guild.getGuildId()
+///
 static PyObject* ArcPyGuild_getGuildId( ArcPyGuild* self, PyObject* args )
 {
 	Guild* guild = self->guildPtr;

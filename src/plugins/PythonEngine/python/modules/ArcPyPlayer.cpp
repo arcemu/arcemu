@@ -43,6 +43,18 @@ static void ArcPyPlayer_dealloc( ArcPyPlayer* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+/// getName
+///   Returns the name of this Player
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a string that contains the name of this Player
+///
+/// Example
+///   name = player.getName()
+///
 static PyObject* ArcPyPlayer_getName( ArcPyPlayer *self, PyObject *args )
 {
 	Player *player = self->playerPtr;
@@ -50,6 +62,21 @@ static PyObject* ArcPyPlayer_getName( ArcPyPlayer *self, PyObject *args )
 	return name;
 }
 
+
+/// sendChatMessage
+///   Sends a chat message for this Player
+///
+/// Parameters
+///   type        -  Chat message type (integer). See constants.
+///   lang        -  The language of this chat message (integer). See constants.
+///   msg         -  The message (string)
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.sendChatMessage( arcemu.CHAT_MSG_SAY, arcemu.LANG_UNIVERSAL, "Well, hello there!" )
+///
 static PyObject* ArcPyPlayer_sendChatMessage( ArcPyPlayer *self, PyObject *args )
 {
 	unsigned long type = 0;
@@ -67,6 +94,18 @@ static PyObject* ArcPyPlayer_sendChatMessage( ArcPyPlayer *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+/// toUnit
+///   Converts this Player to a Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a Unit object that contains a reference to this Player
+///
+/// Example
+///   unit = player.toUnit()
+///
 static PyObject* ArcPyPlayer_toUnit( ArcPyPlayer *self, PyObject *args )
 {
 	ArcPyUnit *apu = createArcPyUnit();
@@ -74,6 +113,19 @@ static PyObject* ArcPyPlayer_toUnit( ArcPyPlayer *self, PyObject *args )
 	return (PyObject*)apu;
 }
 
+/// spawnAndEnterVehicle
+///   Spawns a vehicle creature and makes the Player enter it after a delay
+///
+/// Parameters
+///   creatureId      -  The Id of the creature that will serve as vehicle (integer)
+///   delay           -  The number of milliseconds to wait before entering the vehicle (integer)
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.spawnAndEnterVehicle( 28605, 1000 )
+///
 static PyObject* ArcPyPlayer_spawnAndEnterVehicle( ArcPyPlayer *self, PyObject *args )
 {
 	unsigned long creatureId;
@@ -131,6 +183,23 @@ static PyObject* ArcPyPlayer_spawnAndEnterVehicle( ArcPyPlayer *self, PyObject *
 	Py_RETURN_NONE;
 }
 
+
+/// teleport
+///   does this
+///
+/// Parameters
+///   mapId    -   The map we would like to teleport to (integer)
+///   x        -   X teleport destination coordinate (float)
+///   y        -   Y teleport destination coordinate (float)
+///   z        -   Z destination coordinate (float)
+///   o        -   (optional) The destination orientation of the Player (float)
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.teleport( 0, -9459.524414, 76.275986, 56.855736 )
+///
 static PyObject* ArcPyPlayer_teleport( ArcPyPlayer *self, PyObject *args )
 {
 	uint32 map;

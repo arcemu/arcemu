@@ -42,6 +42,19 @@ static void ArcPySpell_dealloc( ArcPySpell* self )
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
+
+/// getName
+///   Returns the name of this Spell
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a String that contains the name of this Spell
+///
+/// Example
+///   name = spell.getName()
+///
 static PyObject* ArcPySpell_getName( ArcPySpell *self, PyObject *args )
 {
 	Spell* spell = self->spellPtr;
