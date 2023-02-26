@@ -131,6 +131,55 @@ static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *arg
 	Py_RETURN_NONE;
 }
 
+/// ModifyAIUpdateEvent
+///   Modifies the AI update interval of the Unit (Creature)
+///
+/// Parameters:
+///   interval   -  Update interval in milliseconds
+///
+/// Return value
+///   No return value
+///
+/// Example:
+///   unit.ModifyAIUpdateEvent( 2500 )
+///
+static PyObject* ArcPyUnit_ModifyAIUpdateEvent( ArcPyUnit* self, PyObject* args )
+{
+	Unit *unit = self->unitPtr;;
+
+	uint32 interval;
+
+	if( !PyArg_ParseTuple( args, "k", &interval ) )
+	{
+		return NULL;
+	}
+
+	sEventMgr.ModifyEventTimeAndTimeLeft(unit, EVENT_SCRIPT_UPDATE_EVENT, interval);
+
+	Py_RETURN_NONE;
+}
+
+/// RemoveAIUpdateEvent
+///   Stops AI updates of the Unit ( Creature )
+///
+/// Parameters:
+///   None
+///
+/// Return value
+///   No return value
+///
+/// Example:
+///   unit.RemoveAIUpdateEvent()
+///
+static PyObject* ArcPyUnit_RemoveAIUpdateEvent( ArcPyUnit* self, PyObject* args )
+{
+	Unit *unit = self->unitPtr;
+
+	sEventMgr.RemoveEvents(unit, EVENT_SCRIPT_UPDATE_EVENT);
+
+	Py_RETURN_NONE;
+}
+
 /// isOnVehicle
 ///   Tells if the Unit is on a vehicle
 ///
@@ -421,8 +470,10 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
 	{ "setSpeeds", (PyCFunction)ArcPyUnit_setSpeeds, METH_VARARGS, "Sets walk, run, and floy speeds of the Unit" },
 	{ "getGUID", (PyCFunction)ArcPyUnit_getGUID, METH_NOARGS, "Returns the GUID of this Unit" },
-	{ "sendChatMessage", (PyCFunction)ArcPyUnit_sendChatMessage, METH_VARARGS, "Sends a chat message from the Unit" },
+	{ "sendChatMessage", (PyCFunction)ArcPyUnit_sendChatMessage, METH_VARARGS, "Sends a chat message from the Unit" },	
 	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyUnit_RegisterAIUpdateEvent, METH_VARARGS, "Registers regular AI updates for the Unit" },
+	{ "ModifyAIUpdateEvent", (PyCFunction)ArcPyUnit_ModifyAIUpdateEvent, METH_VARARGS, "Modifies the update interval of AI updates for the Unit" },
+	{ "RemoveAIUpdateEvent", (PyCFunction)ArcPyUnit_RemoveAIUpdateEvent, METH_NOARGS, "Removes regular AI updates from the Unit" },
 	{ "isOnVehicle", (PyCFunction)ArcPyUnit_isOnVehicle, METH_NOARGS, "Tells if the Unit is on a Vehicle" },
 	{ "dismissVehicle", (PyCFunction)ArcPyUnit_dismissVehicle, METH_NOARGS, "Dismisses the Unit's vehicle" },
 	{ "addVehiclePassenger", (PyCFunction)ArcPyUnit_addVehiclePassenger, METH_VARARGS, "Adds a passenger to the Vehicle" },

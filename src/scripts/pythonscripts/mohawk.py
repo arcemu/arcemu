@@ -16,6 +16,10 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Get off my vehicle!", 6, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Speed up my vehicle!", 7, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Pity the fool!", 8, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 8, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Don't pity the fool!", 10, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
@@ -78,15 +82,27 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			vb.setSpeeds( 100.0 )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are not on a vehicle, Fool!" )
+			
+	elif id == 8:
+		unit.RegisterAIUpdateEvent( 2500 )
+		
+	elif id == 9:
+		unit.ModifyAIUpdateEvent( 1000 )
+		
+	elif id == 10:
+		unit.RemoveAIUpdateEvent()
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
 	
 def mohawk_onExitVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Aw I got booted :(" )
+	
+def mohawk_onAIUpdate( unit, event ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I pity the fool!" )
 
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_HELLO, mohawk_onHello )
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_SELECT, mohawk_onSelectOption )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_ENTER_VEHICLE, mohawk_onEnterVehicle )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_EXIT_VEHICLE, mohawk_onExitVehicle )
-		
+arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_AIUPDATE, mohawk_onAIUpdate )
