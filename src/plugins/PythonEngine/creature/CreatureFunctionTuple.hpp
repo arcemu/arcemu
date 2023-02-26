@@ -22,11 +22,20 @@
 
 #include "PythonCreatureEventTypes.hpp"
 
+/// Stores Creature functions loaded from Python scripts
 class CreatureFunctionTuple
 {
 public:
 	void* functions[ PYTHON_CREATURE_EVENT_COUNT ];
 
+	/// Initializes this Tuple
+	///
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   None
+	///
 	CreatureFunctionTuple()
 	{
 		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
@@ -35,6 +44,14 @@ public:
 		}
 	}
 
+	/// Tells if there's a function reference for this event type
+	///
+	/// Parameters
+	///   unsigned long eventType  -  The event type. See PythonCreatureEventTypes
+	///
+	/// Return value
+	///   Returns true if there's such a function, and false otherwise
+	///
 	bool hasFunction( unsigned long eventType ) const
 	{
 		if( functions[ eventType ] != NULL )
@@ -43,6 +60,14 @@ public:
 			return false;
 	}
 
+	/// Returns the function for the event type
+	///
+	/// Parameters
+	///   unsigned long eventType  -  The event type. See PythonCreatureEventTypes
+	///
+	/// Return value
+	///   Returns a pointer to the function, or NULL if there's no such function
+	///
 	void* getFunction( unsigned long eventType ) const
 	{
 		return functions[ eventType ];

@@ -26,6 +26,8 @@
 void CreatureGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
 	Arcemu::Gossip::Script* script = mgr->get_creature_gossip( id );
+
+	/// If the creature doesn't have a script yet create one, otherwise reload the functions
 	if( script == NULL )
 	{
 		PythonGossipScript *script = new PythonGossipScript( tuple );

@@ -23,6 +23,7 @@
 #include "gossip/GossipFunctionTuple.hpp"
 #include "gossip/GossipFunctionTupleVisitor.hpp"
 
+/// Registers or Reloads Creature Gossip Scripts
 class CreatureGossipScriptRegisterer : public GossipFunctionTupleVisitor
 {
 private:

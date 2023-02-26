@@ -23,6 +23,7 @@
 #include "creature/CreatureFunctionTuple.hpp"
 #include "creature/CreatureFunctionTupleVisitor.hpp"
 
+/// Registers Creature Python scripts
 class CreatureFunctionRegisterer : public CreatureFunctionTupleVisitor
 {
 private:

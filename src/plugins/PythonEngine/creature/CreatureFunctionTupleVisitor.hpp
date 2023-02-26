@@ -22,6 +22,7 @@
 
 #include "CreatureFunctionTuple.hpp"
 
+/// Visits Creature function tuples
 class CreatureFunctionTupleVisitor
 {
 public:
