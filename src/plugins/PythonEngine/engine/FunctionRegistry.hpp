@@ -35,53 +35,303 @@
 #include "quest/QuestFunctionTuple.hpp"
 #include "quest/QuestFunctionTupleVisitor.hpp"
 
+/// Organized storage of Python function references
 class FunctionRegistry
 {
 public:
+	///
+	/// Registers a creature gossip event handler Python function reference
+	///
+	/// Parameters
+	///   creatureId    -  The id of the creature
+	///   gossipEvent   -  The event this function will handle. See PythonGossipEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
 	static void registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
 
+	///
+	/// Registers a GO gossip event handler Python function reference
+	///
+	/// Parameters
+	///   goId          -  The id of the GameObject
+	///   gossipEvent   -  The event this function will handle. See PythonGossipEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
 	static void registerGOGossipFunction( unsigned int goId, unsigned int gossipEvent, void* function );
 
-	static void registerItemGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function );
+
+	///
+	/// Registers an item gossip event handler Python function reference
+	///
+	/// Parameters
+	///   itemId    -  The id of the creature
+	///   gossipEvent   -  The event this function will handle. See PythonGossipEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerItemGossipFunction( unsigned int itemId, unsigned int gossipEvent, void* function );
 
 
-
+	///
+	/// Registers a GameObject event handler Python function reference
+	///
+	/// Parameters
+	///   goId          -  The id of the GameObject
+	///   goEvent   -  The event this function will handle. See PythonGOEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
 	static void registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function );
+
+	///
+	/// Registers a Creature event handler Python function reference
+	///
+	/// Parameters
+	///   creatureId    -  The id of the Creature
+	///   creatureEvent   -  The event this function will handle. See PythonCreatureEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
 	static void registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function );
+
+
+	///
+	/// Registers a Quest event handler Python function reference
+	///
+	/// Parameters
+	///   questId       -  The id of the Quest
+	///   questEvent   -  The event this function will handle. See PythonQuestEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
 	static void registerQuestEventFunction( unsigned int questId, unsigned int questEvent, void* function );
+
+	///
+	/// Registers an Instance event handler Python function reference
+	///
+	/// Parameters
+	///   instanceId    -  The id of the Creature
+	///   instanceEvent   -  The event this function will handle. See PythonInstanceEventTypes
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
 	static void registerInstanceEventFunction( unsigned int instanceId, unsigned int instanceEvent, void* function );
 
 
+	///
+	/// Visits all registered creature gossip functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor );
 
+
+	///
+	/// Visits all registered GameObject gossip functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitGOGossipFunctions( GossipFunctionTupleVisitor *visitor );
 
+
+	///
+	/// Visits all registered item gossip functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor );
 
-
-
+	///
+	/// Visits all registered GameObject event functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitGOEventFunctions( GOFunctionTupleVisitor *visitor );
+
+	///
+	/// Visits all registered Instance event functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitInstanceEventFunctions( InstanceFunctionTupleVisitor *visitor );
+
+	///
+	/// Visits all registered Creature event functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitCreatureEventFunctions( CreatureFunctionTupleVisitor *visitor );
+
+	///
+	/// Visits all registered Quest event functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
 	static void visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor );
 
 
+	///
+	/// Deallocate / release all registered functions
+	///
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   None
+	///
 	static void releaseFunctions();
 
 
+	///
+	/// Retrieve the event handler functions registered for the specified GameObject 
+	///
+	/// Parameters
+	///   goId - The numeric identifier of the GameObject
+	///
+	/// Return value
+	///   Returns a pointer to the GOFunctionTuple that contains the registered functions for this GameObject.
+	///   Returns NULL if there are no functions registered for this GameObject.
+	///
 	static GOFunctionTuple* getGOEventFunctions( unsigned int goId );
+
+
+	///
+	/// Retrieve the event handler functions registered for the specified Creature 
+	///
+	/// Parameters
+	///   creatureId - The numeric identifier of the GameObject
+	///
+	/// Return value
+	///   Returns a pointer to the CreatureFunctionTuple that contains the registered functions for this Creature.
+	///   Returns NULL if there are no functions registered for this Creature.
+	///
 	static CreatureFunctionTuple* getCreatureEventFunctions( unsigned int creatureId );
+
+
+	///
+	/// Retrieve the event handler functions registered for the specified Quest 
+	///
+	/// Parameters
+	///   questId - The numeric identifier of the Quest
+	///
+	/// Return value
+	///   Returns a pointer to the QuestFunctionTuple that contains the registered functions for this Quest.
+	///   Returns NULL if there are no functions registered for this Quest.
+	///
 	static QuestFunctionTuple* getQuestFunctions( unsigned int questId );
+
+
+	///
+	/// Retrieve the event handler functions registered for the specified Instance 
+	///
+	/// Parameters
+	///   instanceId - The numeric identifier of the Instance
+	///
+	/// Return value
+	///   Returns a pointer to the InstanceFunctionTuple that contains the registered functions for this Instance.
+	///   Returns NULL if there are no functions registered for this Instance.
+	///
 	static InstanceFunctionTuple* getInstanceFunctions( unsigned int mapId );
 
 private:
+	///
+	/// Contains the gossip event handler functions registered for Creatures
+	///
+	/// key:   Creature Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > creatureGossipFunctions;
+
+	///
+	/// Contains the gossip event handler functions registered for GameObjects
+	///
+	/// key:   GameObject Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > goGossipFunctions;
+
+	///
+	/// Contains the gossip event handler functions registered for Items
+	///
+	/// key:   Item Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > itemGossipFunctions;
 
+	///
+	/// Contains the event handler functions registered for GameObjects
+	///
+	/// key: GameObject Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > goFunctions;
+
+	///
+	/// Contains the event handler functions registered for Instances
+	///
+	/// key: Instance map Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* > instanceFunctions;
+
+	///
+	/// Contains the event handler functions registered for Creatures
+	///
+	/// key: Creature Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > creatureFunctions;
+
+	///
+	/// Contains the event handler functions registered for Quests
+	///
+	/// key: Quest Id
+	/// value: Pointer to a tuple that contains the functions registered
+	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > questFunctions;
 };
 
