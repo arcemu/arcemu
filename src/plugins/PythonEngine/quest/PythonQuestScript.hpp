@@ -22,13 +22,35 @@
 
 #include "quest/QuestFunctionTuple.hpp"
 
+/// A QuestScript that calls Python functions to handle scripted events
 class PythonQuestScript : public QuestScript
 {
 public:
+	///
+	/// Initializes this script
+	///
+	/// Parameters
+	///   tuple   -  A tuple that contains Python functions that will handle scripted events
+	///
+	/// Return value
+	///   None
+	///
 	PythonQuestScript( const QuestFunctionTuple &tuple );
+
 	~PythonQuestScript();
 
+	///
+	/// Adds / replaces the Python functions in this Python quest Script
+	///
+	/// Parameters
+	///   functions   -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	void setFunctions( const QuestFunctionTuple &tuple );
+
+	/// Removes Python function references from this script
 	void clearFunctions();
 
 	void OnQuestStart( Player* target, QuestLogEntry* questLogEntry );
@@ -40,6 +62,7 @@ public:
 	void OnPlayerItemPickup( uint32 itemId, uint32 totalCount, Player* target, QuestLogEntry* questLogEntry );
 
 private:
+	//A Tuple that contains the Python functions called by this script
 	QuestFunctionTuple functions;
 };
 

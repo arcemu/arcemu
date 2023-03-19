@@ -22,10 +22,11 @@
 
 #include "QuestFunctionTuple.hpp"
 
+/// Abstract base class for all Quest function tuple visitor objects
 class QuestFunctionTupleVisitor
 {
 public:
-	virtual void visit( unsigned int id, QuestFunctionTuple &tuple ) = 0;
+	virtual void visit( unsigned int questId, QuestFunctionTuple &tuple ) = 0;
 };
 
 #endif

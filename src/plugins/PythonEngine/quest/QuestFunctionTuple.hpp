@@ -22,12 +22,25 @@
 
 #include "PythonQuestEventTypes.hpp"
 
+/// Contains quest event handling Python function references
 class QuestFunctionTuple
 {
 public:
-	void* functions[ PYTHON_QUEST_EVENT_COUNT ];
-
 	QuestFunctionTuple()
+	{
+		clearFunctions();
+	}
+
+	///
+	/// Removes the function references from this tuple
+	///
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   None
+	///
+	void clearFunctions()
 	{
 		for( int i = 0; i < PYTHON_QUEST_EVENT_COUNT; i++ )
 		{
@@ -35,6 +48,16 @@ public:
 		}
 	}
 
+	///
+	/// Tells if this tuple contains a function for the specified event
+	///
+	/// Parameters
+	///   eventType  -  The type of event that function that we're looking for handles
+	///
+	/// Return value
+	///   Returns true if the tuple contains a function for the specified event type.
+	///   Return false otherwise.
+	///
 	bool hasFunction( unsigned long eventType ) const
 	{
 		if( functions[ eventType ] != NULL )
@@ -43,10 +66,28 @@ public:
 			return false;
 	}
 
+	///
+	/// Retrieves the function for the specified event type
+	///
+	/// Parameters
+	///   eventType  -  The event type of the function we're looking for
+	///
+	/// Return value
+	///   Returns a pointer to a function if there's such a function in this tuple
+	///   Returns NULL otherwise.
+	///
 	void* getFunction( unsigned long eventType ) const
 	{
 		return functions[ eventType ];
 	}
+
+	///
+	/// Quest event handler function references
+	///
+	/// Key:   Instance event type. See PythonQuestEventTypes
+	/// Value: A pointer to a Python function
+	///
+	void* functions[ PYTHON_QUEST_EVENT_COUNT ];
 };
 
 #endif

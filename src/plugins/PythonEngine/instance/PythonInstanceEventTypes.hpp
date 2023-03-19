@@ -20,6 +20,7 @@
 #ifndef PYTHON_INSTANCE_EVENT_TYPES_H
 #define PYTHON_INSTANCE_EVENT_TYPES_H
 
+/// Scripted Instance event types
 enum PythonInstanceEventTypes
 {
 	PYTHON_INSTANCE_EVENT_ON_PLAYER_DEATH   = 1,

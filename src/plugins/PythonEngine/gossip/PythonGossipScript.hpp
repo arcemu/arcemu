@@ -20,10 +20,15 @@
 #ifndef PYTHON_GOSSIP_SCRIPT_H
 #define PYTHON_GOSSIP_SCRIPT_H
 
+/// Gossip script that calls Python functions to handle scripted events
 class PythonGossipScript : public Arcemu::Gossip::Script
 {
 public:
-
+	///
+	/// Initializes this script
+	///
+	/// Parameters
+	///   tuple   -  A tuple that contains references to the Python functions that handle scripted events
 	PythonGossipScript( GossipFunctionTuple &tuple );
 
 	void OnHello( Object* object, Player* player );
@@ -32,10 +37,21 @@ public:
 
 	void OnEnd( Object* object, Player* player );
 
+	/// Removes Python functions references from this script
 	void clearFunctions();
+
+	///
+	/// Adds / replaces references to Python functions in this script
+	///
+	/// Parameters
+	///   functions  -  A tuple that contains Python functions that handle the scripted events in this script
+	///
+	/// Return value
+	///
 	void setFunctions( GossipFunctionTuple &functions );
 
 private:
+	/// A tuple that contains Python functions that handle the scripted events in this script
 	GossipFunctionTuple functions;
 };
 

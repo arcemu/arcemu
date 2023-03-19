@@ -20,18 +20,43 @@
 #ifndef PYTHON_INSTANCESCRIPT_FACTORY_H
 #define PYTHON_INSTANCESCRIPT_FACTORY_H
 
+/// Creates Python Instance script instances
 class PythonInstanceScriptFactory
 {
 public:
+	///
+	/// Creates a Python Instance Script for the specified Instance
+	///
+	/// Parameters
+	///   mgr    -    The map manager of the instance that will use the Script
+	///
+	/// Return value
+	///   An Instance Script for the specified Instance
+	///
 	static InstanceScript* createInstanceScript( MapMgr* mgr );
 
+	/// Called when the Scripting Engine is shut down
 	static void onShutdown();
+	
+	/// Called when the Scripting Engine is reloaded
 	static void onReload();
+
+	/// 
+	/// Remove a script from the "list" of created scripts
+	///
+	/// Parameters
+	///   script   -   The script that should be removed
+	///
+	/// Return value
+	///   None
+	///
 	static void removeScript( InstanceScript* script );
 
 private:
+	/// The "list" of created scripts
 	static HM_NAMESPACE::HM_HASH_SET< InstanceScript* > createdScripts;
 
+	/// A lock to prevent multiple threads accessing simultaneously
 	static Mutex lock;
 };
 

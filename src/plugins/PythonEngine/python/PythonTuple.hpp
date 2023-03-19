@@ -28,7 +28,17 @@
 class PythonTuple
 {
 public:
+	///
+	/// Initializes this PythonTuple object
+	/// 
+	/// Parameters
+	///   size   -  The size (number of components) of this PythonTuple object
+	///
+	/// Return value
+	///   None
+	///
 	PythonTuple( unsigned long size );
+
 	~PythonTuple();
 
 	/// Set a long value at the specified index
@@ -46,14 +56,17 @@ public:
 	/// Set a None value at the specified index
 	void setItemNone( unsigned long idx );
 
-	/// Returns the size of this Tuple
+	/// Returns the size (number of components) of this Tuple
 	unsigned long getSize(){ return size; }
 
 	/// Returns the underlying Python object
 	PyObject* getObject() const{ return obj; }
 
 private:
+	/// The wrapped Python Tuple object
 	PyObject *obj;
+
+	/// The size (number of components) of this tuple
 	unsigned long size;
 };
 

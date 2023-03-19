@@ -20,20 +20,43 @@
 #ifndef P_GO_AI_S_F_
 #define P_GO_AI_S_F_
 
+/// Creates Python GameObject AI Scripts
 class PythonGameObjectAIScriptFactory
 {
 public:
+	///
+	/// Creates a Python GameObject AI Script for the specified GameObject
+	///
+	/// Parameters
+	///   src    -    The GameObject that will use the Script
+	///
+	/// Return value
+	///   A Python GameObject AI Script for the specified Creature
+	///
 	static GameObjectAIScript* createScript( GameObject* src );
 
+	/// Called when the Scripting Engine is reloaded
 	static void onReload();
 
+	/// Called when the Scripting Engine is shut down
 	static void onShutdown();
 
+	/// 
+	/// Remove a script from the "list" of created scripts
+	///
+	/// Parameters
+	///   script   -   The script that should be removed
+	///
+	/// Return value
+	///   None
+	///
 	static void removeScript( GameObjectAIScript *script );
 
 private:
+	/// The "list" of created scripts
 	static HM_NAMESPACE::HM_HASH_SET< GameObjectAIScript* > createdScripts;
 
+	/// A lock to prevent multiple threads accessing simultaneously
 	static Mutex lock;
 };
 

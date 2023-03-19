@@ -20,6 +20,7 @@
 #ifndef PYTHON_GOSSIP_EVENT_TYPES_H
 #define PYTHON_GOSSIP_EVENT_TYPES_H
 
+/// Scripted gossip event types
 enum PythonGossipEventTypes
 {
 	PYTHON_GOSSIP_EVENT_HELLO  = 1,

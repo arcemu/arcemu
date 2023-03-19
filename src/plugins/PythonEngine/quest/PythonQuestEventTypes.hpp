@@ -20,6 +20,7 @@
 #ifndef PYTHON_QUESTEVENT_TYPES_H
 #define PYTHON_QUESTEVENT_TYPES_H
 
+/// Quest scripted event types
 enum PythonQuestEventTypes
 {
 	PYTHON_QUEST_EVENT_ON_ACCEPT            = 1,

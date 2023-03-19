@@ -22,19 +22,43 @@
 
 #include "quest/PythonQuestScript.hpp"
 
+/// Creates Python Quest script instances
 class PythonQuestScriptFactory
 {
 public:
+	///
+	/// Creates a Python Quest Script for the specified quest
+	///
+	/// Parameters
+	///   questId    -    The id of the quest that will use the Script
+	///
+	/// Return value
+	///   A Python Quest Script for the specified Quest
+	///
 	static PythonQuestScript* createQuestScript( unsigned int questId );
 
+	/// Called when the Scripting Engine is reloaded
 	static void onReload();
+
+	/// Called when the Scripting Engine is shut down
 	static void onShutDown();
 
+	/// 
+	/// Remove a script from the "list" of created scripts
+	///
+	/// Parameters
+	///   script   -   The script that should be removed
+	///
+	/// Return value
+	///   None
+	///
 	static void removeScript( PythonQuestScript* script );
 
 private:
+	/// The "list" of created scripts
 	static HM_NAMESPACE::HM_HASH_SET< PythonQuestScript* > createdScripts;
 
+	/// A lock to prevent multiple threads accessing simultaneously
 	static Mutex lock;
 };
 

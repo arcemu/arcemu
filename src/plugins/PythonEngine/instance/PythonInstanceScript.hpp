@@ -22,13 +22,36 @@
 
 #include "instance/InstanceFunctionTuple.hpp"
 
+/// An Instance Script that calls Python functions to handle scripted events
 class PythonInstanceScript : public InstanceScript
 {
 public:
+	///
+	/// Initializes this Python Instance Script
+	///
+	/// Parameters
+	///   mgr         -   The map manager of the instance that will use this script
+	///   tuple       -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	PythonInstanceScript( MapMgr* mgr, const InstanceFunctionTuple &tuple );
+
 	virtual ~PythonInstanceScript();
 
+	///
+	/// Adds / replaces the Python functions in this Python Instance Script
+	///
+	/// Parameters
+	///   functions   -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	void setFunctions( const InstanceFunctionTuple &tuple );
+
+	/// Removes Python function references from this script
 	void clearFunctions();
 
 	void OnPlayerDeath( Player* victim, Unit* killer );
@@ -43,6 +66,7 @@ public:
 	void Destroy();
 
 private:
+	/// A Tuple that contains the Python functions called by this script
 	InstanceFunctionTuple functions;
 };
 

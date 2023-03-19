@@ -20,11 +20,21 @@
 #ifndef PYTHONOBJECT_H_
 #define PYTHONOBJECT_H_
 
-/// Represents a Python Object, hiding Python details
+/// Represents / Wraps a Python Object, hiding Python details
 class PythonObject
 {
 public:
+	///
+	/// Initializes this PythonObject instance
+	///
+	/// Parameters
+	///   obj   -   The PyObject that will be wrapped
+	///
+	/// Return value
+	///   None
+	///
 	PythonObject( PyObject* obj );
+
 	~PythonObject();
 
 	/// Increase the reference count of the object
@@ -47,6 +57,7 @@ public:
 	PyObject* getObject() const{ return obj; }
 
 private:
+	/// The wrapped PyObject
 	PyObject* obj;
 };
 

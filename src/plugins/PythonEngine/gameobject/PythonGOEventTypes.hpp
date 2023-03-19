@@ -20,6 +20,7 @@
 #ifndef PYTHON_GO_EVENT_TYPES_H
 #define PYTHON_GO_EVENT_TYPES_H
 
+/// GameObject scripted event types
 enum PythonGOEventTypes
 {
     PYTHON_GO_EVENT_ON_CREATE        = 1,

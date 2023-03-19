@@ -24,17 +24,68 @@
 #include <map>
 #include <set>
 
+/// Organized storage for scripted server hook handlers
 class ServerHookRegistry
 {
-private:
-	static std::multimap< unsigned long, void* > hooks;
-
 public:
+	///
+	/// Registers a scripted server hook
+	///
+	/// Parameters
+	///   serverEvent     -   The scripted server event for which we're registering the hook
+	///   handler         -   The handler function for the hook
+	///
+	/// Return value
+	///   None
+	///
 	static void addHook( unsigned long serverEvent, void* handler );
+	
+	///
+	/// Tells if there's a handler for the specified scripted server hook
+	///
+	/// Parameters
+	///   serverEvent   -   The scripted server event
+	///
+	/// Return value
+	///   Return true if there's a registered hook for the server event.
+	///   Returns false otherwise
+	///
 	static bool hasHooksForEvent( unsigned long serverEvent );
+	
+	///
+	/// Retrieves a copy of the scripted server event hooks registered for the specified event
+	///
+	/// Parameters
+	///   serverEvent       - The scripted server event
+	///   handlers          - A vector that will be filled with the scripted server event hooks registered for the specified event (if any)
+	///
+	/// Return value
+	///   None
+	///
 	static void getHooksForEvent( unsigned long serverEvent, std::vector< void* > &handlers );
+	
+	///
+	/// Retrieves all registered server hooks
+	///
+	/// Parameters
+	///   handlers    -   A vector that will be filled with all the hooks registered
+	///
+	/// Return value
+	///   None
+	///
 	static void getHooks( std::set< void* > &handlers );
+	
+	/// Release / deallocate registered server hooks
 	static void releaseHooks();
+
+private:
+	///
+	/// A "list" of the registered server hook handlers
+	///
+	/// Key: event type
+	/// Value: hook handler functions
+	///
+	static std::multimap< unsigned long, void* > hooks;
 };
 
 #endif

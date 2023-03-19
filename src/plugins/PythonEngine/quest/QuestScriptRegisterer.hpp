@@ -23,6 +23,7 @@
 #include "quest/QuestFunctionTuple.hpp"
 #include "quest/QuestFunctionTupleVisitor.hpp"
 
+/// Registers Python quest scripts in the core script manager
 class QuestScriptRegisterer : public QuestFunctionTupleVisitor
 {
 private:
