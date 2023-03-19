@@ -22,12 +22,33 @@
 
 #include "gameobject/GOFunctionTuple.hpp"
 
+/// GameObject AI script that calls Python functions to handle scripted events
 class PythonGameObjectAIScript : public GameObjectAIScript
 {
 public:
+	///
+	/// Initializes this Python GameObject AI Script
+	///
+	/// Parameters
+	///   src         -   The GameObject that uses this script
+	///   functions   -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	PythonGameObjectAIScript( GameObject* src, GOFunctionTuple &functions );
+
 	virtual ~PythonGameObjectAIScript();
 
+	///
+	/// Adds / replaces the Python functions in this Python GameObject AI Script
+	///
+	/// Parameters
+	///   functions   -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	void setFunctions( GOFunctionTuple &functions );
 	
 	void OnCreate();
@@ -39,9 +60,11 @@ public:
 	void OnDestroyed();
 	void AIUpdate();
 
+	/// Returns the gameobject that uses this script
 	GameObject* getGameObject(){ return _gameobject; }
 
 private:
+	/// Contains the Python functions that this Python GameObject AI Script calls
 	GOFunctionTuple functions;
 };
 

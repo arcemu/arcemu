@@ -22,12 +22,34 @@
 
 #include "creature/CreatureFunctionTuple.hpp"
 
+/// A Creature AI Script that calls Python functions
 class PythonCreatureAIScript : public CreatureAIScript
 {
 public:
+	///
+	/// Initializes this Python Creature AI Script
+	///
+	/// Parameters
+	///   src         -   The Creature that uses this script
+	///   functions   -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	PythonCreatureAIScript( Creature* src, CreatureFunctionTuple &functions );
+
+	/// Destructs this Python Creature AI Script
 	virtual ~PythonCreatureAIScript();
 
+	///
+	/// Adds / replaces the Python functions in this Python Creature AI Script
+	///
+	/// Parameters
+	///   functions   -   A Tuple that contains the Python functions called by this script
+	///
+	/// Return value
+	///   None
+	///
 	void setFunctions( CreatureFunctionTuple &functions );
 
 	void OnCombatStart( Unit* target );
@@ -62,6 +84,7 @@ public:
 	void OnLastPassengerLeft( Unit *passenger );
 
 private:
+	/// Contains the Python functions that this Python Creature AI Script calls
 	CreatureFunctionTuple functions;
 };
 

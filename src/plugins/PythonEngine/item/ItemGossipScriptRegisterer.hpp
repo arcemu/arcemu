@@ -23,6 +23,7 @@
 #include "gossip/GossipFunctionTuple.hpp"
 #include "gossip/GossipFunctionTupleVisitor.hpp"
 
+/// Registers Item gossip scripts in the core script manager
 class ItemGossipScriptRegisterer : public GossipFunctionTupleVisitor
 {
 private:

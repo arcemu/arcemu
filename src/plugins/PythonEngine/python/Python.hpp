@@ -30,13 +30,38 @@ public:
 	/// Deinitializes the Python interpreter
 	~Python();
 
+	///
 	/// Print the last Python exception's error message if there' any
+	///
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   None
+	///
 	static void printError();
 
+	///
 	/// Sets the Python standard library path
+	///
+	/// Parameters
+	///   path   -  The path to the directory which contains the Python standard library files
+	///
+	/// Return value
+	///   None
+	///
 	static void setPath( const wchar_t *path );
 
+	///
 	/// Execute a Python script. Output will go to the console.
+	///
+	/// Parameters
+	///   fileName   -  The path to a Python file
+	///
+	/// Return value
+	///   Returns 0 if there was no problem.
+	///   Returns -1 otherwise.
+	///
 	int runSimpleFile( const char *fileName );
 };
 

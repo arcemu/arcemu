@@ -23,6 +23,7 @@
 #include "gossip/GossipFunctionTuple.hpp"
 #include "gossip/GossipFunctionTupleVisitor.hpp"
 
+/// Releases (removes NOT deallocates) Item gossip scripts
 class ItemGossipScriptReleaser : public GossipFunctionTupleVisitor
 {
 private:

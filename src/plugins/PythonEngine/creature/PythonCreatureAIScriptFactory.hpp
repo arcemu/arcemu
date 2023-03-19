@@ -20,20 +20,43 @@
 #ifndef P_CREATURE_AI_S_F_
 #define P_CREATURE_AI_S_F_
 
+/// Creates Python Creature AI Scripts
 class PythonCreatureAIScriptFactory
 {
 public:
+	///
+	/// Creates a Python Creature AI Script for the specified Creature
+	///
+	/// Parameters
+	///   src    -    The Creature that will use the Script
+	///
+	/// Return value
+	///   A Python Creature AI Script for the specified Creature
+	///
 	static CreatureAIScript* createScript( Creature* src );
 
+	/// Called when the Scripting Engine is reloaded
 	static void onReload();
 
+	/// Called when the Scripting Engine is shut down
 	static void onShutdown();
 
+	/// 
+	/// Remove a script from the "list" of created scripts
+	///
+	/// Parameters
+	///   script   -   The script that should be removed
+	///
+	/// Return value
+	///   None
+	///
 	static void removeScript( CreatureAIScript* script );
 
 private:
+	/// The "list" of created scripts
 	static HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* > createdScripts;
 
+	/// A lock to prevent multiple threads accessing simultaneously
 	static Mutex lock;
 };
 

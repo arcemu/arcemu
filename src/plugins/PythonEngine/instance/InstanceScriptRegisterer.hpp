@@ -23,6 +23,7 @@
 #include "instance/InstanceFunctionTuple.hpp"
 #include "instance/InstanceFunctionTupleVisitor.hpp"
 
+/// Registers Python Instance scripts in the core script manager
 class InstanceScriptRegisterer : public InstanceFunctionTupleVisitor
 {
 private:

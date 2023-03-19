@@ -148,7 +148,7 @@ int PythonEngine::loadScripts()
 
 	sLog.Success( "APE", "Loaded %d Python scripts.", c );
 
-	return 0;
+	return c;
 }
 
 #define REGISTER_SERVER_HOOK( HOOK, FUNCTION ) if( ServerHookRegistry::hasHooksForEvent( HOOK ) ){ mgr->register_hook( HOOK, (FUNCTION) ); }

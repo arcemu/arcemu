@@ -26,6 +26,7 @@
 #include "engine/FunctionRegistry.hpp"
 
 
+/// A Python Creature AI script that removes itself from the factory's list when being destructed
 class FactoryManagedPythonCreatureAIScript : public PythonCreatureAIScript
 {
 public:
@@ -70,6 +71,7 @@ void PythonCreatureAIScriptFactory::onReload()
 {
 	Guard g( lock );
 
+	/// Reload the functions in each script when the script engine is reloaded
 	HM_NAMESPACE::HM_HASH_SET< CreatureAIScript* >::iterator itr = createdScripts.begin();
 	while( itr != createdScripts.end() )
 	{

@@ -27,16 +27,40 @@
  class PythonCallable : public PythonObject
  {
  public:
+	 ///
 	 /// Initialize with a function reference loaded from scripts
+	 ///
+	 /// Parameters
+	 ///   callable  -  A Python callable (function)
+	 /// 
+	 /// Return value
+	 ///  None
+	 ///
 	 PythonCallable( void* callable );
 
 	 ~PythonCallable();
 	 
+	 ///
 	 /// Call this callable, with a Tuple as argument. Returns a value object.
+	 ///
+	 /// Parameters
+	 ///   args   -   A PythonTuple that contains the arguments for this Callable
+	 ///
+	 /// Return value
+	 ///   Returns PythonValue object that contains the return value of the called function.
+	 ///
 	 PythonValue call( PythonTuple &args );
 
+	 ///
 	 /// Call this callable, with a Tuple argument.
 	 /// Used as a convenience method for when a return value is not expected.
+	 ///
+	 /// Parameters
+	 ///   args   -   A PythonTuple that contains the arguments for this Callable
+	 ///
+	 /// Return value
+	 ///   None
+	 ///
 	 void callNoReturn( PythonTuple &args );
  };
  

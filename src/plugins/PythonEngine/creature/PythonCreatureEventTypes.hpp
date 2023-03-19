@@ -20,6 +20,7 @@
 #ifndef PYTHON_CREATURE_EVENT_TYPES_H
 #define PYTHON_CREATURE_EVENT_TYPES_H
 
+/// Scripted event types of Creatures
 enum PythonCreatureEventTypes
 {
 	PYTHON_CREATURE_EVENT_ON_ENTER_COMBAT		     = 1,

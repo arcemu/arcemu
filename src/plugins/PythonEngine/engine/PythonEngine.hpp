@@ -27,7 +27,17 @@ class ScriptMgr;
 class PythonEngine
 {
 public:
+	///
+	/// Initializes the Python Engine
+	///
+	/// Parameters
+	///   mgr   -   Reference to the core script manager
+	///
+	/// Return value
+	///   None
+	///
 	PythonEngine( ScriptMgr *mgr );
+
 	~PythonEngine();
 
 	/// Executes the startup tasks: loads script files and registers the scripts
@@ -37,10 +47,27 @@ public:
 	void onReload();
 
 private:
-	/// Load a single script
+	///
+	/// Load a single script file
+	///
+	/// Parameters
+	///   fileName  -  Path to the file to be loaded
+	///
+	/// Return value
+	///   Returns 0 on success.
+	///   Returns -1 otherwise
+	///
 	int loadScript( const char *fileName );
 
+	///
 	/// Load all current scripts from the script directory
+	/// 
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   Returns the number of successfully loaded scripts
+	///
 	int loadScripts();
 
 	/// Register server hooks
@@ -50,7 +77,10 @@ private:
 	void registerScripts();
 
 private:
+	/// Reference to the Arcemu Python engine wrapper
 	ArcPython *python;
+
+	/// Reference to the core's script manager
 	ScriptMgr *mgr;
 };
 
