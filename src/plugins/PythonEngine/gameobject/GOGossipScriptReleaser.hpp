@@ -23,6 +23,7 @@
 #include "gossip/GossipFunctionTuple.hpp"
 #include "gossip/GossipFunctionTupleVisitor.hpp"
 
+/// Deallocates / Releases GO Gossip scripts
 class GOGossipScriptReleaser : public GossipFunctionTupleVisitor
 {
 private:

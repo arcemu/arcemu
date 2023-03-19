@@ -23,6 +23,7 @@
 #include "gossip/GossipFunctionTuple.hpp"
 #include "gossip/GossipFunctionTupleVisitor.hpp"
 
+/// Registers GO Gossip scripts in the core's script manager
 class GOGossipScriptRegisterer : public GossipFunctionTupleVisitor
 {
 private:

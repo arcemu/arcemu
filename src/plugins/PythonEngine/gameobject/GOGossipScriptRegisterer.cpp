@@ -26,6 +26,8 @@
 void GOGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tuple )
 {
 	Arcemu::Gossip::Script* script = mgr->get_go_gossip( id );
+
+	/// If there's no script registered yet create one and register it
 	if( script == NULL )
 	{
 		PythonGossipScript *script = new PythonGossipScript( tuple );
@@ -33,6 +35,7 @@ void GOGossipScriptRegisterer::visit( unsigned int id, GossipFunctionTuple &tupl
 	}
 	else
 	{
+		/// if there's already a script registered, and it's a Python script set the current functions
 		PythonGossipScript* pythonScript = dynamic_cast< PythonGossipScript* >( script );
 		if( pythonScript != NULL )
 		{

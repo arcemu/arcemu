@@ -23,6 +23,7 @@
 #include "gameobject/GOFunctionTuple.hpp"
 #include "gameobject/GOFunctionTupleVisitor.hpp"
 
+/// Registers GO scripts in the core's script manager
 class GOScriptRegisterer : public GOFunctionTupleVisitor
 {
 private:

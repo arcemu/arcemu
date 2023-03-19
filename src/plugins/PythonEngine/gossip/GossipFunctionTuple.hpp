@@ -22,6 +22,7 @@
 
 #include "gossip/PythonGossipEventTypes.hpp"
 
+/// Contains references to GameObject event handler functions
 class GossipFunctionTuple
 {
 public:
@@ -31,6 +32,15 @@ public:
 		clearFunctions();
 	}
 
+	///
+	/// Removes the function references from this tuple
+	///
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   None
+	///
 	void clearFunctions()
 	{
 		for( int i = 0; i < PYTHON_GOSSIP_EVENT_COUNT; i++ )
@@ -39,6 +49,16 @@ public:
 		}
 	}
 
+	///
+	/// Tells if this tuple has a function for the specified event type
+	///
+	/// Parameters
+	///   eventType  -  The event type of the function we're looking for
+	///
+	/// Return value
+	///   Returns true if this tuple has a function for the specified event.
+	///   Returns false otherwise.
+	///
 	bool hasFunction( unsigned long eventType ) const
 	{
 		if( functions[ eventType ] != NULL )
@@ -47,17 +67,44 @@ public:
 			return false;
 	}
 
+
+	///
+	/// Adds or replaces a function for the specified event in this tuple
+	///
+	/// Parameters
+	///   eventType  -  The event type of the function
+	///   function   -  A pointer to the function
+	///
+	/// Return value
+	///   None
+	///
 	void setFunction( unsigned long eventType, void* function )
 	{
 		functions[ eventType ] = function;
 	}
 
+
+	///
+	/// Retrieves the function for the specified event type
+	///
+	/// Parameters
+	///   eventType  -  The event type of the function we're looking for
+	///
+	/// Return value
+	///   Returns a pointer to a function if there's such a function in this tuple
+	///   Returns NULL otherwise.
+	///
 	void* getFunction( unsigned long eventType ) const
 	{
 		return functions[ eventType ];
 	}
 
 private:
+	/// Array that contains pointers to Python functions
+	///
+	/// Key: Gossip event Id. See PythonGossipEventTypes
+	/// Value: A pointer to a Python function
+	///
 	void* functions[ PYTHON_GOSSIP_EVENT_COUNT ];
 };
 
