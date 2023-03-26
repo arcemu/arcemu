@@ -1,3 +1,0 @@
-[submodule "src/plugins/python34"]
-	path = src/plugins/python34
-	url = https://github.com/dfighter1985/python-private
