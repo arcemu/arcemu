@@ -1156,10 +1156,11 @@ _PyVerify_fd_dup2(int fd1, int fd2)
     else
         return 0;
 }
+
+#endif
 #else
 /* dummy version. _PyVerify_fd() is already defined in fileobject.h */
 #define _PyVerify_fd_dup2(A, B) (1)
-#endif
 #endif /// MSC_VER
 
 #ifdef MS_WINDOWS
