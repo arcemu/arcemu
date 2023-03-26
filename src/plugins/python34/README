@@ -1,0 +1,22 @@
+This is a modified Python version 3.4.10
+=======================================
+
+Python Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Python Software
+Foundation.  All rights reserved.
+
+Python 3.4.10 is the final release in the Python 3.4 series.
+
+The purpose of this Python distribution is to have a Python 3.x version that is easier to embed.
+
+It has the following distinct features:
+* Smaller set of modules
+* CMake build system
+
+Build & install:
+================
+* mkdir build
+* cd build
+* cmake ../cmake
+* make
+* make install
