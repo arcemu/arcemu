@@ -26,8 +26,6 @@
 class CreatureFunctionTuple
 {
 public:
-	void* functions[ PYTHON_CREATURE_EVENT_COUNT ];
-
 	/// Initializes this Tuple
 	///
 	/// Parameters
@@ -37,6 +35,23 @@ public:
 	///   None
 	///
 	CreatureFunctionTuple()
+	{
+		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
+		{
+			functions[ i ] = NULL;
+		}
+	}
+
+	///
+	/// Removes the function references from this tuple
+	///
+	/// Parameters
+	///   None
+	///
+	/// Return value
+	///   None
+	///
+	void clearFunctions()
 	{
 		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
 		{
@@ -60,6 +75,21 @@ public:
 			return false;
 	}
 
+	///
+	/// Adds or replaces a function for the specified event in this tuple
+	///
+	/// Parameters
+	///   eventType  -  The event type of the function
+	///   function   -  A pointer to the function
+	///
+	/// Return value
+	///   None
+	///
+	void setFunction( unsigned long eventType, void* function )
+	{
+		functions[ eventType ] = function;
+	}
+
 	/// Returns the function for the event type
 	///
 	/// Parameters
@@ -72,6 +102,9 @@ public:
 	{
 		return functions[ eventType ];
 	}
+
+private:
+	void* functions[ PYTHON_CREATURE_EVENT_COUNT ];
 };
 
 #endif

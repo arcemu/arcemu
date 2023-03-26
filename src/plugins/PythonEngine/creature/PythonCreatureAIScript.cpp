@@ -41,7 +41,7 @@ void PythonCreatureAIScript::setFunctions( CreatureFunctionTuple &functions )
 {
 	for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
 	{
-		this->functions.functions[ i ] = functions.functions[ i ];
+		functions.setFunction( i, functions.getFunction( i ) );
 	}
 }
 

@@ -96,7 +96,7 @@ void FunctionRegistry::registerCreatureEventFunction( unsigned int creatureId, u
 		itr = creatureFunctions.insert( std::pair< unsigned int, CreatureFunctionTuple* >( creatureId, tuple ) ).first;
 	}
 
-	itr->second->functions[ creatureEvent ] = function;
+	itr->second->setFunction( creatureEvent, function );
 }
 
 void FunctionRegistry::registerQuestEventFunction( unsigned int questId, unsigned int questEvent, void* function )
@@ -297,12 +297,14 @@ void FunctionRegistry::releaseFunctions()
 
 		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
 		{
-			if( tuple->functions[ i ] != NULL )
+			void *f = tuple->getFunction( i );
+			if( f != NULL )
 			{
-				Py_DecRef( (PyObject*)( tuple->functions[ i ] ) );
-				tuple->functions[ i ] = NULL;
+				Py_DecRef( (PyObject*) f );
 			}
 		}
+
+		tuple->clearFunctions();
 
 		delete creatureFunctionsItr->second;
 		creatureFunctionsItr->second = NULL;
