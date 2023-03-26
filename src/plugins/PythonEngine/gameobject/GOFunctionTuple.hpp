@@ -20,93 +20,9 @@
 #ifndef GOFUNCTION_TUPLE_H
 #define GOFUNCTION_TUPLE_H
 
+#include "engine/FunctionTuple.hpp"
 #include "PythonGOEventTypes.hpp"
 
-/// Contains GameObject event handler function references
-class GOFunctionTuple
-{
-public:
-
-	GOFunctionTuple()
-	{
-		clearFunctions();
-	}
-
-	///
-	/// Removes the function references from this tuple
-	///
-	/// Parameters
-	///   None
-	///
-	/// Return value
-	///   None
-	///
-	void clearFunctions()
-	{
-		for( int i = 0; i < PYTHON_GO_EVENT_COUNT; i++ )
-		{
-			functions[ i ] = NULL;
-		}
-	}
-
-
-	///
-	/// Tells if this tuple has a function for the specified event type
-	///
-	/// Parameters
-	///   eventType  -  The event type of the function we're looking for
-	///
-	/// Return value
-	///   Returns true if this tuple has a function for the specified event.
-	///   Returns false otherwise.
-	///
-	bool hasFunction( unsigned long eventType ) const
-	{
-		if( functions[ eventType ] != NULL )
-			return true;
-		else
-			return false;
-	}
-
-	///
-	/// Adds or replaces a function for the specified event in this tuple
-	///
-	/// Parameters
-	///   eventType  -  The event type of the function
-	///   function   -  A pointer to the function
-	///
-	/// Return value
-	///   None
-	///
-	void setFunction( unsigned long eventType, void* function )
-	{
-		functions[ eventType ] = function;
-	}
-
-
-	///
-	/// Retrieves the function for the specified event type
-	///
-	/// Parameters
-	///   eventType  -  The event type of the function we're looking for
-	///
-	/// Return value
-	///   Returns a pointer to a function if there's such a function in this tuple
-	///   Returns NULL otherwise.
-	///
-	void* getFunction( unsigned long eventType ) const
-	{
-		return functions[ eventType ];
-	}
-
-private:
-
-	/// Array that contains pointers to Python functions
-	///
-	/// Key: Gossip event Id. See PythonGOEventTypes
-	/// Value: A pointer to a Python function
-	///
-	void* functions[ PYTHON_GO_EVENT_COUNT ];
-};
+typedef FunctionTuple< PYTHON_GO_EVENT_COUNT > GOFunctionTuple;
 
 #endif

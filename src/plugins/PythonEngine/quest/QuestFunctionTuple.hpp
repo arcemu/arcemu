@@ -20,93 +20,9 @@
 #ifndef QUEST_FUNCTION_TUPLE_H
 #define QUEST_FUNCTION_TUPLE_H
 
+#include "engine/FunctionTuple.hpp"
 #include "PythonQuestEventTypes.hpp"
 
-/// Contains quest event handling Python function references
-class QuestFunctionTuple
-{
-public:
-	QuestFunctionTuple()
-	{
-		clearFunctions();
-	}
-
-	///
-	/// Removes the function references from this tuple
-	///
-	/// Parameters
-	///   None
-	///
-	/// Return value
-	///   None
-	///
-	void clearFunctions()
-	{
-		for( int i = 0; i < PYTHON_QUEST_EVENT_COUNT; i++ )
-		{
-			functions[ i ] = NULL;
-		}
-	}
-
-	///
-	/// Tells if this tuple contains a function for the specified event
-	///
-	/// Parameters
-	///   eventType  -  The type of event that function that we're looking for handles
-	///
-	/// Return value
-	///   Returns true if the tuple contains a function for the specified event type.
-	///   Return false otherwise.
-	///
-	bool hasFunction( unsigned long eventType ) const
-	{
-		if( functions[ eventType ] != NULL )
-			return true;
-		else
-			return false;
-	}
-
-	///
-	/// Retrieves the function for the specified event type
-	///
-	/// Parameters
-	///   eventType  -  The event type of the function we're looking for
-	///
-	/// Return value
-	///   Returns a pointer to a function if there's such a function in this tuple
-	///   Returns NULL otherwise.
-	///
-	void* getFunction( unsigned long eventType ) const
-	{
-		return functions[ eventType ];
-	}
-
-
-	///
-	/// Adds or replaces a function for the specified event in this tuple
-	///
-	/// Parameters
-	///   eventType  -  The event type of the function
-	///   function   -  A pointer to the function
-	///
-	/// Return value
-	///   None
-	///
-	void setFunction( unsigned long eventType, void* function )
-	{
-		functions[ eventType ] = function;
-	}
-
-
-private:
-
-	///
-	/// Quest event handler function references
-	///
-	/// Key:   Instance event type. See PythonQuestEventTypes
-	/// Value: A pointer to a Python function
-	///
-	void* functions[ PYTHON_QUEST_EVENT_COUNT ];
-};
+typedef FunctionTuple< PYTHON_QUEST_EVENT_COUNT > QuestFunctionTuple;
 
 #endif

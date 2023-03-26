@@ -67,6 +67,7 @@ ${prefix}/creature/PythonCreatureAIScriptFactory.hpp
 ${prefix}/creature/PythonCreatureEventTypes.hpp
 ${prefix}/engine/FunctionRegistry.hpp
 ${prefix}/engine/PythonEngine.hpp
+${prefix}/engine/FunctionTuple.hpp
 ${prefix}/gameobject/GOFunctionTuple.hpp
 ${prefix}/gameobject/GOFunctionTupleVisitor.hpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.hpp

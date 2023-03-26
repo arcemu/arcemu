@@ -20,91 +20,9 @@
 #ifndef CREATUREFUNCTION_TUPLE_H
 #define CREATUREFUNCTION_TUPLE_H
 
+#include "engine/FunctionTuple.hpp"
 #include "PythonCreatureEventTypes.hpp"
 
-/// Stores Creature functions loaded from Python scripts
-class CreatureFunctionTuple
-{
-public:
-	/// Initializes this Tuple
-	///
-	/// Parameters
-	///   None
-	///
-	/// Return value
-	///   None
-	///
-	CreatureFunctionTuple()
-	{
-		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
-		{
-			functions[ i ] = NULL;
-		}
-	}
-
-	///
-	/// Removes the function references from this tuple
-	///
-	/// Parameters
-	///   None
-	///
-	/// Return value
-	///   None
-	///
-	void clearFunctions()
-	{
-		for( int i = 0; i < PYTHON_CREATURE_EVENT_COUNT; i++ )
-		{
-			functions[ i ] = NULL;
-		}
-	}
-
-	/// Tells if there's a function reference for this event type
-	///
-	/// Parameters
-	///   unsigned long eventType  -  The event type. See PythonCreatureEventTypes
-	///
-	/// Return value
-	///   Returns true if there's such a function, and false otherwise
-	///
-	bool hasFunction( unsigned long eventType ) const
-	{
-		if( functions[ eventType ] != NULL )
-			return true;
-		else
-			return false;
-	}
-
-	///
-	/// Adds or replaces a function for the specified event in this tuple
-	///
-	/// Parameters
-	///   eventType  -  The event type of the function
-	///   function   -  A pointer to the function
-	///
-	/// Return value
-	///   None
-	///
-	void setFunction( unsigned long eventType, void* function )
-	{
-		functions[ eventType ] = function;
-	}
-
-	/// Returns the function for the event type
-	///
-	/// Parameters
-	///   unsigned long eventType  -  The event type. See PythonCreatureEventTypes
-	///
-	/// Return value
-	///   Returns a pointer to the function, or NULL if there's no such function
-	///
-	void* getFunction( unsigned long eventType ) const
-	{
-		return functions[ eventType ];
-	}
-
-private:
-	void* functions[ PYTHON_CREATURE_EVENT_COUNT ];
-};
+typedef FunctionTuple< PYTHON_CREATURE_EVENT_COUNT > CreatureFunctionTuple;
 
 #endif
