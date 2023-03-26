@@ -83,6 +83,24 @@ public:
 	}
 
 	///
+	/// Adds or replaces a function for the specified event in this tuple
+	///
+	/// Parameters
+	///   eventType  -  The event type of the function
+	///   function   -  A pointer to the function
+	///
+	/// Return value
+	///   None
+	///
+	void setFunction( unsigned long eventType, void* function )
+	{
+		functions[ eventType ] = function;
+	}
+
+
+private:
+
+	///
 	/// Instance event handler function references
 	///
 	/// Key:   Instance event type. See PythonInstanceEventTypes

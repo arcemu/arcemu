@@ -124,7 +124,7 @@ void FunctionRegistry::registerInstanceEventFunction( unsigned int mapId, unsign
 		itr = instanceFunctions.insert( std::pair< unsigned int, InstanceFunctionTuple* >( mapId, tuple ) ).first;
 	}
 
-	itr->second->functions[ instanceEvent ] = function;
+	itr->second->setFunction( instanceEvent, function );
 }
 
 void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
@@ -347,12 +347,14 @@ void FunctionRegistry::releaseFunctions()
 
 		for( int i = 0; i < PYTHON_INSTANCE_EVENT_COUNT; i++ )
 		{
-			if( tuple->functions[ i ] != NULL )
+			void *f = tuple->getFunction( i );
+			if( f != NULL )
 			{
-				Py_DecRef( (PyObject*) tuple->functions[ i ] );
-				tuple->functions[ i ] = NULL;
+				Py_DecRef( (PyObject*) f );
 			}
 		}
+
+		tuple->clearFunctions();
 
 		delete instanceFunctionsItr->second;
 		instanceFunctionsItr->second = NULL;

@@ -41,16 +41,13 @@ void PythonInstanceScript::setFunctions( const InstanceFunctionTuple &tuple )
 {
 	for( int i = 0; i < PYTHON_INSTANCE_EVENT_COUNT; i++ )
 	{
-		this->functions.functions[ i ] = tuple.functions[ i ];
+		this->functions.setFunction( i, tuple.getFunction( i ) );
 	}
 }
 
 void PythonInstanceScript::clearFunctions()
 {
-	for( int i = 0; i < PYTHON_INSTANCE_EVENT_COUNT; i++ )
-	{
-		this->functions.functions[ i ] = NULL;
-	}
+	this->functions.clearFunctions();
 }
 
 
