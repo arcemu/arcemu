@@ -38,16 +38,13 @@ void PythonQuestScript::setFunctions( const QuestFunctionTuple &tuple )
 {
 	for( int i = 0; i < PYTHON_QUEST_EVENT_COUNT; i++ )
 	{
-		functions.functions[ i ] = tuple.functions[ i ] ;
+		functions.setFunction( i, tuple.getFunction( i ) );
 	}
 }
 
 void PythonQuestScript::clearFunctions()
 {
-	for( int i = 0; i < PYTHON_QUEST_EVENT_COUNT; i++ )
-	{
-		functions.functions[ i ] = NULL;
-	}
+	functions.clearFunctions();
 }
 
 void PythonQuestScript::OnQuestStart( Player* target, QuestLogEntry* questLogEntry )

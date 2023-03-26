@@ -110,7 +110,7 @@ void FunctionRegistry::registerQuestEventFunction( unsigned int questId, unsigne
 		itr = questFunctions.insert( std::pair< unsigned int, QuestFunctionTuple* >( questId, tuple ) ).first;
 	}
 
-	itr->second->functions[ questEvent ] = function;
+	itr->second->setFunction( questEvent, function );
 }
 
 void FunctionRegistry::registerInstanceEventFunction( unsigned int mapId, unsigned int instanceEvent, void* function )
@@ -321,12 +321,14 @@ void FunctionRegistry::releaseFunctions()
 
 		for( int i = 0; i < PYTHON_QUEST_EVENT_COUNT; i++ )
 		{
-			if( tuple->functions[ i ] != NULL )
+			void *f = tuple->getFunction( i );
+			if( f != NULL )
 			{
-				Py_DecRef( (PyObject*) tuple->functions[ i ] );
-				tuple->functions[ i ] = NULL;
+				Py_DecRef( (PyObject*) f );
 			}
 		}
+
+		tuple->clearFunctions();
 
 		delete questFunctionsItr->second;
 		questFunctionsItr->second = NULL;
