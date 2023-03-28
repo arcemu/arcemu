@@ -17,7 +17,7 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Speed up my vehicle!", 7, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Pity the fool!", 8, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 8, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 9, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Don't pity the fool!", 10, 0 )
 	
 	menu.sendToPlayer( player )
