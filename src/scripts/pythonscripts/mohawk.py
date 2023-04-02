@@ -22,6 +22,8 @@ def mohawk_onHello( unit, event, player ):
 	
 	menu.addItem( arcemu.ICON_CHAT, "Let's play some music!", 11, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "I think your hair is ugly", 12, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Follow me!", 13, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Stop following me!", 14, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -101,6 +103,14 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	elif id == 12:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You really are a fool!" )
 		unit.setFaction( 168 )
+		
+	elif id == 13:
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Let's move then, fool!" )
+		unit.setUnitToFollow( pu, 2.0 )
+		
+	elif id == 14:
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Alright then, fool!" )
+		unit.stopFollowing()
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

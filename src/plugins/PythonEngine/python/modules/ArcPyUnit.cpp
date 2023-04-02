@@ -524,6 +524,72 @@ static PyObject* ArcPyUnit_setFaction( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setUnitToFollow
+///   Sets the unit which should be followed
+///
+/// Parameters
+///   unit           -  The Unit that should be followed
+///   followDistance -  The follow distance (optional, 2.0 is the default)
+///   followAngle    -  The follow angle in radians (optional, 0.0 is the default)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setUnitToFollow( other )
+///   unit.setUnitToFollow( other, 10.0 )
+///   unit.setUnitToFollow( other, 10.0, 3.14 )
+///
+static PyObject* ArcPyUnit_setUnitToFollow( ArcPyUnit *self, PyObject *args )
+{
+	PyObject *o;
+	float followDistance = 2.0f;
+	float followAngle = 0.0f;
+
+	if( !PyArg_ParseTuple( args, "O|ff", &o, &followDistance, &followAngle ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit parameter" );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( o )->tp_name, "ArcPyUnit" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit parameter" );
+		return NULL;
+	}
+
+	ArcPyUnit *otherUnit = reinterpret_cast< ArcPyUnit* >( o );
+	Unit* other = otherUnit->unitPtr;
+
+	Unit *unit = self->unitPtr;
+	unit->GetAIInterface()->SetUnitToFollow( other );
+	unit->GetAIInterface()->SetFollowDistance( followDistance );
+	unit->GetAIInterface()->SetUnitToFollowAngle( followAngle );
+
+	Py_RETURN_NONE;
+}
+
+
+/// stopFollowing
+///   Stop following the currently followed Unit.
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.stopFollowing()
+///
+static PyObject* ArcPyUnit_stopFollowing( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->GetAIInterface()->SetUnitToFollow( (Unit*)NULL );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -542,6 +608,9 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getVehicleBase", (PyCFunction)ArcPyUnit_getVehicleBase, METH_NOARGS, "Returns the Vehicle the Unit is on" },
 	{ "playSoundToSet", (PyCFunction)ArcPyUnit_playSoundToSet, METH_VARARGS, "Plays a sound to nearby players" },
 	{ "setFaction", (PyCFunction)ArcPyUnit_setFaction, METH_VARARGS, "Sets the faction Id of the Unit" },
+
+	{ "setUnitToFollow", (PyCFunction)ArcPyUnit_setUnitToFollow, METH_VARARGS, "Sets the Unit that this Unit will follow" },
+	{ "stopFollowing", (PyCFunction)ArcPyUnit_stopFollowing, METH_NOARGS, "The Unit will stop following" },
 	{NULL}
 };
 
