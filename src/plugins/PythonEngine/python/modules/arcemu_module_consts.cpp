@@ -180,4 +180,8 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ON_GO_PUSH", PYTHON_INSTANCE_EVENT_ON_GO_PUSH );
 	PyModule_AddIntConstant( module, "INSTANCE_EVENT_ONLOAD", PYTHON_INSTANCE_EVENT_ONLOAD );
 	PyModule_AddIntConstant( module, "INSTANCE_EVENT_DESTROY", PYTHON_INSTANCE_EVENT_DESTROY );
+
+	/// Sheatstate
+	PyModule_AddIntConstant( module, "SHEATSTATE_SHEATHED", 0 );
+	PyModule_AddIntConstant( module, "SHEATSTATE_UNSHEATHED", 1 );
 }

@@ -650,6 +650,75 @@ static PyObject* ArcPyUnit_setMount( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// equipWeapons
+///   Equips weapons on the Unit
+///
+/// Parameters
+///   meleeWeaponId    -   The melee weapon's id
+///   offhandWeaponId  -   The offhand weapon's id (optional)
+///   rangedWeaponId   -   The ranged weapon's id (optional)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.equipWeapons( 25 )
+///
+static PyObject* ArcPyUnit_equipWeapons( ArcPyUnit *self, PyObject *args )
+{
+	uint32 meleeWeaponId;
+	uint32 offhandWeaponId;
+	uint32 rangedWeaponId;
+
+	if( !PyArg_ParseTuple( args, "k|kk", &meleeWeaponId, &offhandWeaponId, &rangedWeaponId ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires at least a melee weapon Id parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetEquippedItem( MELEE, meleeWeaponId );
+	unit->SetEquippedItem( OFFHAND, offhandWeaponId );
+	unit->SetEquippedItem( RANGED, rangedWeaponId );
+
+	Py_RETURN_NONE;
+}
+
+/// setSheatState
+///   Sets whether the equipped weapon is holstered or is in the hand(s) of the Unit
+///
+/// Parameters
+///   sheatState    -   The new sheat state to set
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setSheatState( 0 ) # Weapon will be in holster
+///   unit.setSheatState( 1 ) # Weapon will be in hand(s)
+///
+static PyObject* ArcPyUnit_setSheatState( ArcPyUnit *self, PyObject *args )
+{
+	uint32 sheatState = 0;
+
+	if( !PyArg_ParseTuple( args, "k", &sheatState ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a sheat state parameter ( 0 or 1 )" );
+		return NULL;
+	}
+
+	if( sheatState > 1 )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a sheat state parameter ( 0 or 1 )" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetByte( UNIT_FIELD_BYTES_2, 0, sheatState );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -672,6 +741,8 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "stopFollowing", (PyCFunction)ArcPyUnit_stopFollowing, METH_NOARGS, "The Unit will stop following" },
 	{ "setScale", (PyCFunction)ArcPyUnit_setScale, METH_VARARGS, "Sets the size scale of the Unit" },
 	{ "setMount", (PyCFunction)ArcPyUnit_setMount, METH_VARARGS, "Sets the mount display Id of the Unit" },
+	{ "equipWeapons", (PyCFunction)ArcPyUnit_equipWeapons, METH_VARARGS, "Equips weapons on the Unit" },
+	{ "setSheatState", (PyCFunction)ArcPyUnit_setSheatState, METH_VARARGS, "Sets wheter the Unit will have it's equipeed weapon in hand(s) or in holster" },
 	{NULL}
 };
 
