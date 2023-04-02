@@ -495,6 +495,23 @@ static PyObject* ArcPyUnit_playSoundToSet( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+static PyObject* ArcPyUnit_setFaction( ArcPyUnit *self, PyObject *args )
+{
+	uint32 faction;
+
+	if( !PyArg_ParseTuple( args, "k", &faction ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a faction Id parameter" );
+		return NULL;
+	}
+
+	Unit* ptr = self->unitPtr;
+
+	ptr->SetFaction( faction );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -512,6 +529,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "exitVehicle", (PyCFunction)ArcPyUnit_exitVehicle, METH_NOARGS, "Makes the Unit exit a vehicle" },
 	{ "getVehicleBase", (PyCFunction)ArcPyUnit_getVehicleBase, METH_NOARGS, "Returns the Vehicle the Unit is on" },
 	{ "playSoundToSet", (PyCFunction)ArcPyUnit_playSoundToSet, METH_VARARGS, "Plays a sound to nearby players" },
+	{ "setFaction", (PyCFunction)ArcPyUnit_setFaction, METH_VARARGS, "Sets the faction Id of the Unit" },
 	{NULL}
 };
 
