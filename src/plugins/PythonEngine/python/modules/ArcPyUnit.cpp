@@ -621,6 +621,35 @@ static PyObject* ArcPyUnit_setScale( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// setMount
+///   Set the mount display Id of the Unit
+///
+/// Parameters
+///   mountId   -   The mount display Id to set
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setMount( 6080 )
+///
+static PyObject* ArcPyUnit_setMount( ArcPyUnit *self, PyObject *args )
+{
+	uint32 mountId;
+
+	if( !PyArg_ParseTuple( args, "k", &mountId ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a mount Id parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetMount( mountId );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -642,6 +671,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setUnitToFollow", (PyCFunction)ArcPyUnit_setUnitToFollow, METH_VARARGS, "Sets the Unit that this Unit will follow" },
 	{ "stopFollowing", (PyCFunction)ArcPyUnit_stopFollowing, METH_NOARGS, "The Unit will stop following" },
 	{ "setScale", (PyCFunction)ArcPyUnit_setScale, METH_VARARGS, "Sets the size scale of the Unit" },
+	{ "setMount", (PyCFunction)ArcPyUnit_setMount, METH_VARARGS, "Sets the mount display Id of the Unit" },
 	{NULL}
 };
 

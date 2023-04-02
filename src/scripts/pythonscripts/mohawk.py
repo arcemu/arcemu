@@ -29,6 +29,9 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Get small!", 16, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Get back to normal size!", 17, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Mount up!", 18, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Dismount!", 19, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
@@ -124,6 +127,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	elif id == 17:
 		unit.setScale( 1.0 )
+		
+	elif id == 18:
+		unit.setMount( 6080 )
+		
+	elif id == 19:
+		unit.setMount( 0 )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
