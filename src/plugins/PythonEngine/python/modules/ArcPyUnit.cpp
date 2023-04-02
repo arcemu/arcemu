@@ -470,7 +470,7 @@ static PyObject* ArcPyUnit_getGUID( ArcPyUnit *self, PyObject *args )
 ///   Plays a sound to nearby players
 ///
 /// Parameters
-///   soundI   -  The numeric Id of the sound clip to be played
+///   soundId   -  The numeric Id of the sound clip to be played
 ///
 /// Return value
 ///   None
@@ -495,6 +495,18 @@ static PyObject* ArcPyUnit_playSoundToSet( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setFaction
+///   Sets the Unit's faction Id
+///
+/// Parameters
+///   faction   -  The identifier of the faction to be set
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setFaction( 168 ) # Unit will be hated by all
+///
 static PyObject* ArcPyUnit_setFaction( ArcPyUnit *self, PyObject *args )
 {
 	uint32 faction;
