@@ -75,7 +75,7 @@ AIInterface::AIInterface()
 	m_Unit(NULL),
 	m_PetOwner(NULL),
 	FollowDistance(0.0f),
-	m_fallowAngle(M_PI_FLOAT / 2),
+	m_followAngle(M_PI_FLOAT / 2),
 	m_AIState(STATE_IDLE),
 	m_aiCurrentAgent(AGENT_NULL),
 	tauntedBy(NULL),
@@ -2354,7 +2354,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				// we've got a formation target, set unittofollow to this
 				SetUnitToFollow(m_formationLinkTarget);
 				FollowDistance = m_formationFollowDistance;
-				m_fallowAngle = m_formationFollowAngle;
+				m_followAngle = m_formationFollowAngle;
 			}
 		}
 		if(getUnitToFollow() == NULL)
@@ -2634,8 +2634,8 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 						if(m_formationLinkTarget != 0)
 							d = m_formationFollowDistance;
 
-						MoveTo(delta_x + (d * (cosf(m_fallowAngle + unitToFollow->GetOrientation()))),
-						       delta_y + (d * (sinf(m_fallowAngle + unitToFollow->GetOrientation()))),
+						MoveTo(delta_x + (d * (cosf(m_followAngle + unitToFollow->GetOrientation()))),
+						       delta_y + (d * (sinf(m_followAngle + unitToFollow->GetOrientation()))),
 						       unitToFollow->GetPositionZ(), unitToFollow->GetOrientation());
 					}
 					else

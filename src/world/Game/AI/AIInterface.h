@@ -319,7 +319,7 @@ class SERVER_DECL AIInterface
 		};
 		void SetUnitToFollowBackup(uint64 guid) { m_UnitToFollow_backup = guid; };
 		void SetFollowDistance(float dist) { FollowDistance = dist; };
-		void SetUnitToFollowAngle(float angle) { m_fallowAngle = angle; }
+		void SetUnitToFollowAngle(float angle) { m_followAngle = angle; }
 		bool setInFront(Unit* target);
 		Unit* getUnitToFollow();
 		uint64 getUnitToFollowGUID() { return m_UnitToFollow; }
@@ -583,7 +583,7 @@ class SERVER_DECL AIInterface
 		Unit* m_PetOwner;
 		float FollowDistance;
 		float FollowDistance_backup;
-		float m_fallowAngle;
+		float m_followAngle;
 
 		//std::set<AI_Target> m_aiTargets;
 		Mutex m_aiTargetsLock;
