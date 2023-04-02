@@ -46,6 +46,4 @@ sudo su - arcemu
 
 ## Links
 
-* [Website](http://arcemu.org/)
-* [Forums](http://www.arcemu.org/forums/)
 * [Docker hub](https://hub.docker.com/u/arcemu)
