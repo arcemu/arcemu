@@ -15,7 +15,10 @@ Arcemu is a World of Warcraft server package. Based on the popular Ascent projec
 
 It's a multithreaded C++ application with a relational database as a data storage backend(mysql).
 
-It also supports the popular Lua scripting language for easy extension, and customization.
+It supports easy extension, and customization with the following scripting languages:
+
+* Lua
+* Python (experimental)
 
 NOTE: This project is mostly abandoned since the end of 2014. However feel free to try and have fun with it.
 
