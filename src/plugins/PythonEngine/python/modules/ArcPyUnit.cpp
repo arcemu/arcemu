@@ -590,6 +590,37 @@ static PyObject* ArcPyUnit_stopFollowing( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// setScale
+///   Set the size scale of the Unit
+///
+/// Parameters
+///   scale   -   The size scale of the Unit
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setScale( 5.0 ) # Make the Unit 5x of normal
+///   unit.setScale( 0.25 ) # Make the Unit 1/4 of normal
+///   unit.setScale( 1.0 ) # Make the Unit normal
+///
+static PyObject* ArcPyUnit_setScale( ArcPyUnit *self, PyObject *args )
+{
+	float scale = 1.0f;
+
+	if( !PyArg_ParseTuple( args, "f", &scale ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a scale parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetScale( scale );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -608,9 +639,9 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getVehicleBase", (PyCFunction)ArcPyUnit_getVehicleBase, METH_NOARGS, "Returns the Vehicle the Unit is on" },
 	{ "playSoundToSet", (PyCFunction)ArcPyUnit_playSoundToSet, METH_VARARGS, "Plays a sound to nearby players" },
 	{ "setFaction", (PyCFunction)ArcPyUnit_setFaction, METH_VARARGS, "Sets the faction Id of the Unit" },
-
 	{ "setUnitToFollow", (PyCFunction)ArcPyUnit_setUnitToFollow, METH_VARARGS, "Sets the Unit that this Unit will follow" },
 	{ "stopFollowing", (PyCFunction)ArcPyUnit_stopFollowing, METH_NOARGS, "The Unit will stop following" },
+	{ "setScale", (PyCFunction)ArcPyUnit_setScale, METH_VARARGS, "Sets the size scale of the Unit" },
 	{NULL}
 };
 
