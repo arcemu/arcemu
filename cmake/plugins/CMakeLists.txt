@@ -22,7 +22,7 @@ SET( BUILD_QUESTSCRIPTS TRUE CACHE BOOL "Build arcQuestScripts.")
 SET( BUILD_MISCSCRIPTS TRUE CACHE BOOL "Build arcMiscScripts." )
 SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE TRUE CACHE BOOL "Build Arcemu Lua Engine ( ALE ).")
-SET( BUILD_PYTHONENGINE FALSE CACHE BOOL "Build Arcemu Python Engine (APE).")
+SET( BUILD_PYTHONENGINE TRUE CACHE BOOL "Build Arcemu Python Engine (APE).")
 
 add_subdirectory( eventscripts)
 add_subdirectory( instancescripts )
