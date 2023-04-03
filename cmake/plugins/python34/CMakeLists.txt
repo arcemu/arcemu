@@ -321,6 +321,8 @@ IF(CMAKE_GENERATOR MATCHES Visual*)
     ADD_DEFINITIONS( -DWIN32 )
 ENDIF()
 
+REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
+
 ADD_LIBRARY( python34 SHARED ${pythoncore_sources} ${pythoncore_headers} )
 
 INSTALL( TARGETS python34 DESTINATION . )

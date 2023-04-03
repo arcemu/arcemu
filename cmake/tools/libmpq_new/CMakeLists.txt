@@ -16,6 +16,8 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
+REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
+
 IF( NOT WIN32 AND NOT IS_64BIT )
 	add_definitions( -D_FILE_OFFSET_BITS=64 )
 ENDIF( NOT WIN32 AND NOT IS_64BIT )

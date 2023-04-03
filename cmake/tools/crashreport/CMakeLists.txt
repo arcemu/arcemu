@@ -5,5 +5,5 @@ SET( SRCS
  ${prefix}/Main.c )
 
 add_executable( ${PROJECT_NAME} ${SRCS} )
-remove_definitions( -std=c++0x )
+REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)

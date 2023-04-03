@@ -28,6 +28,9 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 include_directories( ${DEPENDENCY_INCLUDE_ROOT}/pcre )
+
+REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
+
 add_library( ${PROJECT_NAME} STATIC ${SRCS} )
 
 SET(PCRE_LIBRARIES ${PROJECT_NAME} CACHE INTERNAL "PCRE Libraries.")

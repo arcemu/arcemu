@@ -16,6 +16,8 @@ foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )
 endforeach(src)
 
+REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
+
 include_directories( ${DEPENDENCY_INCLUDE_ROOT}/${PROJECT_NAME} )
 add_library(${PROJECT_NAME} STATIC ${SRCS} )
 target_link_libraries( ${PROJECT_NAME} )
