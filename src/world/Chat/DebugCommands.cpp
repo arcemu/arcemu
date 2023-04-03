@@ -1443,7 +1443,7 @@ bool ChatHandler::HandleDebugSendLFGQueueStatusCommand( const char *args, WorldS
 	uint32 healersNeeded;
 	uint32 dpsNeeded;
 
-	if( sscanf( args, "%u %i %i %u %u %u", &dungeon, &waitTimeAvg, &tanksNeeded, &healersNeeded, &dpsNeeded ) != 5 )
+	if( sscanf( args, "%u %i %u %u %u", &dungeon, &waitTimeAvg, &tanksNeeded, &healersNeeded, &dpsNeeded ) != 5 )
 	{
 		RedSystemMessage( session, "usage:" );
 		RedSystemMessage( session, "sendlfgqueuestatus [dungeon] [avg waittime] [tanks needed] [healers needed] [dps needed]" );
