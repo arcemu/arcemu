@@ -58,7 +58,7 @@ static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject
 
 	if( ! PyArg_ParseTuple( args, "kOk", &textId, &obj, &autoSend ) )
 	{
-		return NULL;
+		return -1;
 	}
 
 	const char* typeName = Py_TYPE( obj )->tp_name;
@@ -77,7 +77,7 @@ static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject
 	else
 	{
 		PyErr_SetString( PyExc_TypeError, "Second argument should be a Unit or an Item!" );
-		return NULL;
+		return -1;
 	}
 
 	return 0;
