@@ -220,6 +220,45 @@ static PyObject* ArcPyPlayer_teleport( ArcPyPlayer *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// sendGossipPOI
+///   Sends a gossip POI (Point Of Interest) to the Player. Which means a location is marked on the player's map
+///
+/// Parameters
+///   x        -   X coordinate of the marked location
+///   y        -   Y coordinate of the marked location
+///   icon     -   The icon that will show up on the map
+///   flags    -   ???
+///   data     -   ???
+///   name     -   The name of the location marked
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.sendGossipPOI( -8811.46, 667.46, 7, 6, 0, "Stormwind Auction House" )
+///
+static PyObject* ArcPyPlayer_sendGossipPOI( ArcPyPlayer *self, PyObject *args )
+{
+	float x = 0.0f;
+	float y = 0.0f;
+	uint32 icon = 0;
+	uint32 flags = 0;
+	uint32 data = 0;
+	const char *name = NULL;
+
+	if( !PyArg_ParseTuple( args, "ffkkks", &x, &y, &icon, &flags, &data, &name ) )
+	{
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+
+	Messenger::SendGossipPOI( player, x, y, icon, flags, data, name );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -227,6 +266,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "toUnit", (PyCFunction)ArcPyPlayer_toUnit, METH_NOARGS, "Returns the Player object as a Unit" },
 	{ "spawnAndEnterVehicle", (PyCFunction)ArcPyPlayer_spawnAndEnterVehicle, METH_VARARGS, "Spawns a vehicle and makes the player enter it" },
 	{ "teleport", (PyCFunction)ArcPyPlayer_teleport, METH_VARARGS, "Teleports the player to the given map's given coordinates" },
+	{ "sendGossipPOI", (PyCFunction)ArcPyPlayer_sendGossipPOI, METH_VARARGS, "Sends a gossip POI (Point Of Interest) to the Player, marking it on the map" },
 	{NULL}
 };
 
