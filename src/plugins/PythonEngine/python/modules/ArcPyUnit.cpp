@@ -719,6 +719,72 @@ static PyObject* ArcPyUnit_setSheatState( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setPvPFlag
+///   Flags the Unit for PvP
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setPvPFlag()
+///
+static PyObject* ArcPyUnit_setPvPFlag( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->SetPvPFlag();
+
+	Py_RETURN_NONE;
+}
+
+
+/// removePvPFlag
+///   Unflags the Unit for PvP
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.removePvPFlag()
+///
+static PyObject* ArcPyUnit_removePvPFlag( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->RemovePvPFlag();
+
+	Py_RETURN_NONE;
+}
+
+
+/// isPvPFlagged
+///   Tells if the Unit is flagged for PvP
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns True if the Unit is PvP flagged.
+///   Returns False otherwise
+///
+/// Example
+///   if unit.isPvPFlagged():
+///        print( "Unit is flagged for PvP" )
+///
+static PyObject* ArcPyUnit_isPvPFlagged( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+
+	if( unit->IsPvPFlagged() )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -743,6 +809,9 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setMount", (PyCFunction)ArcPyUnit_setMount, METH_VARARGS, "Sets the mount display Id of the Unit" },
 	{ "equipWeapons", (PyCFunction)ArcPyUnit_equipWeapons, METH_VARARGS, "Equips weapons on the Unit" },
 	{ "setSheatState", (PyCFunction)ArcPyUnit_setSheatState, METH_VARARGS, "Sets wheter the Unit will have it's equipeed weapon in hand(s) or in holster" },
+	{ "setPvPFlag", (PyCFunction)ArcPyUnit_setPvPFlag, METH_NOARGS, "Flags the Unit for PvP" },
+	{ "removePvPFlag", (PyCFunction)ArcPyUnit_removePvPFlag, METH_NOARGS, "Unflags the Unit for PvP" },
+	{ "isPvPFlagged", (PyCFunction)ArcPyUnit_isPvPFlagged, METH_NOARGS, "Tells if the Unit is flagged for PvP" },
 	{NULL}
 };
 

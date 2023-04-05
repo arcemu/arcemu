@@ -37,6 +37,10 @@ def mohawk_onHello( unit, event, player ):
 	
 	menu.addItem( arcemu.ICON_CHAT, "Show me where the Stormwind Auction House is", 22, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Are you PvP flagged?", 23, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Flag yourself for PvP!", 24, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Remove your PvP flag!", 25, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
@@ -150,6 +154,20 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	elif id == 22:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Alright then, fool!" )
 		player.sendGossipPOI( -8811.46, 667.46, 7, 6, 0, "Stormwind Auction House" )
+		
+	elif id == 23:
+		if unit.isPvPFlagged():
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am!" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am NOT!" )
+			
+	elif id == 24:
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Bring it on, fool!" )
+		unit.setPvPFlag()
+		
+	elif id == 25:
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Okay, I back down..." )
+		unit.removePvPFlag()
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
