@@ -296,7 +296,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	string GMFlags;
 	uint8 AccountFlags;
 	string lang = "enUS";
-	uint32 i;
 
 	recvData >> AccountID >> AccountName >> GMFlags >> AccountFlags;
 	ForcedPermissions = sLogonCommHandler.GetForcedPermissions(AccountName);
@@ -382,7 +381,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	if(recvData.rpos() != recvData.wpos())
 		recvData >> pSession->m_muted;
 
-	for(i = 0; i < 8; ++i)
+	for(uint32 i = 0; i < 8; ++i)
 		pSession->SetAccountData(i, NULL, true, 0);
 
 	if(sWorld.m_useAccountData)
@@ -395,7 +394,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 			size_t len;
 			const char* data;
 			char* d;
-			for(i = 0; i < 8; ++i)
+			for(uint32 i = 0; i < 8; ++i)
 			{
 				data = pResult->Fetch()[1 + i].GetString();
 				len = data ? strlen(data) : 0;
