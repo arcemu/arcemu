@@ -5190,6 +5190,11 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 	SendHealSpellOnPlayer(m_caster, unitTarget, amount, critical, overheal, pSpellId ? pSpellId : GetProto()->Id);
 
+	if( u_caster != NULL )
+	{
+		CALL_SCRIPT_EVENT(unitTarget, OnHealed)(u_caster, amount);
+	}
+
 	if(p_caster != NULL)
 	{
 		p_caster->m_bgScore.HealingDone += amount;

@@ -177,9 +177,13 @@ def mohawk_onExitVehicle( unit ):
 	
 def mohawk_onAIUpdate( unit, event ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I pity the fool!" )
+	
+def mohawk_onHealed( unit, healer, amount ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks for healing me for " + str( amount ) )
 
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_HELLO, mohawk_onHello )
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_SELECT, mohawk_onSelectOption )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_ENTER_VEHICLE, mohawk_onEnterVehicle )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_EXIT_VEHICLE, mohawk_onExitVehicle )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_AIUPDATE, mohawk_onAIUpdate )
+arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_HEALED, mohawk_onHealed )

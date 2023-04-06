@@ -585,3 +585,21 @@ void PythonCreatureAIScript::OnLastPassengerLeft( Unit* passenger )
 	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
+
+void PythonCreatureAIScript::OnHealed( Unit* healer, int32 amount )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_HEALED;
+
+	if( !functions.hasFunction( eventType ) )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItemUnit( 1, healer );
+	args.setItem( 2, amount );
+
+	PythonCallable callable( functions.getFunction( eventType ) );
+	callable.callNoReturn( args );
+}
