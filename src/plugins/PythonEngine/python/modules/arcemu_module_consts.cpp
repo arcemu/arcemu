@@ -186,4 +186,15 @@ void registerArcemuConstants( PyObject *module )
 	/// Sheatstate
 	PyModule_AddIntConstant( module, "SHEATSTATE_SHEATHED", 0 );
 	PyModule_AddIntConstant( module, "SHEATSTATE_UNSHEATHED", 1 );
+
+	/// Standstate
+	PyModule_AddIntConstant( module, "STANDSTATE_STAND", STANDSTATE_STAND );
+	PyModule_AddIntConstant( module, "STANDSTATE_SIT", STANDSTATE_SIT );
+	PyModule_AddIntConstant( module, "STANDSTATE_SIT_CHAIR", STANDSTATE_SIT_CHAIR );
+	PyModule_AddIntConstant( module, "STANDSTATE_SLEEP", STANDSTATE_SLEEP );
+	PyModule_AddIntConstant( module, "STANDSTATE_SIT_LOW_CHAIR", STANDSTATE_SIT_LOW_CHAIR );
+	PyModule_AddIntConstant( module, "STANDSTATE_SIT_MEDIUM_CHAIR", STANDSTATE_SIT_MEDIUM_CHAIR );
+	PyModule_AddIntConstant( module, "STANDSTATE_SIT_HIGH_CHAIR", STANDSTATE_SIT_HIGH_CHAIR );
+	PyModule_AddIntConstant( module, "STANDSTATE_DEAD", STANDSTATE_DEAD );
+	PyModule_AddIntConstant( module, "STANDSTATE_KNEEL", STANDSTATE_KNEEL );
 }

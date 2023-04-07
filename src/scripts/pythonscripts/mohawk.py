@@ -44,6 +44,8 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Are you buffed with Power Word: Fortitude I?", 26, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Remove Power Word: Fortitude I", 27, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Standstate", 28, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
@@ -190,6 +192,36 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't have such an aura." )
+			
+	elif id == 28:
+		state = unit.getStandState()
+		print( "Current standstate: " + str( state ) )
+		
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Stand", 100, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Sit", 101, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Sleep", 102, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Dead", 103, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Kneel", 104, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	elif id == 100:
+		unit.setStandState( arcemu.STANDSTATE_STAND )
+		
+	elif id == 101:
+		unit.setStandState( arcemu.STANDSTATE_SIT )
+		
+	elif id == 102:
+		unit.setStandState( arcemu.STANDSTATE_SLEEP )
+		
+	elif id == 103:
+		unit.setStandState( arcemu.STANDSTATE_DEAD )
+		
+	elif id == 104:
+		unit.setStandState( arcemu.STANDSTATE_KNEEL )
+		
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

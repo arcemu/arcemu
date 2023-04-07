@@ -856,6 +856,55 @@ static PyObject* ArcPyUnit_getAuraBySpellId( ArcPyUnit *self, PyObject *args )
 	return (PyObject*)apa;
 }
 
+
+/// getStandState
+///   Returns the current standstate of the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the current standstate of the Unit
+///
+/// Example
+///   s = unit.getStandState()
+///
+static PyObject* ArcPyUnit_getStandState( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	PyObject *state = PyLong_FromLong( unit->GetStandState() );
+	return state;
+}
+
+
+/// setStandState
+///   Sets the standstate of the Unit
+///
+/// Parameters
+///   standstate   -   The standstate to be set
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setStandState( STANDSTATE_SIT )
+///
+static PyObject* ArcPyUnit_setStandState( ArcPyUnit *self, PyObject *args )
+{
+	uint32 state;
+
+	if( !PyArg_ParseTuple( args, "k", &state ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a standstate parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetStandState( static_cast< uint8 >( state ) );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -885,6 +934,8 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "isPvPFlagged", (PyCFunction)ArcPyUnit_isPvPFlagged, METH_NOARGS, "Tells if the Unit is flagged for PvP" },
 	{ "hasAura", (PyCFunction)ArcPyUnit_hasAura, METH_VARARGS, "Tells if the Unit has an Aura with the specified spellId" },
 	{ "getAuraBySpellId", (PyCFunction)ArcPyUnit_getAuraBySpellId, METH_VARARGS, "Finds and returns the first Aura with the specified spell Id" },
+	{ "getStandState", (PyCFunction)ArcPyUnit_getStandState, METH_NOARGS, "Returns the current standstate of the Unit" },
+	{ "setStandState", (PyCFunction)ArcPyUnit_setStandState, METH_VARARGS, "Sets the standstate of the Unit" },
 	{NULL}
 };
 
