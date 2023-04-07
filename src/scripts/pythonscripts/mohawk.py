@@ -42,6 +42,7 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Remove your PvP flag!", 25, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Are you buffed with Power Word: Fortitude I?", 26, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Remove Power Word: Fortitude I", 27, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -181,6 +182,14 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am not" )
+			
+	elif id == 27:
+		aura = unit.getAuraBySpellId( 1243 )
+		if aura is not None:
+			aura.remove();
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't have such an aura." )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
@@ -192,7 +201,11 @@ def mohawk_onAIUpdate( unit, event ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I pity the fool!" )
 	
 def mohawk_onHealed( unit, healer, spellId, amount ):
-	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks for healing me with " + str( spellId ) + " for " + str( amount ) )
+	aura = unit.getAuraBySpellId( 1243 )
+	if aura is not None:
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Booyah!" )
+	else:
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks for healing me with " + str( spellId ) + " for " + str( amount ) )
 	
 def mohawk_onApplyAura( unit, caster, spellId ):
     unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks " + caster.getName() + " for buffing me with " + str( spellId ) )

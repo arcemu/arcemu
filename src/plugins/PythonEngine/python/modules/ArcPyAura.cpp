@@ -118,12 +118,34 @@ static PyObject* ArcPyAura_getCasterGuid( ArcPyAura* self, PyObject* args )
 	return guid;
 }
 
+
+/// remove
+///   Removes the Aura
+///
+/// Parameters:
+///   No parameters
+///
+/// Return value:
+///   None
+///
+/// Example:
+///   a.remove()
+///
+static PyObject* ArcPyAura_remove( ArcPyAura* self, PyObject* args )
+{
+	Aura *aura = self->auraPtr;
+	aura->Remove();
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyAura_methods[] = 
 {
 	{ "getSpellName", (PyCFunction)ArcPyAura_getSpellName, METH_NOARGS, "Returns the name of the Spell that applied this Aura" },
 	{ "getSpellId", (PyCFunction)ArcPyAura_getSpellId, METH_NOARGS, "Returns the Id of the Spell that applied this Aura" },	
 	{ "getAuraSlot", (PyCFunction)ArcPyAura_getAuraSlot, METH_NOARGS, "Returns the slot of this Aura" },
 	{ "getCasterGuid", (PyCFunction)ArcPyAura_getCasterGuid, METH_NOARGS, "Returns the Aura caster's GUID" },
+	{ "remove", (PyCFunction)ArcPyAura_remove, METH_NOARGS, "Removes the Aura" },
 	{NULL}
 };
 
