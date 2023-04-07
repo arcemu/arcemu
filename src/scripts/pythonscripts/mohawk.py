@@ -178,8 +178,8 @@ def mohawk_onExitVehicle( unit ):
 def mohawk_onAIUpdate( unit, event ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I pity the fool!" )
 	
-def mohawk_onHealed( unit, healer, amount ):
-	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks for healing me for " + str( amount ) )
+def mohawk_onHealed( unit, healer, spellId, amount ):
+	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks for healing me with " + str( spellId ) + " for " + str( amount ) )
 	
 def mohawk_onApplyAura( unit, caster, spellId ):
     unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks " + caster.getName() + " for buffing me with " + str( spellId ) )

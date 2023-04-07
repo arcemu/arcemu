@@ -82,7 +82,7 @@ public:
 	void OnFirstPassengerEntered( Unit *passenger );
 	void OnVehicleFull();
 	void OnLastPassengerLeft( Unit *passenger );
-	void OnHealed( Unit* healer, int32 amount );
+	void OnHealed( Unit* healer, uint32 spellId, int32 amount );
 	void OnApplyAura( Unit* caster, uint32 spellId );
 
 private:

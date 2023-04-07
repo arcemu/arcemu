@@ -5192,7 +5192,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 	if( u_caster != NULL )
 	{
-		CALL_SCRIPT_EVENT(unitTarget, OnHealed)(u_caster, amount);
+		CALL_SCRIPT_EVENT(unitTarget, OnHealed)(u_caster, pSpellId ? pSpellId : GetProto()->Id, amount);
 	}
 
 	if(p_caster != NULL)
