@@ -172,6 +172,10 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		unit.removePvPFlag()
 		
 	elif id == 26:
+		aura = unit.getAuraBySpellId( 1243 )
+		if aura is not None:
+			print( "Found Aura: " + aura.getSpellName() )
+		
 		if unit.hasAura( 1243 ):
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am" )
 		else:
