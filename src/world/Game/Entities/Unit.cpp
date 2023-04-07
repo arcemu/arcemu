@@ -4528,6 +4528,12 @@ void Unit::AddAura(Aura* aur)
 					}
 				}
 
+				/// inb4 deletion
+				if( aur->GetUnitCaster() != NULL )
+				{
+					CALL_SCRIPT_EVENT( this, OnApplyAura )( aur->GetUnitCaster(), aur->GetSpellId() );
+				}
+
 				delete aur;
 				return;
 			}
@@ -4663,6 +4669,11 @@ void Unit::AddAura(Aura* aur)
 		flag |= AURASTATE_FLAG_JUDGEMENT;
 
 	SetFlag(UNIT_FIELD_AURASTATE, flag);
+
+	if( aur->GetUnitCaster() != NULL )
+	{
+		CALL_SCRIPT_EVENT( this, OnApplyAura )( aur->GetUnitCaster(), aur->GetSpellId() );
+	}
 }
 
 bool Unit::RemoveAura(Aura* aur)

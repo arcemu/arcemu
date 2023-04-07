@@ -83,6 +83,7 @@ public:
 	void OnVehicleFull();
 	void OnLastPassengerLeft( Unit *passenger );
 	void OnHealed( Unit* healer, int32 amount );
+	void OnApplyAura( Unit* caster, uint32 spellId );
 
 private:
 	/// Contains the Python functions that this Python Creature AI Script calls

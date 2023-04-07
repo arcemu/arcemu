@@ -603,3 +603,21 @@ void PythonCreatureAIScript::OnHealed( Unit* healer, int32 amount )
 	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
+
+void PythonCreatureAIScript::OnApplyAura( Unit* caster, uint32 spellId )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_APPLY_AURA;
+
+	if( !functions.hasFunction( eventType ) )
+		return;
+
+	ArcPyTuple args( 3 );
+	args.setItemUnit( 0, _unit );
+	args.setItemUnit( 1, caster );
+	args.setItem( 2, spellId );
+
+	PythonCallable callable( functions.getFunction( eventType ) );
+	callable.callNoReturn( args );
+}
