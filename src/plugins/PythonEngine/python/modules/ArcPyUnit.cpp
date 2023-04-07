@@ -785,6 +785,38 @@ static PyObject* ArcPyUnit_isPvPFlagged( ArcPyUnit *self, PyObject *args )
 		Py_RETURN_FALSE;
 }
 
+/// hasAura( spellId )
+///   Tells if the Unit has an Aura with the specified spellId
+///
+/// Parameters
+///   spellId    -    The spellId of the Aura
+///
+/// Return value
+///   Returns True if the Unit has such an Aura.
+///   Returns False otherwise.
+///
+/// Example
+///   if unit.hasAura( 1243 ):
+///        print( "Unit has Aura 1243" )
+///
+static PyObject* ArcPyUnit_hasAura( ArcPyUnit *self, PyObject *args )
+{
+	uint32 spellId;
+
+	if( !PyArg_ParseTuple( args, "k", &spellId ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a spellId parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+
+	if( unit->HasAura( spellId ) )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -812,6 +844,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setPvPFlag", (PyCFunction)ArcPyUnit_setPvPFlag, METH_NOARGS, "Flags the Unit for PvP" },
 	{ "removePvPFlag", (PyCFunction)ArcPyUnit_removePvPFlag, METH_NOARGS, "Unflags the Unit for PvP" },
 	{ "isPvPFlagged", (PyCFunction)ArcPyUnit_isPvPFlagged, METH_NOARGS, "Tells if the Unit is flagged for PvP" },
+	{ "hasAura", (PyCFunction)ArcPyUnit_hasAura, METH_VARARGS, "Tells if the Unit has an Aura with the specified spellId" },
 	{NULL}
 };
 

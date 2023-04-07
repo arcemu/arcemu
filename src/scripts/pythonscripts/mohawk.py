@@ -41,6 +41,8 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Flag yourself for PvP!", 24, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Remove your PvP flag!", 25, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Are you buffed with Power Word: Fortitude I?", 26, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
@@ -168,6 +170,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	elif id == 25:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Okay, I back down..." )
 		unit.removePvPFlag()
+		
+	elif id == 26:
+		if unit.hasAura( 1243 ):
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am not" )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
