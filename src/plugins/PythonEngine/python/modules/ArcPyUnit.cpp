@@ -1003,6 +1003,102 @@ static PyObject* ArcPyUnit_setHealth( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// isTagged
+///   Tells if the Unit is tagged
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns True if the Unit is tagged.
+///   Returns False otherwise.
+///
+/// Example
+///   if unit.isTagged():
+///       print( "tagged" )
+///
+static PyObject* ArcPyUnit_isTagged( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	if( unit->IsTagged() )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
+/// getTaggerGuid
+///   Returns the Unit's tagger's GUID
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a GUID if the Unit is tagged
+///   Returns 0 otherwise
+///
+/// Example
+///   tagger = unit.getTaggerGuid()
+///
+static PyObject* ArcPyUnit_getTaggerGuid( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	uint64 tagger = unit->GetTaggerGUID();
+
+	return PyLong_FromUnsignedLongLong( tagger );
+}
+
+
+/// tag
+///   Tags the Unit with the specified GUID
+///
+/// Parameters
+///   taggerGuid  -   The tagger's GUID
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.tag( guid )
+///
+static PyObject* ArcPyUnit_tag( ArcPyUnit *self, PyObject *args )
+{
+	uint64 guid;
+
+	if( !PyArg_ParseTuple( args, "K", &guid ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a guid parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->Tag( guid );
+
+	Py_RETURN_NONE;
+}
+
+
+/// untag
+///   Untags the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.untag()
+///
+static PyObject* ArcPyUnit_untag( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->UnTag();
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1038,6 +1134,10 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setMaxHealth", (PyCFunction)ArcPyUnit_setMaxHealth, METH_VARARGS, "Sets the maximum health of the Unit" },
 	{ "getHealth", (PyCFunction)ArcPyUnit_getHealth, METH_NOARGS, "Returns the current health of the Unit" },
 	{ "setHealth", (PyCFunction)ArcPyUnit_setHealth, METH_VARARGS, "Sets the current health of the Unit" },
+	{ "isTagged", (PyCFunction)ArcPyUnit_isTagged, METH_NOARGS, "Tells if the Unit is tagged" },
+	{ "getTaggerGuid", (PyCFunction)ArcPyUnit_getTaggerGuid, METH_NOARGS, "Returns the GUID of the tagger" },
+	{ "tag", (PyCFunction)ArcPyUnit_tag, METH_VARARGS, "Tags the Unit with the specified GUID" },
+	{ "untag", (PyCFunction)ArcPyUnit_untag, METH_NOARGS, "Untags the Unit" },
 	{NULL}
 };
 

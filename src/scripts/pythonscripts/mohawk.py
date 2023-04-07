@@ -45,6 +45,7 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Remove Power Word: Fortitude I", 27, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Standstate", 28, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Tag", 200, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -221,6 +222,37 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	elif id == 104:
 		unit.setStandState( arcemu.STANDSTATE_KNEEL )
+		
+	elif id == 200:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Are you tagged?", 201, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Did I tag you?", 202, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Tag!", 203, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Untag!", 204, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	elif id == 201:
+		if unit.isTagged():
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Yes, I am tagged" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "No, I am not tagged" )
+			
+	elif id == 202:
+		tagger = unit.getTaggerGuid()
+		if tagger == pu.getGUID():
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Yes, you tagged me" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "No, you did not tag me" )
+			
+	elif id == 203:
+		unit.tag( pu.getGUID() )
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
+		
+	elif id == 204:
+		unit.untag()
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
 		
 
 def mohawk_onEnterVehicle( unit ):
