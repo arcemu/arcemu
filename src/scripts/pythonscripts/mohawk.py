@@ -175,6 +175,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		aura = unit.getAuraBySpellId( 1243 )
 		if aura is not None:
 			print( "Found Aura: " + aura.getSpellName() )
+			print( "Caster GUID: " + str( aura.getCasterGuid() ) )
 		
 		if unit.hasAura( 1243 ):
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am" )

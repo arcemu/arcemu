@@ -98,11 +98,32 @@ static PyObject* ArcPyAura_getAuraSlot( ArcPyAura* self, PyObject* args )
 	return id;
 }
 
+
+/// getCasterGuid
+///   Returns the GUID of the Aura's caster
+///
+/// Parameters:
+///   No parameters
+///
+/// Return value:
+///   Returns the Guid of the Aura's caster
+///
+/// Example:
+///   guid = a.getCasterGuid()
+///
+static PyObject* ArcPyAura_getCasterGuid( ArcPyAura* self, PyObject* args )
+{
+	Aura *aura = self->auraPtr;
+	PyObject *guid = PyLong_FromUnsignedLongLong( aura->GetCasterGUID() );
+	return guid;
+}
+
 static PyMethodDef ArcPyAura_methods[] = 
 {
 	{ "getSpellName", (PyCFunction)ArcPyAura_getSpellName, METH_NOARGS, "Returns the name of the Spell that applied this Aura" },
 	{ "getSpellId", (PyCFunction)ArcPyAura_getSpellId, METH_NOARGS, "Returns the Id of the Spell that applied this Aura" },	
 	{ "getAuraSlot", (PyCFunction)ArcPyAura_getAuraSlot, METH_NOARGS, "Returns the slot of this Aura" },
+	{ "getCasterGuid", (PyCFunction)ArcPyAura_getCasterGuid, METH_NOARGS, "Returns the Aura caster's GUID" },
 	{NULL}
 };
 
