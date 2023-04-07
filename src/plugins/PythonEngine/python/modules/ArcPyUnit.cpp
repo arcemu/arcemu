@@ -1098,6 +1098,43 @@ static PyObject* ArcPyUnit_untag( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// despawn
+///   Removes the creature from the world
+///
+/// Parameters
+///   delay         -   Milliseconds to wait before removing the creature
+///   respawnTime   -  Milliseconds to wait before respawning
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.despawn( 1500, 5000 ) # Despawns in 1.5 s, and respawns in 5 s after.
+///
+static PyObject* ArcPyUnit_despawn( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function only works with Creatures" );
+		return NULL;
+	}
+
+	uint32 delay;
+	uint32 respawnTime;
+
+	if( !PyArg_ParseTuple( args, "kk", &delay, &respawnTime ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a delay and a respawntime parameter" );
+		return NULL;
+	}
+
+	Creature *creature = static_cast< Creature* >( unit );
+	creature->Despawn( delay, respawnTime );
+
+	Py_RETURN_NONE;
+}
 
 static PyMethodDef ArcPyUnit_methods[] = 
 {
@@ -1138,6 +1175,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getTaggerGuid", (PyCFunction)ArcPyUnit_getTaggerGuid, METH_NOARGS, "Returns the GUID of the tagger" },
 	{ "tag", (PyCFunction)ArcPyUnit_tag, METH_VARARGS, "Tags the Unit with the specified GUID" },
 	{ "untag", (PyCFunction)ArcPyUnit_untag, METH_NOARGS, "Untags the Unit" },
+	{ "despawn", (PyCFunction)ArcPyUnit_despawn, METH_VARARGS, "Removes the creature from the world" },
 	{NULL}
 };
 
