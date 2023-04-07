@@ -48,6 +48,7 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Tag", 200, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Respawn!", 29, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Am I a player?", 30, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -212,6 +213,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	elif id == 29:
 		unit.despawn( 1500, 1500 )
+		
+	elif id == 30:
+		if pu.isPlayer():
+			p = pu.toPlayer()
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are, fool" )
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "...and your name is " + p.getName() )
 		
 	elif id == 100:
 		unit.setStandState( arcemu.STANDSTATE_STAND )

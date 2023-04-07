@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPyUnit.hpp"
+#include "ArcPyPlayer.hpp"
 #include "ArcPyAura.hpp"
 
 static PyObject* ArcPyUnit_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
@@ -1136,6 +1137,59 @@ static PyObject* ArcPyUnit_despawn( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// isPlayer
+///   Tells if this Unit is a Player
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns True if the Unit is a Player.
+///   Returns False othersie
+///
+/// Example
+///   if unit.isPlayer():
+///     print( "Unit is a Player" )
+///
+static PyObject* ArcPyUnit_isPlayer( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	if( unit->IsPlayer() )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
+/// toPlayer
+///   Casts a Unit to a Player. Throws an error if the cast is not possible.
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a Player object if the cast is possible.
+///   Throws an error otherwise.
+///
+/// Example
+///   player = unit.toPlayer()
+///
+static PyObject* ArcPyUnit_toPlayer( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	if( !unit->IsPlayer() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Player" );
+		return NULL;
+	}
+
+	ArcPyPlayer *player = createArcPyPlayer();
+	player->playerPtr = static_cast< Player* >( unit );
+	return (PyObject*)( player );
+}
+
+
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1176,6 +1230,8 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "tag", (PyCFunction)ArcPyUnit_tag, METH_VARARGS, "Tags the Unit with the specified GUID" },
 	{ "untag", (PyCFunction)ArcPyUnit_untag, METH_NOARGS, "Untags the Unit" },
 	{ "despawn", (PyCFunction)ArcPyUnit_despawn, METH_VARARGS, "Removes the creature from the world" },
+	{ "isPlayer", (PyCFunction)ArcPyUnit_isPlayer, METH_NOARGS, "Tells if the Unit is a Player" },
+	{ "toPlayer", (PyCFunction)ArcPyUnit_toPlayer, METH_NOARGS, "Casts the Unit to a Player if possible" },
 	{NULL}
 };
 
