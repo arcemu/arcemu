@@ -241,6 +241,13 @@ def mohawk_onHealed( unit, healer, spellId, amount ):
 	
 def mohawk_onApplyAura( unit, caster, spellId ):
     unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thanks " + caster.getName() + " for buffing me with " + str( spellId ) )
+	
+def mohawk_onLoad( unit, event ):
+	print( "Mohawk maxhealth: " + str( unit.getMaxHealth() ) )
+	print( "Mohawk health: " + str( unit.getHealth() ) )
+	
+	unit.setMaxHealth( 300000 )
+	unit.setHealth( unit.getMaxHealth() )
 
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_HELLO, mohawk_onHello )
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_SELECT, mohawk_onSelectOption )
@@ -249,3 +256,4 @@ arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_EXIT_VEHICLE, mohawk_o
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_AIUPDATE, mohawk_onAIUpdate )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_HEALED, mohawk_onHealed )
 arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_APPLY_AURA, mohawk_onApplyAura )
+arcemu.RegisterUnitEvent( 31111, arcemu.CREATURE_EVENT_ON_LOAD, mohawk_onLoad )

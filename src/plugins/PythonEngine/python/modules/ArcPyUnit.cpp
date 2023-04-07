@@ -905,6 +905,104 @@ static PyObject* ArcPyUnit_setStandState( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// getMaxHealth
+///   Returns the maximum health of the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the maximum health of the Unit
+///
+/// Example
+///   maxHealth = unit.getMaxHealth()
+///
+static PyObject* ArcPyUnit_getMaxHealth( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	PyObject *maxHealth = PyLong_FromUnsignedLong( unit->GetMaxHealth() );
+	return maxHealth;
+}
+
+
+/// setMaxHealth
+///   Sets the maximum health of the Unit
+///
+/// Parameters
+///   maxHealth   -  The new maximum health of the Unit
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setMaxHealth( 1337 )
+///
+static PyObject* ArcPyUnit_setMaxHealth( ArcPyUnit *self, PyObject *args )
+{
+	uint32 maxHealth;
+
+	if( !PyArg_ParseTuple( args, "k", &maxHealth ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a maxHealth parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetMaxHealth( maxHealth );
+
+	Py_RETURN_NONE;
+}
+
+
+/// getHealth
+///   Returns the current health of the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the current health of the Unit
+///
+/// Example
+///   health = unit.getHealth()
+///
+static PyObject* ArcPyUnit_getHealth( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	PyObject *health = PyLong_FromUnsignedLong( unit->GetHealth() );
+	return health;
+}
+
+
+/// setHealth
+///   Sets the current health of the Unit
+///
+/// Parameters
+///   health   -  The new current health of the Unit
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setHealth( 1337 )
+///
+static PyObject* ArcPyUnit_setHealth( ArcPyUnit *self, PyObject *args )
+{
+	uint32 health;
+
+	if( !PyArg_ParseTuple( args, "k", &health ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a health parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetHealth( health );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -936,6 +1034,10 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getAuraBySpellId", (PyCFunction)ArcPyUnit_getAuraBySpellId, METH_VARARGS, "Finds and returns the first Aura with the specified spell Id" },
 	{ "getStandState", (PyCFunction)ArcPyUnit_getStandState, METH_NOARGS, "Returns the current standstate of the Unit" },
 	{ "setStandState", (PyCFunction)ArcPyUnit_setStandState, METH_VARARGS, "Sets the standstate of the Unit" },
+	{ "getMaxHealth", (PyCFunction)ArcPyUnit_getMaxHealth, METH_NOARGS, "Returns the maximum health of the Unit" },
+	{ "setMaxHealth", (PyCFunction)ArcPyUnit_setMaxHealth, METH_VARARGS, "Sets the maximum health of the Unit" },
+	{ "getHealth", (PyCFunction)ArcPyUnit_getHealth, METH_NOARGS, "Returns the current health of the Unit" },
+	{ "setHealth", (PyCFunction)ArcPyUnit_setHealth, METH_VARARGS, "Sets the current health of the Unit" },
 	{NULL}
 };
 
