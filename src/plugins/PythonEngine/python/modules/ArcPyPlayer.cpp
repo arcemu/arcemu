@@ -259,6 +259,46 @@ static PyObject* ArcPyPlayer_sendGossipPOI( ArcPyPlayer *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// markQuestObjectiveAsComplete
+///   Marks a quest objective as complete in the player's quest log
+///
+/// Parameters
+///   quest      - The identifier of the quest
+///   objective  - The sequence number of the objective
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.markQuestObjectiveAsComplete( 1234, 1 )
+///
+static PyObject* ArcPyPlayer_markQuestObjectiveAsComplete( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 quest;
+	uint32 objective;
+
+	if( !PyArg_ParseTuple( args, "kk", &quest, &objective ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a quest, and an objective to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+
+	QuestLogEntry *qle = player->GetQuestLogForEntry( quest );
+	if( qle == NULL )
+	{
+		PyErr_SetString( PyExc_ValueError, "The player doesn't have that quest in their quest log" );
+		return NULL;
+	}
+
+	qle->MarkObjectiveComplete( objective );
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -267,6 +307,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "spawnAndEnterVehicle", (PyCFunction)ArcPyPlayer_spawnAndEnterVehicle, METH_VARARGS, "Spawns a vehicle and makes the player enter it" },
 	{ "teleport", (PyCFunction)ArcPyPlayer_teleport, METH_VARARGS, "Teleports the player to the given map's given coordinates" },
 	{ "sendGossipPOI", (PyCFunction)ArcPyPlayer_sendGossipPOI, METH_VARARGS, "Sends a gossip POI (Point Of Interest) to the Player, marking it on the map" },
+	{ "markQuestObjectiveAsComplete", (PyCFunction)ArcPyPlayer_markQuestObjectiveAsComplete, METH_VARARGS, "Marks a quest objective as complete in the player's quest log" },
 	{NULL}
 };
 
