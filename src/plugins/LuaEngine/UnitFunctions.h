@@ -806,13 +806,13 @@ class LuaUnit
 		{
 			TEST_UNIT()
 			Creature* pCreature = TO_CREATURE(ptr);
-			if(pCreature->m_custom_waypoint_map)
+			if(pCreature->hasCustomWayPoints() )
 			{
 				pCreature->GetAIInterface()->SetWaypointMap(NULL);
 			}
 
-			pCreature->m_custom_waypoint_map = new WayPointMap;
-			pCreature->GetAIInterface()->SetWaypointMap(pCreature->m_custom_waypoint_map);
+			pCreature->setCustomWayPoints( new WayPointMap );
+			pCreature->GetAIInterface()->SetWaypointMap( pCreature->getCustomWayPoints() );
 			return 0;
 		}
 
@@ -828,17 +828,19 @@ class LuaUnit
 			int modelid = luaL_checkint(L, 7);
 
 			Creature* pCreature = TO_CREATURE(ptr);
-			if(!pCreature->m_custom_waypoint_map)
+			if(!pCreature->hasCustomWayPoints())
 			{
-				pCreature->m_custom_waypoint_map = new WayPointMap;
-				pCreature->GetAIInterface()->SetWaypointMap(pCreature->m_custom_waypoint_map);
+				pCreature->setCustomWayPoints( new WayPointMap );
+				pCreature->GetAIInterface()->SetWaypointMap( pCreature->getCustomWayPoints() );
 			}
+
+			WayPointMap *waypoints = pCreature->getCustomWayPoints();
 
 			if(!modelid)
 				modelid = pCreature->GetDisplayId();
 
 			WayPoint* wp = new WayPoint;
-			wp->id = (uint32)pCreature->m_custom_waypoint_map->size() + 1;
+			wp->id = (uint32)waypoints->size() + 1;
 			wp->x = x;
 			wp->y = y;
 			wp->z = z;
@@ -850,7 +852,7 @@ class LuaUnit
 			wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 			wp->waittime = waittime;
 			if(pCreature->GetAIInterface()->addWayPointUnsafe(wp))
-				pCreature->m_custom_waypoint_map->push_back(wp);
+				waypoints->push_back(wp);
 			else
 			{
 				sLog.outDetail("WayPoint created by a Lua script for Creature ID %u wasn't added due to an error occurred in CreateWaypoint()", pCreature->GetCreatureInfo()->Id);

@@ -62,14 +62,23 @@ class SCRIPT_DECL EasyFunctions
 			PrintMessage("Function call: WaypointCreate()");
 			ARCEMU_ASSERT(pCreature != NULL);
 
-			if(!pCreature->m_custom_waypoint_map)
-				pCreature->m_custom_waypoint_map = new WayPointMap;
+			WayPointMap *waypoints = NULL;
+
+			if(!pCreature->hasCustomWayPoints())
+			{
+				waypoints = new WayPointMap;
+				pCreature->setCustomWayPoints( waypoints );
+			}
+			else
+			{
+				waypoints = pCreature->getCustomWayPoints();
+			}
 
 			if(!modelid)
 				modelid = pCreature->GetUInt32Value(UNIT_FIELD_DISPLAYID);
 
 			WayPoint* wp = new WayPoint;
-			wp->id = pCreature->m_custom_waypoint_map->size() ? pCreature->m_custom_waypoint_map->size() : 1;
+			wp->id = waypoints->size() ? waypoints->size() : 1;
 			wp->x = x;
 			wp->y = y;
 			wp->z = z;
@@ -81,18 +90,18 @@ class SCRIPT_DECL EasyFunctions
 			wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 			wp->waittime = waittime;
 
-			pCreature->m_custom_waypoint_map->resize(wp->id+1);
-			(*pCreature->m_custom_waypoint_map)[wp->id] = wp;
+			waypoints->resize(wp->id+1);
+			(*waypoints)[wp->id] = wp;
 		}
 
 		// makes the creatures AI to use the custom waypoints.
 		void EnableWaypoints(Creature* creat)
 		{
 			ARCEMU_ASSERT(creat != NULL);
-			if(!creat->m_custom_waypoint_map)
+			if(!creat->hasCustomWayPoints())
 				return;
 
-			creat->GetAIInterface()->SetWaypointMap(creat->m_custom_waypoint_map);
+			creat->GetAIInterface()->SetWaypointMap( creat->getCustomWayPoints() );
 		}
 
 		// deletes all custom waypoint objects the creature has.
@@ -101,18 +110,19 @@ class SCRIPT_DECL EasyFunctions
 			PrintMessage("Function call: DeleteWaypoints()");
 			ARCEMU_ASSERT(creat != NULL);
 
-			if(creat->m_custom_waypoint_map == NULL)
+			if( !creat->hasCustomWayPoints() )
 				return;
 
-			WayPointMap::iterator i = creat->m_custom_waypoint_map->begin();
+			WayPointMap *waypoints = creat->getCustomWayPoints();
+			WayPointMap::iterator i = waypoints->begin();
 
-			for(; i != creat->m_custom_waypoint_map->end(); ++i)
+			for(; i != waypoints->end(); ++i)
 			{
 				if((*i) != NULL)
 					delete(*i);
 			}
 
-			creat->m_custom_waypoint_map->clear();
+			waypoints->clear();
 		}
 
 		Creature* SpawnCreature(Player* pThis, uint32 entry, float posX, float posY, float posZ, float posO, uint32 duration = 0, uint32 phase = 1)
@@ -222,9 +232,9 @@ class SCRIPT_DECL EasyFunctions
 			PrintMessage("Function call: CreateCustomWaypointMap()");
 			ARCEMU_ASSERT(creat != NULL);
 
-			if(creat->m_custom_waypoint_map == NULL)
+			if( ! creat->hasCustomWayPoints() )
 			{
-				creat->m_custom_waypoint_map = new WayPointMap;
+				creat->setCustomWayPoints( new WayPointMap );
 			}
 			else
 			{

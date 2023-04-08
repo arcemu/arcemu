@@ -691,7 +691,21 @@ class SERVER_DECL Creature : public Unit
 		// scriptdev2
 		uint32 GetNpcTextId();
 
-		WayPointMap* m_custom_waypoint_map;
+		bool hasCustomWayPoints() const{
+			if( m_custom_waypoint_map != NULL )
+				return true;
+			else
+				return false;
+		}
+
+		WayPointMap* getCustomWayPoints() const{
+			return m_custom_waypoint_map;
+		}
+
+		void setCustomWayPoints( WayPointMap* waypointMap ){
+			this->m_custom_waypoint_map = waypointMap;
+		}
+
 		Player* m_escorter;
 		void DestroyCustomWaypointMap();
 		bool IsInLimboState() { return m_limbostate; }
@@ -745,6 +759,7 @@ class SERVER_DECL Creature : public Unit
 		CreatureProto* proto;
 
 	private:
+		WayPointMap* m_custom_waypoint_map;
 		uint32 m_Creature_type;
 };
 
