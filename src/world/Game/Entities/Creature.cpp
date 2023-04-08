@@ -221,7 +221,7 @@ Creature::Creature(uint64 guid)
 	auctionHouse = 0;
 	SetAttackPowerMultiplier(0.0f);
 	SetRangedAttackPowerMultiplier(0.0f);
-	m_custom_waypoint_map = 0;
+	m_custom_waypoint_map = NULL;
 	m_escorter = NULL;
 	m_limbostate = false;
 	m_corpseEvent = false;
