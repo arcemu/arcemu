@@ -851,9 +851,7 @@ class LuaUnit
 			wp->backwardemoteid = wp->forwardemoteid = 0;
 			wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
 			wp->waittime = waittime;
-			if(pCreature->GetAIInterface()->addWayPointUnsafe(wp))
-				waypoints->push_back(wp);
-			else
+			if(!pCreature->GetAIInterface()->addWayPointUnsafe(wp))
 			{
 				sLog.outDetail("WayPoint created by a Lua script for Creature ID %u wasn't added due to an error occurred in CreateWaypoint()", pCreature->GetCreatureInfo()->Id);
 				delete wp;
