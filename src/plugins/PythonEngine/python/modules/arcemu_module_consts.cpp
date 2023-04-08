@@ -197,4 +197,18 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "STANDSTATE_SIT_HIGH_CHAIR", STANDSTATE_SIT_HIGH_CHAIR );
 	PyModule_AddIntConstant( module, "STANDSTATE_DEAD", STANDSTATE_DEAD );
 	PyModule_AddIntConstant( module, "STANDSTATE_KNEEL", STANDSTATE_KNEEL );
+
+	/// Waypoint flags
+	PyModule_AddIntConstant( module, "WAYPOINT_FLAG_WALK", WAYPOINT_FLAG_WALK );
+	PyModule_AddIntConstant( module, "WAYPOINT_FLAG_RUN", WAYPOINT_FLAG_RUN );
+	PyModule_AddIntConstant( module, "WAYPOINT_FLAG_FLY", WAYPOINT_FLAG_FLY );
+
+	/// AI movement type
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_NONE", MOVEMENTTYPE_NONE );
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_RANDOMWP", MOVEMENTTYPE_RANDOMWP );
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_CIRCLEWP", MOVEMENTTYPE_CIRCLEWP );
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_WANTEDWP", MOVEMENTTYPE_WANTEDWP );
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_DONTMOVEWP", MOVEMENTTYPE_DONTMOVEWP );
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_QUEST", MOVEMENTTYPE_QUEST );
+	PyModule_AddIntConstant( module, "MOVEMENTTYPE_FORWARDTHENSTOP", MOVEMENTTYPE_FORWARDTHANSTOP );
 }

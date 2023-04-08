@@ -37,6 +37,8 @@ def GuardRoberts_onLoad( unit, event ):
 	unit.setPvPFlag()
 	unit.setStandState( arcemu.STANDSTATE_KNEEL )
 	unit.setHealth( int( unit.getMaxHealth() * 0.73 ) )
+	unit.setMovementType( arcemu.MOVEMENTTYPE_NONE )
+	unit.destroyCustomWaypoints()
 	
 def GuardRoberts_onHealed( unit, healer, spellId, amount ):
 	if not healer.isPlayer():
@@ -56,7 +58,14 @@ def GuardRoberts_onApplyAura( unit, caster, spellId ):
 		pu.markQuestObjectiveAsComplete( QUESTID_GARMENTS_OF_THE_LIGHT, 0 )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you! Thank you, priest. Now I can take on those murlocs with the Light on my side!" )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Farewell to you, and may the Light be with you always." )
-		unit.despawn( 3000, 3000 )
+				
+		unit.createCustomWaypoint( -9510.285156, -142.285202, 59.149242, 5.255516, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+		unit.createCustomWaypoint( -9513.697266, -152.955444, 59.462231, 4.462268, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+		unit.createCustomWaypoint( -9516.402344, -164.903122, 59.309666, 4.489758, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
+		
+		#unit.despawn( 10000, 3000 )
+		
 	
 arcemu.RegisterUnitEvent( CREATUREID_GUARD_ROBERTS, arcemu.CREATURE_EVENT_ON_LOAD, GuardRoberts_onLoad )
 arcemu.RegisterUnitEvent( CREATUREID_GUARD_ROBERTS, arcemu.CREATURE_EVENT_ON_HEALED, GuardRoberts_onHealed )

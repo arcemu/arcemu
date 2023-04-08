@@ -211,6 +211,13 @@ enum CreatureState
     ATTACKING
 };
 
+enum WaypointFlags
+{
+	WAYPOINT_FLAG_WALK = 0,
+	WAYPOINT_FLAG_RUN  = 256,
+	WAYPOINT_FLAG_FLY  = 512
+};
+
 
 struct SpellEntry;
 //enum MOD_TYPES;

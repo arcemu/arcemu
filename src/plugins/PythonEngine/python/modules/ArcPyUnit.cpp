@@ -1189,6 +1189,145 @@ static PyObject* ArcPyUnit_toPlayer( ArcPyUnit *self, PyObject *args )
 }
 
 
+/// destroyCustomWayPoints
+///   Destroys the custom waypoints of the Creature
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.destroyCustomWayPoints()
+///
+static PyObject* ArcPyUnit_destroyCustomWaypoints( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
+		return NULL;
+	}
+
+	Creature *creature = TO_CREATURE( unit );
+	creature->DestroyCustomWaypointMap();
+
+	Py_RETURN_NONE;
+}
+
+
+/// createCustomWaypoint
+///   Creates and adds a custom waypoint to the Creature
+///
+/// Parameters
+///   x       -  X coordinate
+///   y       -  Y coordinate
+///   z       -  Z coordinate
+///   o       -  Orientation
+///   wait    -  How long the Creature will wait before moving on
+///   flags   -  The movement flags used for the movement between waypoints
+///   model   -  The displayid that should be used at the waypoint. 0 means no change.
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.createWaypoint( 123.0, 12.34, 56.23, 2.39, 1000, 0, 0 )
+///
+static PyObject* ArcPyUnit_createCustomWaypoint( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
+		return NULL;
+	}
+
+	float x;
+	float y;
+	float z;
+	float o;
+	uint32 wait;
+	uint32 flags;
+	uint32 model;
+
+	if( !PyArg_ParseTuple( args, "ffffkkk", &x, &y, &z, &o, &wait, &flags, &model ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires x,y,z,o,wait,flags,model parameters" );
+		return NULL;
+	}
+
+	Creature *creature = TO_CREATURE( unit );
+
+	if( ! creature->hasCustomWayPoints() )
+	{
+		creature->setCustomWayPoints( new WayPointMap );
+		creature->GetAIInterface()->SetWaypointMap( creature->getCustomWayPoints() );
+	}
+
+	WayPointMap *waypoints = creature->getCustomWayPoints();
+	if( model == 0 )
+		model = creature->GetDisplayId();
+
+	WayPoint* wp = new WayPoint;
+	wp->id = (uint32)waypoints->size() + 1;
+	wp->x = x;
+	wp->y = y;
+	wp->z = z;
+	wp->o = o;
+	wp->flags = flags;
+	wp->backwardskinid = model;
+	wp->forwardskinid = model;
+	wp->backwardemoteid = wp->forwardemoteid = 0;
+	wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
+	wp->waittime = wait;
+
+	if( !creature->GetAIInterface()->addWayPointUnsafe( wp ) )
+	{
+		std::stringstream ss;
+		ss << "Failed to add waypoint " << wp->id <<  " to AIInterface";
+		PyErr_SetString( PyExc_BaseException, ss.str().c_str() );
+		delete wp;
+	}
+
+	Py_RETURN_NONE;
+}
+
+
+/// setMovementType
+///   Sets the AI movement type of the Creature
+///
+/// Parameters
+///   type       -  The movement type
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
+///
+static PyObject* ArcPyUnit_setMovementType( ArcPyUnit *self, PyObject *args )
+{
+	uint32 type;
+	if( !PyArg_ParseTuple( args, "k", &type ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a type parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
+		return NULL;
+	}
+
+	Creature *creature = TO_CREATURE( unit );
+	creature->GetAIInterface()->setMoveType( type );
+
+	Py_RETURN_NONE;
+}
 
 static PyMethodDef ArcPyUnit_methods[] = 
 {
@@ -1232,6 +1371,9 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "despawn", (PyCFunction)ArcPyUnit_despawn, METH_VARARGS, "Removes the creature from the world" },
 	{ "isPlayer", (PyCFunction)ArcPyUnit_isPlayer, METH_NOARGS, "Tells if the Unit is a Player" },
 	{ "toPlayer", (PyCFunction)ArcPyUnit_toPlayer, METH_NOARGS, "Casts the Unit to a Player if possible" },
+	{ "destroyCustomWaypoints", (PyCFunction)ArcPyUnit_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
+	{ "createCustomWaypoint", (PyCFunction)ArcPyUnit_createCustomWaypoint, METH_VARARGS, "Creates and adds a custom waypoint to the creature" },
+	{ "setMovementType", (PyCFunction)ArcPyUnit_setMovementType, METH_VARARGS, "Sets the AI movement type of the creature" },
 	{NULL}
 };
 
