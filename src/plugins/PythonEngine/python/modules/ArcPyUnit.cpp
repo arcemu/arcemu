@@ -1397,6 +1397,40 @@ static PyObject* ArcPyUnit_setCanRegenerateHP( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// emote
+///   Make the Unit perform an emote
+///
+/// Parameters
+///   emote   -  The emote to perform
+///   time    -  Time to wait before the emote (optional)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.emote( 2 )
+///
+static PyObject* ArcPyUnit_emote( ArcPyUnit *self, PyObject *args )
+{
+	uint32 emote;
+	uint32 time;
+
+	if( !PyArg_ParseTuple( args, "k|k", &emote, &time ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an emote parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	if( time > 0 )
+		unit->EventAddEmote( (EmoteType)emote, time );
+	else
+		unit->Emote( (EmoteType)emote );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1444,6 +1478,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setMovementType", (PyCFunction)ArcPyUnit_setMovementType, METH_VARARGS, "Sets the AI movement type of the creature" },
 	{ "resetWaypoint", (PyCFunction)ArcPyUnit_resetWaypoint, METH_NOARGS, "Resets the current waypoint of the creature to 0" },
 	{ "setCanRegenerateHP", (PyCFunction)ArcPyUnit_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
+	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
 	{NULL}
 };
 
