@@ -47,6 +47,7 @@ public:
 	static bool inRangeYZX(const float* v1, const float* v2, const float r, const float h);
 	static float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
 	static bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y);
+	static bool isInFront( float ax, float ay, float ao, float bx, float by );
 };
 
 #endif

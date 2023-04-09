@@ -649,26 +649,7 @@ bool Object::IsWithinLOS(LocationVector location)
 bool Object::isInFront(Object* target)
 {
 	// check if we facing something ( is the object within a 180 degree slice of our positive y axis )
-
-	double x = target->GetPositionX() - m_position.x;
-	double y = target->GetPositionY() - m_position.y;
-
-	double angle = atan2(y, x);
-	angle = (angle >= 0.0) ? angle : 2.0 * M_PI + angle;
-	angle -= m_position.o;
-
-	while(angle > M_PI)
-		angle -= 2.0 * M_PI;
-
-	while(angle < -M_PI)
-		angle += 2.0 * M_PI;
-
-	// replace M_PI in the two lines below to reduce or increase angle
-
-	double left = -1.0 * (M_PI / 2.0);
-	double right = (M_PI / 2.0);
-
-	return((angle >= left) && (angle <= right));
+	return Math::isInFront( m_position.x, m_position.y, m_position.o, target->GetPositionX(), target->GetPositionY() );
 }
 
 bool Object::isInBack(Object* target)

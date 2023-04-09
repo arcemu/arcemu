@@ -140,3 +140,27 @@ bool Math::inArc(float Position1X, float Position1Y, float FOV, float Orientatio
 		return false;
 	}
 }
+
+bool Math::isInFront( float ax, float ay, float ao, float bx, float by )
+{
+	double x = bx - ax;
+	double y = by - ay;
+
+	double angle = atan2(y, x);
+	if( angle < 0.0f )
+		angle = 2.0 * M_PI + angle;
+
+	angle -= ao;
+
+	while( angle > M_PI )
+		angle -= 2.0 * M_PI;
+
+	while(angle < -M_PI)
+		angle += 2.0 * M_PI;
+
+	// replace M_PI in the two lines below to reduce or increase angle
+	double left = -1.0 * (M_PI / 2.0);
+	double right = (M_PI / 2.0);
+
+	return((angle >= left) && (angle <= right));
+}
