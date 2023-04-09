@@ -1651,6 +1651,8 @@ class SERVER_DECL Unit : public Object
 
 		void SetFacing(float newo);//only working if creature is idle
 
+		void faceObject( Object *obj );
+
 		AuraCheckResponse AuraCheck(SpellEntry* proto, Object* caster = NULL);
 		AuraCheckResponse AuraCheck(SpellEntry* proto, Aura* aur, Object* caster = NULL);
 

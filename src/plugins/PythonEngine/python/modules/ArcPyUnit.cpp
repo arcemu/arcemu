@@ -1431,6 +1431,43 @@ static PyObject* ArcPyUnit_emote( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// faceUnit
+///   Make the Unit face another Unit
+///
+/// Parameters
+///   target   -  The unit to face
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.faceUnit( target )
+///
+static PyObject* ArcPyUnit_faceUnit( ArcPyUnit *self, PyObject *args )
+{
+	PyObject *obj;
+
+	if( !PyArg_ParseTuple( args, "O", &obj ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit parameter" );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( obj )->tp_name, "ArcPyUnit" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit parameter" );
+		return NULL;
+	}
+
+	ArcPyUnit *other = (ArcPyUnit*)obj;
+	Unit *unit = self->unitPtr;
+	Unit *target = other->unitPtr;
+
+	unit->faceObject( target );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1479,6 +1516,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "resetWaypoint", (PyCFunction)ArcPyUnit_resetWaypoint, METH_NOARGS, "Resets the current waypoint of the creature to 0" },
 	{ "setCanRegenerateHP", (PyCFunction)ArcPyUnit_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
 	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
+	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
 	{NULL}
 };
 

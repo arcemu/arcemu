@@ -6352,6 +6352,12 @@ void Unit::SetFacing(float newo)
 	Messenger::SendSetFacing( this, newo );
 }
 
+void Unit::faceObject( Object *obj )
+{
+	float o = Math::calcRadAngle( GetPositionX(), GetPositionY(), obj->GetPositionX(), obj->GetPositionY() );
+	SetFacing( o );
+}
+
 float Unit::get_chance_to_daze(Unit* target)
 {
 	if(target->getLevel() < CREATURE_DAZE_MIN_LEVEL)   // since 3.3.0

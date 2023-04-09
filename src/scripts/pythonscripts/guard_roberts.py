@@ -53,6 +53,7 @@ def GuardRoberts_onHealed( unit, healer, spellId, amount ):
 		
 	if unit.getStandState() == arcemu.STANDSTATE_KNEEL and spellId == SPELLID_LESSERHEAL_II:
 		unit.setStandState( arcemu.STANDSTATE_STAND )
+		unit.faceUnit( healer )
 		unit.emote( 2 )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ah, priest, you came along just in time. I appreciate it." )
 	
