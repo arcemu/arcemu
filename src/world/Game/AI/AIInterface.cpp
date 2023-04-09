@@ -2462,9 +2462,9 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 							}
 						}
 
-						if(wp->flags & 512)
+						if( ( wp->flags & WAYPOINT_FLAG_FLY ) != 0)
 							SetFly();
-						else if(wp->flags & 256)
+						else if( ( wp->flags & WAYPOINT_FLAG_RUN ) != 0 )
 							SetRun();
 						else
 							SetWalk();
