@@ -44,6 +44,7 @@ public:
 	static float calcAngle(float Position1X, float Position1Y, float Position2X, float Position2Y);
 	static float calcRadAngle(float Position1X, float Position1Y, float Position2X, float Position2Y);
 	static float getEasyAngle(float angle);
+	static bool inRangeYZX(const float* v1, const float* v2, const float r, const float h);
 };
 
 #endif

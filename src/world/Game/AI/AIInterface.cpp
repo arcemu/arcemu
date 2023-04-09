@@ -3799,7 +3799,7 @@ dtStatus AIInterface::findSmoothPath(const float* startPos, const float* endPos,
 		dtVcopy(iterPos, result);
 
 		// Handle end of path and off-mesh links when close enough.
-		if(endOfPath && inRangeYZX(iterPos, steerPos, SMOOTH_PATH_SLOP, 2.0f))
+		if(endOfPath && Math::inRangeYZX(iterPos, steerPos, SMOOTH_PATH_SLOP, 2.0f))
 		{
 			// Reached end of path.
 			dtVcopy(iterPos, targetPos);
@@ -3810,7 +3810,7 @@ dtStatus AIInterface::findSmoothPath(const float* startPos, const float* endPos,
 			}
 			break;
 		}
-		else if(offMeshConnection && inRangeYZX(iterPos, steerPos, SMOOTH_PATH_SLOP, 2.0f))
+		else if(offMeshConnection && Math::inRangeYZX(iterPos, steerPos, SMOOTH_PATH_SLOP, 2.0f))
 		{
 			// Reached off-mesh connection.
 			usedOffmesh = true;
@@ -3879,7 +3879,7 @@ bool AIInterface::getSteerTarget(const float* startPos, const float* endPos, con
 	{
 		// Stop at Off-Mesh link or when point is further than slop away.
 		if((steerPathFlags[ns] & DT_STRAIGHTPATH_OFFMESH_CONNECTION) ||
-		        !inRangeYZX(&steerPath[ns * VERTEX_SIZE], startPos, minTargetDist, 1000.0f))
+		        !Math::inRangeYZX(&steerPath[ns * VERTEX_SIZE], startPos, minTargetDist, 1000.0f))
 			break;
 		ns++;
 	}

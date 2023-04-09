@@ -47,15 +47,6 @@
 #define SMOOTH_PATH_STEP_SIZE   6.0f
 #define SMOOTH_PATH_SLOP        0.4f
 
-inline bool inRangeYZX(const float* v1, const float* v2, const float r, const float h)
-{
-	const float dx = v2[0] - v1[0];
-	const float dy = v2[1] - v1[1]; // elevation
-	const float dz = v2[2] - v1[2];
-	return (dx * dx + dz * dz) < r * r && fabsf(dy) < h;
-}
-
-
 class Object;
 class Creature;
 class Unit;
