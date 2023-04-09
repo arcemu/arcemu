@@ -267,13 +267,13 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession* m_session)
 
 bool ChatHandler::HandleFaceCommand(const char* args, WorldSession* m_session)
 {
-
+	Player *player = m_session->GetPlayer();
 	Creature* creature = NULL;
 
-	uint64 guid = m_session->GetPlayer()->GetSelection();
+	uint64 guid = player->GetSelection();
 	if(guid != 0)
 	{
-		creature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+		creature = player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	}
 
 	if(creature == NULL)
