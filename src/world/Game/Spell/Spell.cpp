@@ -6009,7 +6009,7 @@ void Spell::SpellEffectJumpBehindTarget(uint32 i)
 		float x = un->GetPositionX() + cosf(angle) * rad;
 		float y = un->GetPositionY() + sinf(angle) * rad;
 		float z = un->GetPositionZ();
-		float o = un->calcRadAngle(x, y, un->GetPositionX(), un->GetPositionY());
+		float o = Math::calcRadAngle(x, y, un->GetPositionX(), un->GetPositionY());
 
 		if(u_caster->GetAIInterface() != NULL)
 			u_caster->GetAIInterface()->MoveJump(x, y, z, o);

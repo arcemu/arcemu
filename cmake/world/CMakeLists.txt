@@ -179,6 +179,7 @@ SET(sources
 	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp
 	PacketHandlers/NewHandlers/LFGPacketHandlers.cpp
+	Math/Math.cpp
 )
 
 SET( headers
@@ -321,6 +322,7 @@ SET( headers
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h
 	PacketHandlers/NewHandlers/LFGPacketHandlers.h
+	Math/Math.h
 )
 
 foreach(src IN ITEMS ${sources} )

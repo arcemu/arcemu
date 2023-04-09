@@ -23,24 +23,6 @@
 
 //#define TEST_PATHFINDING 1
 
-#ifdef min
-#undef min
-#endif
-
-#ifdef max
-#undef max
-#endif
-
-/* platforms that already define M_PI in math.h */
-#ifdef M_PI
-#undef M_PI
-#endif
-
-#define M_PI	   3.14159265358979323846
-#define M_H_PI     1.57079632679489661923
-#define M_Q_PI     0.785398163397448309615
-#define M_PI_FLOAT 3.14159f
-
 template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #define TO_CREATURE(ptr) TO<Creature*>(ptr)
 #define TO_PLAYER(ptr) TO<Player*>(ptr)
@@ -80,6 +62,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 #include "DetourAssert.h"
 
 #include "System/Platform.h"
+#include "Math/Math.h"
 #include "Util/Util.h"
 #include "Util/MersenneTwister.h"
 #include "Container/ByteBuffer.h"

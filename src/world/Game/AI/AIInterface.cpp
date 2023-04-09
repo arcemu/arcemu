@@ -726,7 +726,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 								        && getNextTarget()->IsPlayer() && !m_Unit->IsPet() && health_before_strike > getNextTarget()->GetHealth()
 								        && Rand(m_Unit->get_chance_to_daze(getNextTarget())))
 								{
-									float our_facing = m_Unit->calcRadAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY());
+									float our_facing = Math::calcRadAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), getNextTarget()->GetPositionX(), getNextTarget()->GetPositionY());
 									float his_facing = getNextTarget()->GetOrientation();
 									if(fabs(our_facing - his_facing) < CREATURE_DAZE_TRIGGER_ANGLE && !getNextTarget()->HasAura(CREATURE_SPELL_TO_DAZE))
 									{
@@ -1671,7 +1671,7 @@ void AIInterface::_CalcDestinationAndMove(Unit* target, float dist)
 		m_last_target_x = newx;
 		m_last_target_y = newy;
 
-		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), newx, newy) * M_PI_FLOAT / 180.0f;
+		float angle = Math::calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), newx, newy) * M_PI_FLOAT / 180.0f;
 		float x = dist * cosf(angle);
 		float y = dist * sinf(angle);
 
@@ -1962,11 +1962,11 @@ void AIInterface::SendCurrentMove(Player* plyr)
 bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
 {
 	//angle the object has to face
-	float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), target->GetPositionX(), target->GetPositionY());
+	float angle = Math::calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), target->GetPositionX(), target->GetPositionY());
 	//Change angle slowly 2000ms to turn 180 deg around
 	if(angle > 180) angle += 90;
 	else angle -= 90; //angle < 180
-	m_Unit->getEasyAngle(angle);
+	Math::getEasyAngle(angle);
 	//Convert from degrees to radians (180 deg = PI rad)
 	float orientation = angle / (180 / M_PI_FLOAT);
 	//Update Orientation Server Side
@@ -2496,7 +2496,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				}
 			}
 			// Calculate new angle to target.
-			float Fo = m_Unit->calcRadAngle(unitToFear->GetPositionX(), unitToFear->GetPositionY(), m_Unit->GetPositionX(), m_Unit->GetPositionY());
+			float Fo = Math::calcRadAngle(unitToFear->GetPositionX(), unitToFear->GetPositionY(), m_Unit->GetPositionX(), m_Unit->GetPositionY());
 			Fo += RandomFloat(M_PI_FLOAT / 2);
 
 			float dist = m_Unit->CalcDistance(unitToFear);

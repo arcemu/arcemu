@@ -7990,7 +7990,7 @@ void Unit::HandleKnockback(Object* caster, float horizontal, float vertical)
 	//This is in unit and not creature because players who are mind controlled must use this.
 	if(caster == NULL)
 		caster = this;
-	float angle = calcRadAngle(caster->GetPositionX(), caster->GetPositionY(), GetPositionX(), GetPositionY());
+	float angle = Math::calcRadAngle(caster->GetPositionX(), caster->GetPositionY(), GetPositionX(), GetPositionY());
 	if(caster == this)
 		angle = GetOrientation() + M_PI;
 

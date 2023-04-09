@@ -447,7 +447,7 @@ class LuaGameObject
 			float y2 = CHECK_FLOAT(L, 4);
 			if(!x || !y || !x2 || !y2 || !ptr)
 				return 0;
-			lua_pushnumber(L, ptr->calcRadAngle(x, y, x2, y2));
+			lua_pushnumber(L, Math::calcRadAngle(x, y, x2, y2));
 			return 1;
 		}
 

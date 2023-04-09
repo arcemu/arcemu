@@ -290,7 +290,7 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession* m_session)
 	}
 	else
 	{
-		o = player->calcRadAngle( creature->GetPositionX(), creature->GetPositionY(), player->GetPositionX(), player->GetPositionY() );
+		o = Math::calcRadAngle( creature->GetPositionX(), creature->GetPositionY(), player->GetPositionX(), player->GetPositionY() );
 	}
 
 	creature->SetFacing( o );

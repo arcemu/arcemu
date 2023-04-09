@@ -925,7 +925,7 @@ void Spell::SpellEffectTeleportUnits(uint32 i)    // Teleport Units
 			if(unitTarget->GetTargetGUID() != 0)
 			{
 				/* We're chasing a target. We have to calculate the angle to this target, this is our orientation. */
-				ang = m_caster->calcAngle(m_caster->GetPositionX(), m_caster->GetPositionY(), unitTarget->GetPositionX(), unitTarget->GetPositionY());
+				ang = Math::calcAngle(m_caster->GetPositionX(), m_caster->GetPositionY(), unitTarget->GetPositionX(), unitTarget->GetPositionY());
 				/* convert degree angle to radians */
 				ang = ang * M_PI_FLOAT / 180.0f;
 			}
@@ -3787,7 +3787,7 @@ void Spell::SpellEffectDistract(uint32 i) // Distract
 		uint32 Stare_duration = GetDuration();
 		if(Stare_duration > 30 * 60 * 1000)
 			Stare_duration = 10000;//if we try to stare for more then a half an hour then better not stare at all :P (bug)
-		float newo = unitTarget->calcRadAngle(unitTarget->GetPositionX(), unitTarget->GetPositionY(), m_targets.m_destX, m_targets.m_destY);
+		float newo = Math::calcRadAngle(unitTarget->GetPositionX(), unitTarget->GetPositionY(), m_targets.m_destX, m_targets.m_destY);
 		unitTarget->GetAIInterface()->StopMovement(Stare_duration);
 		unitTarget->SetFacing(newo);
 	}
@@ -4911,7 +4911,7 @@ void Spell::SpellEffectPlayerPull(uint32 i)
 
 	// calculate destination
 	float pullD = p_target->CalcDistance(m_caster) - p_target->GetBoundingRadius() - (u_caster ? u_caster->GetBoundingRadius() : 0) - 1.0f;
-	float pullO = p_target->calcRadAngle(p_target->GetPositionX(), p_target->GetPositionY(), m_caster->GetPositionX(), m_caster->GetPositionY());
+	float pullO = Math::calcRadAngle(p_target->GetPositionX(), p_target->GetPositionY(), m_caster->GetPositionX(), m_caster->GetPositionY());
 	float pullX = p_target->GetPositionX() + pullD * cosf(pullO);
 	float pullY = p_target->GetPositionY() + pullD * sinf(pullO);
 	float pullZ = m_caster->GetPositionZ() + 0.3f;

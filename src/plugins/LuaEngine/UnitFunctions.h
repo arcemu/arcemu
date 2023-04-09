@@ -3325,7 +3325,7 @@ class LuaUnit
 			float y2 = CHECK_FLOAT(L, 4);
 			if(!x || !y || !x2 || !y2 || !ptr)
 				return 0;
-			lua_pushnumber(L, ptr->calcAngle(x, y, x2, y2));
+			lua_pushnumber(L, Math::calcAngle(x, y, x2, y2));
 			return 1;
 		}
 
@@ -3340,7 +3340,7 @@ class LuaUnit
 				return 0;
 			else
 			{
-				ang = ptr->calcRadAngle(x, y, dx, dy);
+				ang = Math::calcRadAngle(x, y, dx, dy);
 				lua_pushnumber(L, ang);
 			}
 			return 1;

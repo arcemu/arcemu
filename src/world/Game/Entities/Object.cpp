@@ -663,102 +663,11 @@ bool Object::IsWithinLOS(LocationVector location)
 	}
 }
 
-
-float Object::calcAngle(float Position1X, float Position1Y, float Position2X, float Position2Y)
-{
-	float dx = Position2X - Position1X;
-	float dy = Position2Y - Position1Y;
-	double angle = 0.0f;
-
-	// Calculate angle
-	if(dx == 0.0)
-	{
-		if(dy == 0.0)
-			angle = 0.0;
-		else if(dy > 0.0)
-			angle = M_PI * 0.5 /* / 2 */;
-		else
-			angle = M_PI * 3.0 * 0.5/* / 2 */;
-	}
-	else if(dy == 0.0)
-	{
-		if(dx > 0.0)
-			angle = 0.0;
-		else
-			angle = M_PI;
-	}
-	else
-	{
-		if(dx < 0.0)
-			angle = atanf(dy / dx) + M_PI;
-		else if(dy < 0.0)
-			angle = atanf(dy / dx) + (2 * M_PI);
-		else
-			angle = atanf(dy / dx);
-	}
-
-	// Convert to degrees
-	angle = angle * float(180 / M_PI);
-
-	// Return
-	return float(angle);
-}
-
-float Object::calcRadAngle(float Position1X, float Position1Y, float Position2X, float Position2Y)
-{
-	double dx = double(Position2X - Position1X);
-	double dy = double(Position2Y - Position1Y);
-	double angle = 0.0;
-
-	// Calculate angle
-	if(dx == 0.0)
-	{
-		if(dy == 0.0)
-			angle = 0.0;
-		else if(dy > 0.0)
-			angle = M_PI * 0.5/*/ 2.0*/;
-		else
-			angle = M_PI * 3.0 * 0.5/*/ 2.0*/;
-	}
-	else if(dy == 0.0)
-	{
-		if(dx > 0.0)
-			angle = 0.0;
-		else
-			angle = M_PI;
-	}
-	else
-	{
-		if(dx < 0.0)
-			angle = atan(dy / dx) + M_PI;
-		else if(dy < 0.0)
-			angle = atan(dy / dx) + (2 * M_PI);
-		else
-			angle = atan(dy / dx);
-	}
-
-	// Return
-	return float(angle);
-}
-
-float Object::getEasyAngle(float angle)
-{
-	while(angle < 0)
-	{
-		angle = angle + 360;
-	}
-	while(angle >= 360)
-	{
-		angle = angle - 360;
-	}
-	return angle;
-}
-
 bool Object::inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y)
 {
-	float angle = calcAngle(Position1X, Position1Y, Position2X, Position2Y);
-	float lborder = getEasyAngle((Orientation - (FOV * 0.5f/*/2*/)));
-	float rborder = getEasyAngle((Orientation + (FOV * 0.5f/*/2*/)));
+	float angle = Math::calcAngle(Position1X, Position1Y, Position2X, Position2Y);
+	float lborder = Math::getEasyAngle((Orientation - (FOV * 0.5f/*/2*/)));
+	float rborder = Math::getEasyAngle((Orientation + (FOV * 0.5f/*/2*/)));
 	//LOG_DEBUG("Orientation: %f Angle: %f LeftBorder: %f RightBorder %f",Orientation,angle,lborder,rborder);
 	if(((angle >= lborder) && (angle <= rborder)) || ((lborder > rborder) && ((angle < rborder) || (angle > lborder))))
 	{
@@ -810,7 +719,7 @@ bool Object::isInBack(Object* target)
 	{
 		Unit* pTarget = TO_CREATURE(this)->GetAIInterface()->getNextTarget();
 		if(pTarget != NULL)
-			angle -= double(Object::calcRadAngle(target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y));
+			angle -= double(Math::calcRadAngle(target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y));
 		else
 			angle -= target->GetOrientation();
 	}

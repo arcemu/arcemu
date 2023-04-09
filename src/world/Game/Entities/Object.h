@@ -351,13 +351,7 @@ class SERVER_DECL Object : public EventableObject
 		bool isInArc(Object* target , float degrees);
 		//! NYS: Scriptdev2
 		bool HasInArc(float degrees, Object* target);
-		//! Calculates the angle between two positions
-		float calcAngle(float Position1X, float Position1Y, float Position2X, float Position2Y);
-		float calcRadAngle(float Position1X, float Position1Y, float Position2X, float Position2Y);
-
-		//! Converts to 360 > x > 0
-		float getEasyAngle(float angle);
-
+		
 		const float GetDistanceSq(Object* obj)
 		{
 			if(obj->GetMapId() != m_mapId) return 40000.0f; //enough for out of range

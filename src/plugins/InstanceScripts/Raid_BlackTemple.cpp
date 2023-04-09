@@ -5413,7 +5413,7 @@ class MaievAI : public MoonScriptBossAI
 			}
 
 			// Ugly -.-'
-			float Facing = _unit->calcRadAngle(_unit->GetPositionX(), _unit->GetPositionY(), mIllidanAI->GetUnit()->GetPositionX(), mIllidanAI->GetUnit()->GetPositionY());
+			float Facing = Math::calcRadAngle(_unit->GetPositionX(), _unit->GetPositionY(), mIllidanAI->GetUnit()->GetPositionX(), mIllidanAI->GetUnit()->GetPositionY());
 			if(_unit->GetOrientation() != Facing)
 			{
 				_unit->SetFacing(Facing);
@@ -5496,7 +5496,7 @@ class MaievAI : public MoonScriptBossAI
 								float IllidanZ = mIllidanAI->GetUnit()->GetPositionZ();
 								float IllidanO = mIllidanAI->GetUnit()->GetOrientation();
 
-								float Angle = _unit->calcAngle(pAkama->GetPositionX(), pAkama->GetPositionY(), IllidanX, IllidanY) * M_PI_FLOAT / 180.0f;
+								float Angle = Math::calcAngle(pAkama->GetPositionX(), pAkama->GetPositionY(), IllidanX, IllidanY) * M_PI_FLOAT / 180.0f;
 								float X = 12.0f * cosf(Angle);
 								float Y = 12.0f * sinf(Angle);
 
@@ -6411,7 +6411,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 					break;
 				case 9:
 					{
-						float Facing = pMaievAI->GetUnit()->calcRadAngle(_unit->GetPositionX(), _unit->GetPositionY(), pMaievAI->GetUnit()->GetPositionX(), pMaievAI->GetUnit()->GetPositionY());
+						float Facing = Math::calcRadAngle(_unit->GetPositionX(), _unit->GetPositionY(), pMaievAI->GetUnit()->GetPositionX(), pMaievAI->GetUnit()->GetPositionY());
 						_unit->SetFacing(Facing);
 						_unit->SetEmoteState(EMOTE_ONESHOT_READY1H);
 					}
