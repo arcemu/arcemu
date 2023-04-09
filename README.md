@@ -1,7 +1,7 @@
 # ![logo](http://arcemu.org/forums/public/style_images/1_arcemulogo.png) Arcemu
 
 ## Project Status
-This project is unfortunately no longer managed. We appreciate everyone's contributions over the last decade! If you would like to continue this project message @joshgoldfeder on Twitter. 
+This project is mostly abandoned since the end of 2014. It is only developed and maintained ocassionally.
 
 ## Build Status
 
@@ -19,8 +19,6 @@ It supports easy extension, and customization with the following scripting langu
 
 * Lua
 * Python (experimental)
-
-NOTE: This project is mostly abandoned since the end of 2014. However feel free to try and have fun with it.
 
 ## Installation
 
