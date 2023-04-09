@@ -1271,7 +1271,10 @@ static PyObject* ArcPyUnit_createCustomWaypoint( ArcPyUnit *self, PyObject *args
 		model = creature->GetDisplayId();
 
 	WayPoint* wp = new WayPoint;
-	wp->id = (uint32)waypoints->size() + 1;
+	wp->id = (uint32)waypoints->size();
+	if( wp->id == 0 )
+		wp->id = 1;
+
 	wp->x = x;
 	wp->y = y;
 	wp->z = z;
