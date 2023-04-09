@@ -1414,7 +1414,7 @@ static PyObject* ArcPyUnit_setCanRegenerateHP( ArcPyUnit *self, PyObject *args )
 static PyObject* ArcPyUnit_emote( ArcPyUnit *self, PyObject *args )
 {
 	uint32 emote;
-	uint32 time;
+	uint32 time = 0;
 
 	if( !PyArg_ParseTuple( args, "k|k", &emote, &time ) )
 	{
