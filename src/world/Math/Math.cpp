@@ -124,3 +124,19 @@ float Math::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, 
 	float zdest = OaZ - ObZ;
 	return sqrtf(zdest * zdest + ydest * ydest + xdest * xdest);
 }
+
+bool Math::inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y)
+{
+	float angle = calcAngle(Position1X, Position1Y, Position2X, Position2Y);
+	float lborder = getEasyAngle((Orientation - (FOV * 0.5f/*/2*/)));
+	float rborder = getEasyAngle((Orientation + (FOV * 0.5f/*/2*/)));
+	//LOG_DEBUG("Orientation: %f Angle: %f LeftBorder: %f RightBorder %f",Orientation,angle,lborder,rborder);
+	if(((angle >= lborder) && (angle <= rborder)) || ((lborder > rborder) && ((angle < rborder) || (angle > lborder))))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

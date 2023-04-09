@@ -646,22 +646,6 @@ bool Object::IsWithinLOS(LocationVector location)
 	}
 }
 
-bool Object::inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y)
-{
-	float angle = Math::calcAngle(Position1X, Position1Y, Position2X, Position2Y);
-	float lborder = Math::getEasyAngle((Orientation - (FOV * 0.5f/*/2*/)));
-	float rborder = Math::getEasyAngle((Orientation + (FOV * 0.5f/*/2*/)));
-	//LOG_DEBUG("Orientation: %f Angle: %f LeftBorder: %f RightBorder %f",Orientation,angle,lborder,rborder);
-	if(((angle >= lborder) && (angle <= rborder)) || ((lborder > rborder) && ((angle < rborder) || (angle > lborder))))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 bool Object::isInFront(Object* target)
 {
 	// check if we facing something ( is the object within a 180 degree slice of our positive y axis )
@@ -724,12 +708,7 @@ bool Object::isInBack(Object* target)
 }
 bool Object::isInArc(Object* target , float angle) // angle in degrees
 {
-	return inArc(GetPositionX() , GetPositionY() , angle , GetOrientation() , target->GetPositionX() , target->GetPositionY());
-}
-
-bool Object::HasInArc(float degrees, Object* target)
-{
-	return isInArc(target, degrees);
+	return Math::inArc(GetPositionX() , GetPositionY() , angle , GetOrientation() , target->GetPositionX() , target->GetPositionY());
 }
 
 bool Object::isInRange(Object* target, float range)

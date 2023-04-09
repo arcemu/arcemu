@@ -348,8 +348,6 @@ class SERVER_DECL Object : public EventableObject
 		bool isInBack(Object* target);
 		//! Check to see if an object is in front of a target in a specified arc (in degrees)
 		bool isInArc(Object* target , float degrees);
-		//! NYS: Scriptdev2
-		bool HasInArc(float degrees, Object* target);
 		
 		const float GetDistanceSq(Object* obj)
 		{
@@ -564,9 +562,6 @@ class SERVER_DECL Object : public EventableObject
 		MapMgr* m_mapMgr;
 		//! Current map cell row and column
 		uint32 m_mapCell_x, m_mapCell_y;
-
-		/* Main Function called by isInFront(); */
-		bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y);
 
 		LocationVector m_position;
 		LocationVector m_lastMapUpdatePosition;
