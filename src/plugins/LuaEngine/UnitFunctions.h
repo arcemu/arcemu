@@ -2937,7 +2937,7 @@ class LuaUnit
 			Object* target = CHECK_OBJECT(L, 1);
 			if(ptr && target)
 			{
-				if(ptr->isInBack(target))
+				if(!ptr->isInFront(target))
 					lua_pushboolean(L, 1);
 				else
 					lua_pushboolean(L, 0);

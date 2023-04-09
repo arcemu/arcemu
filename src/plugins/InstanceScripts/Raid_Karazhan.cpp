@@ -3864,7 +3864,7 @@ class NightbaneAI : public CreatureAIScript
 						target = TO_UNIT(*itr);
 
 						//cone behind the boss
-						if(target->isAlive() && target->isInBack(_unit))
+						if(target->isAlive() && !target->isInFront(_unit))
 							_unit->CastSpell(target, dbcSpell.LookupEntry(TAIL_SWEEP), true);
 					}
 				}

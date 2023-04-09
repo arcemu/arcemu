@@ -344,8 +344,7 @@ class SERVER_DECL Object : public EventableObject
 
 		//! Use this to Check if a object is in front of another object.
 		bool isInFront(Object* target);
-		//! Use this to Check if a object is in back of another object.
-		bool isInBack(Object* target);
+
 		//! Check to see if an object is in front of a target in a specified arc (in degrees)
 		bool isInArc(Object* target , float degrees);
 		

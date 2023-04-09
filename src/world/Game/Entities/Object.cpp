@@ -652,41 +652,7 @@ bool Object::isInFront(Object* target)
 	return Math::isInFront( m_position.x, m_position.y, m_position.o, target->GetPositionX(), target->GetPositionY() );
 }
 
-bool Object::isInBack(Object* target)
-{
-	// check if we are behind something ( is the object within a 180 degree slice of our negative y axis )
 
-	double x = m_position.x - target->GetPositionX();
-	double y = m_position.y - target->GetPositionY();
-
-	double angle = atan2(y, x);
-	angle = (angle >= 0.0) ? angle : 2.0 * M_PI + angle;
-
-	// if we are a creature and have a UNIT_FIELD_TARGET then we are always facing them
-	if(IsCreature() && TO_CREATURE(this)->GetTargetGUID() != 0)
-	{
-		Unit* pTarget = TO_CREATURE(this)->GetAIInterface()->getNextTarget();
-		if(pTarget != NULL)
-			angle -= double(Math::calcRadAngle(target->m_position.x, target->m_position.y, pTarget->m_position.x, pTarget->m_position.y));
-		else
-			angle -= target->GetOrientation();
-	}
-	else
-		angle -= target->GetOrientation();
-
-	while(angle > M_PI)
-		angle -= 2.0 * M_PI;
-
-	while(angle < -M_PI)
-		angle += 2.0 * M_PI;
-
-	// replace M_H_PI in the two lines below to reduce or increase angle
-
-	double left = -1.0 * (M_H_PI / 2.0);
-	double right = (M_H_PI / 2.0);
-
-	return((angle <= left) && (angle >= right));
-}
 bool Object::isInArc(Object* target , float angle) // angle in degrees
 {
 	return Math::inArc(GetPositionX() , GetPositionY() , angle , GetOrientation() , target->GetPositionX() , target->GetPositionY());

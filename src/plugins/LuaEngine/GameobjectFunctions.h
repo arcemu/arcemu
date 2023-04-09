@@ -540,7 +540,7 @@ class LuaGameObject
 				lua_pushnil(L);
 				return 1;
 			}
-			if(ptr->isInBack(target))
+			if(!ptr->isInFront(target))
 				lua_pushboolean(L, 1);
 			else
 				lua_pushboolean(L, 0);

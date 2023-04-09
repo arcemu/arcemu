@@ -2438,7 +2438,7 @@ uint32 Unit::HandleProc(uint32 flag, Unit* victim, SpellEntry* CastingSpell, boo
 
 		if(spellId == 17364 || spellId == 32175 || spellId == 32176)   //Stormstrike
 			continue;
-		if(spellId == 22858 && isInBack(victim)) //retatliation needs target to be not in front. Can be cast by creatures too
+		if(spellId == 22858 && !isInFront(victim)) //retatliation needs target to be not in front. Can be cast by creatures too
 			continue;
 
 		spell_proc->CastSpell(victim, CastingSpell, dmg_overwrite);
@@ -2833,7 +2833,7 @@ uint32 Unit::GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, Spel
 	int32 victim_skill;
 	uint32 SubClassSkill	 = SKILL_UNARMED;
 
-	bool backAttack			 = !pVictim->isInFront(this);   // isInBack is bugged!
+	bool backAttack			 = !pVictim->isInFront(this);
 	uint32 vskill            = 0;
 
 	//==========================================================================================
