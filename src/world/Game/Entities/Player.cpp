@@ -6640,7 +6640,7 @@ void Player::TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node)
 				return;
 			}
 
-			dist += CalcDistance(lastx, lasty, lastz, pn->x, pn->y, pn->z);
+			dist += Math::CalcDistance(lastx, lasty, lastz, pn->x, pn->y, pn->z);
 			lastx = pn->x;
 			lasty = pn->y;
 			lastz = pn->z;
@@ -6683,7 +6683,7 @@ void Player::TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node)
 		}
 		else
 		{
-			float dist = CalcDistance(lastx, lasty, lastz,
+			float dist = Math::CalcDistance(lastx, lasty, lastz,
 			                          pn->x, pn->y, pn->z);
 			traveldist += dist;
 			lastx = pn->x;

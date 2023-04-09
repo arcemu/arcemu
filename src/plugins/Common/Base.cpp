@@ -508,7 +508,7 @@ Unit* MoonScriptCreatureAI::ForceCreatureFind(uint32 pCreatureId, float pX, floa
 		float Distance, NearestDistance = 99999;
 		for(UnitArray::iterator UnitIter = Array.begin(); UnitIter != Array.end(); ++UnitIter)
 		{
-			Distance = _unit->CalcDistance(pX, pY, pZ, (*UnitIter)->GetPositionX(), (*UnitIter)->GetPositionY(), (*UnitIter)->GetPositionZ());
+			Distance = Math::CalcDistance(pX, pY, pZ, (*UnitIter)->GetPositionX(), (*UnitIter)->GetPositionY(), (*UnitIter)->GetPositionZ());
 			if(Distance < NearestDistance)
 			{
 				NearestDistance = Distance;

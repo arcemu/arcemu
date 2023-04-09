@@ -117,3 +117,10 @@ bool Math::inRangeYZX(const float* v1, const float* v2, const float r, const flo
 	return (dx * dx + dz * dz) < r * r && fabsf(dy) < h;
 }
 
+float Math::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ)
+{
+	float xdest = OaX - ObX;
+	float ydest = OaY - ObY;
+	float zdest = OaZ - ObZ;
+	return sqrtf(zdest * zdest + ydest * ydest + xdest * xdest);
+}

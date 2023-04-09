@@ -604,30 +604,22 @@ void Object::RemoveFlag(const uint32 index, uint32 oldFlag)
 float Object::CalcDistance(Object* Ob)
 {
 	ARCEMU_ASSERT(Ob != NULL);
-	return CalcDistance(this->GetPositionX(), this->GetPositionY(), this->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
+	return Math::CalcDistance(this->GetPositionX(), this->GetPositionY(), this->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
 float Object::CalcDistance(float ObX, float ObY, float ObZ)
 {
-	return CalcDistance(this->GetPositionX(), this->GetPositionY(), this->GetPositionZ(), ObX, ObY, ObZ);
+	return Math::CalcDistance(this->GetPositionX(), this->GetPositionY(), this->GetPositionZ(), ObX, ObY, ObZ);
 }
 float Object::CalcDistance(Object* Oa, Object* Ob)
 {
 	ARCEMU_ASSERT(Oa != NULL);
 	ARCEMU_ASSERT(Ob != NULL);
-	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
+	return Math::CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
 float Object::CalcDistance(Object* Oa, float ObX, float ObY, float ObZ)
 {
 	ARCEMU_ASSERT(Oa != NULL);
-	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), ObX, ObY, ObZ);
-}
-
-float Object::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ)
-{
-	float xdest = OaX - ObX;
-	float ydest = OaY - ObY;
-	float zdest = OaZ - ObZ;
-	return sqrtf(zdest * zdest + ydest * ydest + xdest * xdest);
+	return Math::CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), ObX, ObY, ObZ);
 }
 
 bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const

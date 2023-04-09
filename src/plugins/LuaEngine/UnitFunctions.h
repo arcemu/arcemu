@@ -4688,7 +4688,7 @@ class LuaUnit
 			}
 			ptr->SetFacing(o);
 			ptr->SetOrientation(o);
-			float distance = ptr->CalcDistance(ptr->GetPositionX(), ptr->GetPositionY(), ptr->GetPositionZ(), x, y, z);
+			float distance = Math::CalcDistance(ptr->GetPositionX(), ptr->GetPositionY(), ptr->GetPositionZ(), x, y, z);
 			uint32 moveTime = uint32(distance / moveSpeed);
 			WorldPacket data(SMSG_MONSTER_MOVE, 50);
 			data << ptr->GetNewGUID();

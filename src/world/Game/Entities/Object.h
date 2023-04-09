@@ -217,7 +217,7 @@ class SERVER_DECL Object : public EventableObject
 		float CalcDistance(float ObX, float ObY, float ObZ);
 		float CalcDistance(Object* Oa, Object* Ob);
 		float CalcDistance(Object* Oa, float ObX, float ObY, float ObZ);
-		float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
+
 		//! NYS: scriptdev2
 		bool IsInMap(Object* obj) { return GetMapId() == obj->GetMapId() && GetInstanceID() == obj->GetInstanceID(); }
 		bool IsWithinDistInMap(Object* obj, const float dist2compare) const;

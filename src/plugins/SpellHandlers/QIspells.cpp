@@ -3115,7 +3115,7 @@ bool ShatariTorch(uint32 i, Spell* pSpell)
 	if(target == NULL)
 		return true;
 
-	if(plr->CalcDistance(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ()) > 5)
+	if(Math::CalcDistance(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ()) > 5)
 		return true;
 
 	QuestLogEntry* qle = plr->GetQuestLogForEntry(10913);
