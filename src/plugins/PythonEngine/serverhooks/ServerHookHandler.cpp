@@ -357,32 +357,40 @@ void ServerHookHandler::hookOnAcceptQuest( Player* player, Quest* quest, Object*
 
 		PyObject *param = NULL;
 
-		uint8 qgt = questGiver->GetTypeId();
-		switch( qgt )
+		/// GM commands!
+		if( questGiver != NULL )
 		{
-		case TYPEID_GAMEOBJECT:
+			uint8 qgt = questGiver->GetTypeId();
+			switch( qgt )
 			{
-				args.setItemGameObject( 2, (GameObject*)questGiver );
-			}
-			break;
-
-		case TYPEID_UNIT:
-			{
-				args.setItemUnit( 2, (Unit*)questGiver );
-			}
-			break;
-
-		case TYPEID_ITEM:
-			{
-				args.setItemPlayer( 2, (Player*)questGiver );
+			case TYPEID_GAMEOBJECT:
+				{
+					args.setItemGameObject( 2, (GameObject*)questGiver );
+				}
 				break;
-			}
 
-		default:
-			{
-				args.setItemNone( 2 );
+			case TYPEID_UNIT:
+				{
+					args.setItemUnit( 2, (Unit*)questGiver );
+				}
 				break;
+
+			case TYPEID_ITEM:
+				{
+					args.setItemPlayer( 2, (Player*)questGiver );
+					break;
+				}
+
+			default:
+				{
+					args.setItemNone( 2 );
+					break;
+				}
 			}
+		}
+		else
+		{
+			args.setItemNone( 2 );
 		}
 
 		PythonCallable callable( handler );
