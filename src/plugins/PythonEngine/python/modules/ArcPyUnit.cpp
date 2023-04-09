@@ -1468,6 +1468,42 @@ static PyObject* ArcPyUnit_faceUnit( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// stopMovement
+///   Make the Unit stop moving for the specified duration
+///
+/// Parameters
+///   time   -  The duration the Unit should stop moving for
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.stopMovement( 2000 )
+///
+static PyObject* ArcPyUnit_stopMovement( ArcPyUnit *self, PyObject *args )
+{
+	uint32 time = 0;
+
+	if( !PyArg_ParseTuple( args, "k", &time ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a time parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
+		return NULL;
+	}
+
+	Creature *creature = TO_CREATURE( unit );
+	creature->GetAIInterface()->StopMovement( time );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1517,6 +1553,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setCanRegenerateHP", (PyCFunction)ArcPyUnit_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
 	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
 	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
+	{ "stopMovement", (PyCFunction)ArcPyUnit_stopMovement, METH_VARARGS, "Stop moving for the specified duration" },
 	{NULL}
 };
 

@@ -66,7 +66,9 @@ def GuardRoberts_onApplyAura( unit, caster, spellId ):
 	if unit.getStandState() == arcemu.STANDSTATE_STAND and spellId == SPELLID_POWERWORD_FORTITUDE_I:
 		pu.markQuestObjectiveAsComplete( QUESTID_GARMENTS_OF_THE_LIGHT, 0 )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you! Thank you, priest. Now I can take on those murlocs with the Light on my side!" )
+		unit.stopMovement( 2500 )
 		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )		
+		unit.emote( 4 )
 		
 def GuardRoberts_onReachWP( unit, event, waypointId, forward ):
 	if forward:
