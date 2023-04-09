@@ -54,7 +54,7 @@ def GuardRoberts_onHealed( unit, healer, spellId, amount ):
 	if unit.getStandState() == arcemu.STANDSTATE_KNEEL and spellId == SPELLID_LESSERHEAL_II:
 		unit.setStandState( arcemu.STANDSTATE_STAND )
 		unit.faceUnit( healer )
-		unit.emote( 2 )
+		unit.emote( arcemu.EMOTE_ONESHOT_BOW )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ah, priest, you came along just in time. I appreciate it." )
 	
 def GuardRoberts_onApplyAura( unit, caster, spellId ):
@@ -68,7 +68,7 @@ def GuardRoberts_onApplyAura( unit, caster, spellId ):
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you! Thank you, priest. Now I can take on those murlocs with the Light on my side!" )
 		unit.stopMovement( 2500 )
 		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )		
-		unit.emote( 4 )
+		unit.emote( arcemu.EMOTE_ONESHOT_CHEER )
 		
 def GuardRoberts_onReachWP( unit, event, waypointId, forward ):
 	if forward:

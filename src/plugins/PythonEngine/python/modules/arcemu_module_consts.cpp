@@ -211,4 +211,27 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "MOVEMENTTYPE_DONTMOVEWP", MOVEMENTTYPE_DONTMOVEWP );
 	PyModule_AddIntConstant( module, "MOVEMENTTYPE_QUEST", MOVEMENTTYPE_QUEST );
 	PyModule_AddIntConstant( module, "MOVEMENTTYPE_FORWARDTHENSTOP", MOVEMENTTYPE_FORWARDTHANSTOP );
+
+	/// Some emotes
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_NONE", EMOTE_ONESHOT_NONE );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_TALK", EMOTE_ONESHOT_TALK );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_BOW", EMOTE_ONESHOT_BOW );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_WAVE", EMOTE_ONESHOT_WAVE );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_CHEER", EMOTE_ONESHOT_CHEER );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_EXCLAMATION", EMOTE_ONESHOT_EXCLAMATION );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_QUESTION", EMOTE_ONESHOT_QUESTION );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_EAT", EMOTE_ONESHOT_EAT );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_LAUGH", EMOTE_ONESHOT_LAUGH );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_RUDE", EMOTE_ONESHOT_RUDE );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_ROAR", EMOTE_ONESHOT_ROAR );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_KNEEL", EMOTE_ONESHOT_KNEEL );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_KISS", EMOTE_ONESHOT_KISS );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_CRY", EMOTE_ONESHOT_CRY );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_CHICKEN", EMOTE_ONESHOT_CHICKEN );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_BEG", EMOTE_ONESHOT_BEG );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_APPLAUD", EMOTE_ONESHOT_APPLAUD );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_SHOUT", EMOTE_ONESHOT_SHOUT );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_FLEX", EMOTE_ONESHOT_FLEX );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_SHY", EMOTE_ONESHOT_SHY );
+	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_POINT", EMOTE_ONESHOT_POINT );
 }
