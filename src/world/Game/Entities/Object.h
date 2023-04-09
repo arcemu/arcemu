@@ -220,7 +220,6 @@ class SERVER_DECL Object : public EventableObject
 
 		//! NYS: scriptdev2
 		bool IsInMap(Object* obj) { return GetMapId() == obj->GetMapId() && GetInstanceID() == obj->GetInstanceID(); }
-		bool IsWithinDistInMap(Object* obj, const float dist2compare) const;
 		bool IsWithinLOSInMap(Object* obj);
 		bool IsWithinLOS(LocationVector location);
 

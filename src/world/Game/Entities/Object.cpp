@@ -622,15 +622,6 @@ float Object::CalcDistance(Object* Oa, float ObX, float ObY, float ObZ)
 	return Math::CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), ObX, ObY, ObZ);
 }
 
-bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const
-{
-	ARCEMU_ASSERT(obj != NULL);
-	float xdest = this->GetPositionX() - obj->GetPositionX();
-	float ydest = this->GetPositionY() - obj->GetPositionY();
-	float zdest = this->GetPositionZ() - obj->GetPositionZ();
-	return sqrtf(zdest * zdest + ydest * ydest + xdest * xdest) <= dist2compare;
-}
-
 bool Object::IsWithinLOSInMap(Object* obj)
 {
 	ARCEMU_ASSERT(obj != NULL);
