@@ -284,8 +284,14 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession* m_session)
 
 	float o = 0;
 	char* pOrentation = strtok((char*)args, " ");
-	if(pOrentation)
+	if( pOrentation != NULL )
+	{
 		o  = atof(pOrentation);
+	}
+	else
+	{
+		o = player->calcRadAngle( creature->GetPositionX(), creature->GetPositionY(), player->GetPositionX(), player->GetPositionY() );
+	}
 
 	creature->SetFacing( o );
 
