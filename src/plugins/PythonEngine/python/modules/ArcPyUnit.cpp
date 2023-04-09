@@ -1360,6 +1360,43 @@ static PyObject* ArcPyUnit_resetWaypoint( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setCanRegenerateHP
+///   Sets whether the creature can regenerate it's HP.
+///
+/// Parameters
+///   canRegenerate   -  0 means false, >0 means true
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setCanRegenerateHP( 0 ) # Turns off HP regeneration
+///
+static PyObject* ArcPyUnit_setCanRegenerateHP( ArcPyUnit *self, PyObject *args )
+{
+	uint32 canRegenerate;
+	if( !PyArg_ParseTuple( args, "k", &canRegenerate ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an integer parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
+		return NULL;
+	}
+
+	Creature *creature = TO_CREATURE( unit );
+	if( canRegenerate > 0 )
+		creature->setCanRegenerateHp( true );
+	else
+		creature->setCanRegenerateHp( false );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1406,6 +1443,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "createCustomWaypoint", (PyCFunction)ArcPyUnit_createCustomWaypoint, METH_VARARGS, "Creates and adds a custom waypoint to the creature" },
 	{ "setMovementType", (PyCFunction)ArcPyUnit_setMovementType, METH_VARARGS, "Sets the AI movement type of the creature" },
 	{ "resetWaypoint", (PyCFunction)ArcPyUnit_resetWaypoint, METH_NOARGS, "Resets the current waypoint of the creature to 0" },
+	{ "setCanRegenerateHP", (PyCFunction)ArcPyUnit_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
 	{NULL}
 };
 

@@ -36,6 +36,7 @@ SPELLID_POWERWORD_FORTITUDE_I = 1243
 def GuardRoberts_onLoad( unit, event ):
 	unit.setPvPFlag()
 	unit.setStandState( arcemu.STANDSTATE_KNEEL )
+	unit.setCanRegenerateHP( 0 )
 	unit.setHealth( int( unit.getMaxHealth() * 0.73 ) )
 	unit.setMovementType( arcemu.MOVEMENTTYPE_DONTMOVEWP )
 	unit.resetWaypoint()

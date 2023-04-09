@@ -522,7 +522,11 @@ class SERVER_DECL Creature : public Unit
 		void CalcResistance(uint32 type);
 		void CalcStat(uint32 type);
 
-		bool m_canRegenerateHP;
+		void setCanRegenerateHp( bool b )
+		{
+			m_canRegenerateHP = b;
+		}
+
 		void RegenerateHealth();
 		void RegenerateMana();
 		int BaseAttackType;
@@ -759,6 +763,7 @@ class SERVER_DECL Creature : public Unit
 		CreatureProto* proto;
 
 	private:
+		bool m_canRegenerateHP;
 		WayPointMap* m_custom_waypoint_map;
 		uint32 m_Creature_type;
 };
