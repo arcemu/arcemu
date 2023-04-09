@@ -2859,23 +2859,23 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 
 bool ChatHandler::HandleCreatureRespawnCommand(const char* args, WorldSession* m_session)
 {
-	Creature* cCorpse = getSelectedCreature(m_session, false);
+	Creature* creature = getSelectedCreature(m_session, false);
 
-	if(cCorpse != NULL && cCorpse->IsCreature() && cCorpse->getDeathState() == CORPSE && cCorpse->GetSQL_id() != 0)
+	if(creature != NULL && creature->GetSQL_id() != 0)
 	{
-		sEventMgr.RemoveEvents(cCorpse, EVENT_CREATURE_RESPAWN);
+		sEventMgr.RemoveEvents(creature, EVENT_CREATURE_RESPAWN);
 
-		BlueSystemMessage(m_session, "Respawning a Creature: `%s` with entry: %u on map: %u sqlid: %u", cCorpse->GetCreatureInfo()->Name,
-		                  cCorpse->GetEntry(), cCorpse->GetMapMgr()->GetMapId(), cCorpse->GetSQL_id());
+		BlueSystemMessage(m_session, "Respawning a Creature: `%s` with entry: %u on map: %u sqlid: %u", creature->GetCreatureInfo()->Name,
+		                  creature->GetEntry(), creature->GetMapMgr()->GetMapId(), creature->GetSQL_id());
 
-		sGMLog.writefromsession(m_session, "Respawned a Creature: `%s` with entry: %u on map: %u sqlid: %u", cCorpse->GetCreatureInfo()->Name,
-		                        cCorpse->GetEntry(), cCorpse->GetMapMgr()->GetMapId(), cCorpse->GetSQL_id());
+		sGMLog.writefromsession(m_session, "Respawned a Creature: `%s` with entry: %u on map: %u sqlid: %u", creature->GetCreatureInfo()->Name,
+		                        creature->GetEntry(), creature->GetMapMgr()->GetMapId(), creature->GetSQL_id());
 
-		cCorpse->Despawn(0, 1000);
+		creature->Despawn(0, 1000);
 		return true;
 	}
 
-	RedSystemMessage(m_session, "You must select a creature's corpse with a valid CreatureSpawn point.");
+	RedSystemMessage(m_session, "You must select a creature or creature corpse with a valid CreatureSpawn point.");
 	return false;
 }
 
