@@ -37,8 +37,14 @@ def GuardRoberts_onLoad( unit, event ):
 	unit.setPvPFlag()
 	unit.setStandState( arcemu.STANDSTATE_KNEEL )
 	unit.setHealth( int( unit.getMaxHealth() * 0.73 ) )
-	unit.setMovementType( arcemu.MOVEMENTTYPE_NONE )
+	unit.setMovementType( arcemu.MOVEMENTTYPE_DONTMOVEWP )
+	unit.resetWaypoint()
+	
 	unit.destroyCustomWaypoints()
+	unit.createCustomWaypoint( -9510.285156, -142.285202, 59.149242, 5.255516, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+	unit.createCustomWaypoint( -9513.697266, -152.955444, 59.462231, 4.462268, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+	unit.createCustomWaypoint( -9516.402344, -164.903122, 59.309666, 4.489758, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+	
 	
 def GuardRoberts_onHealed( unit, healer, spellId, amount ):
 	if not healer.isPlayer():
@@ -57,16 +63,17 @@ def GuardRoberts_onApplyAura( unit, caster, spellId ):
 	if unit.getStandState() == arcemu.STANDSTATE_STAND and spellId == SPELLID_POWERWORD_FORTITUDE_I:
 		pu.markQuestObjectiveAsComplete( QUESTID_GARMENTS_OF_THE_LIGHT, 0 )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you! Thank you, priest. Now I can take on those murlocs with the Light on my side!" )
-		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Farewell to you, and may the Light be with you always." )
-				
-		unit.createCustomWaypoint( -9510.285156, -142.285202, 59.149242, 5.255516, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
-		unit.createCustomWaypoint( -9513.697266, -152.955444, 59.462231, 4.462268, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
-		unit.createCustomWaypoint( -9516.402344, -164.903122, 59.309666, 4.489758, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
-		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
+		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )		
 		
-		#unit.despawn( 10000, 3000 )
+def GuardRoberts_onReachWP( unit, event, waypointId, forward ):
+	if forward:
+		if waypointId == 1:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Farewell to you, and may the Light be with you always." )
+			
+		elif waypointId == 3:
+			unit.despawn( 0, 3000 )
 		
-	
 arcemu.RegisterUnitEvent( CREATUREID_GUARD_ROBERTS, arcemu.CREATURE_EVENT_ON_LOAD, GuardRoberts_onLoad )
 arcemu.RegisterUnitEvent( CREATUREID_GUARD_ROBERTS, arcemu.CREATURE_EVENT_ON_HEALED, GuardRoberts_onHealed )
 arcemu.RegisterUnitEvent( CREATUREID_GUARD_ROBERTS, arcemu.CREATURE_EVENT_ON_APPLY_AURA, GuardRoberts_onApplyAura )
+arcemu.RegisterUnitEvent( CREATUREID_GUARD_ROBERTS, arcemu.CREATURE_EVENT_ON_REACH_WP, GuardRoberts_onReachWP )

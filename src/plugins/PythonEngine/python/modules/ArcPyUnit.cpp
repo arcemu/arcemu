@@ -1332,6 +1332,34 @@ static PyObject* ArcPyUnit_setMovementType( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// restWaypoint
+///   Resets the current waypoint of the creature to 0
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.resetWaypoint()
+///
+static PyObject* ArcPyUnit_resetWaypoint( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
+		return NULL;
+	}
+
+	Creature *creature = TO_CREATURE( unit );
+	creature->GetAIInterface()->setWaypointToMove( 0 );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1377,6 +1405,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyUnit_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
 	{ "createCustomWaypoint", (PyCFunction)ArcPyUnit_createCustomWaypoint, METH_VARARGS, "Creates and adds a custom waypoint to the creature" },
 	{ "setMovementType", (PyCFunction)ArcPyUnit_setMovementType, METH_VARARGS, "Sets the AI movement type of the creature" },
+	{ "resetWaypoint", (PyCFunction)ArcPyUnit_resetWaypoint, METH_NOARGS, "Resets the current waypoint of the creature to 0" },
 	{NULL}
 };
 
