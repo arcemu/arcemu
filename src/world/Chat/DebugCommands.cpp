@@ -268,52 +268,28 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession* m_session)
 bool ChatHandler::HandleFaceCommand(const char* args, WorldSession* m_session)
 {
 
-	Object* obj = NULL;
+	Creature* creature = NULL;
 
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(guid != 0)
 	{
-		obj = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+		creature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	}
 
-	if(obj == NULL)
+	if(creature == NULL)
 	{
 		SystemMessage(m_session,  "You should select a creature.");
 		return true;
 	}
 
-	uint32 Orentation = 0;
+	float o = 0;
 	char* pOrentation = strtok((char*)args, " ");
 	if(pOrentation)
-		Orentation  = atoi(pOrentation);
+		o  = atof(pOrentation);
 
-	/* Convert to Blizzards Format */
-	float theOrientation = Orentation / (180.0f / M_PI_FLOAT);
+	creature->SetFacing( o );
 
-	obj->SetPosition(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), theOrientation, false);
-
-	/*
-	data.Initialize( SMSG_MONSTER_MOVE );
-	data << obj->GetGUID();
-	data << obj->GetPositionX() << obj->GetPositionY() << obj->GetPositionZ() << obj->GetOrientation();
-	data << uint8(1);
-
-	data << uint32(0x100); //run
-	data << uint32(0); //time
-	data << uint32(2);
-	data << obj->GetPositionX() << obj->GetPositionY() << obj->GetPositionZ() << theOrientation;
-	*/
-	//UpdateData upd;
-
-	// update movment for others
-	//obj->BuildMovementUpdateBlock(&upd,0);
-	//upd.BuildPacket( &data );
-	//GetSession()->SendPacket( &packet );
-	//obj->BuildMovementUpdateBlock(data,0)
-	//obj->SendMessageToSet(&data,false);
-	LOG_DEBUG("facing sent");
 	return true;
-	//((Creature *)obj)->AI_MoveTo(obj->GetPositionX()+0.1,obj->GetPositionY()+0.1,obj->GetPositionZ()+0.1,theOrientation);
 }
 /*
 
