@@ -419,10 +419,10 @@ void QuestLogEntry::Finish()
 	delete this;
 }
 
-void QuestLogEntry::MarkObjectiveComplete( const unsigned int objective )
+void QuestLogEntry::MarkObjectiveComplete( const unsigned int objective, uint64 guid )
 {
 	SetMobCount( objective, GetQuest()->required_mobcount[ objective ] );
-	SendUpdateAddKill( objective );
+	SendUpdateAddKill( objective, guid );
 	
 	if( CanBeFinished() )
 	{
@@ -564,9 +564,9 @@ void QuestLogEntry::SendQuestComplete()
 	CALL_QUESTSCRIPT_EVENT(this, OnQuestComplete)(m_plr, this);
 }
 
-void QuestLogEntry::SendUpdateAddKill(uint32 i)
+void QuestLogEntry::SendUpdateAddKill(uint32 i, uint64 guid)
 {
-	sQuestMgr.SendQuestUpdateAddKill(m_plr, m_quest->id, m_quest->required_mob[i], m_mobcount[i], m_quest->required_mobcount[i], 0);
+	sQuestMgr.SendQuestUpdateAddKill(m_plr, m_quest->id, m_quest->required_mob[i], m_mobcount[i], m_quest->required_mobcount[i], guid);
 }
 
 void QuestLogEntry::Complete()

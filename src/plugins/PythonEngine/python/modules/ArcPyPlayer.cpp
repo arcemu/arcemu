@@ -277,8 +277,9 @@ static PyObject* ArcPyPlayer_markQuestObjectiveAsComplete( ArcPyPlayer *self, Py
 {
 	uint32 quest;
 	uint32 objective;
+	uint64 guid = 0;
 
-	if( !PyArg_ParseTuple( args, "kk", &quest, &objective ) )
+	if( !PyArg_ParseTuple( args, "kk|K", &quest, &objective, &guid ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a quest, and an objective to be specified" );
 		return NULL;
@@ -293,7 +294,7 @@ static PyObject* ArcPyPlayer_markQuestObjectiveAsComplete( ArcPyPlayer *self, Py
 		return NULL;
 	}
 
-	qle->MarkObjectiveComplete( objective );
+	qle->MarkObjectiveComplete( objective, guid );
 
 	Py_RETURN_NONE;
 }

@@ -54,7 +54,7 @@ def Tavara_onHealed( unit, healer, spellId, amount ):
 		unit.faceUnit( healer )
 		unit.emote( arcemu.EMOTE_ONESHOT_BOW )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you for helping me!" )
-		player.markQuestObjectiveAsComplete( QUESTID_HELP_TAVARA, 0 )
+		player.markQuestObjectiveAsComplete( QUESTID_HELP_TAVARA, 0, unit.getGUID() )
 		unit.stopMovement( 2500 )
 		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
 	

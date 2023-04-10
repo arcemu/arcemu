@@ -314,7 +314,7 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 		void SetSlot(int32 i);
 		void Finish();
 
-		void MarkObjectiveComplete( const unsigned int objective );
+		void MarkObjectiveComplete( const unsigned int objective, uint64 guid = 0 );
 
 
 		//////////////////////////////////////////////////////////////
@@ -355,7 +355,7 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 
 
 		void SendQuestComplete();
-		void SendUpdateAddKill(uint32 i);
+		void SendUpdateAddKill(uint32 i, uint64 guid = 0);
 		ARCEMU_INLINE uint32 GetMobCount(uint32 i) { return m_mobcount[i]; }
 		ARCEMU_INLINE uint32 GetExploredAreas(uint32 i) { return m_explored_areas[i]; }
 
