@@ -20,8 +20,7 @@
 # for the quest Help Tavara (9586)
 # 
 # The player should get quest credit after the following:
-# * Heal the NPC with Lesser Heal II
-# * Buff the NPC with Power Word: Fortitude I
+# * Heal the NPC
 #
 
 import arcemu
