@@ -79,13 +79,12 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 	}
 
 	// (loop 5 times) - these 3 loops are here to allow displaying rep rewards in client (not handled in core yet)
-	/// TODO: Check this!
-	for(i = 0; i < 5; ++i)
+	for(i = 0; i < MAX_REWARD_REPFACTION; ++i)
 	{
 		*data << uint32(qst->reward_repfaction[i]);	// reward factions ids
 	}
 
-	for(i = 0; i < 5; ++i)
+	for(i = 0; i < MAX_REWARD_REPFACTION; ++i)
 	{
 		*data << uint32(0);							// column index in QuestFactionReward.dbc but use unknown
 	}

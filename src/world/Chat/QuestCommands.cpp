@@ -356,7 +356,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char* args, WorldSession* m_ses
 	// currently Quest::reward_choiceitem declaration is
 	// uint32 reward_choiceitem[6];
 	// so reward_slot must be 0 to 5
-	if(reward_slot > 5)
+	if(reward_slot > MAX_REWARD_CHOICE_ITEMS - 1)
 	{
 		reward_slot = 0;
 	}
@@ -440,7 +440,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char* args, WorldSession* m_ses
 
 			// Quest Rewards : Copied from QuestMgr::OnQuestFinished()
 			// Reputation reward
-			for(int z = 0; z < 6; z++)
+			for(int z = 0; z < MAX_REWARD_REPFACTION; z++)
 			{
 				if(qst->reward_repfaction[z])
 				{
@@ -459,7 +459,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char* args, WorldSession* m_ses
 				}
 			}
 			// Static Item reward
-			for(uint32 i = 0; i < 4; ++i)
+			for(uint32 i = 0; i < MAX_REWARD_ITEMS; ++i)
 			{
 				if(qst->reward_item[i])
 				{

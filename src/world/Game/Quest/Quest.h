@@ -158,10 +158,13 @@ enum QUEST_STATE
 
 #define MAX_REWARD_CHOICE_ITEMS 6
 #define MAX_REWARD_ITEMS 4
-#define MAX_REWARD_REPFACTION 6
+#define MAX_REWARD_REPFACTION 5
 #define MAX_RECEIVE_ITEMS 4
 #define MAX_DETAIL_EMOTES 4
 #define MAX_COMPLETION_EMOTES 4
+
+/// TODO: check why we had 6 of these instead of 5 that can be sent to the client?
+#define MAX_DB_REWARD_REPFACTION 6
 
 class QuestScript;
 #pragma pack(push,1)
@@ -213,8 +216,8 @@ struct Quest
 	uint32 reward_item[MAX_REWARD_ITEMS];
 	uint32 reward_itemcount[MAX_REWARD_ITEMS];
 
-	uint32 reward_repfaction[MAX_REWARD_REPFACTION];
-	int32 reward_repvalue[MAX_REWARD_REPFACTION];
+	uint32 reward_repfaction[MAX_DB_REWARD_REPFACTION];
+	int32 reward_repvalue[MAX_DB_REWARD_REPFACTION];
 	uint32 reward_replimit;
 
 	int32 reward_money;
