@@ -12800,7 +12800,7 @@ void Player::AcceptQuest(uint64 guid, uint32 quest_id)
 	qle->UpdatePlayerFields();
 
 	// If the quest should give any items on begin, give them the items.
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < MAX_RECEIVE_ITEMS; ++i)
 	{
 		if(qst->receive_items[i])
 		{

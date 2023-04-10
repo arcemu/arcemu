@@ -35,6 +35,16 @@ finished = 8
 132 error = 9
 */
 
+enum QuestFieldOffsets
+{
+	QUEST_FIELD_OFFSET_ID     = 0,
+	QUEST_FIELD_OFFSET_STATE  = 1,
+	QUEST_FIELD_OFFSET_COUNTS = 2,
+	QUEST_FIELD_OFFSET_TIMER  = 4,
+};
+
+#define QUEST_FIELD_OFFSETS_PER_SLOT 5
+
 enum QUEST_STATUS
 {
     QMGR_QUEST_NOT_AVAILABLE					= 0x00,	// There aren't any quests available.		| "No Mark"
@@ -129,9 +139,29 @@ enum QUEST_SHARE
     QUEST_SHARE_MSG_DIFFERENT_SERVER_DAILY		= 11,
 };
 
+enum QUEST_STATE
+{
+	QUEST_STATE_NONE   = 0,
+	QUEST_STATE_FAILED = 2,
+};
+
 #define arcemu_QUEST_REPEATABLE 1
 #define arcemu_QUEST_REPEATABLE_DAILY 2
+
+#define MAX_OBJECTIVE_TEXTS 4
 #define MAX_REQUIRED_QUEST_ITEM 6
+#define MAX_REQUIRED_MOBS 4
+#define MAX_REQUIRED_SPELLS 4
+#define MAX_REQUIRED_EMOTES 4
+#define MAX_REQUIRED_TRIGGERS 4
+#define MAX_REQUIRED_QUESTS 4
+
+#define MAX_REWARD_CHOICE_ITEMS 6
+#define MAX_REWARD_ITEMS 4
+#define MAX_REWARD_REPFACTION 6
+#define MAX_RECEIVE_ITEMS 4
+#define MAX_DETAIL_EMOTES 4
+#define MAX_COMPLETION_EMOTES 4
 
 class QuestScript;
 #pragma pack(push,1)
@@ -167,24 +197,24 @@ struct Quest
 	char* incompletetext;
 	char* endtext;
 
-	char* objectivetexts[4];
+	char* objectivetexts[MAX_OBJECTIVE_TEXTS];
 
 	uint32 required_item[ MAX_REQUIRED_QUEST_ITEM ];
 	uint32 required_itemcount[ MAX_REQUIRED_QUEST_ITEM ];
 
-	int32 required_mob[4]; //positive is NPC, negative is GO
-	uint32 required_mobcount[4];
-	uint32 required_spell[4];
-	uint32 required_emote[4];
+	int32 required_mob[MAX_REQUIRED_MOBS]; //positive is NPC, negative is GO
+	uint32 required_mobcount[MAX_REQUIRED_MOBS];
+	uint32 required_spell[MAX_REQUIRED_SPELLS];
+	uint32 required_emote[MAX_REQUIRED_EMOTES];
 
-	uint32 reward_choiceitem[6];
-	uint32 reward_choiceitemcount[6];
+	uint32 reward_choiceitem[MAX_REWARD_CHOICE_ITEMS];
+	uint32 reward_choiceitemcount[MAX_REWARD_CHOICE_ITEMS];
 
-	uint32 reward_item[4];
-	uint32 reward_itemcount[4];
+	uint32 reward_item[MAX_REWARD_ITEMS];
+	uint32 reward_itemcount[MAX_REWARD_ITEMS];
 
-	uint32 reward_repfaction[6];
-	int32 reward_repvalue[6];
+	uint32 reward_repfaction[MAX_REWARD_REPFACTION];
+	int32 reward_repvalue[MAX_REWARD_REPFACTION];
 	uint32 reward_replimit;
 
 	int32 reward_money;
@@ -202,12 +232,12 @@ struct Quest
 	uint32 point_opt;
 
 	uint32 rew_money_at_max_level;
-	uint32 required_triggers[4];
+	uint32 required_triggers[MAX_REQUIRED_TRIGGERS];
 	char* x_or_y_quest_string;
-	uint32 required_quests[4];
+	uint32 required_quests[MAX_REQUIRED_QUESTS];
 	char* remove_quests;
-	uint32 receive_items[4];
-	uint32 receive_itemcount[4];
+	uint32 receive_items[MAX_RECEIVE_ITEMS];
+	uint32 receive_itemcount[MAX_RECEIVE_ITEMS];
 	int is_repeatable;
 	//
 	uint32 bonushonor;
@@ -218,11 +248,11 @@ struct Quest
 
 	/* emotes */
 	uint32 detailemotecount;
-	uint32 detailemote[4];
-	uint32 detailemotedelay[4];
+	uint32 detailemote[MAX_DETAIL_EMOTES];
+	uint32 detailemotedelay[MAX_DETAIL_EMOTES];
 	uint32 completionemotecount;
-	uint32 completionemote[4];
-	uint32 completionemotedelay[4];
+	uint32 completionemote[MAX_COMPLETION_EMOTES];
+	uint32 completionemotedelay[MAX_COMPLETION_EMOTES];
 	uint32 completeemote;
 	uint32 incompleteemote;
 	uint32 iscompletedbyspelleffect;
@@ -236,7 +266,7 @@ struct Quest
 	uint32 count_receiveitems;
 	uint32 count_reward_choiceitem;
 	uint32 count_required_item;
-	uint32 required_mobtype[4];
+	uint32 required_mobtype[MAX_REQUIRED_MOBS];
 	uint32 count_reward_item;
 	set<uint32> quest_list;
 	set<uint32> remove_quest_list;
@@ -361,7 +391,7 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 
 		ARCEMU_INLINE uint32 GetBaseField(uint32 slot)
 		{
-			return PLAYER_QUEST_LOG_1_1 + (slot * 5);
+			return PLAYER_QUEST_LOG_1_1 + (slot * QUEST_FIELD_OFFSETS_PER_SLOT);
 		}
 		ARCEMU_INLINE int32 GetSlot() { return m_slot; }
 
@@ -374,8 +404,8 @@ class SERVER_DECL QuestLogEntry : public EventableObject
 		Quest* m_quest;
 		Player* m_plr;
 
-		uint32 m_mobcount[4];
-		uint32 m_explored_areas[4];
+		uint32 m_mobcount[MAX_REQUIRED_MOBS];
+		uint32 m_explored_areas[MAX_REQUIRED_TRIGGERS];
 
 		std::set<uint64> m_affected_units;
 		bool iscastquest;

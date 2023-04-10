@@ -65,20 +65,21 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 	*data << uint32(0);								// 3.3.0 Unknown
 
 	// (loop 4 times)
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < MAX_REWARD_ITEMS; ++i)
 	{
 		*data << qst->reward_item[i];				// Forced Reward Item [i]
 		*data << qst->reward_itemcount[i];			// Forced Reward Item Count [i]
 	}
 
 	// (loop 6 times)
-	for(i = 0; i < 6; ++i)
+	for(i = 0; i < MAX_REWARD_CHOICE_ITEMS; ++i)
 	{
 		*data << qst->reward_choiceitem[i];			// Choice Reward Item [i]
 		*data << qst->reward_choiceitemcount[i];	// Choice Reward Item Count [i]
 	}
 
 	// (loop 5 times) - these 3 loops are here to allow displaying rep rewards in client (not handled in core yet)
+	/// TODO: Check this!
 	for(i = 0; i < 5; ++i)
 	{
 		*data << uint32(qst->reward_repfaction[i]);	// reward factions ids
@@ -116,7 +117,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 		*data << uint8(0);							// most 3.3.0 quests i seen have something like "Return to NPCNAME"
 	}
 
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < MAX_REQUIRED_MOBS; ++i)
 	{
 		*data << qst->required_mob[i];				// Kill mob entry ID [i]
 		*data << qst->required_mobcount[i];			// Kill mob count [i]
@@ -130,19 +131,17 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 		*data << qst->required_itemcount[i];		// Collect item count [i]
 	}
 
-	if(lci)
+
+	for( i = 0; i < MAX_OBJECTIVE_TEXTS; ++i )
 	{
-		*data << lci->ObjectiveText[0];
-		*data << lci->ObjectiveText[1];
-		*data << lci->ObjectiveText[2];
-		*data << lci->ObjectiveText[3];
-	}
-	else
-	{
-		*data << qst->objectivetexts[0];				// Objective 1 - Used as text if mob not set
-		*data << qst->objectivetexts[1];				// Objective 2 - Used as text if mob not set
-		*data << qst->objectivetexts[2];				// Objective 3 - Used as text if mob not set
-		*data << qst->objectivetexts[3];				// Objective 4 - Used as text if mob not set
+		if( lci != NULL )
+		{
+			*data << lci->ObjectiveText[ i ];
+		}
+		else
+		{
+			*data << qst->objectivetexts[ i ];
+		}
 	}
 
 	return data;
@@ -177,7 +176,8 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 
 	iscastquest = false;
 	isemotequest = false;
-	for(uint32 i = 0; i < 4; ++i)
+
+	for( int i = 0; i < MAX_REQUIRED_SPELLS; i++ )
 	{
 		if(quest->required_spell[i] != 0)
 		{
@@ -185,10 +185,18 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 			if(!plr->HasQuestSpell(quest->required_spell[i]))
 				plr->quest_spells.insert(quest->required_spell[i]);
 		}
-		else if(quest->required_emote[i] != 0)
+	}
+
+	for( int i = 0; i < MAX_REQUIRED_EMOTES; i++ )
+	{
+		if(quest->required_emote[i] != 0)
 		{
 			isemotequest = true;
 		}
+	}
+
+	for( int i = 0; i < MAX_REQUIRED_MOBS; i++ )
+	{
 		if(quest->required_mob[i] != 0)
 		{
 			if(!plr->HasQuestMob(quest->required_mob[i]))
@@ -196,14 +204,16 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 		}
 	}
 
-
 	// update slot
 	plr->SetQuestLogSlot(this, slot);
 
 	mDirty = true;
 
-	memset(m_mobcount, 0, 4 * 4);
-	memset(m_explored_areas, 0, 4 * 4);
+	for( int i = 0; i < MAX_REQUIRED_MOBS; i++ )
+		m_mobcount[ i ] = 0;
+
+	for( int i = 0; i < MAX_REQUIRED_TRIGGERS; i++ )
+		m_explored_areas[ i ] = 0;
 
 	if( m_quest->time > 0 )
 		expirytime = UNIXTIME + m_quest->time / 1000;
@@ -281,14 +291,14 @@ bool QuestLogEntry::LoadFromDB(Field* fields)
 	ARCEMU_ASSERT(m_plr && m_quest);
 	expirytime = fields[f].GetUInt32();
 	f++;
-	for(int i = 0; i < 4; ++i)
+	for(int i = 0; i < MAX_REQUIRED_TRIGGERS; ++i)
 	{
 		m_explored_areas[i] = fields[f].GetUInt32();
 		f++;
 		CALL_QUESTSCRIPT_EVENT(this, OnExploreArea)(m_explored_areas[i], m_plr, this);
 	}
 
-	for(int i = 0; i < 4; ++i)
+	for(int i = 0; i < MAX_REQUIRED_MOBS; ++i)
 	{
 		m_mobcount[i] = fields[f].GetUInt32();
 		f++;
@@ -321,23 +331,32 @@ bool QuestLogEntry::CanBeFinished()
 	if( completed == QUEST_COMPLETE )
 		return true;
 
-	for(i = 0; i < 4; ++i)
+
+	for(i = 0; i < MAX_REQUIRED_MOBS; ++i)
 	{
-		if(m_quest->required_mob[i])
+		if(m_quest->required_mob[i] != 0)
 		{
 			if(m_mobcount[i] < m_quest->required_mobcount[i])
 			{
 				return false;
 			}
 		}
-		if(m_quest->required_spell[i])   // requires spell cast, with no required target
+	}
+
+	for( i = 0; i < MAX_REQUIRED_SPELLS; i++ )
+	{
+		if(m_quest->required_spell[i] != 0)   // requires spell cast, with no required target
 		{
 			if(m_mobcount[i] == 0 || m_mobcount[i] < m_quest->required_mobcount[i])
 			{
 				return false;
 			}
 		}
-		if(m_quest->required_emote[i])   // requires emote, with no required target
+	}
+
+	for( i = 0; i < MAX_REQUIRED_EMOTES; i++ )
+	{
+		if(m_quest->required_emote[i] != 0)   // requires emote, with no required target
 		{
 			if(m_mobcount[i] == 0 || m_mobcount[i] < m_quest->required_mobcount[i])
 			{
@@ -361,7 +380,7 @@ bool QuestLogEntry::CanBeFinished()
 	if(m_quest->reward_money < 0 && m_plr->GetGold() < uint32(-m_quest->reward_money))
 		return false;
 
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < MAX_REQUIRED_TRIGGERS; ++i)
 	{
 		if(m_quest->required_triggers[i])
 		{
@@ -375,21 +394,21 @@ bool QuestLogEntry::CanBeFinished()
 
 void QuestLogEntry::SetMobCount(uint32 i, uint32 count)
 {
-	ARCEMU_ASSERT(i < 4);
+	ARCEMU_ASSERT(i < MAX_REQUIRED_MOBS);
 	m_mobcount[i] = count;
 	mDirty = true;
 }
 
 void QuestLogEntry::IncrementMobCount(uint32 i)
 {
-	ARCEMU_ASSERT(i < 4);
+	ARCEMU_ASSERT(i < MAX_REQUIRED_MOBS);
 	++m_mobcount[i];
 	mDirty = true;
 }
 
 void QuestLogEntry::SetTrigger(uint32 i)
 {
-	ARCEMU_ASSERT(i < 4);
+	ARCEMU_ASSERT(i < MAX_REQUIRED_TRIGGERS);
 	m_explored_areas[i] = 1;
 	mDirty = true;
 }
@@ -405,10 +424,10 @@ void QuestLogEntry::Finish()
 	sEventMgr.RemoveEvents( m_plr, EVENT_TIMED_QUEST_EXPIRE );
 
 	uint32 base = GetBaseField(m_slot);
-	m_plr->SetUInt32Value(base + 0, 0);
-	m_plr->SetUInt32Value(base + 1, 0);
-	m_plr->SetUInt64Value(base + 2, 0);
-	m_plr->SetUInt32Value(base + 4, 0);
+	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_ID, 0);
+	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_STATE, QUEST_STATE_NONE);
+	m_plr->SetUInt64Value(base + QUEST_FIELD_OFFSET_COUNTS, 0);
+	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_TIMER, 0);
 
 	// clear from player log
 	m_plr->SetQuestLogSlot(NULL, m_slot);
@@ -440,7 +459,7 @@ void QuestLogEntry::Fail( bool timerexpired ){
 	mDirty = true;
 	
 	uint32 base = GetBaseField( m_slot );
-	m_plr->SetUInt32Value( base + 1, 2 );
+	m_plr->SetUInt32Value( base + QUEST_FIELD_OFFSET_STATE, QUEST_STATE_FAILED );
 
 	if( timerexpired )
 		sQuestMgr.SendQuestUpdateFailedTimer( m_quest, m_plr );
@@ -463,7 +482,7 @@ void QuestLogEntry::UpdatePlayerFields()
 	if(m_quest->count_requiredtriggers)
 	{
 		uint32 count = 0;
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < MAX_REQUIRED_TRIGGERS; ++i)
 		{
 			if(m_quest->required_triggers[i])
 			{
@@ -484,7 +503,7 @@ void QuestLogEntry::UpdatePlayerFields()
 	if(iscastquest)
 	{
 		bool cast_complete = true;
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < MAX_REQUIRED_SPELLS; ++i)
 		{
 			if(m_quest->required_spell[i] && m_quest->required_mobcount[i] > m_mobcount[i])
 			{
@@ -500,7 +519,7 @@ void QuestLogEntry::UpdatePlayerFields()
 	else if(isemotequest)
 	{
 		bool emote_complete = true;
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < MAX_REQUIRED_EMOTES; ++i)
 		{
 			if(m_quest->required_emote[i] && m_quest->required_mobcount[i] > m_mobcount[i])
 			{
@@ -517,20 +536,8 @@ void QuestLogEntry::UpdatePlayerFields()
 	// mob hunting / counter
 	if(m_quest->count_required_mob)
 	{
-		/*uint8 cnt;
-		for(int i = 0; i < 4; ++i)
-		{
-			if(m_quest->required_mob[i] && m_mobcount[i] > 0)
-			{
-				// 1 << (offset * 6)
-				cnt = m_mobcount[i];
-				field1 |= (cnt << (i*8));
-			}
-		}*/
-
-		// optimized this - burlex
 		uint8* p = (uint8*)&counts;
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < MAX_REQUIRED_MOBS; ++i)
 		{
 			if(m_quest->required_mob[i] && m_mobcount[i] > 0)
 				p[2 * i] |= (uint8)m_mobcount[i];
@@ -541,7 +548,7 @@ void QuestLogEntry::UpdatePlayerFields()
 		completed = QUEST_FAILED;
 
 	if( completed == QUEST_FAILED )
-		state |= 2;
+		state |= QUEST_STATE_FAILED;
 
 	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_ID, m_quest->id);
 	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_STATE, state);

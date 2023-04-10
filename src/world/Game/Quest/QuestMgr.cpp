@@ -109,7 +109,7 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 			return QMGR_QUEST_NOT_AVAILABLE;
 	}
 
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < MAX_REQUIRED_QUESTS; ++i)
 	{
 		if(qst->required_quests[i] > 0 && !plr->HasFinishedQuest(qst->required_quests[i]))
 		{
@@ -337,7 +337,7 @@ void QuestMgr::BuildOfferReward(WorldPacket* data, Quest* qst, Object* qst_giver
 	*data << qst->count_reward_choiceitem;
 	if(qst->count_reward_choiceitem)
 	{
-		for(i = 0; i < 6; ++i)
+		for(i = 0; i < MAX_REWARD_CHOICE_ITEMS; ++i)
 		{
 			if(qst->reward_choiceitem[i])
 			{
@@ -352,7 +352,7 @@ void QuestMgr::BuildOfferReward(WorldPacket* data, Quest* qst, Object* qst_giver
 	*data << qst->count_reward_item;
 	if(qst->count_reward_item)
 	{
-		for(i = 0; i < 4; ++i)
+		for(i = 0; i < MAX_REWARD_ITEMS; ++i)
 		{
 			if(qst->reward_item[i])
 			{
@@ -422,7 +422,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket* data, Quest* qst, Object* qst_give
 	uint32 i;
 
 	*data << qst->count_reward_choiceitem;
-	for(i = 0; i < 6; ++i)
+	for(i = 0; i < MAX_REWARD_CHOICE_ITEMS; ++i)
 	{
 		if(!qst->reward_choiceitem[i])
 			continue;
@@ -435,7 +435,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket* data, Quest* qst, Object* qst_give
 	}
 
 	*data << qst->count_reward_item;
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < MAX_REWARD_ITEMS; ++i)
 	{
 		if(!qst->reward_item[i])
 			continue;
@@ -574,7 +574,7 @@ void QuestMgr::BuildQuestComplete(Player* plr, Quest* qst)
 	data << uint32(qst->bonusarenapoints);
 	data << uint32(qst->count_reward_item);   //Reward item count
 
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < MAX_REWARD_ITEMS; ++i)
 	{
 		if(qst->reward_item[i])
 		{
@@ -690,7 +690,7 @@ bool QuestMgr::OnGameObjectActivate(Player* plr, GameObject* go)
 	uint32 entry = go->GetEntry();
 	Quest* qst;
 
-	for(i = 0; i < 25; ++i)
+	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		qle = plr->GetQuestLogInSlot(i);
 		if(qle != NULL)
@@ -700,7 +700,7 @@ bool QuestMgr::OnGameObjectActivate(Player* plr, GameObject* go)
 			if(qst->count_required_mob == 0)
 				continue;
 
-			for(j = 0; j < 4; ++j)
+			for(j = 0; j < MAX_REQUIRED_MOBS; ++j)
 			{
 				if(qst->required_mob[j] == static_cast<int32>(entry) &&
 				        qst->required_mobtype[j] == QUEST_MOB_TYPE_GAMEOBJECT &&
@@ -752,13 +752,13 @@ void QuestMgr::_OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill)
 
 	if(plr->HasQuestMob(entry))
 	{
-		for(i = 0; i < 25; ++i)
+		for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 		{
 			qle = plr->GetQuestLogInSlot(i);
 			if(qle != NULL)
 			{
 				qst = qle->GetQuest();
-				for(j = 0; j < 4; ++j)
+				for(j = 0; j < MAX_REQUIRED_MOBS; ++j)
 				{
 					if(qst->required_mob[j] == 0)
 						continue;
@@ -803,13 +803,13 @@ void QuestMgr::_OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill)
 						gplr = (*gitr)->m_loggedInPlayer;
 						if(gplr && gplr != plr && plr->isInRange(gplr, 300) && gplr->HasQuestMob(entry)) // don't double kills also don't give kills to party members at another side of the world
 						{
-							for(i = 0; i < 25; ++i)
+							for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 							{
 								qle = gplr->GetQuestLogInSlot(i);
 								if(qle != NULL)
 								{
 									qst = qle->GetQuest();
-									for(j = 0; j < 4; ++j)
+									for(j = 0; j < MAX_REQUIRED_MOBS; ++j)
 									{
 										if(qst->required_mob[j] == 0)
 											continue;
@@ -851,7 +851,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64 & victimguid)
 	uint32 i, j;
 	uint32 entry = (victim) ? victim->GetEntry() : 0;
 	QuestLogEntry* qle;
-	for(i = 0; i < 25; ++i)
+	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
@@ -860,7 +860,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64 & victimguid)
 				continue;
 
 			Quest* qst = qle->GetQuest();
-			for(j = 0; j < 4; ++j)
+			for(j = 0; j < MAX_REQUIRED_MOBS; ++j)
 			{
 				if(qst->required_mob[j])
 				{
@@ -900,7 +900,7 @@ void QuestMgr::OnPlayerItemPickup(Player* plr, Item* item)
 	uint32 pcount;
 	uint32 entry = item->GetEntry();
 	QuestLogEntry* qle;
-	for(i = 0; i < 25; ++i)
+	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		if((qle = plr->GetQuestLogInSlot(i))  != 0)
 		{
@@ -933,7 +933,7 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 {
 	uint32 i, j;
 	QuestLogEntry* qle;
-	for(i = 0; i < 25; ++i)
+	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
@@ -941,7 +941,7 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 			if(qle->GetQuest()->count_requiredtriggers == 0)
 				continue;
 
-			for(j = 0; j < 4; ++j)
+			for(j = 0; j < MAX_REQUIRED_TRIGGERS; ++j)
 			{
 				if(qle->GetQuest()->required_triggers[j] == AreaID &&
 				        !qle->m_explored_areas[j])
@@ -962,13 +962,13 @@ void QuestMgr::AreaExplored(Player* plr, uint32 QuestID)
 {
 	uint32 i, j;
 	QuestLogEntry* qle;
-	for(i = 0; i < 25; ++i)
+	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
 			// search for quest
 			if(qle->GetQuest()->id == QuestID)
-				for(j = 0; j < 4; ++j)
+				for(j = 0; j < MAX_REQUIRED_TRIGGERS; ++j)
 				{
 					if(qle->GetQuest()->required_triggers[j] &&
 					        !qle->m_explored_areas[j])
@@ -988,7 +988,7 @@ void QuestMgr::AreaExplored(Player* plr, uint32 QuestID)
 void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object* qst_giver)
 {
 	// Reputation reward
-	for(int z = 0; z < 6; z++)
+	for(int z = 0; z < MAX_REWARD_REPFACTION; z++)
 	{
 		uint32 fact = 19;   // default to 19 if no factiondbc
 		int32 amt  = int(GenerateQuestXP(plr, qst) * 0.1f);      // guess
@@ -1045,7 +1045,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 
 	BuildQuestComplete(plr, qst);
 	CALL_QUESTSCRIPT_EVENT(qle, OnQuestComplete)(plr, qle);
-	for(uint32 x = 0; x < 4; x++)
+	for(uint32 x = 0; x < MAX_REQUIRED_SPELLS; x++)
 	{
 		if(qst->required_spell[x] != 0)
 		{
@@ -1078,7 +1078,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 		// Reputation reward
 		GiveQuestRewardReputation(plr, qst, qst_giver);
 		// Static Item reward
-		for(uint32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < MAX_REWARD_ITEMS; ++i)
 		{
 			if(qst->reward_item[i])
 			{
@@ -1195,7 +1195,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 		// Reputation reward
 		GiveQuestRewardReputation(plr, qst, qst_giver);
 		// Static Item reward
-		for(uint32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < MAX_REWARD_ITEMS; ++i)
 		{
 			if(qst->reward_item[i])
 			{
@@ -1893,7 +1893,7 @@ bool QuestMgr::CanStoreReward(Player* plyr, Quest* qst, uint32 reward_slot)
 	uint32 slotsrequired = 0;
 	available_slots = plyr->GetItemInterface()->CalculateFreeSlots(NULL);
 	// Static Item reward
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < MAX_REWARD_ITEMS; ++i)
 	{
 		if(qst->reward_item[i])
 		{
@@ -1972,7 +1972,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			}
 		}
 
-		for(int i = 0 ; i < 4; ++i)
+		for(int i = 0 ; i < MAX_REQUIRED_MOBS; ++i)
 		{
 			if(qst->required_mob[i] != 0)
 			{
@@ -2022,7 +2022,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			if( qst->required_item[ i ] != 0 )
 				qst->count_required_item++;
 
-		for(int i = 0; i < 6; ++i)
+		for(int i = 0; i < MAX_REWARD_CHOICE_ITEMS; ++i)
 		{
 			if(qst->reward_choiceitem[i])
 				qst->count_reward_choiceitem++;
@@ -2323,7 +2323,7 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64 & victimguid)
 	uint32 i, j;
 	uint32 entry = (victim) ? victim->GetEntry() : 0;
 	QuestLogEntry* qle;
-	for(i = 0; i < 25; ++i)
+	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
 	{
 		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
@@ -2334,7 +2334,7 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64 & victimguid)
 			}
 
 			Quest* qst = qle->GetQuest();
-			for(j = 0; j < 4; ++j)
+			for(j = 0; j < MAX_REQUIRED_MOBS; ++j)
 			{
 				if(qst->required_mob[j])
 				{
