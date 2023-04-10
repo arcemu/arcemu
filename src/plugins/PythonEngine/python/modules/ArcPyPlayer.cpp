@@ -296,6 +296,37 @@ static PyObject* ArcPyPlayer_markQuestObjectiveAsComplete( ArcPyPlayer *self, Py
 	Py_RETURN_NONE;
 }
 
+/// addQuestKill
+///   Adds a quest kill / credit to the specified quest's specified objective
+///
+/// Parameters
+///   quest      - The identifier of the quest
+///   objective  - The sequence number of the objective
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.addQuestKill( 1234, 1 )
+///
+static PyObject* ArcPyPlayer_addQuestKill( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 quest;
+	uint32 objective;
+	uint64 guid = 0;
+
+	if( !PyArg_ParseTuple( args, "kk|K", &quest, &objective, &guid ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a quest, and an objective to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	player->AddQuestKill( quest, (uint8)objective, 0, guid );
+
+	Py_RETURN_NONE;
+}
+
 
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
@@ -306,6 +337,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "teleport", (PyCFunction)ArcPyPlayer_teleport, METH_VARARGS, "Teleports the player to the given map's given coordinates" },
 	{ "sendGossipPOI", (PyCFunction)ArcPyPlayer_sendGossipPOI, METH_VARARGS, "Sends a gossip POI (Point Of Interest) to the Player, marking it on the map" },
 	{ "markQuestObjectiveAsComplete", (PyCFunction)ArcPyPlayer_markQuestObjectiveAsComplete, METH_VARARGS, "Marks a quest objective as complete in the player's quest log" },
+	{ "addQuestKill", (PyCFunction)ArcPyPlayer_addQuestKill, METH_VARARGS, "Adds a quest kill credit for a quest's objective" },
 	{NULL}
 };
 
