@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 #
-# Creature AI script for Guard Roberts (12423)
-# for the quest Garments of the Light (5624)
+# Creature AI script for Grunt Kor'ja (12430)
+# for the quest Garments of Spirituality (5648)
 # 
 # The player should get quest credit after the following:
 # * Heal the NPC with Lesser Heal II
