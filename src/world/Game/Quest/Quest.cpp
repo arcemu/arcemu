@@ -454,11 +454,10 @@ void QuestLogEntry::UpdatePlayerFields()
 		return;
 
 	uint32 base = GetBaseField(m_slot);
-	m_plr->SetUInt32Value(base + 0, m_quest->id);
-	uint32 field0 = 0; // 0x01000000 = "Objective Complete" - 0x02 = Quest Failed - 0x04 = Quest Accepted
+	uint32 state = 0; // 0x01000000 = "Objective Complete" - 0x02 = Quest Failed - 0x04 = Quest Accepted
 
 	// next field is count (kills, etc)
-	uint64 field1 = 0;
+	uint64 counts = 0;
 
 	// explored areas
 	if(m_quest->count_requiredtriggers)
@@ -477,7 +476,7 @@ void QuestLogEntry::UpdatePlayerFields()
 
 		if(count == m_quest->count_requiredtriggers)
 		{
-			field1 |= 0x01000000;
+			counts |= 0x01000000;
 		}
 	}
 
@@ -495,7 +494,7 @@ void QuestLogEntry::UpdatePlayerFields()
 		}
 		if(cast_complete)
 		{
-			field0 |= 0x01000000; // "Objective Complete"
+			state |= 0x01000000; // "Objective Complete"
 		}
 	}
 	else if(isemotequest)
@@ -511,7 +510,7 @@ void QuestLogEntry::UpdatePlayerFields()
 		}
 		if(emote_complete)
 		{
-			field0 |= 0x01000000; // "Objective Complete"
+			state |= 0x01000000; // "Objective Complete"
 		}
 	}
 
@@ -530,7 +529,7 @@ void QuestLogEntry::UpdatePlayerFields()
 		}*/
 
 		// optimized this - burlex
-		uint8* p = (uint8*)&field1;
+		uint8* p = (uint8*)&counts;
 		for(int i = 0; i < 4; ++i)
 		{
 			if(m_quest->required_mob[i] && m_mobcount[i] > 0)
@@ -542,16 +541,17 @@ void QuestLogEntry::UpdatePlayerFields()
 		completed = QUEST_FAILED;
 
 	if( completed == QUEST_FAILED )
-		field0 |= 2;
+		state |= 2;
 
-	m_plr->SetUInt32Value(base + 1, field0);
-	m_plr->SetUInt64Value(base + 2, field1);
+	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_ID, m_quest->id);
+	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_STATE, state);
+	m_plr->SetUInt64Value(base + QUEST_FIELD_OFFSET_COUNTS, counts);
 
 	if( ( m_quest->time != 0 ) && ( completed != QUEST_FAILED ) ){
-		m_plr->SetUInt32Value( base + 4, expirytime );
+		m_plr->SetUInt32Value( base + QUEST_FIELD_OFFSET_TIMER, expirytime );
 		sEventMgr.AddEvent( m_plr, &Player::EventTimedQuestExpire, m_quest->id, EVENT_TIMED_QUEST_EXPIRE, ( expirytime - UNIXTIME ) * 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 	}else
-		m_plr->SetUInt32Value( base + 4, 0 );
+		m_plr->SetUInt32Value( base + QUEST_FIELD_OFFSET_TIMER, 0 );
 }
 
 void QuestLogEntry::SendQuestComplete()

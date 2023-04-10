@@ -400,6 +400,14 @@ enum DrunkenState
     DRUNKEN_SMASHED	= 3
 };
 
+enum QuestFieldOffsets
+{
+	QUEST_FIELD_OFFSET_ID     = 0,
+	QUEST_FIELD_OFFSET_STATE  = 1,
+	QUEST_FIELD_OFFSET_COUNTS = 2,
+	QUEST_FIELD_OFFSET_TIMER  = 4
+};
+
 /**
 	TalentTree table
 
