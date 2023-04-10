@@ -472,82 +472,76 @@ void QuestLogEntry::UpdatePlayerFields()
 		return;
 
 	uint32 base = GetBaseField(m_slot);
-	uint32 state = 0; // 0x01000000 = "Objective Complete" - 0x02 = Quest Failed - 0x04 = Quest Accepted
-
-	// next field is count (kills, etc)
+	uint32 state = 0;
 	uint64 counts = 0;
+	uint8* p = (uint8*)&counts;
 
-	// explored areas
-	if(m_quest->count_requiredtriggers)
+	/// Assume the quest is complete, try to prove otherwise
+	bool objectivesComplete = true;
+
+	for( int i = 0; i < MAX_REQUIRED_TRIGGERS; i++ )
 	{
-		uint32 count = 0;
-		for(int i = 0; i < MAX_REQUIRED_TRIGGERS; ++i)
+		if( m_quest->required_triggers[ i ] != 0 )
 		{
-			if(m_quest->required_triggers[i])
+			p[2 * i] |= (uint8)m_explored_areas[ i ];
+
+			if( m_explored_areas[ i ] != 1 )
 			{
-				if(m_explored_areas[i] == 1)
-				{
-					count++;
-				}
+				objectivesComplete = false;
 			}
 		}
-
-		if(count == m_quest->count_requiredtriggers)
-		{
-			counts |= 0x01000000;
-		}
 	}
 
-	// spell casts / emotes
-	if(iscastquest)
+	for( int i = 0; i < MAX_REQUIRED_SPELLS; i++ )
 	{
-		bool cast_complete = true;
-		for(int i = 0; i < MAX_REQUIRED_SPELLS; ++i)
+		if( m_quest->required_spell[ i ] != 0 )
 		{
-			if(m_quest->required_spell[i] && m_quest->required_mobcount[i] > m_mobcount[i])
+			p[2 * i] |= (uint8)m_mobcount[ i ];
+
+			if( m_quest->required_mobcount[ i ] > m_mobcount[ i ] )
 			{
-				cast_complete = false;
-				break;
+				objectivesComplete = false;
 			}
 		}
-		if(cast_complete)
-		{
-			state |= 0x01000000; // "Objective Complete"
-		}
 	}
-	else if(isemotequest)
+
+	for( int i = 0; i < MAX_REQUIRED_EMOTES; i++ )
 	{
-		bool emote_complete = true;
-		for(int i = 0; i < MAX_REQUIRED_EMOTES; ++i)
+		if( m_quest->required_emote[ i ] != 0 )
 		{
-			if(m_quest->required_emote[i] && m_quest->required_mobcount[i] > m_mobcount[i])
+			p[2 * i] |= (uint8)m_mobcount[ i ];
+
+			if( m_quest->required_mobcount[ i ] > m_mobcount[ i ] )
 			{
-				emote_complete = false;
-				break;
+				objectivesComplete = false;
 			}
 		}
-		if(emote_complete)
-		{
-			state |= 0x01000000; // "Objective Complete"
-		}
 	}
 
-	// mob hunting / counter
-	if(m_quest->count_required_mob)
+	for( int i = 0; i < MAX_REQUIRED_MOBS; i++ )
 	{
-		uint8* p = (uint8*)&counts;
-		for(int i = 0; i < MAX_REQUIRED_MOBS; ++i)
+		if( m_quest->required_mob[ i ] != 0 )
 		{
-			if(m_quest->required_mob[i] && m_mobcount[i] > 0)
-				p[2 * i] |= (uint8)m_mobcount[i];
+			p[2 * i] |= (uint8)m_mobcount[ i ];
+
+			if( m_quest->required_mobcount[ i ] > m_mobcount[ i ] )
+			{
+				objectivesComplete = false;
+			}
 		}
 	}
-
+	
 	if( ( m_quest->time != 0 ) && ( expirytime < UNIXTIME ) )
-		completed = QUEST_FAILED;
-
-	if( completed == QUEST_FAILED )
-		state |= QUEST_STATE_FAILED;
+	{
+		state = QUEST_STATE_FAILED;
+	}
+	else
+	{
+		if( objectivesComplete )
+		{
+			state = QUEST_STATE_COMPLETE;
+		}
+	}
 
 	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_ID, m_quest->id);
 	m_plr->SetUInt32Value(base + QUEST_FIELD_OFFSET_STATE, state);
