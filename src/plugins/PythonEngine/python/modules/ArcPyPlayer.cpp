@@ -288,13 +288,10 @@ static PyObject* ArcPyPlayer_markQuestObjectiveAsComplete( ArcPyPlayer *self, Py
 	Player *player = self->playerPtr;
 
 	QuestLogEntry *qle = player->GetQuestLogForEntry( quest );
-	if( qle == NULL )
+	if( qle != NULL )
 	{
-		PyErr_SetString( PyExc_ValueError, "The player doesn't have that quest in their quest log" );
-		return NULL;
+		qle->MarkObjectiveComplete( objective, guid );
 	}
-
-	qle->MarkObjectiveComplete( objective, guid );
 
 	Py_RETURN_NONE;
 }
