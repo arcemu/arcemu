@@ -13118,14 +13118,14 @@ bool Player::SaveSkills(bool NewCharacter, QueryBuffer* buf)
 	return true;
 }
 
-void Player::AddQuestKill(uint32 questid, uint8 reqid, uint32 delay)
+void Player::AddQuestKill(uint32 questid, uint8 reqid, uint32 delay, uint64 guid)
 {
 	if(!HasQuest(questid))
 		return;
 
 	if(delay)
 	{
-		sEventMgr.AddEvent(this, &Player::AddQuestKill, questid, reqid, uint32(0), EVENT_PLAYER_UPDATE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &Player::AddQuestKill, questid, reqid, uint32(0), guid, EVENT_PLAYER_UPDATE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		return;
 	}
 
@@ -13136,7 +13136,7 @@ void Player::AddQuestKill(uint32 questid, uint8 reqid, uint32 delay)
 		return;
 
 	qle->IncrementMobCount(reqid);
-	qle->SendUpdateAddKill(reqid);
+	qle->SendUpdateAddKill(reqid, guid);
 	qle->UpdatePlayerFields();
 
 	if(qle->CanBeFinished())

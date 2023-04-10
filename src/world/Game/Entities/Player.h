@@ -1066,7 +1066,7 @@ class SERVER_DECL Player : public Unit
 		bool                HasQuestMob(uint32 entry);
 		bool                HasQuest(uint32 entry);
 		void                RemoveQuestMob(uint32 entry);
-		void                AddQuestKill(uint32 questid, uint8 reqid, uint32 delay = 0);
+		void                AddQuestKill(uint32 questid, uint8 reqid, uint32 delay = 0, uint64 guid = 0);
 
 
 		/////////////////////////////////////////////////////////////
