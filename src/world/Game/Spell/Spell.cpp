@@ -1889,11 +1889,6 @@ void Spell::finish(bool successful)
 					sQuestMgr.OnPlayerCast(p_caster, GetProto()->Id, *itr);
 				}
 			}
-			if(numTargets == 0)
-			{
-				uint64 guid = p_caster->GetTargetGUID();
-				sQuestMgr.OnPlayerCast(p_caster, GetProto()->Id, guid);
-			}
 		}
 	}
 
