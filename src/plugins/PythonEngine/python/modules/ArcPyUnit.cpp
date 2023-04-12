@@ -1520,6 +1520,42 @@ static PyObject* ArcPyUnit_stopMovement( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// castSpell
+///   Makes the Unit cast a spell
+///
+/// Parameters
+///   spellId   -  The spell's identfier
+///   triggered -  Is this a triggered spell? (bool)
+///
+/// Return value
+///   Returns the cast result as an integer
+///
+/// Example
+///   unit.castSpell( 60424, False )
+///
+static PyObject* ArcPyUnit_castSpell( ArcPyUnit *self, PyObject *args )
+{
+	uint32 spellId;
+	int triggeredInt = 0;
+
+	if( !PyArg_ParseTuple( args, "k|p", &spellId, &triggeredInt ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a spellId" );
+		return NULL;
+	}
+
+	bool triggered;
+	if( triggeredInt != 0 )
+		triggered = true;
+	else
+		triggered = false;
+
+	Unit *unit = self->unitPtr;
+	uint8 result = unit->CastSpell( unit, spellId, triggered );
+	return PyLong_FromUnsignedLong( result );
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1571,6 +1607,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
 	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
 	{ "stopMovement", (PyCFunction)ArcPyUnit_stopMovement, METH_VARARGS, "Stop moving for the specified duration" },
+	{ "castSpell", (PyCFunction)ArcPyUnit_castSpell, METH_VARARGS, "Makes the Unit cast a spell" },
 	{NULL}
 };
 

@@ -53,6 +53,8 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
 		
 		menu.addItem( arcemu.ICON_CHAT, "Give me a vehicle!", 1, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Give me a big vehicle!", 801, 0 )		
+		menu.addItem( arcemu.ICON_CHAT, "Get to the choppa'!", 802, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Dismiss my vehicle!", 2, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Am I on a vehicle?", 3, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Add a passenger to my vehicle!", 4, 0 )
@@ -68,6 +70,20 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Here it is, Fool!" )
 			player.spawnAndEnterVehicle( 28605, 1000 )
+			
+	if id == 801:
+		if player.isOnVehicle():
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are already on a vehicle. Fool!" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Here it is, Fool!" )
+			player.castSpell( 61465, False )
+			
+	if id == 802:
+		if player.isOnVehicle():
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are already on a vehicle. Fool!" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Here it is, Fool!" )
+			player.castSpell( 60424 )
 			
 	elif id == 2:
 		if player.isOnVehicle():
