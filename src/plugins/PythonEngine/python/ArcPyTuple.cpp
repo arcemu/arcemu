@@ -143,8 +143,7 @@ void ArcPyTuple::setItemUnit( unsigned long idx, Unit* unit )
 		return;
 	}
 
-	ArcPyUnit *apu = createArcPyUnit();
-	apu->unitPtr = unit;
+	ArcPyUnit *apu = createArcPyUnit(unit);
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apu );
 }
 

@@ -413,8 +413,7 @@ static PyObject* ArcPyUnit_getVehicleBase( ArcPyUnit *self, PyObject *args )
 		Py_RETURN_NONE;
 	else
 	{
-		ArcPyUnit *apu = createArcPyUnit();
-		apu->unitPtr = vehicleBase;
+		ArcPyUnit *apu = createArcPyUnit(vehicleBase);
 		return (PyObject*)apu;
 	}
 }
@@ -1614,10 +1613,11 @@ int registerArcPyUnit( PyObject *module )
 	return 0;
 }
 
-ArcPyUnit* createArcPyUnit()
+ArcPyUnit* createArcPyUnit( Unit* u )
 {
 	PyTypeObject *type = &ArcPyUnitType;
 	ArcPyUnit* unit = (ArcPyUnit*)type->tp_alloc( type, 0 );
+	unit->unitPtr = u;
 	return unit;
 }
 

@@ -108,8 +108,7 @@ static PyObject* ArcPyPlayer_sendChatMessage( ArcPyPlayer *self, PyObject *args 
 ///
 static PyObject* ArcPyPlayer_toUnit( ArcPyPlayer *self, PyObject *args )
 {
-	ArcPyUnit *apu = createArcPyUnit();
-	apu->unitPtr = self->playerPtr;
+	ArcPyUnit *apu = createArcPyUnit( self->playerPtr );
 	return (PyObject*)apu;
 }
 

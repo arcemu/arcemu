@@ -30,6 +30,6 @@ typedef struct
 } ArcPyUnit;
 
 /// Create an empty ArcPyUnit object
-ArcPyUnit* createArcPyUnit();
+ArcPyUnit* createArcPyUnit( Unit* u );
 
 #endif
