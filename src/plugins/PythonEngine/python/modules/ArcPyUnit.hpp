@@ -20,6 +20,8 @@
 #ifndef ARCPYUNIT_H_
 #define ARCPYUNIT_H_
 
+extern PyTypeObject ArcPyUnitType;
+
 class Unit;
 
 /// Arcemu Unit type for Python

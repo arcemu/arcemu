@@ -20,12 +20,14 @@
 #ifndef ARCPYPLAYER_H_
 #define ARCPYPLAYER_H_
 
+#include "ArcPyUnit.hpp"
+
 class Player;
 
 /// Arcemu Player type for Python
 typedef struct
 {
-	PyObject_HEAD
+	ArcPyUnit unit;
 	Player* playerPtr;
 } ArcPyPlayer;
 

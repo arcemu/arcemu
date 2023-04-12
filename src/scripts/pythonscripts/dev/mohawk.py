@@ -55,45 +55,43 @@ def mohawk_onHello( unit, event, player ):
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	GossipMenu.complete( player )
 	
-	pu = player.toUnit()
-	
 	if id == 1:
-		if pu.isOnVehicle():
+		if player.isOnVehicle():
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are already on a vehicle. Fool!" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Here it is, Fool!" )
 			player.spawnAndEnterVehicle( 28605, 1000 )
 			
 	elif id == 2:
-		if pu.isOnVehicle():
+		if player.isOnVehicle():
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Go away, Fool!" )
-			pu.dismissVehicle()
+			player.dismissVehicle()
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't have a vehicle, Fool!" )
 			
 	elif id == 3:
-		if pu.isOnVehicle():
+		if player.isOnVehicle():
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ofc you are on a vehicle, Fool!" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ofc you are not on a vehicle, Fool!" )
 			
 	elif id == 4:
-		if pu.isOnVehicle():
-			if pu.hasEmptyVehicleSeat():
+		if player.isOnVehicle():
+			if player.hasEmptyVehicleSeat():
 				unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Here you go, Fool!" )
-				pu.addVehiclePassenger( 31111 )
+				player.addVehiclePassenger( 31111 )
 			else:
 				unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't event have a free seat, Fool!" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't even have a vehicle, Fool!" )
 	
 	elif id == 5:
-		if pu.isOnVehicle():
-			if pu.hasEmptyVehicleSeat():
+		if player.isOnVehicle():
+			if player.hasEmptyVehicleSeat():
 				if unit.isOnVehicle():
 					unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am already on a vehicle, Fool!" )
 				else:
-					vb = pu.getVehicleBase()
+					vb = player.getVehicleBase()
 					unit.enterVehicle( vb.getGUID(), 0 )
 			else:
 				unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You don't have an empty seat, Fool!" )
@@ -107,8 +105,8 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am NOT on a vehicle, Fool!" )
 			
 	elif id == 7:
-		if pu.isOnVehicle():
-			vb = pu.getVehicleBase()
+		if player.isOnVehicle():
+			vb = player.getVehicleBase()
 			vb.setSpeeds( 100.0 )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are not on a vehicle, Fool!" )
@@ -215,8 +213,8 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		unit.despawn( 1500, 1500 )
 		
 	elif id == 30:
-		if pu.isPlayer():
-			p = pu.toPlayer()
+		if player.isPlayer():
+			p = player.toPlayer()
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are, fool" )
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "...and your name is " + p.getName() )
 		
@@ -253,13 +251,13 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			
 	elif id == 202:
 		tagger = unit.getTaggerGuid()
-		if tagger == pu.getGUID():
+		if tagger == player.getGUID():
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Yes, you tagged me" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "No, you did not tag me" )
 			
 	elif id == 203:
-		unit.tag( pu.getGUID() )
+		unit.tag( player.getGUID() )
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
 		
 	elif id == 204:

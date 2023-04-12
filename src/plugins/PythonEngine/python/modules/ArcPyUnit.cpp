@@ -1555,7 +1555,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{NULL}
 };
 
-static PyTypeObject ArcPyUnitType = {
+PyTypeObject ArcPyUnitType = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	
 	"ArcPyUnit",					// tp_name
@@ -1576,7 +1576,7 @@ static PyTypeObject ArcPyUnitType = {
 	0,								// tp_getattro
 	0,								// tp_setattro
 	0,								// tp_as_buffer
-	Py_TPFLAGS_DEFAULT,				// tp_flags
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,				// tp_flags
 	"Arcemu Unit",					// tp_doc
 	0,								// tp_traverse
 	0,								// tp_clear
