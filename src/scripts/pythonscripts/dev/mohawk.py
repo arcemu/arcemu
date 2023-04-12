@@ -8,13 +8,7 @@ def mohawk_onHello( unit, event, player ):
 	print( "Event id: " + str( event ) )
 	
 	menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
-	menu.addItem( arcemu.ICON_CHAT, "Give me a vehicle!", 1, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Dismiss my vehicle!", 2, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Am I on a vehicle?", 3, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Add a passenger to my vehicle!", 4, 0 )	
-	menu.addItem( arcemu.ICON_CHAT, "Shut up woman and get on my vehicle!", 5, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Get off my vehicle!", 6, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Speed up my vehicle!", 7, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Vehicles", 0, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Pity the fool!", 8, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 9, 0 )
@@ -54,6 +48,19 @@ def mohawk_onHello( unit, event, player ):
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	GossipMenu.complete( player )
+	
+	if id == 0:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Give me a vehicle!", 1, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Dismiss my vehicle!", 2, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Am I on a vehicle?", 3, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Add a passenger to my vehicle!", 4, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Shut up woman and get on my vehicle!", 5, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Get off my vehicle!", 6, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Speed up my vehicle!", 7, 0 )
+		
+		menu.sendToPlayer( player )
 	
 	if id == 1:
 		if player.isOnVehicle():
