@@ -104,8 +104,7 @@ void ArcPyTuple::setItemPlayer( unsigned long idx, Player* player )
 		return;
 	}
 
-	ArcPyPlayer *app = createArcPyPlayer();
-	app->playerPtr = player;
+	ArcPyPlayer *app = createArcPyPlayer(player);
 	PyTuple_SetItem( getObject(), idx, (PyObject*)app );
 }
 

@@ -403,9 +403,10 @@ int registerArcPyPlayer( PyObject *module )
 	return 0;
 }
 
-ArcPyPlayer* createArcPyPlayer()
+ArcPyPlayer* createArcPyPlayer( Player* p )
 {
 	PyTypeObject *type = &ArcPyPlayerType;
 	ArcPyPlayer* player = (ArcPyPlayer*)type->tp_alloc( type, 0 );
+	player->playerPtr = p;
 	return player;
 }

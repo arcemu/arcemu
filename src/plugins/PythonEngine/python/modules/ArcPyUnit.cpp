@@ -1182,8 +1182,7 @@ static PyObject* ArcPyUnit_toPlayer( ArcPyUnit *self, PyObject *args )
 		return NULL;
 	}
 
-	ArcPyPlayer *player = createArcPyPlayer();
-	player->playerPtr = static_cast< Player* >( unit );
+	ArcPyPlayer *player = createArcPyPlayer( TO_PLAYER( unit ) );
 	return (PyObject*)( player );
 }
 

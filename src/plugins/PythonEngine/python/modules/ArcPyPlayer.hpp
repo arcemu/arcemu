@@ -30,6 +30,6 @@ typedef struct
 } ArcPyPlayer;
 
 /// Creates an empty ArcPyPlayer object
-ArcPyPlayer* createArcPyPlayer();
+ArcPyPlayer* createArcPyPlayer( Player* p );
 
 #endif
