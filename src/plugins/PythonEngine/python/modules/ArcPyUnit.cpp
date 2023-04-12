@@ -525,6 +525,24 @@ static PyObject* ArcPyUnit_setFaction( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getFaction
+///   Returns the Unit's faction Id
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the Unit's faction Id
+///
+/// Example
+///   unit.getFaction()
+///
+static PyObject* ArcPyUnit_getFaction( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	return PyLong_FromUnsignedLong( unit->GetFaction() );
+}
+
 /// setUnitToFollow
 ///   Sets the unit which should be followed
 ///
@@ -1520,6 +1538,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getVehicleBase", (PyCFunction)ArcPyUnit_getVehicleBase, METH_NOARGS, "Returns the Vehicle the Unit is on" },
 	{ "playSoundToSet", (PyCFunction)ArcPyUnit_playSoundToSet, METH_VARARGS, "Plays a sound to nearby players" },
 	{ "setFaction", (PyCFunction)ArcPyUnit_setFaction, METH_VARARGS, "Sets the faction Id of the Unit" },
+	{ "getFaction", (PyCFunction)ArcPyUnit_getFaction, METH_NOARGS, "Returns the faction Id of the Unit" },
 	{ "setUnitToFollow", (PyCFunction)ArcPyUnit_setUnitToFollow, METH_VARARGS, "Sets the Unit that this Unit will follow" },
 	{ "stopFollowing", (PyCFunction)ArcPyUnit_stopFollowing, METH_NOARGS, "The Unit will stop following" },
 	{ "setScale", (PyCFunction)ArcPyUnit_setScale, METH_VARARGS, "Sets the size scale of the Unit" },
