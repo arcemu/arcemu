@@ -14,7 +14,6 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 9, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Don't pity the fool!", 10, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Let's play some music!", 11, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "I think your hair is ugly", 12, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Follow me!", 13, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Stop following me!", 14, 0 )
@@ -44,6 +43,8 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Respawn!", 29, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Am I a player?", 30, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Heal me!", 31, 0 )
+	
+	menu.addItem( arcemu.ICON_CHAT, "Media", 300, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -144,9 +145,6 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	elif id == 10:
 		unit.RemoveAIUpdateEvent()
 		
-	elif id == 11:
-		unit.playSoundToSet( 11803 )
-	
 	elif id == 12:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You really are a fool!" )
 		unit.setFaction( 168 )
@@ -290,6 +288,28 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	elif id == 204:
 		unit.untag()
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
+		
+	if id == 300:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Let's play the Power of The Horde!", 301, 0 )		
+		menu.addItem( arcemu.ICON_CHAT, "Show me the World of Warcraft intro movie!", 302, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Show me the Wrath Gate movie!", 303, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Show me the Fall of the Lich King movie!", 304, 0 )	
+		
+		menu.sendToPlayer( player )
+		
+	elif id == 301:
+		unit.playSoundToSet( 11803 )
+		
+	if id == 302:
+		player.sendMovie( 2 )
+		
+	if id == 303:
+		player.sendMovie( 14 )
+		
+	if id == 304:
+		player.sendMovie( 16 )
 		
 
 def mohawk_onEnterVehicle( unit ):

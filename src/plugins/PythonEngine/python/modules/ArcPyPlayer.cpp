@@ -328,6 +328,34 @@ static PyObject* ArcPyPlayer_addQuestKill( ArcPyPlayer *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// sendMovie
+///   Sends / shows a movie to the Player
+///
+/// Parameters
+///   movieID    - The identifier of the movie
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.sendMovie( 16 ) # Shows the Fall of the Lich King movie
+///
+static PyObject* ArcPyPlayer_sendMovie( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 movieId;
+
+	if( !PyArg_ParseTuple( args, "k", &movieId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a movie id to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	Messenger::SendTriggerMovie( player, movieId );
+
+	Py_RETURN_NONE;
+}
+
 
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
@@ -339,6 +367,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "sendGossipPOI", (PyCFunction)ArcPyPlayer_sendGossipPOI, METH_VARARGS, "Sends a gossip POI (Point Of Interest) to the Player, marking it on the map" },
 	{ "markQuestObjectiveAsComplete", (PyCFunction)ArcPyPlayer_markQuestObjectiveAsComplete, METH_VARARGS, "Marks a quest objective as complete in the player's quest log" },
 	{ "addQuestKill", (PyCFunction)ArcPyPlayer_addQuestKill, METH_VARARGS, "Adds a quest kill credit for a quest's objective" },
+	{ "sendMovie", (PyCFunction)ArcPyPlayer_sendMovie, METH_VARARGS, "Sends / shows a movie to the Player" },
 	{NULL}
 };
 
