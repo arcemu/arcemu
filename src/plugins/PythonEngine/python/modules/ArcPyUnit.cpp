@@ -1527,19 +1527,23 @@ static PyObject* ArcPyUnit_stopMovement( ArcPyUnit *self, PyObject *args )
 /// Parameters
 ///   spellId   -  The spell's identfier
 ///   triggered -  Is this a triggered spell? (bool)
+///   target    -  The unit the spell should be cast on (optional)
 ///
 /// Return value
 ///   Returns the cast result as an integer
 ///
 /// Example
+///   unit.castSpell( 60424 )
 ///   unit.castSpell( 60424, False )
+///   unit.castSpell( 2052, False, player )
 ///
 static PyObject* ArcPyUnit_castSpell( ArcPyUnit *self, PyObject *args )
 {
 	uint32 spellId;
 	int triggeredInt = 0;
+	PyObject *target = NULL;
 
-	if( !PyArg_ParseTuple( args, "k|p", &spellId, &triggeredInt ) )
+	if( !PyArg_ParseTuple( args, "k|pO", &spellId, &triggeredInt, &target ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a spellId" );
 		return NULL;
@@ -1551,8 +1555,25 @@ static PyObject* ArcPyUnit_castSpell( ArcPyUnit *self, PyObject *args )
 	else
 		triggered = false;
 
+	Unit *targetUnit = NULL;
+
+	if( target != NULL )
+	{
+		if( !isArcPyUnit( target ) )
+		{
+			PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyUnit object to be passed if target is specified" );
+			return NULL;
+		}
+		targetUnit = ((ArcPyUnit*)target)->unitPtr;
+	}
+
 	Unit *unit = self->unitPtr;
-	uint8 result = unit->CastSpell( unit, spellId, triggered );
+	if( targetUnit == NULL )
+	{
+		targetUnit = unit;
+	}
+
+	uint8 result = unit->CastSpell( targetUnit, spellId, triggered );
 	return PyLong_FromUnsignedLong( result );
 }
 
@@ -1676,3 +1697,15 @@ ArcPyUnit* createArcPyUnit( Unit* u )
 	return unit;
 }
 
+bool isArcPyUnit( PyObject *obj )
+{
+	const char *typeName = Py_TYPE( obj )->tp_name;
+
+	if( strcmp( typeName, "ArcPyUnit"  ) == 0 ||
+		strcmp( typeName, "ArcPyPlayer" ) == 0 )
+	{
+		return true;
+	}
+
+	return false;
+}

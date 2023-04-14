@@ -34,4 +34,7 @@ typedef struct
 /// Create an empty ArcPyUnit object
 ArcPyUnit* createArcPyUnit( Unit* u );
 
+/// Tells if this PyObject is an ArcPyUnit or something that can be casted to ArcPyUnit
+bool isArcPyUnit( PyObject *obj );
+
 #endif
