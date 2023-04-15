@@ -1680,9 +1680,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				// show page
 				if(goinfo->sound7)
 				{
-					WorldPacket data(SMSG_GAMEOBJECT_PAGETEXT, 8);
-					data << obj->GetGUID();
-					plyr->GetSession()->SendPacket(&data);
+					Messenger::sendPageText( plyr, obj->GetGUID() );
 				}
 			}
 			break;

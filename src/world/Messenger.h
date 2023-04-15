@@ -292,6 +292,8 @@ public:
 	/// Tells nearby players' clients that the player killed something.
 	/// Based on the opcode name, maybe this should be sent to party members only.
 	static void SendPartyKillLogToSet( Player* player, uint64 GUID );
+
+	static void sendPageText( Player* player, const uint64 guid );
 };
 
 #endif

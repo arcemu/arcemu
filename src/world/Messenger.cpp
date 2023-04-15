@@ -1396,3 +1396,10 @@ void Messenger::SendPartyKillLogToSet( Player *player, uint64 GUID )
 	router.sendMessageToPlayersInRange( &data, true );
 }
 
+void Messenger::sendPageText( Player* player, const uint64 guid )
+{
+	WorldPacket data( SMSG_GAMEOBJECT_PAGETEXT, 8 );
+	data << uint64( guid );
+
+	PlayerMessenger::sendMessage( player, data );
+}
