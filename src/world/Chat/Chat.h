@@ -489,7 +489,6 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleFlyingMountCheatCommand(const char* args, WorldSession* m_session);
 		bool HandleFlyCommand(const char* args, WorldSession* m_session);
 		bool HandleRemoveRessurectionSickessAuraCommand(const char* args, WorldSession* m_session);
-		bool HandleDBReloadCommand(const char* args, WorldSession* m_session);
 
 		// Honor
 		bool HandleAddHonorCommand(const char* args, WorldSession* m_session);

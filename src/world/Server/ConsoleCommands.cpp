@@ -385,55 +385,6 @@ bool HandleClearConsoleCommand(BaseConsole* pConsole, int argc, const char* argv
 	return true;
 }
 
-bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[])
-{
-	sWorld.SendWorldText("Support for reloading tables on the fly was disabled in Arcemu revision 3621. You are seeing this message because apparently reading SVN changelog or using forums search is way over the head of some of our users.", 0);
-	return true;
-
-	/*
-	if( argc < 2 || strlen(argv[1]) < 3 )
-		return false;
-
-	char str[200];
-	int ret = 0;
-	uint32 mstime = Arcemu::Shared::Util::getMSTime();
-
-	snprintf(str, 200, "%sConsole initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
-		MSG_COLOR_LIGHTRED, argv[1]);
-	sWorld.SendWorldText(str, 0);
-
-	if( !stricmp(argv[1], "spell_disable") )
-	{
-		objmgr.ReloadDisabledSpells();
-		ret = 1;
-	}
-	else if( !stricmp(argv[1], "vendors") )
-	{
-		objmgr.ReloadVendors();
-		ret = 1;
-	}
-	else
-		ret = Storage_ReloadTable(argv[1]);
-
-
-	if (ret == 0)
-	{
-		pConsole->Write( "Database reload failed.\r\n" );
-		snprintf(str, 200, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
-	}
-	else
-	{
-		uint32 timediff = (unsigned int)(Arcemu::Shared::Util::getMSTime() - mstime);
-		pConsole->Write( "Database reload completed in %u ms.\r\n", timediff );
-		snprintf( str, 200, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, timediff );
-	}
-	sWorld.SendWorldText( str, 0 );
-
-	return true;
-
-	*/
-
-}
 bool HandleScriptEngineReloadCommand(BaseConsole*, int, const char* [])
 {
 	sScriptMgr.ReloadScriptEngines();

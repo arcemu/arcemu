@@ -467,11 +467,6 @@ void HandleConsoleInput(BaseConsole* pConsole, const char* szInput)
 			"Clears the console screen."
 		},
 		{
-			&HandleReloadConsoleCommand,
-			"reload", "<Table>",
-			"Reloads a table from the world database."
-		},
-		{
 			&HandleScriptEngineReloadCommand, "reloadscripts", "<NULL>", "Reloads all scripting engines currently loaded."
 		},
 		{ &HandleTimeDateCommand, "datetime", "<NULL>", "Shows time and date according to localtime()" },

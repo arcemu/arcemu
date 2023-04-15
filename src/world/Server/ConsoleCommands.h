@@ -39,7 +39,6 @@ bool HandleWhisperCommand(BaseConsole* pConsole, int argc, const char* argv[]);
 bool HandleNameHashCommand(BaseConsole* pConsole, int argc, const char* argv[]);
 bool HandleRevivePlayer(BaseConsole* pConsole, int argc, const char* argv[]);
 bool HandleClearConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[]);
-bool HandleReloadConsoleCommand(BaseConsole* pConsole, int argc, const char* argv[]);
 bool HandleScriptEngineReloadCommand(BaseConsole*, int argc, const char * []);
 bool HandleTimeDateCommand( BaseConsole *console, int argc, const char *argv[] );
 #endif
