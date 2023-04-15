@@ -34,4 +34,7 @@ typedef struct
 /// Creates an empty ArcPyPlayer object
 ArcPyPlayer* createArcPyPlayer( Player* p );
 
+/// Tells if the Python Object is actually an ArcPyPlayer object
+bool isArcPyPlayer( PyObject *obj );
+
 #endif

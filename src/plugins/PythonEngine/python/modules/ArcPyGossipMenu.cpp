@@ -136,6 +136,60 @@ static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+
+/// addQuests
+///   Adds quests of the specified creature to the Gossip menu
+///
+/// Parameters
+///   creature  -  The quest giver creature
+///   player    -  The player we're adding quests for
+///
+/// Return value
+///   None
+///
+/// Example
+///   menu.addQuests( creature, player )
+///
+static PyObject* ArcPyGossipMenu_addQuests( ArcPyGossipMenu *self, PyObject *args )
+{
+	PyObject *argUnit = NULL;
+	PyObject *argPlayer = NULL;
+
+	if( ! PyArg_ParseTuple( args, "OO", &argUnit, &argPlayer ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit and a Player parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyUnit( argUnit ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit and a Player parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyPlayer( argPlayer ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit and a Player parameter" );
+		return NULL;
+	}
+
+	Unit *unit = ((ArcPyUnit*)argUnit)->unitPtr;
+	Player *player = ((ArcPyPlayer*)argPlayer)->playerPtr;
+
+	if( ! unit->IsCreature() )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires the passed Unit to be a Creature" );
+		return NULL;
+	}
+
+	Creature *creature = static_cast< Creature* >( unit );
+	Arcemu::Gossip::Menu &menu = *self->gossipMenuPtr;
+
+	sQuestMgr.FillQuestMenu( creature, player, menu );
+
+	Py_RETURN_NONE;
+}
+
 /// sendToPlayer
 ///   Sends the menu to a Player
 ///
@@ -202,6 +256,7 @@ static PyObject* ArcPyGossipMenu_complete( ArcPyGossipMenu* /*self*/, PyObject* 
 static PyMethodDef ArcPyGossipMenu_methods[] = 
 {
 	{ "addItem", (PyCFunction)ArcPyGossipMenu_addItem, METH_VARARGS, "Adds a new menu item to the Gossip menu" },
+	{ "addQuests", (PyCFunction)ArcPyGossipMenu_addQuests, METH_VARARGS, "Adds quests of the specified creature to the Gossip menu" },
 	{ "sendToPlayer", (PyCFunction)ArcPyGossipMenu_sendToPlayer, METH_VARARGS, "Sends the menu to a Player" },
 	{ "complete", (PyCFunction)ArcPyGossipMenu_complete, METH_VARARGS | METH_STATIC, "Completes the player's gossip menu" },
 	{NULL}

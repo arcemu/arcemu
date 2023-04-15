@@ -46,6 +46,7 @@ def mohawk_onHello( unit, event, player ):
 	
 	menu.addItem( arcemu.ICON_CHAT, "Media", 300, 0 )
 	
+	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):

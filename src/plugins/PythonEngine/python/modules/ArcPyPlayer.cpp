@@ -474,3 +474,13 @@ ArcPyPlayer* createArcPyPlayer( Player* p )
 
 	return player;
 }
+
+bool isArcPyPlayer( PyObject *obj )
+{
+	if( strcmp( Py_TYPE( obj )->tp_name, "ArcPyPlayer" ) == 0 )
+	{
+		return true;
+	}
+
+	return false;
+}
