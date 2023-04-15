@@ -295,6 +295,9 @@ public:
 
 	/// Shows a text page to the client
 	static void sendPageText( Player* player, const uint64 guid );
+
+	/// Informs the client about enabled features (e.g.: voice chat)
+	static void sendFeatureSystemStatus( Player* player );
 };
 
 #endif

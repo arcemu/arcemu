@@ -744,15 +744,7 @@ void WorldSession::FullLogin(Player* plr)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	WorldPacket datab(SMSG_FEATURE_SYSTEM_STATUS,20);
-
-
-	datab.Initialize(SMSG_FEATURE_SYSTEM_STATUS);
-
-	datab << uint8(2);
-	datab << uint8(0);
-
-	SendPacket(&datab);
+	Messenger::sendFeatureSystemStatus( plr );
 
 	WorldPacket dataldm(SMSG_LEARNED_DANCE_MOVES, 4 + 4);
 

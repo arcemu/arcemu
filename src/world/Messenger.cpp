@@ -1403,3 +1403,11 @@ void Messenger::sendPageText( Player* player, const uint64 guid )
 
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::sendFeatureSystemStatus( Player* player )
+{
+	WorldPacket data( SMSG_FEATURE_SYSTEM_STATUS, 20) ;
+	data << uint8( 2 );
+	data << uint8( 0 );
+	PlayerMessenger::sendMessage( player, data );
+}
