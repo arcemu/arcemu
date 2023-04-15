@@ -38,9 +38,7 @@ class DedicationOfHonorGossip : public GossipScript
 
 		void OnSelectOption(Object* object, Player* player, uint32 Id, const char* enteredcode)
 		{
-			uint32 id = 16;	//video id
-			player->GetSession()->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &id);
-
+			Messenger::SendTriggerMovie( player, 16 );
 			Arcemu::Gossip::Menu::Complete(player);
 		}
 };
