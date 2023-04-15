@@ -2734,6 +2734,23 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					return;
 				}
 
+				if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER )
+				{
+					GameObjectInfo *goInfo = gameObjTarget->GetInfo();
+
+					/// If there's a spell to cast, cast it
+					if( goInfo->Unknown1 != 0 )
+					{
+						p_caster->CastSpell( gameObjTarget->GetGUID(), goInfo->Unknown1, false );
+					}
+					
+					/// If there's text to show, show it
+					if( goInfo->sound7 != 0 )
+					{
+						Messenger::sendPageText( p_caster, gameObjTarget->GetGUID() );
+					}
+				}
+
 				if(gameObjTarget->loot.items.size() == 0)
 				{
 					if(gameObjTarget->GetMapMgr() != NULL)
