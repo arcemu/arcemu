@@ -1411,3 +1411,12 @@ void Messenger::sendFeatureSystemStatus( Player* player )
 	data << uint8( 0 );
 	PlayerMessenger::sendMessage( player, data );
 }
+
+void Messenger::sendLearnedDanceMoves( Player* player )
+{
+	WorldPacket data( SMSG_LEARNED_DANCE_MOVES, 8 );
+	data << uint32( 0 );
+	data << uint32( 0 );
+	PlayerMessenger::sendMessage( player, data );
+}
+

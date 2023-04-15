@@ -728,30 +728,8 @@ void WorldSession::FullLogin(Player* plr)
 	v.o = VO;
 	Messenger::SendLoginVerifyWorld( plr, VMapId, v );
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	// send voicechat state - active/inactive
-	//
-	// {SERVER} Packet: (0x03C7) UNKNOWN PacketSize = 2
-	// |------------------------------------------------|----------------|
-	// |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-	// |------------------------------------------------|----------------|
-	// |02 01							                |..              |
-	// -------------------------------------------------------------------
-	//
-	//
-	// Old packetdump is OLD. This is probably from 2.2.0 (that was the patch when it was added to wow)!
-	//
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 	Messenger::sendFeatureSystemStatus( plr );
-
-	WorldPacket dataldm(SMSG_LEARNED_DANCE_MOVES, 4 + 4);
-
-	dataldm << uint32(0);
-	dataldm << uint32(0);
-
-	SendPacket(&dataldm);
+	Messenger::sendLearnedDanceMoves( plr );
 
 	plr->UpdateAttackSpeed();
 

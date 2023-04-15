@@ -298,6 +298,9 @@ public:
 
 	/// Informs the client about enabled features (e.g.: voice chat)
 	static void sendFeatureSystemStatus( Player* player );
+
+	/// Informs the client about the player's learned dance moves
+	static void sendLearnedDanceMoves( Player* player );
 };
 
 #endif
