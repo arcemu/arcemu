@@ -1678,7 +1678,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				plyr->CastSpell(guid, goinfo->Unknown1, false);
 
 				// show page
-				if(goinfo->sound7)
+				if(goinfo->sound7 != 0)
 				{
 					Messenger::sendPageText( plyr, obj->GetGUID() );
 				}
