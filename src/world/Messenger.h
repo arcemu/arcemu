@@ -293,6 +293,7 @@ public:
 	/// Based on the opcode name, maybe this should be sent to party members only.
 	static void SendPartyKillLogToSet( Player* player, uint64 GUID );
 
+	/// Shows a text page to the client
 	static void sendPageText( Player* player, const uint64 guid );
 };
 
