@@ -290,6 +290,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleSQLQueryCommand(const char* args, WorldSession* m_session);
 		bool HandleRangeCheckCommand(const char* args , WorldSession* m_session);
 		bool HandleSendFailed(const char* args , WorldSession* m_session);
+		bool HandleTriggerCinematic(const char* args, WorldSession* m_session);
 		bool HandlePlayMovie(const char* args, WorldSession* m_session);
 		bool HandleAuraUpdateAdd(const char* args, WorldSession* m_session);
 		bool HandleAuraUpdateRemove(const char* args, WorldSession* m_session);

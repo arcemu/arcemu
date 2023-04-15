@@ -479,6 +479,17 @@ bool ChatHandler::HandleSendFailed(const char* args , WorldSession* m_session)
 	return true;
 }
 
+bool ChatHandler::HandleTriggerCinematic(const char* args, WorldSession* m_session)
+{
+	Player* plr = getSelectedChar(m_session, true);
+	if(plr == NULL)
+		return false;
+
+	uint32 cinematic = atol(args);
+	Messenger::SendTriggerCinematic( plr, cinematic );
+	return true;
+}
+
 bool ChatHandler::HandlePlayMovie(const char* args, WorldSession* m_session)
 {
 	Player* plr = getSelectedChar(m_session, true);
