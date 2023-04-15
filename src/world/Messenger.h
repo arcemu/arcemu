@@ -301,6 +301,9 @@ public:
 
 	/// Informs the client about the player's learned dance moves
 	static void sendLearnedDanceMoves( Player* player );
+
+	/// Sends the player their guild's message of the day
+	static void sendGuildMOTD( Player* player, const char *motd );
 };
 
 #endif

@@ -1420,3 +1420,18 @@ void Messenger::sendLearnedDanceMoves( Player* player )
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::sendGuildMOTD( Player* player, const char *motd )
+{
+	WorldPacket data( SMSG_GUILD_EVENT, 50 );
+	
+	data << uint8( GUILD_EVENT_MOTD );
+	data << uint8( 1 );
+	
+	if( motd != NULL )
+		data << motd;
+	else
+		data << uint8( 0 );
+	
+	PlayerMessenger::sendMessage( player, data );
+}
+

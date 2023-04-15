@@ -835,20 +835,9 @@ void WorldSession::FullLogin(Player* plr)
 	if(plr->IsInGuild())
 	{
 		Guild* pGuild = plr->m_playerInfo->guild;
-		if(pGuild)
+		if(pGuild != NULL)
 		{
-			WorldPacket data(SMSG_GUILD_EVENT, 50);
-
-			data << uint8(GUILD_EVENT_MOTD);
-			data << uint8(1);
-
-			if(pGuild->GetMOTD())
-				data << pGuild->GetMOTD();
-			else
-				data << uint8(0);
-
-			SendPacket(&data);
-
+			Messenger::sendGuildMOTD( plr, pGuild->GetMOTD() );
 			pGuild->LogGuildEvent(GUILD_EVENT_HASCOMEONLINE, 1, plr->GetName());
 		}
 	}
