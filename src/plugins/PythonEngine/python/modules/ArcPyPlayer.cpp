@@ -357,6 +357,35 @@ static PyObject* ArcPyPlayer_sendMovie( ArcPyPlayer *self, PyObject *args )
 }
 
 
+/// sendCinematic
+///   Sends / shows a cinematic sequence to the Player
+///
+/// Parameters
+///   cinematicId  - The identifier of the cinematic sequence
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.sendCinematic( 81 ) # Shows the human racial intro cinematic sequence
+///
+static PyObject* ArcPyPlayer_sendCinematic( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 cinematicId;
+
+	if( !PyArg_ParseTuple( args, "k", &cinematicId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a cinematic id to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	Messenger::SendTriggerCinematic( player, cinematicId );
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -368,6 +397,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "markQuestObjectiveAsComplete", (PyCFunction)ArcPyPlayer_markQuestObjectiveAsComplete, METH_VARARGS, "Marks a quest objective as complete in the player's quest log" },
 	{ "addQuestKill", (PyCFunction)ArcPyPlayer_addQuestKill, METH_VARARGS, "Adds a quest kill credit for a quest's objective" },
 	{ "sendMovie", (PyCFunction)ArcPyPlayer_sendMovie, METH_VARARGS, "Sends / shows a movie to the Player" },
+	{ "sendCinematic", (PyCFunction)ArcPyPlayer_sendCinematic, METH_VARARGS, "Sends / shows a cinematic sequence to the Player" },
 	{NULL}
 };
 

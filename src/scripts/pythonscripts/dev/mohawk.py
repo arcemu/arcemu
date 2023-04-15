@@ -295,7 +295,8 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Let's play the Power of The Horde!", 301, 0 )		
 		menu.addItem( arcemu.ICON_CHAT, "Show me the World of Warcraft intro movie!", 302, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Show me the Wrath Gate movie!", 303, 0 )
-		menu.addItem( arcemu.ICON_CHAT, "Show me the Fall of the Lich King movie!", 304, 0 )	
+		menu.addItem( arcemu.ICON_CHAT, "Show me the Fall of the Lich King movie!", 304, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Show me the Human cinematic sequence!", 305, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -310,6 +311,9 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 304:
 		player.sendMovie( 16 )
+		
+	if id == 305:
+		player.sendCinematic( 81 )
 		
 
 def mohawk_onEnterVehicle( unit ):
