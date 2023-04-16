@@ -22,6 +22,7 @@
 
 #include "StdAfx.h"
 
+#include "ArcPyCreature.hpp"
 #include "ArcPyUnit.hpp"
 #include "ArcPyPlayer.hpp"
 #include "ArcPyAura.hpp"
@@ -571,7 +572,7 @@ static PyObject* ArcPyUnit_setUnitToFollow( ArcPyUnit *self, PyObject *args )
 		return NULL;
 	}
 
-	if( strcmp( Py_TYPE( o )->tp_name, "ArcPyUnit" ) != 0 )
+	if( !isArcPyUnit( o ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a Unit parameter" );
 		return NULL;
@@ -1116,45 +1117,6 @@ static PyObject* ArcPyUnit_untag( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
-/// despawn
-///   Removes the creature from the world
-///
-/// Parameters
-///   delay         -   Milliseconds to wait before removing the creature
-///   respawnTime   -  Milliseconds to wait before respawning
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.despawn( 1500, 5000 ) # Despawns in 1.5 s, and respawns in 5 s after.
-///
-static PyObject* ArcPyUnit_despawn( ArcPyUnit *self, PyObject *args )
-{
-	Unit *unit = self->unitPtr;
-	
-	if( ! unit->IsCreature() )
-	{
-		PyErr_SetString( PyExc_TypeError, "This function only works with Creatures" );
-		return NULL;
-	}
-
-	uint32 delay;
-	uint32 respawnTime;
-
-	if( !PyArg_ParseTuple( args, "kk", &delay, &respawnTime ) )
-	{
-		PyErr_SetString( PyExc_TypeError, "This method requires a delay and a respawntime parameter" );
-		return NULL;
-	}
-
-	Creature *creature = static_cast< Creature* >( unit );
-	creature->Despawn( delay, respawnTime );
-
-	Py_RETURN_NONE;
-}
-
-
 /// isPlayer
 ///   Tells if this Unit is a Player
 ///
@@ -1204,213 +1166,30 @@ static PyObject* ArcPyUnit_toPlayer( ArcPyUnit *self, PyObject *args )
 	return (PyObject*)( player );
 }
 
-
-/// destroyCustomWayPoints
-///   Destroys the custom waypoints of the Creature
+/// toCreature
+///   Casts a Unit to a Creature. Throws an error if the cast is not possible.
 ///
 /// Parameters
 ///   None
 ///
 /// Return value
-///   None
+///   Returns a Creature object if the cast is possible.
+///   Throws an error otherwise.
 ///
 /// Example
-///   unit.destroyCustomWayPoints()
+///   creature = unit.toCreature()
 ///
-static PyObject* ArcPyUnit_destroyCustomWaypoints( ArcPyUnit *self, PyObject *args )
+static PyObject* ArcPyUnit_toCreature( ArcPyUnit *self, PyObject *args )
 {
 	Unit *unit = self->unitPtr;
-	if( ! unit->IsCreature() )
+	if( !unit->IsCreature() )
 	{
 		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
 		return NULL;
 	}
 
-	Creature *creature = TO_CREATURE( unit );
-	creature->DestroyCustomWaypointMap();
-
-	Py_RETURN_NONE;
-}
-
-
-/// createCustomWaypoint
-///   Creates and adds a custom waypoint to the Creature
-///
-/// Parameters
-///   x       -  X coordinate
-///   y       -  Y coordinate
-///   z       -  Z coordinate
-///   o       -  Orientation
-///   wait    -  How long the Creature will wait before moving on
-///   flags   -  The movement flags used for the movement between waypoints
-///   model   -  The displayid that should be used at the waypoint. 0 means no change.
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.createWaypoint( 123.0, 12.34, 56.23, 2.39, 1000, 0, 0 )
-///
-static PyObject* ArcPyUnit_createCustomWaypoint( ArcPyUnit *self, PyObject *args )
-{
-	Unit *unit = self->unitPtr;
-	if( ! unit->IsCreature() )
-	{
-		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
-		return NULL;
-	}
-
-	float x;
-	float y;
-	float z;
-	float o;
-	uint32 wait;
-	uint32 flags;
-	uint32 model;
-
-	if( !PyArg_ParseTuple( args, "ffffkkk", &x, &y, &z, &o, &wait, &flags, &model ) )
-	{
-		PyErr_SetString( PyExc_TypeError, "This method requires x,y,z,o,wait,flags,model parameters" );
-		return NULL;
-	}
-
-	Creature *creature = TO_CREATURE( unit );
-
-	if( ! creature->hasCustomWayPoints() )
-	{
-		creature->setCustomWayPoints( new WayPointMap );
-		creature->GetAIInterface()->SetWaypointMap( creature->getCustomWayPoints() );
-	}
-
-	WayPointMap *waypoints = creature->getCustomWayPoints();
-	if( model == 0 )
-		model = creature->GetDisplayId();
-
-	WayPoint* wp = new WayPoint;
-	wp->id = (uint32)waypoints->size();
-	if( wp->id == 0 )
-		wp->id = 1;
-
-	wp->x = x;
-	wp->y = y;
-	wp->z = z;
-	wp->o = o;
-	wp->flags = flags;
-	wp->backwardskinid = model;
-	wp->forwardskinid = model;
-	wp->backwardemoteid = wp->forwardemoteid = 0;
-	wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
-	wp->waittime = wait;
-
-	if( !creature->GetAIInterface()->addWayPointUnsafe( wp ) )
-	{
-		std::stringstream ss;
-		ss << "Failed to add waypoint " << wp->id <<  " to AIInterface";
-		PyErr_SetString( PyExc_BaseException, ss.str().c_str() );
-		delete wp;
-	}
-
-	Py_RETURN_NONE;
-}
-
-
-/// setMovementType
-///   Sets the AI movement type of the Creature
-///
-/// Parameters
-///   type       -  The movement type
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
-///
-static PyObject* ArcPyUnit_setMovementType( ArcPyUnit *self, PyObject *args )
-{
-	uint32 type;
-	if( !PyArg_ParseTuple( args, "k", &type ) )
-	{
-		PyErr_SetString( PyExc_TypeError, "This method requires a type parameter" );
-		return NULL;
-	}
-
-	Unit *unit = self->unitPtr;
-	if( ! unit->IsCreature() )
-	{
-		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
-		return NULL;
-	}
-
-	Creature *creature = TO_CREATURE( unit );
-	creature->GetAIInterface()->setMoveType( type );
-
-	Py_RETURN_NONE;
-}
-
-
-/// restWaypoint
-///   Resets the current waypoint of the creature to 0
-///
-/// Parameters
-///   None
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.resetWaypoint()
-///
-static PyObject* ArcPyUnit_resetWaypoint( ArcPyUnit *self, PyObject *args )
-{
-	Unit *unit = self->unitPtr;
-	if( ! unit->IsCreature() )
-	{
-		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
-		return NULL;
-	}
-
-	Creature *creature = TO_CREATURE( unit );
-	creature->GetAIInterface()->setWaypointToMove( 0 );
-
-	Py_RETURN_NONE;
-}
-
-/// setCanRegenerateHP
-///   Sets whether the creature can regenerate it's HP.
-///
-/// Parameters
-///   canRegenerate   -  0 means false, >0 means true
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.setCanRegenerateHP( 0 ) # Turns off HP regeneration
-///
-static PyObject* ArcPyUnit_setCanRegenerateHP( ArcPyUnit *self, PyObject *args )
-{
-	uint32 canRegenerate;
-	if( !PyArg_ParseTuple( args, "k", &canRegenerate ) )
-	{
-		PyErr_SetString( PyExc_TypeError, "This method requires an integer parameter" );
-		return NULL;
-	}
-
-	Unit *unit = self->unitPtr;
-	if( ! unit->IsCreature() )
-	{
-		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
-		return NULL;
-	}
-
-	Creature *creature = TO_CREATURE( unit );
-	if( canRegenerate > 0 )
-		creature->setCanRegenerateHp( true );
-	else
-		creature->setCanRegenerateHp( false );
-
-	Py_RETURN_NONE;
+	ArcPyCreature *creature = createArcPyCreature( TO_CREATURE( unit ) );
+	return (PyObject*)( creature );
 }
 
 
@@ -1480,42 +1259,6 @@ static PyObject* ArcPyUnit_faceUnit( ArcPyUnit *self, PyObject *args )
 	Unit *target = other->unitPtr;
 
 	unit->faceObject( target );
-
-	Py_RETURN_NONE;
-}
-
-
-/// stopMovement
-///   Make the Unit stop moving for the specified duration
-///
-/// Parameters
-///   time   -  The duration the Unit should stop moving for
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.stopMovement( 2000 )
-///
-static PyObject* ArcPyUnit_stopMovement( ArcPyUnit *self, PyObject *args )
-{
-	uint32 time = 0;
-
-	if( !PyArg_ParseTuple( args, "k", &time ) )
-	{
-		PyErr_SetString( PyExc_TypeError, "This method requires a time parameter" );
-		return NULL;
-	}
-
-	Unit *unit = self->unitPtr;
-	if( ! unit->IsCreature() )
-	{
-		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
-		return NULL;
-	}
-
-	Creature *creature = TO_CREATURE( unit );
-	creature->GetAIInterface()->StopMovement( time );
 
 	Py_RETURN_NONE;
 }
@@ -1617,17 +1360,11 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getTaggerGuid", (PyCFunction)ArcPyUnit_getTaggerGuid, METH_NOARGS, "Returns the GUID of the tagger" },
 	{ "tag", (PyCFunction)ArcPyUnit_tag, METH_VARARGS, "Tags the Unit with the specified GUID" },
 	{ "untag", (PyCFunction)ArcPyUnit_untag, METH_NOARGS, "Untags the Unit" },
-	{ "despawn", (PyCFunction)ArcPyUnit_despawn, METH_VARARGS, "Removes the creature from the world" },
 	{ "isPlayer", (PyCFunction)ArcPyUnit_isPlayer, METH_NOARGS, "Tells if the Unit is a Player" },
 	{ "toPlayer", (PyCFunction)ArcPyUnit_toPlayer, METH_NOARGS, "Casts the Unit to a Player if possible" },
-	{ "destroyCustomWaypoints", (PyCFunction)ArcPyUnit_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
-	{ "createCustomWaypoint", (PyCFunction)ArcPyUnit_createCustomWaypoint, METH_VARARGS, "Creates and adds a custom waypoint to the creature" },
-	{ "setMovementType", (PyCFunction)ArcPyUnit_setMovementType, METH_VARARGS, "Sets the AI movement type of the creature" },
-	{ "resetWaypoint", (PyCFunction)ArcPyUnit_resetWaypoint, METH_NOARGS, "Resets the current waypoint of the creature to 0" },
-	{ "setCanRegenerateHP", (PyCFunction)ArcPyUnit_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
+	{ "toCreature", (PyCFunction)ArcPyUnit_toCreature, METH_NOARGS, "Casts the Unit to a Creature if possible" },
 	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
 	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
-	{ "stopMovement", (PyCFunction)ArcPyUnit_stopMovement, METH_VARARGS, "Stop moving for the specified duration" },
 	{ "castSpell", (PyCFunction)ArcPyUnit_castSpell, METH_VARARGS, "Makes the Unit cast a spell" },
 	{NULL}
 };

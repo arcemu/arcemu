@@ -52,6 +52,7 @@ def mohawk_onHello( unit, event, player ):
 	
 def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	GossipMenu.complete( player )
+	creature = unit.toCreature()
 	
 	if id == 0:
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
@@ -153,7 +154,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	elif id == 13:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Let's move then, fool!" )
-		unit.setUnitToFollow( pu, 2.0 )
+		unit.setUnitToFollow( player, 2.0 )
 		
 	elif id == 14:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Alright then, fool!" )
@@ -234,7 +235,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.sendToPlayer( player )
 		
 	elif id == 29:
-		unit.despawn( 1500, 1500 )
+		creature.despawn( 1500, 1500 )
 		
 	elif id == 30:
 		if player.isPlayer():

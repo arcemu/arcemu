@@ -27,6 +27,7 @@
 /// These are all in their own files
 extern void registerArcemuConstants( PyObject *module );
 extern int registerArcPyAura( PyObject *module );
+extern int registerArcPyCreature( PyObject *module );
 extern int registerArcPyGameObject( PyObject *module );
 extern int registerArcPyGossipMenu( PyObject *module );
 extern int registerArcPyGuild( PyObject *module );
@@ -344,6 +345,7 @@ PyObject* PyInit_Arcemu(void)
 
 	/// Register Arcemu objects in Python
 	registerArcPyAura( module );
+	registerArcPyCreature( module );
 	registerArcPyGameObject( module );
 	registerArcPyGossipMenu( module );
 	registerArcPyGuild( module );

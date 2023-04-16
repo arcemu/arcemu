@@ -31,40 +31,45 @@ CREATUREID_TAVARA = 17551
 QUESTID_HELP_TAVARA = 9586
 
 def Tavara_onLoad( unit, event ):
-	unit.setPvPFlag()
-	unit.setStandState( arcemu.STANDSTATE_KNEEL )
-	unit.setCanRegenerateHP( 0 )
-	unit.setHealth( int( unit.getMaxHealth() * 0.73 ) )
-	unit.setMovementType( arcemu.MOVEMENTTYPE_DONTMOVEWP )
-	unit.resetWaypoint()
+	creature = unit.toCreature()
+	creature.setPvPFlag()
+	creature.setStandState( arcemu.STANDSTATE_KNEEL )
+	creature.setCanRegenerateHP( 0 )
+	creature.setHealth( int( creature.getMaxHealth() * 0.73 ) )
+	creature.setMovementType( arcemu.MOVEMENTTYPE_DONTMOVEWP )
+	creature.resetWaypoint()
 	
-	unit.destroyCustomWaypoints()
-	unit.createCustomWaypoint( -4123.090332, -12778.934570, 10.249404, 1.815878, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
-	unit.createCustomWaypoint( -4131.844238, -12747.574219, 15.111283, 1.796243, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )	
+	creature.destroyCustomWaypoints()
+	creature.createCustomWaypoint( -4123.090332, -12778.934570, 10.249404, 1.815878, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )
+	creature.createCustomWaypoint( -4131.844238, -12747.574219, 15.111283, 1.796243, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )	
+	creature.createCustomWaypoint( -4131.844238, -12747.574219, 15.111283, 1.796243, 250, arcemu.WAYPOINT_FLAG_RUN, 0 )	
 
 	
 def Tavara_onHealed( unit, healer, spellId, amount ):
 	if not healer.isPlayer():
 		return
 		
+	creature = unit.toCreature()		
 	player = healer.toPlayer()
 		
-	if unit.getStandState() == arcemu.STANDSTATE_KNEEL:
-		unit.setStandState( arcemu.STANDSTATE_STAND )
-		unit.faceUnit( healer )
-		unit.emote( arcemu.EMOTE_ONESHOT_BOW )
-		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you for helping me!" )
+	if creature.getStandState() == arcemu.STANDSTATE_KNEEL:
+		creature.setStandState( arcemu.STANDSTATE_STAND )
+		creature.faceUnit( healer )
+		creature.emote( arcemu.EMOTE_ONESHOT_BOW )
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Thank you for helping me!" )
 		player.markQuestObjectiveAsComplete( QUESTID_HELP_TAVARA, 0, unit.getGUID() )
-		unit.stopMovement( 2500 )
-		unit.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
+		creature.stopMovement( 2500 )
+		creature.setMovementType( arcemu.MOVEMENTTYPE_FORWARDTHENSTOP )
 	
 def Tavara_onReachWP( unit, event, waypointId, forward ):
+	creature = unit.toCreature()
+	
 	if forward:
 		if waypointId == 1:
-			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Farewell to you, and may the Naaru be with you always." )
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Farewell to you, and may the Naaru be with you always." )
 			
 		elif waypointId == 2:
-			unit.despawn( 0, 3000 )
+			creature.despawn( 0, 3000 )
 		
 arcemu.RegisterUnitEvent( CREATUREID_TAVARA, arcemu.CREATURE_EVENT_ON_LOAD, Tavara_onLoad )
 arcemu.RegisterUnitEvent( CREATUREID_TAVARA, arcemu.CREATURE_EVENT_ON_HEALED, Tavara_onHealed )
