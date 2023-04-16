@@ -45,6 +45,7 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Heal me!", 31, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Media", 300, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Items", 400, 0 )
 	
 	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
@@ -315,6 +316,25 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 305:
 		player.sendCinematic( 81 )
+		
+	if id == 400:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		menu.addItem( arcemu.ICON_CHAT, "Give me a Darnassian Bleu!", 401, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Take a Darnassian Blue", 402, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Do I have a Darnassian Bleu?", 403, 0 )
+		menu.sendToPlayer( player )
+		
+	if id == 401:
+		player.addItem( 2070, 1 )
+		
+	if id == 402:
+		player.removeItem( 2070, 1 )
+		
+	if id == 403:
+		if player.hasItem( 2070, 1 ):
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Yes" )
+		else:
+			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "No" )
 		
 
 def mohawk_onEnterVehicle( unit ):

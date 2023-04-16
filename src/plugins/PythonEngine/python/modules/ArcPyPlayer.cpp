@@ -386,6 +386,98 @@ static PyObject* ArcPyPlayer_sendCinematic( ArcPyPlayer *self, PyObject *args )
 }
 
 
+/// addItem
+///   Adds the specified amount of the specified item to the player's inventory
+///
+/// Parameters
+///   itemId      -  The item's identifier
+///   amount      -  The amount that should be added to the player's inventory
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.addItem( 2070, 5 ) # Adds 5 Darnassia Bleu to the Player's inventory
+///
+static PyObject* ArcPyPlayer_addItem( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 itemId;
+	uint32 amount;
+
+	if( !PyArg_ParseTuple( args, "kk", &itemId, &amount ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an item id and amount to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	player->GetItemInterface()->AddItemById( itemId, amount, 0 );
+
+	Py_RETURN_NONE;
+}
+
+
+/// removeItem
+///   Removes the specified amount of the specified item from the player's inventory
+///
+/// Parameters
+///   itemId      -  The item's identifier
+///   amount      -  The amount that should be removed the player's inventory
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.removeItem( 2070, 5 ) # Removes 5 Darnassia Bleu from the Player's inventory
+///
+static PyObject* ArcPyPlayer_removeItem( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 itemId;
+	uint32 amount;
+
+	if( !PyArg_ParseTuple( args, "kk", &itemId, &amount ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an item id and amount to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	player->GetItemInterface()->RemoveItemAmt( itemId, amount );
+
+	Py_RETURN_NONE;
+}
+
+/// hasItem
+///   Tells if the player has the specified amount of the specified item in their invetory
+///
+/// Parameters
+///   itemId      -  The item's identifier
+///   amount      -  The amount of items
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.hasItem( 2070, 5 ) # Tells if the player has 5 Darnassian Bleus
+///
+static PyObject* ArcPyPlayer_hasItem( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 itemId;
+	uint32 amount;
+
+	if( !PyArg_ParseTuple( args, "kk", &itemId, &amount ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an item id and amount to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	if( player->GetItemInterface()->GetItemCount( itemId, false ) >= amount )
+		Py_RETURN_TRUE;
+
+	Py_RETURN_FALSE;
+}
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -398,6 +490,10 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "addQuestKill", (PyCFunction)ArcPyPlayer_addQuestKill, METH_VARARGS, "Adds a quest kill credit for a quest's objective" },
 	{ "sendMovie", (PyCFunction)ArcPyPlayer_sendMovie, METH_VARARGS, "Sends / shows a movie to the Player" },
 	{ "sendCinematic", (PyCFunction)ArcPyPlayer_sendCinematic, METH_VARARGS, "Sends / shows a cinematic sequence to the Player" },
+	{ "addItem", (PyCFunction)ArcPyPlayer_addItem, METH_VARARGS, "Adds the specified amount of the specified items to the player's inventory" },
+	{ "removeItem", (PyCFunction)ArcPyPlayer_removeItem, METH_VARARGS, "Removes the specified amount of the specified items from the player's inventory" },
+	{ "hasItem", (PyCFunction)ArcPyPlayer_hasItem, METH_VARARGS, "Tells if the player has the specified amount of the specified items in their inventory" },
+
 	{NULL}
 };
 
