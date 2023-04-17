@@ -175,6 +175,7 @@ bool isArcPyObject( PyObject *obj )
 
 	if( strcmp( typeName, "ArcPyObject" ) == 0 ||
 		strcmp( typeName, "ArcPyUnit"  ) == 0 ||
+		strcmp( typeName, "ArcPyCreature" ) == 0 ||
 		strcmp( typeName, "ArcPyPlayer" ) == 0 )
 	{
 		return true;
