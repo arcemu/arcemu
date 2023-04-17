@@ -98,11 +98,30 @@ static PyObject* ArcPyObject_getPositionZ( ArcPyObject *self, PyObject *args )
 	return PyFloat_FromDouble( object->GetPositionZ() );
 }
 
+/// getOrientation
+///   Returns the orientation (0 - 2PI) of the Object
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the orientation (0 - 2PI) of the Object
+///
+/// Example
+///   o = object.getOrientation()
+///
+static PyObject* ArcPyObject_getOrientation( ArcPyObject *self, PyObject *args )
+{
+	Object *object = self->objectPtr;
+	return PyFloat_FromDouble( object->GetOrientation() );
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
 	{ "getPositionY", (PyCFunction)ArcPyObject_getPositionY, METH_VARARGS, "Returns the Y coordinate of the Object" },
 	{ "getPositionZ", (PyCFunction)ArcPyObject_getPositionZ, METH_VARARGS, "Returns the Z coordinate of the Object" },
+	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },
 	{NULL}
 };
 

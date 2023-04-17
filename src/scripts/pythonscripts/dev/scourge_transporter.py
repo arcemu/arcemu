@@ -14,7 +14,7 @@ def go_onActivate( go, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Stop updates", 5, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Modify update interval", 6, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Dump coords", 7, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Dump location and orientation to the console", 7, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -36,7 +36,8 @@ def go_onSelectOption( go, player, id, enteredCode ):
 		
 	elif id == 7:
 		coords = "(" + str( go.getPositionX() ) + "," + str( go.getPositionY() ) + "," + str( go.getPositionZ() ) + ")";
-		print( "GO coords: " + coords )		
+		print( "GO coords: " + coords )
+		print( "GO orientation: " + str( go.getOrientation() ) )
 
 def go_onAIUpdate( go ):
 	print( "AI Update for " + str( go.getId() ) + " (" + go.getName() + ")" )
