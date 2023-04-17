@@ -50,6 +50,8 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "What are your coordinates?", 32, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "What are my coordinates?", 33, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "NPC flags", 500, 0 )
+	
 	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
 	
@@ -357,6 +359,25 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Yes" )
 		else:
 			unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "No" )
+			
+	if id == 500:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		menu.addItem( arcemu.ICON_CHAT, "Do you have the questgiver flag?", 501, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Set the questgiver flag", 502, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove the questgiver flag", 503, 0 )
+		menu.sendToPlayer( player )
+		
+	if id == 501:
+		if creature.hasNpcFlag( 2 ):
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I do" )
+		else:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't" )
+			
+	if id == 502:
+		creature.setNpcFlag( 2 )
+		
+	if id == 503:
+		creature.removeNpcFlag( 2 )
 		
 
 def mohawk_onEnterVehicle( unit ):

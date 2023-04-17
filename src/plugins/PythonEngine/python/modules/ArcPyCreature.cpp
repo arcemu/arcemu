@@ -279,6 +279,96 @@ static PyObject* ArcPyCreature_despawn( ArcPyCreature *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setNpcFlag
+///   Sets the specified NPC flag(s)
+///
+/// Parameters
+///   flag(s)   -  The flag(s) to be set in the Creature's NPC flags field
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.setNpcFlag( 2 )
+///
+static PyObject* ArcPyCreature_setNpcFlag( ArcPyCreature *self, PyObject *args )
+{
+	uint32 flag;
+
+	if( !PyArg_ParseTuple( args, "k", &flag ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a flag as a parameter" );
+		return NULL;
+	}
+
+	Creature *creature = self->creaturePtr;
+	creature->SetFlag( UNIT_NPC_FLAGS, flag );
+
+	Py_RETURN_NONE;
+}
+
+/// removeNpcFlag
+///   Removes the specified NPC flag(s)
+///
+/// Parameters
+///   flag(s)   -  The flag(s) to be removed from the Creature's NPC flags field
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.removeNpcFlag( 2 )
+///
+static PyObject* ArcPyCreature_removeNpcFlag( ArcPyCreature *self, PyObject *args )
+{
+	uint32 flag;
+
+	if( !PyArg_ParseTuple( args, "k", &flag ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a flag as a parameter" );
+		return NULL;
+	}
+
+	Creature *creature = self->creaturePtr;
+	creature->RemoveFlag( UNIT_NPC_FLAGS, flag );
+
+	Py_RETURN_NONE;
+}
+
+
+/// hasNpcFlag
+///   Tells if the Creature has the specified NPC flags
+///
+/// Parameters
+///   flag(s)   -  The flag(s) to be queried in the Creature's NPC flags field
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.hasNpcFlag( 2 )
+///
+static PyObject* ArcPyCreature_hasNpcFlag( ArcPyCreature *self, PyObject *args )
+{
+	uint32 flag;
+
+	if( !PyArg_ParseTuple( args, "k", &flag ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a flag as a parameter" );
+		return NULL;
+	}
+
+	Creature *creature = self->creaturePtr;
+	if( creature->HasFlag( UNIT_NPC_FLAGS, flag ) )
+	{
+		Py_RETURN_TRUE;
+	}
+	else
+	{
+		Py_RETURN_FALSE;
+	}
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -288,6 +378,9 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "setCanRegenerateHP", (PyCFunction)ArcPyCreature_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
 	{ "stopMovement", (PyCFunction)ArcPyCreature_stopMovement, METH_VARARGS, "Stop moving for the specified duration" },
 	{ "despawn", (PyCFunction)ArcPyCreature_despawn, METH_VARARGS, "Removes the creature from the world" },
+	{ "setNpcFlag", (PyCFunction)ArcPyCreature_setNpcFlag, METH_VARARGS, "Sets the specified NPC flag(s) on the Creature" },
+	{ "removeNpcFlag", (PyCFunction)ArcPyCreature_removeNpcFlag, METH_VARARGS, "Removes the specified NPC flag(s) from the Creature" },
+	{ "hasNpcFlag", (PyCFunction)ArcPyCreature_hasNpcFlag, METH_VARARGS, "Tells if the Creature has the specified NPC flag(s)" },
 	{NULL}
 };
 
