@@ -31,12 +31,14 @@ static PyObject* ArcPyUnit_new( PyTypeObject *type, PyObject *args, PyObject *ke
 {
 	ArcPyUnit *self = (ArcPyUnit*)type->tp_alloc( type, 0 );
 	self->unitPtr = NULL;
+	self->Object.objectPtr = NULL;
 	return (PyObject*)self;
 }
 
 static int ArcPyUnit_init( ArcPyUnit *self, PyObject *args, PyObject *keywords )
 {
 	self->unitPtr = NULL;
+	self->Object.objectPtr = NULL;
 	return 0;
 }
 
@@ -1401,7 +1403,7 @@ PyTypeObject ArcPyUnitType = {
 	ArcPyUnit_methods,				// tp_methods
 	0,								// tp_members
 	0,								// tp_getset
-	0,								// tp_base
+	&ArcPyObjectType,				// tp_base
 	0,								// tp_dict
 	0,								// tp_descr_get
 	0,								// tp_descr_set
@@ -1431,6 +1433,7 @@ ArcPyUnit* createArcPyUnit( Unit* u )
 	PyTypeObject *type = &ArcPyUnitType;
 	ArcPyUnit* unit = (ArcPyUnit*)type->tp_alloc( type, 0 );
 	unit->unitPtr = u;
+	unit->Object.objectPtr = u;
 	return unit;
 }
 

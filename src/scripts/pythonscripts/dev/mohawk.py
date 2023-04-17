@@ -47,6 +47,9 @@ def mohawk_onHello( unit, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Media", 300, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Items", 400, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "What are your coordinates?", 32, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "What are my coordinates?", 33, 0 )
+	
 	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
 	
@@ -245,6 +248,24 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			
 	elif id == 31:
 		unit.castSpell( 2052, False, player )
+		
+	if id == 32:
+		x = unit.getPositionX()
+		y = unit.getPositionY()
+		z = unit.getPositionZ()
+		
+		coords = "(" + str( x ) + "," + str( y ) + "," + str( z ) + ")"
+		
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I am at " + coords )
+		
+	if id == 33:
+		x = player.getPositionX()
+		y = player.getPositionY()
+		z = player.getPositionZ()
+		
+		coords = "(" + str( x ) + "," + str( y ) + "," + str( z ) + ")"
+		
+		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are at " + coords )
 		
 	elif id == 100:
 		unit.setStandState( arcemu.STANDSTATE_STAND )

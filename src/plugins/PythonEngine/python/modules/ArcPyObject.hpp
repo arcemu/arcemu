@@ -17,26 +17,24 @@
  *
  */
 
-#ifndef ARCPYCREATURE_H_
-#define ARCPYCREATURE_H_
+#ifndef ARCPYOBJECT_H_
+#define ARCPYOBJECT_H_
 
-#include "ArcPyUnit.hpp"
+extern PyTypeObject ArcPyObjectType;
 
-class Creature;
+class Object;
 
-/// Arcemu Creature type for Python
+/// Arcemu Object type for Python
 typedef struct
 {
-	ArcPyUnit unit;
-	Creature* creaturePtr;
-} ArcPyCreature;
+	PyObject_HEAD
+	Object* objectPtr;
+} ArcPyObject;
 
-#define ARCPYCREATURE_TYPE_NAME "ArcPyCreature"
+/// Create an empty ArcPyObject object
+ArcPyObject* createArcPyObject( Object* o );
 
-/// Creates an empty ArcPyCreature object
-ArcPyCreature* createArcPyCreature( Creature* creature );
-
-/// Tells if the Python Object is actually an ArcPyCreature object
-bool isArcPyCreature( PyObject *obj );
+/// Tells if this PyObject is an ArcPyObject or something that can be casted to ArcPyUnit
+bool isArcPyObject( PyObject *obj );
 
 #endif

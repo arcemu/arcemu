@@ -20,6 +20,8 @@
 #ifndef ARCPYUNIT_H_
 #define ARCPYUNIT_H_
 
+#include "ArcPyObject.hpp"
+
 extern PyTypeObject ArcPyUnitType;
 
 class Unit;
@@ -27,7 +29,7 @@ class Unit;
 /// Arcemu Unit type for Python
 typedef struct
 {
-	PyObject_HEAD
+	ArcPyObject Object;
 	Unit* unitPtr;
 } ArcPyUnit;
 

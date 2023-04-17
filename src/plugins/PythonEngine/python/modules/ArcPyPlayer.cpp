@@ -30,6 +30,7 @@ static PyObject* ArcPyPlayer_new( PyTypeObject *type, PyObject *args, PyObject *
 	ArcPyPlayer *self = (ArcPyPlayer*)type->tp_alloc( type, 0 );
 	self->playerPtr = NULL;
 	self->unit.unitPtr = NULL;
+	self->unit.Object.objectPtr = NULL;
 	return (PyObject*)self;
 }
 
@@ -37,6 +38,7 @@ static int ArcPyPlayer_init( ArcPyPlayer *self, PyObject *args, PyObject *keywor
 {
 	self->playerPtr = NULL;
 	self->unit.unitPtr = NULL;
+	self->unit.Object.objectPtr = NULL;
 	return 0;
 }
 
@@ -567,7 +569,7 @@ ArcPyPlayer* createArcPyPlayer( Player* p )
 	ArcPyPlayer* player = (ArcPyPlayer*)type->tp_alloc( type, 0 );
 	player->playerPtr = p;
 	player->unit.unitPtr = p;
-
+	player->unit.Object.objectPtr = p;
 	return player;
 }
 
