@@ -1442,6 +1442,7 @@ bool isArcPyUnit( PyObject *obj )
 	const char *typeName = Py_TYPE( obj )->tp_name;
 
 	if( strcmp( typeName, "ArcPyUnit"  ) == 0 ||
+		strcmp( typeName, "ArcPyCreature" ) == 0 ||
 		strcmp( typeName, "ArcPyPlayer" ) == 0 )
 	{
 		return true;
