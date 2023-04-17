@@ -20,16 +20,18 @@
 #ifndef ARCPYGAMEOBJECT_H
 #define ARCPYGAMEOBJECT_H
 
+#include "ArcPyObject.hpp"
+
 class GameObject;
 
 /// Arcemu Python GameObject type
 typedef struct
 {
-	PyObject_HEAD
+	ArcPyObject Object;
 	GameObject* gameObjectPtr;
 } ArcPyGameObject;
 
 /// Creates a new Arcemu Python GameObject
-ArcPyGameObject* createArcPyGameObject();
+ArcPyGameObject* createArcPyGameObject( GameObject *go );
 
 #endif

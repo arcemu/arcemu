@@ -28,12 +28,14 @@ static PyObject* ArcPyGameObject_new( PyTypeObject *type, PyObject *args, PyObje
 {
 	ArcPyGameObject *self = (ArcPyGameObject*)type->tp_alloc( type, 0 );
 	self->gameObjectPtr = NULL;
+	self->Object.objectPtr = NULL;
 	return (PyObject*)self;
 }
 
 static int ArcPyGameObject_init( ArcPyGameObject *self, PyObject *args, PyObject *keywords )
 {
 	self->gameObjectPtr = NULL;
+	self->Object.objectPtr = NULL;
 	return 0;
 }
 
@@ -207,7 +209,7 @@ static PyTypeObject ArcPyGameObjectType = {
 	ArcPyGameObject_methods,			// tp_methods
 	0,								// tp_members
 	0,								// tp_getset
-	0,								// tp_base
+	&ArcPyObjectType,			    // tp_base
 	0,								// tp_dict
 	0,								// tp_descr_get
 	0,								// tp_descr_set
@@ -232,9 +234,11 @@ int registerArcPyGameObject( PyObject *module )
 	return 0;
 }
 
-ArcPyGameObject* createArcPyGameObject()
+ArcPyGameObject* createArcPyGameObject( GameObject *go )
 {
 	PyTypeObject *type = &ArcPyGameObjectType;
-	ArcPyGameObject* player = (ArcPyGameObject*)type->tp_alloc( type, 0 );
-	return player;
+	ArcPyGameObject* apgo = (ArcPyGameObject*)type->tp_alloc( type, 0 );
+	apgo->gameObjectPtr = go;
+	apgo->Object.objectPtr = go;
+	return apgo;
 }

@@ -65,8 +65,7 @@ void ArcPyTuple::setItemGameObject( unsigned long idx, GameObject* gameObject )
 		return;
 	}
 
-	ArcPyGameObject *apgo = createArcPyGameObject();
-	apgo->gameObjectPtr = gameObject;
+	ArcPyGameObject *apgo = createArcPyGameObject( gameObject );
 	PyTuple_SetItem( getObject(), idx, (PyObject*)apgo );
 }
 

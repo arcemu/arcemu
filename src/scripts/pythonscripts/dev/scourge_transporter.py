@@ -14,6 +14,8 @@ def go_onActivate( go, event, player ):
 	menu.addItem( arcemu.ICON_CHAT, "Stop updates", 5, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Modify update interval", 6, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Dump coords", 7, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def go_onSelectOption( go, player, id, enteredCode ):
@@ -32,6 +34,9 @@ def go_onSelectOption( go, player, id, enteredCode ):
 	elif id == 6:
 		go.ModifyAIUpdateEvent( 500 )
 		
+	elif id == 7:
+		coords = "(" + str( go.getPositionX() ) + "," + str( go.getPositionY() ) + "," + str( go.getPositionZ() ) + ")";
+		print( "GO coords: " + coords )		
 
 def go_onAIUpdate( go ):
 	print( "AI Update for " + str( go.getId() ) + " (" + go.getName() + ")" )
