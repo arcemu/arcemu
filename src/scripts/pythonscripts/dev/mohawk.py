@@ -368,16 +368,16 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.sendToPlayer( player )
 		
 	if id == 501:
-		if creature.hasNpcFlag( 2 ):
+		if creature.hasNpcFlag( arcemu.NPC_FLAG_QUESTGIVER ):
 			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I do" )
 		else:
 			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't" )
 			
 	if id == 502:
-		creature.addNpcFlag( 2 )
+		creature.addNpcFlag( arcemu.NPC_FLAG_QUESTGIVER )
 		
 	if id == 503:
-		creature.removeNpcFlag( 2 )
+		creature.removeNpcFlag( arcemu.NPC_FLAG_QUESTGIVER )
 		
 
 def mohawk_onEnterVehicle( unit ):

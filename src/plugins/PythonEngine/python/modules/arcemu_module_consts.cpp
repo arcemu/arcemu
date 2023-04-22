@@ -234,4 +234,31 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_FLEX", EMOTE_ONESHOT_FLEX );
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_SHY", EMOTE_ONESHOT_SHY );
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_POINT", EMOTE_ONESHOT_POINT );
+
+	/// NPC flags
+	PyModule_AddIntConstant( module, "NPC_FLAG_NONE", UNIT_NPC_FLAG_NONE );
+	PyModule_AddIntConstant( module, "NPC_FLAG_GOSSIP", UNIT_NPC_FLAG_GOSSIP );
+	PyModule_AddIntConstant( module, "NPC_FLAG_QUESTGIVER", UNIT_NPC_FLAG_QUESTGIVER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_TRAINER", UNIT_NPC_FLAG_TRAINER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_TRAINER_CLASS", UNIT_NPC_FLAG_TRAINER_CLASS );
+	PyModule_AddIntConstant( module, "NPC_FLAG_TRAINER_PROF", UNIT_NPC_FLAG_TRAINER_PROF );
+	PyModule_AddIntConstant( module, "NPC_FLAG_VENDOR", UNIT_NPC_FLAG_VENDOR );
+	PyModule_AddIntConstant( module, "NPC_FLAG_VENDOR_AMMO", UNIT_NPC_FLAG_VENDOR_AMMO );
+	PyModule_AddIntConstant( module, "NPC_FLAG_VENDOR_FOOD", UNIT_NPC_FLAG_VENDOR_FOOD );
+	PyModule_AddIntConstant( module, "NPC_FLAG_VENDOR_POISON", UNIT_NPC_FLAG_VENDOR_POISON );
+	PyModule_AddIntConstant( module, "NPC_FLAG_VENDOR_REAGENT", UNIT_NPC_FLAG_VENDOR_REAGENT );
+	PyModule_AddIntConstant( module, "NPC_FLAG_ARMORER", UNIT_NPC_FLAG_ARMORER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_TAXIVENDOR", UNIT_NPC_FLAG_TAXIVENDOR );
+	PyModule_AddIntConstant( module, "NPC_FLAG_SPIRITHEALER", UNIT_NPC_FLAG_SPIRITHEALER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_SPIRITGUIDE", UNIT_NPC_FLAG_SPIRITGUIDE );
+	PyModule_AddIntConstant( module, "NPC_FLAG_INNKEEPER", UNIT_NPC_FLAG_INNKEEPER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_BANKER", UNIT_NPC_FLAG_BANKER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_ARENACHARTER", UNIT_NPC_FLAG_ARENACHARTER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_TABARDCHANGER", UNIT_NPC_FLAG_TABARDCHANGER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_BATTLEFIELDPERSON", UNIT_NPC_FLAG_BATTLEFIELDPERSON );
+	PyModule_AddIntConstant( module, "NPC_FLAG_AUCTIONEER", UNIT_NPC_FLAG_AUCTIONEER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_STABLEMASTER", UNIT_NPC_FLAG_STABLEMASTER );
+	PyModule_AddIntConstant( module, "NPC_FLAG_GUILD_BANK", UNIT_NPC_FLAG_GUILD_BANK );
+	PyModule_AddIntConstant( module, "NPC_FLAG_SPELLCLICK", UNIT_NPC_FLAG_SPELLCLICK );
+	PyModule_AddIntConstant( module, "NPC_FLAG_PLAYER_VEHICLE", UNIT_NPC_FLAG_PLAYER_VEHICLE );
 }
