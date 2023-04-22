@@ -4556,7 +4556,8 @@ class LuaUnit
 			{
 				uint32 creatureitemids[200];
 				size_t count = ctr->GetSellItemCount();
-				for(std::vector<CreatureItem>::iterator itr = ctr->GetSellItemBegin(); itr != ctr->GetSellItemEnd(); ++itr)
+				const std::vector<CreatureItem> &sellItems = ctr->getSellItems();
+				for(std::vector<CreatureItem>::const_iterator itr = sellItems.begin(); itr != sellItems.end(); ++itr)
 				{
 					creatureitemids[i] = itr->itemid;
 					i += 1;

@@ -448,9 +448,10 @@ class SERVER_DECL Creature : public Unit
 			return NULL;
 		}
 
-		ARCEMU_INLINE std::vector<CreatureItem>::iterator GetSellItemBegin() { return m_SellItems->begin(); }
-		ARCEMU_INLINE std::vector<CreatureItem>::iterator GetSellItemEnd()   { return m_SellItems->end(); }
+		const std::vector<CreatureItem>& getSellItems() const{ return *m_SellItems; }
+
 		ARCEMU_INLINE size_t GetSellItemCount() { return m_SellItems->size(); }
+
 		void RemoveVendorItem(uint32 itemid)
 		{
 			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
