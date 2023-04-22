@@ -374,7 +374,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't" )
 			
 	if id == 502:
-		creature.setNpcFlag( 2 )
+		creature.addNpcFlag( 2 )
 		
 	if id == 503:
 		creature.removeNpcFlag( 2 )

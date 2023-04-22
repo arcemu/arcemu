@@ -279,19 +279,19 @@ static PyObject* ArcPyCreature_despawn( ArcPyCreature *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
-/// setNpcFlag
-///   Sets the specified NPC flag(s)
+/// addNpcFlag
+///   Adds the specified NPC flag(s)
 ///
 /// Parameters
-///   flag(s)   -  The flag(s) to be set in the Creature's NPC flags field
+///   flag(s)   -  The flag(s) to be added to the Creature's NPC flags field
 ///
 /// Return value
 ///   None
 ///
 /// Example
-///   creature.setNpcFlag( 2 )
+///   creature.addNpcFlag( 2 )
 ///
-static PyObject* ArcPyCreature_setNpcFlag( ArcPyCreature *self, PyObject *args )
+static PyObject* ArcPyCreature_addNpcFlag( ArcPyCreature *self, PyObject *args )
 {
 	uint32 flag;
 
@@ -378,7 +378,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "setCanRegenerateHP", (PyCFunction)ArcPyCreature_setCanRegenerateHP, METH_VARARGS, "Sets whether the creature can regenerate it's HP" },
 	{ "stopMovement", (PyCFunction)ArcPyCreature_stopMovement, METH_VARARGS, "Stop moving for the specified duration" },
 	{ "despawn", (PyCFunction)ArcPyCreature_despawn, METH_VARARGS, "Removes the creature from the world" },
-	{ "setNpcFlag", (PyCFunction)ArcPyCreature_setNpcFlag, METH_VARARGS, "Sets the specified NPC flag(s) on the Creature" },
+	{ "addNpcFlag", (PyCFunction)ArcPyCreature_addNpcFlag, METH_VARARGS, "Adds the specified NPC flag(s) to the Creature" },
 	{ "removeNpcFlag", (PyCFunction)ArcPyCreature_removeNpcFlag, METH_VARARGS, "Removes the specified NPC flag(s) from the Creature" },
 	{ "hasNpcFlag", (PyCFunction)ArcPyCreature_hasNpcFlag, METH_VARARGS, "Tells if the Creature has the specified NPC flag(s)" },
 	{NULL}
