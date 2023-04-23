@@ -278,7 +278,7 @@ class SERVER_DECL Object : public EventableObject
 		//! Set uint32 property
 		void SetByte(uint32 index, uint32 index1, uint8 value);
 
-		uint8 GetByte(uint32 i, uint32 i1)
+		uint8 GetByte(uint32 i, uint32 i1 ) const
 		{
 			ARCEMU_ASSERT(i < m_valuesCount);
 			ARCEMU_ASSERT(i1 < 4);

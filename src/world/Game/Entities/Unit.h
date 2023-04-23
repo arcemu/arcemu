@@ -1025,9 +1025,9 @@ class SERVER_DECL Unit : public Object
 		uint32 getLevel() { return m_uint32Values[ UNIT_FIELD_LEVEL ]; };
 		void setLevel(uint32 level) { SetUInt32Value(UNIT_FIELD_LEVEL, level); };
 		void modLevel(int32 mod) { ModUnsigned32Value(UNIT_FIELD_LEVEL, mod); };
-		uint32 getClassMask() { return 1 << (getClass() - 1); }
-		uint32 getRaceMask() { return 1 << (getRace() - 1); }
-		uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
+		uint32 getClassMask() const { return 1 << (getClass() - 1); }
+		uint32 getRaceMask() const { return 1 << (getRace() - 1); }
+		uint8 getStandState() const { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
 
 		//// Combat
 		uint32 GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability);
@@ -1848,10 +1848,10 @@ class SERVER_DECL Unit : public Object
 		//////////////////////////////////////////////////// bytes 0 //////////////////////////////////////////////////////
 
 		void setRace(uint8 race) { SetByte(UNIT_FIELD_BYTES_0, 0, race); }
-		uint8 getRace() { return GetByte(UNIT_FIELD_BYTES_0, 0); }
+		uint8 getRace() const { return GetByte(UNIT_FIELD_BYTES_0, 0); }
 
 		void setClass(uint8 class_) { SetByte(UNIT_FIELD_BYTES_0, 1, class_); }
-		uint8 getClass() { return GetByte(UNIT_FIELD_BYTES_0, 1); }
+		uint8 getClass() const { return GetByte(UNIT_FIELD_BYTES_0, 1); }
 
 		uint8 getGender() { return GetByte(UNIT_FIELD_BYTES_0, 2); }
 		void setGender(uint8 gender) { SetByte(UNIT_FIELD_BYTES_0, 2, gender); }

@@ -1099,8 +1099,8 @@ class SERVER_DECL Player : public Unit
 		uint32 GetTeamInitial() { return myRace->team_id == 7 ? TEAM_ALLIANCE : TEAM_HORDE; }
 		void SetTeam(uint32 t) { m_team = t; m_bgTeam = t; }
 		void ResetTeam() { m_team = myRace->team_id == 7 ? TEAM_ALLIANCE : TEAM_HORDE; m_bgTeam = m_team; }
-		bool IsTeamHorde() { return m_team == TEAM_HORDE; }
-		bool IsTeamAlliance() { return m_team == TEAM_ALLIANCE; }
+		bool IsTeamHorde() const { return m_team == TEAM_HORDE; }
+		bool IsTeamAlliance() const { return m_team == TEAM_ALLIANCE; }
 
 		bool IsInFeralForm()
 		{
