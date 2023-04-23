@@ -181,6 +181,7 @@ SET(sources
 	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp
 	PacketHandlers/NewHandlers/LFGPacketHandlers.cpp
+	PacketHandlers/InventoryListBuilder.cpp
 	Math/Math.cpp
 )
 
@@ -328,6 +329,7 @@ SET( headers
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h
 	PacketHandlers/NewHandlers/LFGPacketHandlers.h
 	Math/Math.h
+	PacketHandlers/InventoryListBuilder.h
 )
 
 foreach(src IN ITEMS ${sources} )
