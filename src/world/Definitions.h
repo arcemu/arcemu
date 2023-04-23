@@ -18,15 +18,12 @@
  *
  */
 
-#ifndef WOWSERVER_DEFINITION_H
-#define WOWSERVER_DEFINITION_H
+#ifndef ARCEMU_DEFINITION_H
+#define ARCEMU_DEFINITION_H
 
+#define NUM_MAPS 800
+#define NUM_INSTANCE_MODES 4
 
-const unsigned NUM_MAPS = 800;
-const unsigned NUM_INSTANCE_MODES = 4;
-
-
-// Sorry...need this enumeration in Player.*
 enum INSTANCE_MODE
 {
     MODE_NORMAL = 0,

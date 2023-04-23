@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef WOWSERVER_ERRORS_H
-#define WOWSERVER_ERRORS_H
+#ifndef ARCEMU_ERRORS_H
+#define ARCEMU_ERRORS_H
 
 #include "System/printStackTrace.h"
 // TODO: handle errors better

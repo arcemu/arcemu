@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef WOWSERVER_CORPSE_H
-#define WOWSERVER_CORPSE_H
+#ifndef ARCEMU_CORPSE_H
+#define ARCEMU_CORPSE_H
 
 enum CORPSE_STATE
 {

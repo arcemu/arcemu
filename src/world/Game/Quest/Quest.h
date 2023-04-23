@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef WOWSERVER_QUEST_H
-#define WOWSERVER_QUEST_H
+#ifndef ARCEMU_QUEST_H
+#define ARCEMU_QUEST_H
 
 using namespace std;
 /*

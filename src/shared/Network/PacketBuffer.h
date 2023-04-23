@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef WOWSERVER_WORLDPACKET_H
-#define WOWSERVER_WORLDPACKET_H
+#ifndef ARCEMU_PACKETBUFFER_H
+#define ARCEMU_PACKETBUFFER_H
 
 #include "System/Platform.h"
 #include "Container/ByteBuffer.h"

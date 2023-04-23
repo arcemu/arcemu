@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef WOWSERVER_CREATURE_H
-#define WOWSERVER_CREATURE_H
+#ifndef ARCEMU_CREATURE_H
+#define ARCEMU_CREATURE_H
 
 class GossipScript;
 

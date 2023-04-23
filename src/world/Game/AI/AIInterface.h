@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef WOWSERVER_AIINTERFACE_H
-#define WOWSERVER_AIINTERFACE_H
+#ifndef ARCEMU_AIINTERFACE_H
+#define ARCEMU_AIINTERFACE_H
 
 #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL_ON_PLAYER 1000 // we most likely will have to kill players and only then check mobs

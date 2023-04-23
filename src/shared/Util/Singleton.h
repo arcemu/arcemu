@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef WOWSERVER_SINGLETON_H
-#define WOWSERVER_SINGLETON_H
+#ifndef ARCEMU_SINGLETON_H
+#define ARCEMU_SINGLETON_H
 
 #include "System/Errors.h"
 

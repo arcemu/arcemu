@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef WOWSERVER_COMMON_H
-#define WOWSERVER_COMMON_H
+#ifndef ARCEMU_PLATFORM_H
+#define ARCEMU_PLATFORM_H
 
 #ifdef WIN32
 #pragma warning(disable:4996)

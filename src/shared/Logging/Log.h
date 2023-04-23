@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef WOWSERVER_LOG_H
-#define WOWSERVER_LOG_H
+#ifndef ARCEMU_LOG_H
+#define ARCEMU_LOG_H
 
 #include "System/Platform.h"
 #include "Util/Singleton.h"

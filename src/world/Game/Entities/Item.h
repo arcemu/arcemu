@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef WOWSERVER_ITEM_H
-#define WOWSERVER_ITEM_H
+#ifndef ARCEMU_ITEM_H
+#define ARCEMU_ITEM_H
 
 #include "Skill.h"
 
