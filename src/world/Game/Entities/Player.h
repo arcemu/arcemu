@@ -1197,12 +1197,12 @@ class SERVER_DECL Player : public Unit
 		/* Reputation                                                           */
 		/************************************************************************/
 		void                ModStanding(uint32 Faction, int32 Value);
-		int32               GetStanding(uint32 Faction);
+		int32               GetStanding(uint32 Faction) const;
 		int32               GetBaseStanding(uint32 Faction);
 		void                SetStanding(uint32 Faction, int32 Value);
 		void                SetAtWar(uint32 Faction, bool Set);
 		bool                IsAtWar(uint32 Faction);
-		Standing            GetStandingRank(uint32 Faction);
+		Standing            GetStandingRank(uint32 Faction) const;
 		bool                IsHostileBasedOnReputation(FactionDBC* dbc);
 		void                UpdateInrangeSetsBasedOnReputation();
 		void                Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop);

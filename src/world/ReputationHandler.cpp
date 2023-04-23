@@ -131,9 +131,9 @@ void Player::_InitialReputation()
 	}
 }
 
-int32 Player::GetStanding(uint32 Faction)
+int32 Player::GetStanding(uint32 Faction) const
 {
-	ReputationMap::iterator itr = m_reputation.find(Faction);
+	ReputationMap::const_iterator itr = m_reputation.find(Faction);
 	if(itr != m_reputation.end())
 		return itr->second->standing;
 	return 0;
@@ -202,7 +202,7 @@ void Player::SetStanding(uint32 Faction, int32 Value)
 	}
 }
 
-Standing Player::GetStandingRank(uint32 Faction)
+Standing Player::GetStandingRank(uint32 Faction) const
 {
 	return Standing(GetReputationRankFromStanding(GetStanding(Faction)));
 }
