@@ -66,6 +66,7 @@ SET(sources
 	Game/Commands/ItemCommands.cpp
 	PacketHandlers/ItemHandler.cpp 
 	Game/Item/ItemInterface.cpp 
+	Game/Item/PlayerItemPrototypeFilter.cpp
 	Chat/Level0.cpp 
 	Chat/Level1.cpp 
 	Chat/Level2.cpp 
@@ -238,6 +239,8 @@ SET( headers
 	Game/Item/ItemInterface.h
 	Game/Item/ItemIterator.h
 	Game/Item/ItemPrototype.h
+	Game/Item/ItemPrototypeFilter.h
+	Game/Item/PlayerItemPrototypeFilter.h
 	LfgMgr.h
 	LocalizationMgr.h
 	LocationVector.h
