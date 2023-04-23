@@ -126,7 +126,8 @@ SET(sources
 	Game/Entities/Transporter.cpp
 	Game/Entities/Unit.cpp 
 	Game/Entities/Update/UpdateBuilder.cpp
-	Game/Entities/Vehicle.cpp 
+	Game/Entities/Vehicle.cpp
+	Game/Entities/Vendor.cpp
 	PacketHandlers/VehicleHandler.cpp
 	Chat/WayPoints.cpp 
 	WeatherMgr.cpp 
@@ -301,6 +302,7 @@ SET( headers
 	Game/Entities/Update/UpdateFields.h
 	Game/Entities/Update/UpdateMask.h
 	Game/Entities/Vehicle.h
+	Game/Entities/Vendor.h
 	Game/Entities/Warlock.h
 	Game/Entities/Warrior.h
 	Waypoint.h

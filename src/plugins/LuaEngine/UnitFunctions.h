@@ -4532,7 +4532,15 @@ class LuaUnit
 			uint32 costid = (uint32)luaL_checknumber(L, 3);
 			ItemExtendedCostEntry* ec = (costid > 0) ? dbcItemExtendedCost.LookupEntryForced(costid) : NULL;
 			if(itemid && amount)
-				ctr->AddVendorItem(itemid, amount, ec);
+			{
+				if( ! ctr->hasVendorComponent() )
+				{
+					ctr->createVendorComponent();
+				}
+
+				Vendor *vendor = ctr->getVendor();
+				vendor->addItem(itemid, amount, ec);
+			}
 			return 0;
 		}
 
@@ -4541,9 +4549,12 @@ class LuaUnit
 			TEST_UNIT()
 			Creature* ctr = TO_CREATURE(ptr);
 			uint32 itemid = (uint32)luaL_checknumber(L, 1);
-			int slot = ctr->GetSlotByItemId(itemid);
-			if(itemid && slot > 0)
-				ctr->RemoveVendorItem(itemid);
+			Vendor *vendor = ctr->getVendor();
+			if( vendor == NULL )
+				return 0;
+
+			if(itemid && vendor->hasItem( itemid ) )
+				vendor->removeItem(itemid);
 			return 0;
 		}
 
@@ -4552,20 +4563,10 @@ class LuaUnit
 			TEST_UNIT()
 			Creature* ctr = TO_CREATURE(ptr);
 			uint32 i = 0;
-			if(ctr->HasItems())
+			if(ctr->hasVendorComponent())
 			{
-				uint32 creatureitemids[200];
-				size_t count = ctr->GetSellItemCount();
-				const std::vector<CreatureItem> &sellItems = ctr->getSellItems();
-				for(std::vector<CreatureItem>::const_iterator itr = sellItems.begin(); itr != sellItems.end(); ++itr)
-				{
-					creatureitemids[i] = itr->itemid;
-					i += 1;
-				}
-				for(i = 0; i < count; i++)
-				{
-					ctr->RemoveVendorItem(creatureitemids[i]);
-				}
+				Vendor *vendor = ctr->getVendor();
+				vendor->removeAllItems();
 			}
 			return 0;
 		}

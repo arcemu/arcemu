@@ -130,6 +130,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Spell/SpellProc.h"
 #include "SummonHandler.h"
 #include "Game/Entities/Vehicle.h"
+#include "Game/Entities/Vendor.h"
 #include "Game/Entities/Unit.h"
 #include "Gossip.h"
 #include "SpawnTimedEmotes.h"

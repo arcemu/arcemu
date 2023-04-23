@@ -1498,9 +1498,9 @@ GM_Ticket* ObjectMgr::GetGMTicket(uint64 ticketGuid)
 
 void ObjectMgr::LoadVendors()
 {
-	HM_NAMESPACE::HM_HASH_MAP<uint32, std::vector<CreatureItem>*>::const_iterator itr;
-	std::vector<CreatureItem> *items;
-	CreatureItem itm;
+	HM_NAMESPACE::HM_HASH_MAP<uint32, std::vector<VendorItem>*>::const_iterator itr;
+	std::vector<VendorItem> *items;
+	VendorItem itm;
 
 	QueryResult* result = WorldDatabase.Query("SELECT * FROM vendors");
 	if(result != NULL)
@@ -1525,7 +1525,7 @@ void ObjectMgr::LoadVendors()
 
 			if(itr == mVendors.end())
 			{
-				items = new std::vector<CreatureItem>;
+				items = new std::vector<VendorItem>;
 				mVendors[fields[0].GetUInt32()] = items;
 			}
 			else
@@ -1562,7 +1562,7 @@ void ObjectMgr::ReloadVendors()
 	LoadVendors();
 }
 
-std::vector<CreatureItem>* ObjectMgr::GetVendorList(uint32 entry)
+std::vector<VendorItem>* ObjectMgr::GetVendorList(uint32 entry)
 {
 	return mVendors[entry];
 }
@@ -2518,7 +2518,7 @@ void ObjectMgr::LoadSpellOverride()
 	Log.Success("ObjectMgr", "%u spell overrides loaded.", mOverrideIdMap.size());
 }
 
-void ObjectMgr::SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_)
+void ObjectMgr::SetVendorList(uint32 Entry, std::vector<VendorItem>* list_)
 {
 	mVendors[Entry] = list_;
 }

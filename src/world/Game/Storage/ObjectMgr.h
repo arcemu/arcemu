@@ -414,7 +414,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, PlayerCreateInfo*>           PlayerCreateInfoMap;
 		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, Guild*>                      GuildMap;
 		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, skilllinespell*>             SLMap;
-		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, std::vector<CreatureItem>*>  VendorMap;
+		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, std::vector<VendorItem>*>  VendorMap;
 		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, Transporter*>                TransportMap;
 		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, Trainer*>                    TrainerMap;
 		typedef HM_NAMESPACE::HM_HASH_MAP<uint32, std::vector<TrainerSpell*> > TrainerSpellMap;
@@ -523,8 +523,8 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		SpellEntry* GetNextSpellRank(SpellEntry* sp, uint32 level);
 
 		//Vendors
-		std::vector<CreatureItem> *GetVendorList(uint32 entry);
-		void SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_);
+		std::vector<VendorItem> *GetVendorList(uint32 entry);
+		void SetVendorList(uint32 Entry, std::vector<VendorItem>* list_);
 
 		std::list<ItemPrototype*>* GetListForItemSet(uint32 setid);
 

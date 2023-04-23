@@ -284,7 +284,13 @@ bool ChatHandler::HandleItemCommand(const char* args, WorldSession* m_session)
 		ss << "INSERT INTO vendors VALUES ('" << pCreature->GetEntry() << "', '" << item << "', '" << amount << "', 0, 0, " << costid << " )" << '\0';
 		WorldDatabase.Execute(ss.str().c_str());
 
-		pCreature->AddVendorItem(item, amount, ec);
+		if( !pCreature->hasVendorComponent() )
+		{
+			pCreature->createVendorComponent();
+		}
+
+		Vendor *vendor = pCreature->getVendor();
+		vendor->addItem( item, amount, ec );
 
 		sstext << "Item '" << item << "' '" << tmpItem->Name1 << "' Added to list";
 		if(costid > 0)
@@ -323,10 +329,10 @@ bool ChatHandler::HandleItemRemoveCommand(const char* args, WorldSession* m_sess
 	}
 
 	uint32 itemguid = atoi(iguid);
-	int slot = pCreature->GetSlotByItemId(itemguid);
+	Vendor *vendor = pCreature->getVendor();
 
 	std::stringstream sstext;
-	if(slot != -1)
+	if(vendor->hasItem( itemguid ) )
 	{
 		uint32 creatureId = pCreature->GetEntry();
 
@@ -334,7 +340,7 @@ bool ChatHandler::HandleItemRemoveCommand(const char* args, WorldSession* m_sess
 		ss << "DELETE FROM vendors WHERE entry = " << creatureId << " AND item = " << itemguid << '\0';
 		WorldDatabase.Execute(ss.str().c_str());
 
-		pCreature->RemoveVendorItem(itemguid);
+		vendor->removeItem(itemguid);
 		ItemPrototype* tmpItem = ItemPrototypeStorage.LookupEntry(itemguid);
 		if(tmpItem)
 		{

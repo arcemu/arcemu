@@ -209,7 +209,7 @@ Creature::Creature(uint64 guid)
 	}
 
 	m_PickPocketed = false;
-	m_SellItems = NULL;
+	vendor = NULL;
 	_myScriptClass = NULL;
 	myFamily = 0;
 
@@ -260,6 +260,12 @@ Creature::~Creature()
 
 	if(m_escorter != NULL)
 		m_escorter = NULL;
+
+	if( vendor != NULL )
+	{
+		delete vendor;
+		vendor = NULL;
+	}
 
 	// Creature::PrepareForRemove() nullifies m_owner. If m_owner is not NULL then the Creature wasn't removed from world
 	//but it got a reference to m_owner
@@ -1042,60 +1048,29 @@ void Creature::CallScriptUpdate()
 	_myScriptClass->AIUpdate();
 }
 
-void Creature::AddVendorItem(uint32 itemid, uint32 amount, ItemExtendedCostEntry* ec)
+void Creature::createVendorComponent()
 {
-	CreatureItem ci;
-	ci.amount = amount;
-	ci.itemid = itemid;
-	ci.available_amount = 0;
-	ci.max_amount = 0;
-	ci.incrtime = 0;
-	ci.extended_cost = ec;
-	if(!m_SellItems)
+	if( vendor == NULL )
 	{
-		m_SellItems = new vector<CreatureItem>;
-		objmgr.SetVendorList(GetEntry(), m_SellItems);
-	}
-	m_SellItems->push_back(ci);
-}
-void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
-{
-	for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-	{
-		if(itr->itemid == itemid)
+		std::vector< VendorItem > *items = objmgr.GetVendorList( GetEntry() );
+		if( items == NULL )
 		{
-			if(itr->available_amount)
-			{
-				if(value > itr->available_amount)	// shouldn't happen
-				{
-					itr->available_amount = 0;
-					return;
-				}
-				else
-					itr->available_amount -= value;
+			 items = new std::vector< VendorItem >();
+			 objmgr.SetVendorList(GetEntry(), items);
+		}
 
-				if(!event_HasEvent(EVENT_ITEM_UPDATE))
-					sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, itr->incrtime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			}
-			return;
+		vendor = new Vendor( items );
+
+		if( IsInWorld() )
+		{
+			sEventMgr.AddEvent( this, &Creature::eventRestockVendorItems, EVENT_VENDOR_RESTOCK, VENDOR_RESTOCK_UPDATE_TIME, 0, 0 );
 		}
 	}
 }
-void Creature::UpdateItemAmount(uint32 itemid)
+
+void Creature::eventRestockVendorItems()
 {
-	for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-	{
-		if(itr->itemid == itemid)
-		{
-			if(itr->max_amount == 0)		// shouldn't happen
-				itr->available_amount = 0;
-			else
-			{
-				itr->available_amount = itr->max_amount;
-			}
-			return;
-		}
-	}
+	vendor->restockItems();
 }
 
 void Creature::FormationLinkUp(uint32 SqlId)
@@ -1296,7 +1271,9 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 	SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
 
 	if(isVendor())
-		m_SellItems = objmgr.GetVendorList(GetEntry());
+	{
+		createVendorComponent();
+	}
 
 	if(isQuestGiver())
 		_LoadQuests();
@@ -1527,7 +1504,9 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 	SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
 
 	if(isVendor())
-		m_SellItems = objmgr.GetVendorList(GetEntry());
+	{
+		createVendorComponent();
+	}
 
 	if(isQuestGiver())
 		_LoadQuests();
@@ -1682,16 +1661,10 @@ void Creature::OnPushToWorld()
 	}
 
 	m_aiInterface->m_is_in_instance = (m_mapMgr->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
-	if(this->HasItems())
+	
+	if( hasVendorComponent() )
 	{
-		for(std::vector<CreatureItem>::iterator itr2 = m_SellItems->begin(); itr2 != m_SellItems->end(); ++itr2)
-		{
-			if(itr2->max_amount == 0)
-				itr2->available_amount = 0;
-			else if(itr2->available_amount < itr2->max_amount)
-				sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr2->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1, 0);
-		}
-
+		sEventMgr.AddEvent( this, &Creature::eventRestockVendorItems, EVENT_VENDOR_RESTOCK, VENDOR_RESTOCK_UPDATE_TIME, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 	}
 
 	CALL_INSTANCE_SCRIPT_EVENT(m_mapMgr, OnCreaturePushToWorld)(this);
@@ -1937,6 +1910,8 @@ void Creature::PrepareForRemove()
 	RemoveAllAuras();
 
 	summonhandler.RemoveAllSummons();
+
+	sEventMgr.RemoveEvents( this, EVENT_VENDOR_RESTOCK );
 
 	if(!IsInWorld())
 		return;

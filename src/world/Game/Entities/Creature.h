@@ -28,6 +28,8 @@ class GossipScript;
 #define MAX_CREATURE_PROTO_SPELLS 8
 #define MAX_PET_SPELL 4
 #define VENDOR_ITEMS_UPDATE_TIME 3600000
+#define VENDOR_RESTOCK_UPDATE_TIME 60*1000
+
 #include "Map/Map.h"
 
 enum creatureguardtype
@@ -35,16 +37,6 @@ enum creatureguardtype
     GUARDTYPE_NONE,
     GUARDTYPE_CITY,
     GUARDTYPE_NEUTRAL
-};
-
-struct CreatureItem
-{
-	uint32 itemid;
-	uint32 amount; //!!!!! stack amount.
-	uint32 available_amount;
-	uint32 max_amount;
-	uint32 incrtime;
-	ItemExtendedCostEntry* extended_cost;
 };
 
 enum CreatureAISpellFlags
@@ -372,11 +364,24 @@ class SERVER_DECL Creature : public Unit
 		/// Updates
 		virtual void Update(uint32 time);
 
-		/// Creature inventory
-		ARCEMU_INLINE uint32 GetItemIdBySlot(uint32 slot) { return m_SellItems->at(slot).itemid; }
-		ARCEMU_INLINE uint32 GetItemAmountBySlot(uint32 slot) { return m_SellItems->at(slot).amount; }
+		/// Retrieves the Creature's Vendor component
+		Vendor* getVendor() const{ return vendor; }
 
-		ARCEMU_INLINE bool HasItems() { return ((m_SellItems != NULL) ? true : false); }
+		/// Tells if the Creature has a Vendor component
+		bool hasVendorComponent() const
+		{
+			if( vendor != NULL )
+				return true;
+			else
+				return false;
+		}
+
+		/// Creates a vendor component
+		void createVendorComponent();
+
+		/// Timed event callback that calls the restock vendor method
+		void eventRestockVendorItems();
+
 		ARCEMU_INLINE CreatureProto* GetProto() { return proto; }
 
 		bool IsPvPFlagged();
@@ -393,79 +398,6 @@ class SERVER_DECL Creature : public Unit
 
 		void SetSpeeds( uint8 type, float speed );
 
-		int32 GetSlotByItemId(uint32 itemid)
-		{
-			uint32 slot = 0;
-			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-			{
-				if(itr->itemid == itemid)
-					return slot;
-				else
-					++slot;
-			}
-			return -1;
-		}
-
-		uint32 GetItemAmountByItemId(uint32 itemid)
-		{
-			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-			{
-				if(itr->itemid == itemid)
-					return ((itr->amount < 1) ? 1 : itr->amount);
-			}
-			return 0;
-		}
-
-		ARCEMU_INLINE void GetSellItemBySlot(uint32 slot, CreatureItem & ci)
-		{
-			ci = m_SellItems->at(slot);
-		}
-
-		void GetSellItemByItemId(uint32 itemid, CreatureItem & ci)
-		{
-			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-			{
-				if(itr->itemid == itemid)
-				{
-					ci = (*itr);
-					return;
-				}
-			}
-			ci.amount = 0;
-			ci.max_amount = 0;
-			ci.available_amount = 0;
-			ci.incrtime = 0;
-			ci.itemid = 0;
-		}
-
-		ItemExtendedCostEntry* GetItemExtendedCostByItemId(uint32 itemid)
-		{
-			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-			{
-				if(itr->itemid == itemid)
-					return itr->extended_cost;
-			}
-			return NULL;
-		}
-
-		const std::vector<CreatureItem>& getSellItems() const{ return *m_SellItems; }
-
-		ARCEMU_INLINE size_t GetSellItemCount() { return m_SellItems->size(); }
-
-		void RemoveVendorItem(uint32 itemid)
-		{
-			for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
-			{
-				if(itr->itemid == itemid)
-				{
-					m_SellItems->erase(itr);
-					return;
-				}
-			}
-		}
-		void AddVendorItem(uint32 itemid, uint32 amount, ItemExtendedCostEntry* ec);
-		void ModAvItemAmount(uint32 itemid, uint32 value);
-		void UpdateItemAmount(uint32 itemid);
 		/// Quests
 		void _LoadQuests();
 		bool HasQuests() { return m_quests != NULL; };
@@ -741,11 +673,11 @@ class SERVER_DECL Creature : public Unit
 		Trainer* mTrainer;
 
 		void _LoadGoods();
-		void _LoadGoods(std::list<CreatureItem*>* lst);
+		void _LoadGoods(std::list<VendorItem*>* lst);
 		void _LoadMovement();
 
 		/// Vendor data
-		std::vector<CreatureItem>* m_SellItems;
+		Vendor *vendor;
 
 		/// Taxi data
 		uint32 mTaxiNode;

@@ -1068,13 +1068,14 @@ void WorldSession::HandleBuyItemInSlotOpcode(WorldPacket & recv_data)   // drag 
 		_player->InterruptSpell();
 
 	Creature* unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(srcguid));
-	if(unit == NULL || !unit->HasItems())
+	if(unit == NULL || !unit->hasVendorComponent())
 		return;
 
 	Container* c = NULL;
 
-	CreatureItem ci;
-	unit->GetSellItemByItemId(itemid, ci);
+	VendorItem ci;
+	Vendor *vendor = unit->getVendor();
+	vendor->GetSellItemByItemId(itemid, ci);
 
 	if(ci.itemid == 0)
 		return;
@@ -1228,11 +1229,10 @@ void WorldSession::HandleBuyItemInSlotOpcode(WorldPacket & recv_data)   // drag 
 	LOG_DETAIL("WORLD: Sent SMSG_BUY_ITEM");
 
 	_player->GetItemInterface()->BuyItem(it, amount, unit);
-	if(ci.max_amount)
-	{
-		unit->ModAvItemAmount(ci.itemid, ci.amount * amount);
 
-		// there is probably a proper opcode for this. - burlex
+	if( ci.max_amount > 0 )
+	{
+		vendor->takeItemAmount( ci.itemid, ci.amount * amount );
 		SendInventoryList(unit);
 	}
 }
@@ -1260,16 +1260,17 @@ void WorldSession::HandleBuyItemOpcode(WorldPacket & recv_data)   // right-click
 
 
 	Creature* unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(srcguid));
-	if(unit == NULL || !unit->HasItems())
+	if(unit == NULL || !unit->hasVendorComponent())
 		return;
 
-	ItemExtendedCostEntry* ex = unit->GetItemExtendedCostByItemId(itemid);
+	Vendor *vendor = unit->getVendor();
+	ItemExtendedCostEntry* ex = vendor->GetItemExtendedCostByItemId(itemid);
 
 	if(amount < 1)
 		amount = 1;
 
-	CreatureItem item;
-	unit->GetSellItemByItemId(itemid, item);
+	VendorItem item;
+	vendor->GetSellItemByItemId(itemid, item);
 
 	if(item.itemid == 0)
 	{
@@ -1388,11 +1389,9 @@ void WorldSession::HandleBuyItemOpcode(WorldPacket & recv_data)   // right-click
 
 	SendPacket(&data);
 
-	if(item.max_amount)
+	if(item.max_amount > 0)
 	{
-		unit->ModAvItemAmount(item.itemid, item.amount * amount);
-
-		// there is probably a proper opcode for this. - burlex
+		vendor->takeItemAmount( item.itemid, item.amount * amount );
 		SendInventoryList(unit);
 	}
 }
@@ -1435,7 +1434,7 @@ void WorldSession::HandleListInventoryOpcode(WorldPacket & recv_data)
 void WorldSession::SendInventoryList(Creature* unit)
 {
 
-	if(!unit->HasItems())
+	if(!unit->hasVendorComponent())
 	{
 		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to database's devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);
 		LOG_ERROR("'%s' discovered that a creature with entry %u (%s) has no sell template.", GetPlayer()->GetName(), unit->GetEntry(), unit->GetCreatureInfo()->Name);
@@ -1443,7 +1442,10 @@ void WorldSession::SendInventoryList(Creature* unit)
 		return;
 	}
 
-	WorldPacket data(((unit->GetSellItemCount() * 28) + 9));	   // allocate
+	Vendor *vendor = unit->getVendor();
+	const std::vector<VendorItem> &vendorItems = vendor->getVendorItems();
+
+	WorldPacket data((( vendorItems.size() * 28) + 9));	   // allocate
 
 	data.SetOpcode(SMSG_LIST_INVENTORY);
 	data << unit->GetGUID();
@@ -1452,8 +1454,8 @@ void WorldSession::SendInventoryList(Creature* unit)
 	ItemPrototype* curItem = NULL;
 	uint32 counter = 0;
 
-	const std::vector<CreatureItem> &vendorItems = unit->getSellItems();
-	std::vector<CreatureItem>::const_iterator itr = vendorItems.begin();
+	
+	std::vector<VendorItem>::const_iterator itr = vendorItems.begin();
 
 	for( ; itr != vendorItems.end(); ++itr)
 	{

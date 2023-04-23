@@ -2522,7 +2522,8 @@ void ItemInterface::BuyItem(ItemPrototype* item, uint32 total_amount, Creature* 
 		else
 			m_pOwner->ModGold(-(int32)itemprice);
 	}
-	ItemExtendedCostEntry* ex = pVendor->GetItemExtendedCostByItemId(item->ItemId);
+	Vendor *vendor = pVendor->getVendor();
+	ItemExtendedCostEntry* ex = vendor->GetItemExtendedCostByItemId(item->ItemId);
 	if(ex != NULL)
 	{
 		for(int i = 0; i < 5; i++)
@@ -2546,7 +2547,8 @@ void ItemInterface::BuyItem(ItemPrototype* item, uint32 total_amount, Creature* 
 
 int8 ItemInterface::CanAffordItem(ItemPrototype* item, uint32 amount, Creature* pVendor)
 {
-	ItemExtendedCostEntry* ex = pVendor->GetItemExtendedCostByItemId(item->ItemId);
+	Vendor *vendor = pVendor->getVendor();
+	ItemExtendedCostEntry* ex = vendor->GetItemExtendedCostByItemId(item->ItemId);
 	if(ex != NULL)
 	{
 		for(int i = 0; i < 5; i++)
