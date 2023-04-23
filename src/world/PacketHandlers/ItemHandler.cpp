@@ -1461,7 +1461,8 @@ void WorldSession::SendInventoryList(Creature* unit)
 	{
 		if(itr->itemid && (itr->max_amount == 0 || (itr->max_amount > 0 && itr->available_amount > 0)))
 		{
-			if((curItem = ItemPrototypeStorage.LookupEntry(itr->itemid)) != 0)
+			const ItemPrototype *curItem = ItemPrototypeStorage.LookupEntry(itr->itemid);
+			if(curItem != NULL)
 			{
 				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && !_player->GetSession()->HasGMPermissions()) // cebernic: GM looking up for everything.
 					continue;

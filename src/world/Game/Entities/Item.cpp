@@ -552,7 +552,7 @@ uint32 GetSellPriceForItem(ItemPrototype* proto, uint32 count)
 	return cost;
 }
 
-uint32 GetBuyPriceForItem(ItemPrototype* proto, uint32 count, Player* plr, Creature* vendor)
+uint32 GetBuyPriceForItem(const ItemPrototype* proto, uint32 count, Player* plr, Creature* vendor)
 {
 	int32 cost = proto->BuyPrice;
 
