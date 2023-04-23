@@ -1435,3 +1435,14 @@ void Messenger::sendGuildMOTD( Player* player, const char *motd )
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::sendInventoryList( Player* player, const Creature* creature )
+{
+	InventoryListBuilder builder( player, creature );
+
+	WorldPacket data;	
+	builder.build( data );
+	
+	PlayerMessenger::sendMessage( player, data );
+}
+
+

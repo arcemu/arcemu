@@ -304,6 +304,9 @@ public:
 
 	/// Sends the player their guild's message of the day
 	static void sendGuildMOTD( Player* player, const char *motd );
+
+	/// Sends the player the creature's vendor inventory list window
+	static void sendInventoryList( Player* player, const Creature* creature );
 };
 
 #endif

@@ -1431,9 +1431,9 @@ void WorldSession::HandleListInventoryOpcode(WorldPacket & recv_data)
 	}
 }
 
+
 void WorldSession::SendInventoryList(Creature* unit)
 {
-
 	if(!unit->hasVendorComponent())
 	{
 		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to database's devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);
@@ -1442,67 +1442,8 @@ void WorldSession::SendInventoryList(Creature* unit)
 		return;
 	}
 
-	Vendor *vendor = unit->getVendor();
-	const std::vector<VendorItem> &vendorItems = vendor->getVendorItems();
+	Messenger::sendInventoryList( _player, unit );
 
-	WorldPacket data((( vendorItems.size() * 28) + 9));	   // allocate
-
-	data.SetOpcode(SMSG_LIST_INVENTORY);
-	data << unit->GetGUID();
-	data << uint8(0);   // placeholder for item count
-
-	ItemPrototype* curItem = NULL;
-	uint32 counter = 0;
-
-	
-	std::vector<VendorItem>::const_iterator itr = vendorItems.begin();
-
-	for( ; itr != vendorItems.end(); ++itr)
-	{
-		if(itr->itemid && (itr->max_amount == 0 || (itr->max_amount > 0 && itr->available_amount > 0)))
-		{
-			const ItemPrototype *curItem = ItemPrototypeStorage.LookupEntry(itr->itemid);
-			if(curItem != NULL)
-			{
-				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && !_player->GetSession()->HasGMPermissions()) // cebernic: GM looking up for everything.
-					continue;
-				if(curItem->AllowableRace && !(_player->getRaceMask() & curItem->AllowableRace) && !_player->GetSession()->HasGMPermissions())
-					continue;
-
-				if( curItem->HasFlag2(ITEM_FLAG2_HORDE_ONLY) && !GetPlayer()->IsTeamHorde() && !_player->GetSession()->HasGMPermissions() )
-					continue;
- 
-				if( curItem->HasFlag2(ITEM_FLAG2_ALLIANCE_ONLY) && !GetPlayer()->IsTeamAlliance() && !_player->GetSession()->HasGMPermissions() )
-					continue;
-
-				uint32 av_am = (itr->max_amount > 0) ? itr->available_amount : 0xFFFFFFFF;
-				uint32 price = 0;
-				if( ( itr->extended_cost == NULL ) || curItem->HasFlag2( ITEM_FLAG2_EXT_COST_REQUIRES_GOLD ) )
-					price = GetBuyPriceForItem( curItem, 1, _player, unit );
-
-				data << uint32(counter + 1);    // we start from 0 but client starts from 1
-				data << uint32(curItem->ItemId);
-				data << uint32(curItem->DisplayInfoID);
-				data << uint32(av_am);
-				data << uint32(price);
-				data << uint32(curItem->MaxDurability);                 
-				data << uint32(itr->amount);
-
-
-				if(itr->extended_cost != NULL)
-					data << uint32(itr->extended_cost->costid);
-				else
-					data << uint32(0);
-
-				++counter;
-				if ( counter >= MAX_CREATURE_INV_ITEMS ) break;  // cebernic: in 2.4.3, client can't take more than 15 pages,it making crash for us:(
-			}
-		}
-	}
-
-	const_cast<uint8*>(data.contents())[8] = (uint8)counter;	// set count
-
-	SendPacket(&data);
 	LOG_DETAIL("WORLD: Sent SMSG_LIST_INVENTORY");
 }
 
