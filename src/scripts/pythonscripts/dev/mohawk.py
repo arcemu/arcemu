@@ -470,6 +470,11 @@ def mohawk_onLoad( unit, event ):
 	
 	unit.setMaxHealth( 300000 )
 	unit.setHealth( unit.getMaxHealth() )
+	
+	creature = unit.toCreature()	
+	creature.addVendorItem( 858 )
+	creature.addVendorItem( 3371, 5 )
+	creature.addVendorItem( 3372, 10 )
 
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_HELLO, mohawk_onHello )
 arcemu.RegisterUnitGossipEvent( 31111, arcemu.GOSSIP_EVENT_SELECT, mohawk_onSelectOption )

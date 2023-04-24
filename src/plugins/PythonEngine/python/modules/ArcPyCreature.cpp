@@ -369,6 +369,55 @@ static PyObject* ArcPyCreature_hasNpcFlag( ArcPyCreature *self, PyObject *args )
 	}
 }
 
+
+/// addVendorItem
+///   Adds an item to the NPC vendor inventory
+///
+/// Parameters
+///   id            -  The Id of the item
+///   amount        -  The stack amount of the item (optional)
+///   extendedCost  -  The extended cost Id (token) (optional)
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.addVendorItem( 123 )
+///   creature.addVendorItem( 123, 5 )
+///   creature.addVendorItem( 123, 5, 45 )
+///
+static PyObject* ArcPyCreature_addVendorItem( ArcPyCreature *self, PyObject *args )
+{
+	uint32 id;
+	uint32 amount = 1;
+	uint32 extendedCostId = 0;
+
+	if( !PyArg_ParseTuple( args, "k|kk", &id, &amount, &extendedCostId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires an item Id as parameter" );
+		return NULL;
+	}
+
+	Creature *creature = self->creaturePtr;
+
+	if( !creature->hasVendorComponent() )
+	{
+		creature->createVendorComponent();
+	}
+
+	Vendor *vendor = creature->getVendor();	
+
+	ItemExtendedCostEntry *ec = NULL;
+	if( extendedCostId != 0 )
+	{
+		ec = dbcItemExtendedCost.LookupEntryForced( extendedCostId );
+	}
+
+	vendor->addItem( id, amount, ec );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -381,6 +430,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "addNpcFlag", (PyCFunction)ArcPyCreature_addNpcFlag, METH_VARARGS, "Adds the specified NPC flag(s) to the Creature" },
 	{ "removeNpcFlag", (PyCFunction)ArcPyCreature_removeNpcFlag, METH_VARARGS, "Removes the specified NPC flag(s) from the Creature" },
 	{ "hasNpcFlag", (PyCFunction)ArcPyCreature_hasNpcFlag, METH_VARARGS, "Tells if the Creature has the specified NPC flag(s)" },
+	{ "addVendorItem", (PyCFunction)ArcPyCreature_addVendorItem, METH_VARARGS, "Adds an item to the NPC's vendor inventory" },
 	{NULL}
 };
 
