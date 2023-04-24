@@ -10,47 +10,26 @@ def mohawk_onHello( unit, event, player ):
 	menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
 	menu.addItem( arcemu.ICON_CHAT, "Vehicles", 0, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Pity the fool!", 8, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 9, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Don't pity the fool!", 10, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "AI updates", 600, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "I think your hair is ugly", 12, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Follow me!", 13, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Stop following me!", 14, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "AI stuff", 700, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Get large!", 15, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Get small!", 16, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Get back to normal size!", 17, 0 )
-	
-	menu.addItem( arcemu.ICON_CHAT, "Mount up!", 18, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Dismount!", 19, 0 )
-	
-	menu.addItem( arcemu.ICON_CHAT, "Arm yourself!", 20, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Disarm yourself!", 21, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Visuals", 800, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Show me where the Stormwind Auction House is", 22, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Are you PvP flagged?", 23, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Flag yourself for PvP!", 24, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Remove your PvP flag!", 25, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "PvP", 900, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Are you buffed with Power Word: Fortitude I?", 26, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Remove Power Word: Fortitude I", 27, 0 )
-	
-	menu.addItem( arcemu.ICON_CHAT, "Standstate", 28, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Tag", 200, 0 )
-	
-	menu.addItem( arcemu.ICON_CHAT, "Respawn!", 29, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Am I a player?", 30, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "Heal me!", 31, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Spells", 1000, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Media", 300, 0 )
 	menu.addItem( arcemu.ICON_CHAT, "Items", 400, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "What are your coordinates?", 32, 0 )
-	menu.addItem( arcemu.ICON_CHAT, "What are my coordinates?", 33, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Tag", 200, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "NPC flags", 500, 0 )
+	
+	menu.addItem( arcemu.ICON_CHAT, "Misc", 1100, 0 )
 	
 	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
@@ -378,6 +357,66 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 503:
 		creature.removeNpcFlag( arcemu.NPC_FLAG_QUESTGIVER )
+		
+	if id == 600:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Pity the fool!", 8, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Pity the fool faster!", 9, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Don't pity the fool!", 10, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	if id == 700:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "I think your hair is ugly", 12, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Follow me!", 13, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Stop following me!", 14, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	if id == 800:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Get large!", 15, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Get small!", 16, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Get back to normal size!", 17, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Mount up!", 18, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Dismount!", 19, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Arm yourself!", 20, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Disarm yourself!", 21, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Standstate", 28, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	if id == 900:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Are you PvP flagged?", 23, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Flag yourself for PvP!", 24, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove your PvP flag!", 25, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	if id == 1000:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Are you buffed with Power Word: Fortitude I?", 26, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove Power Word: Fortitude I", 27, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Heal me!", 31, 0 )
+		
+		menu.sendToPlayer( player )
+		
+	if id == 1100:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "Respawn!", 29, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Am I a player?", 30, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "What are your coordinates?", 32, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "What are my coordinates?", 33, 0 )
+		
+		menu.sendToPlayer( player )
 		
 
 def mohawk_onEnterVehicle( unit ):
