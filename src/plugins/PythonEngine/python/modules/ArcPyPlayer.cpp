@@ -24,6 +24,7 @@
 
 #include "ArcPyPlayer.hpp"
 #include "ArcPyUnit.hpp"
+#include "ArcPyWorldSession.hpp"
 
 static PyObject* ArcPyPlayer_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -480,6 +481,26 @@ static PyObject* ArcPyPlayer_hasItem( ArcPyPlayer *self, PyObject *args )
 	Py_RETURN_FALSE;
 }
 
+
+/// getSession
+///   Retrieves the Player's WorldSession
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   session = player.getSession()
+///
+static PyObject* ArcPyPlayer_getSession( ArcPyPlayer *self, PyObject *args )
+{
+	Player *player = self->playerPtr;
+	WorldSession *session = player->GetSession();
+	return (PyObject*)createArcPyWorldSession( session );
+}
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -495,7 +516,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "addItem", (PyCFunction)ArcPyPlayer_addItem, METH_VARARGS, "Adds the specified amount of the specified items to the player's inventory" },
 	{ "removeItem", (PyCFunction)ArcPyPlayer_removeItem, METH_VARARGS, "Removes the specified amount of the specified items from the player's inventory" },
 	{ "hasItem", (PyCFunction)ArcPyPlayer_hasItem, METH_VARARGS, "Tells if the player has the specified amount of the specified items in their inventory" },
-
+	{ "getSession", (PyCFunction)ArcPyPlayer_getSession, METH_NOARGS, "Retrieves the Player's WorldSession" },
 	{NULL}
 };
 
