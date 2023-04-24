@@ -7,7 +7,13 @@ def mohawk_onHello( unit, event, player ):
 	print( player.getName() + " said gossip hello to " + unit.getName() )
 	print( "Event id: " + str( event ) )
 	
+	creature = unit.toCreature()
+	
 	menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+	
+	if creature.hasNpcFlag( arcemu.NPC_FLAG_VENDOR ):
+		menu.addItem( arcemu.ICON_VENDOR, "Show me your wares!", 34, 0 )
+	
 	menu.addItem( arcemu.ICON_CHAT, "Vehicles", 0, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "AI updates", 600, 0 )
@@ -248,6 +254,10 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You are at " + coords )
 		
+	if id == 34:
+		session = player.getSession()
+		session.sendInventoryList( creature )
+		
 	elif id == 100:
 		unit.setStandState( arcemu.STANDSTATE_STAND )
 		
@@ -344,6 +354,9 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Do you have the questgiver flag?", 501, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Set the questgiver flag", 502, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Remove the questgiver flag", 503, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Do you have the vendor flag?", 504, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Set the vendor flag", 505, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove the vendor flag", 506, 0 )
 		menu.sendToPlayer( player )
 		
 	if id == 501:
@@ -357,6 +370,19 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 503:
 		creature.removeNpcFlag( arcemu.NPC_FLAG_QUESTGIVER )
+		
+	if id == 504:
+		if creature.hasNpcFlag( arcemu.NPC_FLAG_VENDOR ):
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I do" )
+		else:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't" )
+			
+	if id == 505:
+		creature.addNpcFlag( arcemu.NPC_FLAG_VENDOR )
+		
+	if id == 506:
+		creature.removeNpcFlag( arcemu.NPC_FLAG_VENDOR )
+
 		
 	if id == 600:
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )

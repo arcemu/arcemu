@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPyWorldSession.hpp"
+#include "ArcPyCreature.hpp"
 
 static PyObject* ArcPyWorldSession_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -80,10 +81,48 @@ static PyObject* ArcPyWorldSession_getAccountId( ArcPyWorldSession* self, PyObje
 	return id;
 }
 
+
+/// sendInventoryList
+///   Sends the vendor inventory of the specified Creature
+///
+/// Parameters
+///   creature   -   The vendor npc
+///
+/// Return value
+///   None
+///
+/// Example
+///   session.sendInventoryList( npc )
+///
+static PyObject* ArcPyWorldSession_sendInventoryList( ArcPyWorldSession* self, PyObject* args )
+{
+	PyObject *po;
+
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a Creature parameter." );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( po )->tp_name, ARCPYCREATURE_TYPE_NAME ) != 0 )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a Creature parameter." );
+		return NULL;
+	}
+
+	ArcPyCreature *apc = (ArcPyCreature*)po;
+	
+	WorldSession *session = self->worldSessionPtr;
+	session->SendInventoryList( apc->creaturePtr );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyWorldSession_methods[] = 
 {
 	{ "getAccountName", (PyCFunction)ArcPyWorldSession_getAccountName, METH_NOARGS, "Returns the name of the account" },
 	{ "getAccountId", (PyCFunction)ArcPyWorldSession_getAccountId, METH_NOARGS, "Returns the Id of the account" },
+	{ "sendInventoryList", (PyCFunction)ArcPyWorldSession_sendInventoryList, METH_VARARGS, "Sends a vendor's inventory list to the player" },
 	{NULL}
 };
 
@@ -144,9 +183,10 @@ int registerArcPyWorldSession( PyObject *module )
 	return 0;
 }
 
-ArcPyWorldSession* createArcPyWorldSession()
+ArcPyWorldSession* createArcPyWorldSession( WorldSession *session )
 {
 	PyTypeObject *type = &ArcPyWorldSessionType;
-	ArcPyWorldSession* player = (ArcPyWorldSession*)type->tp_alloc( type, 0 );
-	return player;
+	ArcPyWorldSession* apws = (ArcPyWorldSession*)type->tp_alloc( type, 0 );
+	apws->worldSessionPtr = session;
+	return apws;
 }

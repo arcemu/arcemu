@@ -29,7 +29,7 @@ typedef struct
 	WorldSession* worldSessionPtr;
 } ArcPyWorldSession;
 
-/// Returns a new empty ArcPyWorldSession object
-ArcPyWorldSession* createArcPyWorldSession();
+/// Returns a new ArcPyWorldSession object
+ArcPyWorldSession* createArcPyWorldSession( WorldSession *session = NULL );
 
 #endif
