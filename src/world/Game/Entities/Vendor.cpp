@@ -85,7 +85,7 @@ void Vendor::removeItem( uint32 id )
 		if( itr->itemid == id )
 		{
 			items->erase( itr );
-			return;
+			break;
 		}
 	}
 
