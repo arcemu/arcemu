@@ -443,11 +443,15 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "What are my coordinates?", 33, 0 )
 		
 		menu.addItem( arcemu.ICON_CHAT, "Remove lesser healing potion from your vendor inventory", 1101, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove all Items from your vendor inventory", 1102, 0 )
 		
 		menu.sendToPlayer( player )
 		
 	if id == 1101:
 		creature.removeVendorItem( 858 )
+		
+	if id == 1102:
+		creature.removeVendorItems()
 		
 
 def mohawk_onEnterVehicle( unit ):

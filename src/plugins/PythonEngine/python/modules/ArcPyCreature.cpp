@@ -453,6 +453,33 @@ static PyObject* ArcPyCreature_removeVendorItem( ArcPyCreature *self, PyObject *
 	Py_RETURN_NONE;
 }
 
+/// removeVendorItems
+///   Removes all items from the NPC vendor inventory
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.removeVendorItems()
+///
+static PyObject* ArcPyCreature_removeVendorItems( ArcPyCreature *self, PyObject *args )
+{
+	Creature *creature = self->creaturePtr;
+
+	if( !creature->hasVendorComponent() )
+	{
+		creature->createVendorComponent();
+	}
+
+	Vendor *vendor = creature->getVendor();
+	vendor->removeAllItems();
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -467,6 +494,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "hasNpcFlag", (PyCFunction)ArcPyCreature_hasNpcFlag, METH_VARARGS, "Tells if the Creature has the specified NPC flag(s)" },
 	{ "addVendorItem", (PyCFunction)ArcPyCreature_addVendorItem, METH_VARARGS, "Adds an item to the NPC's vendor inventory" },
 	{ "removeVendorItem", (PyCFunction)ArcPyCreature_removeVendorItem, METH_VARARGS, "Removes an item from the NPC's vendor inventory" },
+	{ "removeVendorItems", (PyCFunction)ArcPyCreature_removeVendorItems, METH_NOARGS, "Removes all items from the NPC's vendor inventory" },
 	{NULL}
 };
 
