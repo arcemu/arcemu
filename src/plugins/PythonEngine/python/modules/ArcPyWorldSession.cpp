@@ -118,11 +118,48 @@ static PyObject* ArcPyWorldSession_sendInventoryList( ArcPyWorldSession* self, P
 	Py_RETURN_NONE;
 }
 
+/// sendTrainerList
+///   Sends the trainer spells of the specified Creature
+///
+/// Parameters
+///   creature   -   The trainer npc
+///
+/// Return value
+///   None
+///
+/// Example
+///   session.sendTrainerList( npc )
+///
+static PyObject* ArcPyWorldSession_sendTrainerList( ArcPyWorldSession* self, PyObject* args )
+{
+	PyObject *po;
+
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a Creature parameter." );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( po )->tp_name, ARCPYCREATURE_TYPE_NAME ) != 0 )
+	{
+		PyErr_SetString( PyExc_ValueError, "The command requires a Creature parameter." );
+		return NULL;
+	}
+
+	ArcPyCreature *apc = (ArcPyCreature*)po;
+	
+	WorldSession *session = self->worldSessionPtr;
+	session->SendTrainerList( apc->creaturePtr );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyWorldSession_methods[] = 
 {
 	{ "getAccountName", (PyCFunction)ArcPyWorldSession_getAccountName, METH_NOARGS, "Returns the name of the account" },
 	{ "getAccountId", (PyCFunction)ArcPyWorldSession_getAccountId, METH_NOARGS, "Returns the Id of the account" },
 	{ "sendInventoryList", (PyCFunction)ArcPyWorldSession_sendInventoryList, METH_VARARGS, "Sends a vendor's inventory list to the player" },
+	{ "sendTrainerList", (PyCFunction)ArcPyWorldSession_sendTrainerList, METH_VARARGS, "Sends a trainer's spell list to the player" },
 	{NULL}
 };
 

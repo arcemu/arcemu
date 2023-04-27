@@ -13,6 +13,9 @@ def mohawk_onHello( unit, event, player ):
 	
 	if creature.hasNpcFlag( arcemu.NPC_FLAG_VENDOR ):
 		menu.addItem( arcemu.ICON_VENDOR, "Show me your wares!", 34, 0 )
+		
+	if creature.hasNpcFlag( arcemu.NPC_FLAG_TRAINER ):
+		menu.addItem( arcemu.ICON_CHAT, "I'd like to learn", 35, 0 )
 	
 	menu.addItem( arcemu.ICON_CHAT, "Vehicles", 0, 0 )
 	
@@ -258,6 +261,10 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		session = player.getSession()
 		session.sendInventoryList( creature )
 		
+	if id == 35:
+		session = player.getSession()
+		session.sendTrainerList( creature )
+		
 	elif id == 100:
 		unit.setStandState( arcemu.STANDSTATE_STAND )
 		
@@ -356,7 +363,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Remove the questgiver flag", 503, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Do you have the vendor flag?", 504, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Set the vendor flag", 505, 0 )
-		menu.addItem( arcemu.ICON_CHAT, "Remove the vendor flag", 506, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove the vendor flag", 506, 0 )		
+		menu.addItem( arcemu.ICON_CHAT, "Do you have the trainer flag?", 507, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Set the trainer flag", 508, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Remove the trainer flag", 509, 0 )
+		
+		
 		menu.sendToPlayer( player )
 		
 	if id == 501:
@@ -382,6 +394,18 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 506:
 		creature.removeNpcFlag( arcemu.NPC_FLAG_VENDOR )
+		
+	if id == 507:
+		if creature.hasNpcFlag( arcemu.NPC_FLAG_TRAINER ):
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I do" )
+		else:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't" )
+			
+	if id == 508:
+		creature.addNpcFlag( arcemu.NPC_FLAG_TRAINER )
+		
+	if id == 509:
+		creature.removeNpcFlag( arcemu.NPC_FLAG_TRAINER )
 
 		
 	if id == 600:
