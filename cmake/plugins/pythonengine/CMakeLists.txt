@@ -56,6 +56,8 @@ ${prefix}/quest/PythonQuestScript.cpp
 ${prefix}/quest/QuestScriptRegisterer.cpp
 ${prefix}/serverhooks/ServerHookRegistry.cpp
 ${prefix}/serverhooks/ServerHookHandler.cpp
+${prefix}/spells/DummySpellHandlerRegisterer.cpp
+${prefix}/spells/SpellScriptHandler.cpp
 )
 
 SET( HEADERS
@@ -117,6 +119,9 @@ ${prefix}/quest/QuestFunctionTupleVisitor.hpp
 ${prefix}/quest/QuestScriptRegisterer.hpp
 ${prefix}/serverhooks/ServerHookRegistry.hpp
 ${prefix}/serverhooks/ServerHookHandler.hpp
+${prefix}/spells/DummySpellHandlerRegisterer.hpp
+${prefix}/spells/DummySpellHandlerVisitor.hpp
+${prefix}/spells/SpellScriptHandler.hpp
 )
 
 IF( IS_LINUX )

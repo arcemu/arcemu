@@ -318,6 +318,40 @@ static PyObject* arcemu_RegisterInstanceEvent( PyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// RegisterDummySpellHandler
+///   Registers a dummy spell effect handler
+///
+/// Parameters:
+///   spellId   - The numerical identifier of the spell
+///   function  - The Python function's name that will handle the dummy effect
+///
+/// Example:
+///   RegisterDummySpell( 1234, spellname_handleDummyEffect )
+///
+static PyObject* arcemu_RegisterDummySpellHandler( PyObject *self, PyObject *args )
+{
+	unsigned long spellId;
+	PyObject *callback;
+
+	if( !PyArg_ParseTuple( args, "IO", &spellId, &callback ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a spell Id and a callback function be specified" );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	FunctionRegistry::registerDummySpellHandler( spellId, callback );
+
+	Py_RETURN_NONE;
+}
+
 /// This is where we assign the Arcemu Python module's function names to functions, and properties
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
@@ -328,6 +362,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterUnitEvent", arcemu_RegisterUnitEvent, METH_VARARGS, "Registers a Unit event" },
 	{ "RegisterQuestEvent", arcemu_RegisterQuestEvent, METH_VARARGS, "Registers a Quest event" },
 	{ "RegisterInstanceEvent", arcemu_RegisterInstanceEvent, METH_VARARGS, "Registers an Instance script event" },
+	{ "RegisterDummySpellHandler", arcemu_RegisterDummySpellHandler, METH_VARARGS, "Registers a dummy spell effect handler function" },
 	{NULL, NULL, 0, NULL }
 };
 

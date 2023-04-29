@@ -39,6 +39,7 @@
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 #include "instance/PythonInstanceScriptFactory.hpp"
 #include "quest/PythonQuestScriptFactory.hpp"
+#include "spells/DummySpellHandlerRegisterer.hpp"
 
 void register_arcemu_extensions();
 
@@ -216,5 +217,8 @@ void PythonEngine::registerScripts()
 
 	QuestScriptRegisterer questScriptRegisterer( this->mgr );
 	FunctionRegistry::visitQuestEventFunctions( &questScriptRegisterer );
+
+	DummySpellHandlerRegisterer dummySpellRegisterer( this->mgr );
+	FunctionRegistry::visitDummySpellHandlerFunctions( &dummySpellRegisterer );
 }
 

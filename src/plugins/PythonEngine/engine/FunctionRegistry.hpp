@@ -35,6 +35,8 @@
 #include "quest/QuestFunctionTuple.hpp"
 #include "quest/QuestFunctionTupleVisitor.hpp"
 
+#include "spells/DummySpellHandlerVisitor.hpp"
+
 /// Organized storage of Python function references
 class FunctionRegistry
 {
@@ -135,6 +137,19 @@ public:
 
 
 	///
+	/// Registers a dummy spell handler
+	///
+	/// Parameters
+	///   spellId    -  The id of the Spell
+	///   function   -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerDummySpellHandler( unsigned long spellId, void* function );
+
+
+	///
 	/// Visits all registered creature gossip functions
 	///
 	/// Parameters
@@ -213,6 +228,17 @@ public:
 	///
 	static void visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor );
 
+	///
+	/// Visits all registered dummy spell handler functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitDummySpellHandlerFunctions( DummySpellHandlerVisitor *visitor );
+
 
 	///
 	/// Deallocate / release all registered functions
@@ -277,6 +303,19 @@ public:
 	///
 	static InstanceFunctionTuple* getInstanceFunctions( unsigned int mapId );
 
+
+	///
+	/// Retrieve the dummy spell effect handler function for the specified spell
+	///
+	/// Parameters
+	///   spellId - The numeric identifier of the spell
+	///
+	/// Return value
+	///   Returns a pointer to the dummy spell handler function
+	///   Returns NULL if there are no functions registered for the spell
+	///
+	static void* getDummySpellHandler( unsigned long spellId );
+
 private:
 	///
 	/// Contains the gossip event handler functions registered for Creatures
@@ -333,6 +372,14 @@ private:
 	/// value: Pointer to a tuple that contains the functions registered
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > questFunctions;
+
+	///
+	/// Contains dummy spell effect handler functions for spells
+	///
+	/// key: spell Id
+	/// value: Pointer to a function that handles the dummy spell
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > dummySpellFunctions;
 };
 
 #endif
