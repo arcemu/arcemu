@@ -541,6 +541,36 @@ static PyObject* ArcPyPlayer_startTaxi( ArcPyPlayer *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// hasQuest
+///   Tells if the Player has the specified quest in their questlog
+///
+/// Parameters
+///   questId   -   The quest's Id
+///
+/// Return value
+///   Returns True if the player has the quest.
+///   Returns False otherwise.
+///
+/// Example
+///   if player.hasQuest( 1234 ):
+///     print( "The player is on the quest" )
+///
+static PyObject* ArcPyPlayer_hasQuest( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 questId;
+	if( !PyArg_ParseTuple( args, "k", &questId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a quest Id be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	if( player->HasQuest( questId ) )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
 
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
@@ -559,6 +589,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "hasItem", (PyCFunction)ArcPyPlayer_hasItem, METH_VARARGS, "Tells if the player has the specified amount of the specified items in their inventory" },
 	{ "getSession", (PyCFunction)ArcPyPlayer_getSession, METH_NOARGS, "Retrieves the Player's WorldSession" },
 	{ "startTaxi", (PyCFunction)ArcPyPlayer_startTaxi, METH_VARARGS, "Puts the Player on a Taxi path" },
+	{ "hasQuest", (PyCFunction)ArcPyPlayer_hasQuest, METH_VARARGS, "Tells if the player is on the specified quest" },
 	{NULL}
 };
 
