@@ -501,6 +501,47 @@ static PyObject* ArcPyPlayer_getSession( ArcPyPlayer *self, PyObject *args )
 	return (PyObject*)createArcPyWorldSession( session );
 }
 
+
+/// startTaxi
+///   Puts the Player on a Taxi path
+///
+/// Parameters
+///   taxiPathId    -   The Taxi path the Player should be put on
+///   displayId     -   The display id of the Taxi "mount"
+///   startNode     -   The starting node of the Taxi path, this is where the Taxi journey will begin
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.startTaxi( 1895, 22719, 0 )
+///
+static PyObject* ArcPyPlayer_startTaxi( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 taxiPathId;
+	uint32 displayId;
+	uint32 startNode;
+
+	if( !PyArg_ParseTuple( args, "kkk", &taxiPathId, &displayId, &startNode ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires taxiPathId, displayId, startNode to be specified" );
+		return NULL;
+	}
+
+	TaxiPath *path = sTaxiMgr.GetTaxiPath( taxiPathId );
+	if( path == NULL )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires taxiPathId, displayId, startNode to be specified" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	player->TaxiStart( path, displayId, startNode );
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -517,6 +558,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "removeItem", (PyCFunction)ArcPyPlayer_removeItem, METH_VARARGS, "Removes the specified amount of the specified items from the player's inventory" },
 	{ "hasItem", (PyCFunction)ArcPyPlayer_hasItem, METH_VARARGS, "Tells if the player has the specified amount of the specified items in their inventory" },
 	{ "getSession", (PyCFunction)ArcPyPlayer_getSession, METH_NOARGS, "Retrieves the Player's WorldSession" },
+	{ "startTaxi", (PyCFunction)ArcPyPlayer_startTaxi, METH_VARARGS, "Puts the Player on a Taxi path" },
 	{NULL}
 };
 
