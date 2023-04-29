@@ -87,10 +87,67 @@ static PyObject* ArcPySpell_getPlayerCaster( ArcPySpell *self, PyObject *args )
 	return (PyObject*)app;
 }
 
+/// getTargetDestinationX
+///   Returns the X coordinate of the Spell's target destination
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the X coordinate of the Spell's target destination
+///
+/// Example
+///   destX = spell.getTargetDestinationX()
+///
+static PyObject* ArcPySpell_getTargetDestinationX( ArcPySpell *self, PyObject *args )
+{
+	Spell *spell = self->spellPtr;
+	return PyFloat_FromDouble( spell->m_targets.m_destX );
+}
+
+/// getTargetDestinationY
+///   Returns the Y coordinate of the Spell's target destination
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the Y coordinate of the Spell's target destination
+///
+/// Example
+///   destY = spell.getTargetDestinationY()
+///
+static PyObject* ArcPySpell_getTargetDestinationY( ArcPySpell *self, PyObject *args )
+{
+	Spell *spell = self->spellPtr;
+	return PyFloat_FromDouble( spell->m_targets.m_destY );
+}
+
+/// getTargetDestinationZ
+///   Returns the Z coordinate of the Spell's target destination
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the Z coordinate of the Spell's target destination
+///
+/// Example
+///   destZ = spell.getTargetDestinationZ()
+///
+static PyObject* ArcPySpell_getTargetDestinationZ( ArcPySpell *self, PyObject *args )
+{
+	Spell *spell = self->spellPtr;
+	return PyFloat_FromDouble( spell->m_targets.m_destZ );
+}
+
 static PyMethodDef ArcPySpell_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPySpell_getName, METH_NOARGS, "Returns the name of the Spell" },
 	{ "getPlayerCaster", (PyCFunction)ArcPySpell_getPlayerCaster, METH_NOARGS, "Returns the Player who cast this spell, or return None." },
+	{ "getTargetDestinationX", (PyCFunction)ArcPySpell_getTargetDestinationX, METH_NOARGS, "Returns the X coordinate of the Spell's target destination" },
+	{ "getTargetDestinationY", (PyCFunction)ArcPySpell_getTargetDestinationY, METH_NOARGS, "Returns the Y coordinate of the Spell's target destination" },
+	{ "getTargetDestinationZ", (PyCFunction)ArcPySpell_getTargetDestinationZ, METH_NOARGS, "Returns the Z coordinate of the Spell's target destination" },
 	{NULL}
 };
 
