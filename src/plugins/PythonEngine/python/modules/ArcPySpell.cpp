@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPySpell.hpp"
+#include "ArcPyPlayer.hpp"
 
 static PyObject* ArcPySpell_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -62,9 +63,34 @@ static PyObject* ArcPySpell_getName( ArcPySpell *self, PyObject *args )
 	return name;
 }
 
+/// getPlayerCaster
+///   Returns the player who cast this Spell
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns an ArcPyPlayer object if a Player cast this spell.
+///   Returns None otherwise.
+///
+/// Example
+///   playerCaster = spell.getPlayerCaster()
+///
+static PyObject* ArcPySpell_getPlayerCaster( ArcPySpell *self, PyObject *args )
+{
+	Spell *spell = self->spellPtr;
+	Player *playerCaster = spell->p_caster;
+	if( playerCaster == NULL )
+		Py_RETURN_NONE;
+
+	ArcPyPlayer *app = createArcPyPlayer( playerCaster );
+	return (PyObject*)app;
+}
+
 static PyMethodDef ArcPySpell_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPySpell_getName, METH_NOARGS, "Returns the name of the Spell" },
+	{ "getPlayerCaster", (PyCFunction)ArcPySpell_getPlayerCaster, METH_NOARGS, "Returns the Player who cast this spell, or return None." },
 	{NULL}
 };
 
