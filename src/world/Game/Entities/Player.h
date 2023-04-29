@@ -41,9 +41,7 @@ public:
 };
 
 struct BGScore;
-#ifdef ENABLE_ACHIEVEMENTS
 class AchievementMgr;
-#endif
 class Channel;
 class Creature;
 class Battleground;
@@ -75,9 +73,9 @@ class SpeedCheatDetector;
 #define PLAYER_ARENA_MIN_LEVEL  70
 
 #define PLAYER_EXPLORED_ZONES_LENGTH 128
-#ifdef ENABLE_ACHIEVEMENTS
+
 #define ACHIEVEMENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
-#endif
+
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 
 enum PlayerTeams{
@@ -640,9 +638,9 @@ struct classScriptOverride
 	uint32 damage;
 	bool percent;
 };
-#ifdef ENABLE_ACHIEVEMENTS
+
 class AchievementMgr;
-#endif
+
 class Spell;
 class Item;
 class Container;
@@ -2416,10 +2414,9 @@ class SERVER_DECL Player : public Unit
 		void ToggleXpGain();
 		bool CanGainXp();
 
-#ifdef ENABLE_ACHIEVEMENTS
 		AchievementMgr & GetAchievementMgr() { return m_achievementMgr; }
 		AchievementMgr m_achievementMgr;
-#endif
+
 		/************************************************************************/
 		/* Player Achievements - end				                            */
 		/************************************************************************/

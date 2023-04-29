@@ -135,9 +135,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Gossip.h"
 #include "SpawnTimedEmotes.h"
 
-#ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"
-#endif
 
 //VMAP
 #include "ModelInstance.h"

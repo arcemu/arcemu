@@ -21,7 +21,7 @@
 
 #include "StdAfx.h"
 #include "PlayerMessenger.h"
-#ifdef ENABLE_ACHIEVEMENTS
+
 /**
 	Takes achievementlink c-string and returns the ID value from it.
 */
@@ -2271,4 +2271,3 @@ bool AchievementMgr::HasCompleted(uint32 achievementID)
 	return (m_completedAchievements.find(achievementID) != m_completedAchievements.end());
 }
 
-#endif

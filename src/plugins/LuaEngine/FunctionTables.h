@@ -462,11 +462,9 @@ RegType<Unit> UnitMethods[] =
 	{ "EventChat", &LuaUnit::EventChat },
 	{ "GetEquippedItemBySlot", &LuaUnit::GetEquippedItemBySlot },
 	{ "GetGuildMembers", &LuaUnit::GetGuildMembers },
-#ifdef ENABLE_ACHIEVEMENTS
 	{ "AddAchievement", &LuaUnit::AddAchievement },
 	{ "RemoveAchievement", &LuaUnit::RemoveAchievement },
 	{ "HasAchievement", &LuaUnit::HasAchievement },
-#endif
 	{ "RemoveArenaPoints", &LuaUnit::RemoveArenaPoints},
 	{ "TakeHonor", &LuaUnit::TakeHonor},
 	{ "SetPhase", &LuaUnit::PhaseSet},

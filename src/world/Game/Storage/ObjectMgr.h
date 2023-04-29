@@ -344,9 +344,8 @@ typedef std::map<uint32, std::list<SpellEntry*>* >                  OverrideIdMa
 typedef HM_NAMESPACE::HM_HASH_MAP<uint32, Player*>                     PlayerStorageMap;
 typedef std::list<GM_Ticket*>                                       GmTicketList;
 typedef std::map<uint32, InstanceBossInfo*>                         InstanceBossInfoMap;
-#ifdef ENABLE_ACHIEVEMENTS
+
 typedef std::list<const AchievementCriteriaEntry*>					AchievementCriteriaEntryList;
-#endif
 
 #ifndef WIN32
 #define arcemu_USE_MAP_PLAYER_INDEX
@@ -541,9 +540,7 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 
 
 		// Serialization
-#ifdef ENABLE_ACHIEVEMENTS
 		void LoadCompletedAchievements();
-#endif
 		void LoadQuests();
 		void LoadPlayersInfo();
 		void LoadPlayerCreateInfo();
@@ -677,11 +674,9 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		}
 
 
-#ifdef ENABLE_ACHIEVEMENTS
 		void LoadAchievementCriteriaList();
 		AchievementCriteriaEntryList const & GetAchievementCriteriaByType(AchievementCriteriaTypes type);
 		std::set<uint32> allCompletedAchievements;
-#endif
 
 		void LoadVehicleAccessories();
 		std::vector< VehicleAccessoryEntry* >* GetVehicleAccessories( uint32 creature_entry );
@@ -805,9 +800,8 @@ class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >, public EventableOb
 		PetDefaultSpellMap mDefaultPetSpells;
 		PetSpellCooldownMap mPetSpellCooldowns;
 		SpellTargetConstraintMap m_spelltargetconstraints;
-#ifdef ENABLE_ACHIEVEMENTS
 		AchievementCriteriaEntryList m_AchievementCriteriasByType[ACHIEVEMENT_CRITERIA_TYPE_TOTAL];
-#endif
+
 		std::map< uint32, std::vector< VehicleAccessoryEntry* >* > vehicle_accessories;
 		std::map< uint32, std::multimap< uint32, WorldState >* > worldstate_templates;
 		HM_NAMESPACE::HM_HASH_MAP< uint32, LFGDungeonData* > lfgDungeonData;

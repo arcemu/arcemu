@@ -625,9 +625,7 @@ void CommandTableStorage::Init()
 		{ "spell",    'l', &ChatHandler::HandleLookupSpellCommand,    "Looks up spell string x.", NULL, 0, 0, 0 },
 		{ "skill",    'l', &ChatHandler::HandleLookupSkillCommand,    "Looks up skill string x.", NULL, 0, 0, 0 },
 		{ "faction",  'l', &ChatHandler::HandleLookupFactionCommand,  "Looks up faction string x.", NULL, 0, 0, 0 },
-#ifdef ENABLE_ACHIEVEMENTS
 		{ "achievement", 'l', &ChatHandler::HandleLookupAchievementCmd,  "Looks up achievement string x.", NULL, 0, 0, 0 },
-#endif
 		{ NULL,          '0', NULL,                                      "",                               NULL, 0, 0, 0 }
 	};
 	dupe_command_table(lookupCommandTable, _lookupCommandTable);
@@ -695,11 +693,9 @@ void CommandTableStorage::Init()
 
 	static ChatCommand achievementCommandTable[] =
 	{
-#ifdef ENABLE_ACHIEVEMENTS
 		{ "complete", 'm', &ChatHandler::HandleAchievementCompleteCommand, "Completes the specified achievement.",          NULL, 0, 0, 0 },
 		{ "criteria", 'm', &ChatHandler::HandleAchievementCriteriaCommand, "Completes the specified achievement criteria.", NULL, 0, 0, 0 },
 		{ "reset",    'm', &ChatHandler::HandleAchievementResetCommand,    "Resets achievement data from the target.",      NULL, 0, 0, 0 },
-#endif
 		{ NULL,       '0', NULL,                                           "",                                              NULL, 0, 0, 0 }
 	};
 	dupe_command_table(achievementCommandTable, _achievementCommandTable);

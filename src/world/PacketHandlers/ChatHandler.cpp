@@ -572,9 +572,9 @@ void WorldSession::HandleEmoteOpcode(WorldPacket & recv_data)
 	uint32 emote;
 	recv_data >> emote;
 	_player->Emote((EmoteType)emote);
-#ifdef ENABLE_ACHIEVEMENTS
+
 	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, emote, 0, 0);
-#endif
+
 	uint64 guid = _player->GetGUID();
 	sQuestMgr.OnPlayerEmote(_player, emote, guid);
 }
@@ -668,9 +668,9 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 		else				data << (uint8)0x00;
 
 		GetPlayer()->SendMessageToSet(&data, true);
-#ifdef ENABLE_ACHIEVEMENTS
+
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, text_emote, 0, 0);
-#endif
+
 		sQuestMgr.OnPlayerEmote(_player, text_emote, guid);
 	}
 }

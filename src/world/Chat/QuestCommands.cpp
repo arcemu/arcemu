@@ -551,7 +551,6 @@ bool ChatHandler::HandleQuestFinishCommand(const char* args, WorldSession* m_ses
 				if(!plr->HasFinishedQuest((*iter)))
 					plr->AddToFinishedQuests((*iter));
 			}
-#ifdef ENABLE_ACHIEVEMENTS
 			plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT, 1, 0, 0);
 			if(qst->reward_money > 0)
 			{
@@ -565,7 +564,6 @@ bool ChatHandler::HandleQuestFinishCommand(const char* args, WorldSession* m_ses
 			}
 			plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE, qst->zone_id, 0, 0);
 			plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST, qst->id, 0, 0);
-#endif
 		}
 	}
 	else

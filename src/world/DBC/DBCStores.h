@@ -33,7 +33,6 @@ struct WorldMapOverlay
 // any of the four above indexes is enough to uncover the fragment
 };
 
-#ifdef ENABLE_ACHIEVEMENTS
 struct AchievementEntry
 {
 	uint32      ID;                                           // 0
@@ -466,7 +465,7 @@ struct AchievementCriteriaEntry
 	uint32  timeLimit;                                    // 29 time limit in seconds
 	uint32  index;                                        // 30
 };
-#endif
+
 
 //struct BattlemasterListEntry
 //{
@@ -1958,11 +1957,11 @@ class SERVER_DECL DBCStorage
 };
 
 extern SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
-#ifdef ENABLE_ACHIEVEMENTS
+
 extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 extern SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
-#endif
+
 //extern SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
 extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypesStore;

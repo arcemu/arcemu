@@ -19,11 +19,10 @@
 
 #include "StdAfx.h"
 
-#ifdef ENABLE_ACHIEVEMENTS
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
-#endif
+
 SERVER_DECL DBCStorage<AreaGroup> dbcAreaGroup;
 SERVER_DECL DBCStorage<AreaTable> dbcArea;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
@@ -123,7 +122,6 @@ const char* CharTitlesEntryfmt =
 
 const char* CurrencyTypesEntryFormat = "xnxu";
 
-#ifdef ENABLE_ACHIEVEMENTS
 const char* AchievementStoreFormat =
     "n" // ID
     "i" // factionFlag
@@ -170,7 +168,6 @@ const char* AchievementCriteriaStoreFormat =
     "i" // timeLimit
     "u" // index
     ;
-#endif
 
 const char* spelldifficultyentryformat = "niiii";
 
@@ -359,11 +356,11 @@ bool loader_stub(const char* filename, const char* format, bool ind, T & l, bool
 bool LoadDBCs()
 {
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayStoreFormat, true, dbcWorldMapOverlayStore, true);
-#ifdef ENABLE_ACHIEVEMENTS
+
 	LOAD_DBC("DBC/Achievement_Category.dbc", AchievementCategoryStoreFormat, true, dbcAchievementCategoryStore, true);
 	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
 	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
-#endif
+
 	//LOAD_DBC("DBC/BattlemasterList.dbc", BattlemasterListEntryFormat, true, dbcBattlemasterListStore, true);
 	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, true);
 	LOAD_DBC("DBC/CurrencyTypes.dbc", CurrencyTypesEntryFormat, true, dbcCurrencyTypesStore, true);
