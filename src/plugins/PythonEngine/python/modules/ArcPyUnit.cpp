@@ -1176,7 +1176,7 @@ static PyObject* ArcPyUnit_toPlayer( ArcPyUnit *self, PyObject *args )
 ///
 /// Return value
 ///   Returns a Creature object if the cast is possible.
-///   Throws an error otherwise.
+///   Returns None otherwise.
 ///
 /// Example
 ///   creature = unit.toCreature()
@@ -1186,8 +1186,7 @@ static PyObject* ArcPyUnit_toCreature( ArcPyUnit *self, PyObject *args )
 	Unit *unit = self->unitPtr;
 	if( !unit->IsCreature() )
 	{
-		PyErr_SetString( PyExc_TypeError, "This function requires a Unit that is a Creature" );
-		return NULL;
+		Py_RETURN_NONE;
 	}
 
 	ArcPyCreature *creature = createArcPyCreature( TO_CREATURE( unit ) );
