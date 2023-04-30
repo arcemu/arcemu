@@ -471,6 +471,8 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Remove all Items from your vendor inventory", 1102, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer", 1103, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer up until 123", 1104, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Tell me a random float", 1105, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer up until 12.34", 1106, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -485,6 +487,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 1104:
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( Math.randomUInt( 123 ) ) )
+		
+	if id == 1105:
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( Math.randomFloat() ) )
+		
+	if id == 1106:
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( Math.randomFloat( 12.34 ) ) )
 		
 
 def mohawk_onEnterVehicle( unit ):

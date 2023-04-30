@@ -79,7 +79,7 @@ static PyObject* ArcPyMath_randomUInt( PyObject *self, PyObject *args )
 
 	if( !PyArg_ParseTuple( args, "|I", &N ) )
 	{
-		PyErr_SetString( PyExc_ValueError, "This function requires ax, ay, az, bx, by, bz float coordinates be specified" );
+		PyErr_SetString( PyExc_ValueError, "This function requires either no parameter or an integer parameter" );
 		return NULL;
 	}
 
@@ -92,9 +92,42 @@ static PyObject* ArcPyMath_randomUInt( PyObject *self, PyObject *args )
 	return PyLong_FromUnsignedLong( result );
 }
 
+/// randomFloat
+///   Generates a random floating point number
+///
+/// Parameters
+///   N - Optional upper bound
+///
+/// Return value
+///   Returns a randomly generated floating point number
+///
+/// Example
+///   rand = randomFloat() # Generates a random floating point number in the interval 0.0 <= x < 1.0
+///   rand = randomFloat( 12.34 ) # Generates a random floating point number in the interval 0.0 <= x < 12.34
+///
+static PyObject* ArcPyMath_randomFloat( PyObject *self, PyObject *args )
+{
+	float N = 0;
+
+	if( !PyArg_ParseTuple( args, "|f", &N ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires either no parameter or a floating point parameter" );
+		return NULL;
+	}
+
+	float result;
+	if( N > 0.0f )
+		result = RandomFloat( N );
+	else
+		result = RandomFloat();
+
+	return PyFloat_FromDouble( result );
+}
+
 static PyMethodDef ArcPyMathMethods[] = {
 	{ "calcDistance", ArcPyMath_calcDistance, METH_VARARGS, "Calculates the distance between two points" },
 	{ "randomUInt", ArcPyMath_randomUInt, METH_VARARGS, "Generates a random unsigned integer" },
+	{ "randomFloat", ArcPyMath_randomFloat, METH_VARARGS, "Generates a random floating point number" },
 	{NULL, NULL, 0, NULL }
 };
 
