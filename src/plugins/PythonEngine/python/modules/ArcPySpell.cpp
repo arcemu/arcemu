@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPySpell.hpp"
+#include "ArcPyUnit.hpp"
 #include "ArcPyPlayer.hpp"
 
 static PyObject* ArcPySpell_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
@@ -141,10 +142,35 @@ static PyObject* ArcPySpell_getTargetDestinationZ( ArcPySpell *self, PyObject *a
 	return PyFloat_FromDouble( spell->m_targets.m_destZ );
 }
 
+/// getUnitTarget()
+///   Returns the Unit target of the Spell
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a Unit if the target is a Unit.
+///   Returns None otherwise
+///
+/// Example
+///   unit = spell.getUnitTarget()
+///
+static PyObject* ArcPySpell_getUnitTarget( ArcPySpell *self, PyObject *args )
+{
+	Spell *spell = self->spellPtr;
+	Unit *unitTarget = spell->GetUnitTarget();
+
+	if( unitTarget != NULL )
+		return (PyObject*)createArcPyUnit( unitTarget );
+	else
+		Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPySpell_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPySpell_getName, METH_NOARGS, "Returns the name of the Spell" },
 	{ "getPlayerCaster", (PyCFunction)ArcPySpell_getPlayerCaster, METH_NOARGS, "Returns the Player who cast this spell, or return None." },
+	{ "getUnitTarget", (PyCFunction)ArcPySpell_getUnitTarget, METH_NOARGS, "Returns the Unit target of the Spell" },
 	{ "getTargetDestinationX", (PyCFunction)ArcPySpell_getTargetDestinationX, METH_NOARGS, "Returns the X coordinate of the Spell's target destination" },
 	{ "getTargetDestinationY", (PyCFunction)ArcPySpell_getTargetDestinationY, METH_NOARGS, "Returns the Y coordinate of the Spell's target destination" },
 	{ "getTargetDestinationZ", (PyCFunction)ArcPySpell_getTargetDestinationZ, METH_NOARGS, "Returns the Z coordinate of the Spell's target destination" },
