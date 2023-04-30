@@ -1,4 +1,5 @@
 import arcemu
+import ArcPyMath as Math
 from arcemu import GossipMenu
 from arcemu import Player
 from arcemu import Unit
@@ -468,6 +469,8 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 		menu.addItem( arcemu.ICON_CHAT, "Remove lesser healing potion from your vendor inventory", 1101, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Remove all Items from your vendor inventory", 1102, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer", 1103, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer up until 123", 1104, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -476,6 +479,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 1102:
 		creature.removeVendorItems()
+		
+	if id == 1103:
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( Math.randomUInt() ) )
+		
+	if id == 1104:
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( Math.randomUInt( 123 ) ) )
 		
 
 def mohawk_onEnterVehicle( unit ):

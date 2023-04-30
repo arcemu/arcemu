@@ -60,8 +60,41 @@ static PyObject* ArcPyMath_calcDistance( PyObject *self, PyObject *args )
 }
 
 
+/// randomUInt
+///   Generates a random unsigned integer
+///
+/// Parameters
+///   N - Optional upper bound
+///
+/// Return value
+///   Returns a randomly generated unsigned integer
+///
+/// Example
+///   rand = randomUInt() # Generates a random unsigned integer between 0 and RAND_MAX
+///   rand = randomUInt( 1234 ) # Generates a random unsigned integer between 0 and 1234
+///
+static PyObject* ArcPyMath_randomUInt( PyObject *self, PyObject *args )
+{
+	uint32 N = 0;
+
+	if( !PyArg_ParseTuple( args, "|I", &N ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires ax, ay, az, bx, by, bz float coordinates be specified" );
+		return NULL;
+	}
+
+	uint32 result;
+	if( N > 0 )
+		result = RandomUInt( N );
+	else
+		result = RandomUInt();
+
+	return PyLong_FromUnsignedLong( result );
+}
+
 static PyMethodDef ArcPyMathMethods[] = {
 	{ "calcDistance", ArcPyMath_calcDistance, METH_VARARGS, "Calculates the distance between two points" },
+	{ "randomUInt", ArcPyMath_randomUInt, METH_VARARGS, "Generates a random unsigned integer" },
 	{NULL, NULL, 0, NULL }
 };
 
