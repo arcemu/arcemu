@@ -39,7 +39,6 @@ extern int registerArcPyQuest( PyObject *module );
 extern int registerArcPySpell( PyObject *module );
 extern int registerArcPyWorldSession( PyObject *module );
 
-
 /// RegisterServerHook
 ///   Registers a server event handler
 ///

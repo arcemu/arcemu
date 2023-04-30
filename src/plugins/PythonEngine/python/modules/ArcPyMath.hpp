@@ -17,33 +17,9 @@
  *
  */
 
-#include <Python.h>
+#ifndef ARCPYMATH_H_
+#define ARCPYMATH_H_
 
-/// Initializes the Arcemu Python module. See arcemu_module.cpp
-PyObject* PyInit_Arcemu( void );
-PyObject* PyInit_ArcPyMath( void );
 
-class PythonExtensionRegistrar
-{
-private:
-	static void registerExtension( const char *name, PyObject* (*initfunc)(void) )
-	{
-		if( PyImport_AppendInittab( name, initfunc ) < 0 )
-		{
-			printf( "Failed to initialize extension: %s\n", name );
-		}
-	}
 
-public:
-	static void registerExtensions()
-	{
-		registerExtension( "arcemu", &PyInit_Arcemu );
-		registerExtension( "ArcPyMath", &PyInit_ArcPyMath );
-	}
-};
-
-/// Registers the Arcemu Python extensions
-void register_arcemu_extensions()
-{
-	PythonExtensionRegistrar::registerExtensions();
-}
+#endif
