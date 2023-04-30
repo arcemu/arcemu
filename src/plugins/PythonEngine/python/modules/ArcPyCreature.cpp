@@ -24,6 +24,7 @@
 
 #include "ArcPyUnit.hpp"
 #include "ArcPyCreature.hpp"
+#include "ArcPyPlayer.hpp"
 
 static PyObject* ArcPyCreature_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -498,6 +499,28 @@ static PyObject* ArcPyCreature_getId( ArcPyCreature *self, PyObject *args )
 	return PyLong_FromUnsignedLong( creature->GetProto()->Id );
 }
 
+
+/// getPlayerOwner()
+///   Returns the Player owner of this Creature
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the Player owner of this Creature
+///
+/// Example
+///   playerOwner = creature.getPlayerOwner()
+///
+static PyObject* ArcPyCreature_getPlayerOwner( ArcPyCreature *self, PyObject *args )
+{
+	Creature *creature = self->creaturePtr;
+	if( creature->GetPlayerOwner() == NULL )
+		Py_RETURN_NONE;
+
+	return (PyObject*)createArcPyPlayer( static_cast< Player* >( creature->GetPlayerOwner() ) );
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -514,6 +537,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "removeVendorItem", (PyCFunction)ArcPyCreature_removeVendorItem, METH_VARARGS, "Removes an item from the NPC's vendor inventory" },
 	{ "removeVendorItems", (PyCFunction)ArcPyCreature_removeVendorItems, METH_NOARGS, "Removes all items from the NPC's vendor inventory" },
 	{ "getId", (PyCFunction)ArcPyCreature_getId, METH_NOARGS, "Returns the identifier of this Creature" },
+	{ "getPlayerOwner", (PyCFunction)ArcPyCreature_getPlayerOwner, METH_NOARGS, "Returns the Player owner of this Creature" },
 	{NULL}
 };
 
