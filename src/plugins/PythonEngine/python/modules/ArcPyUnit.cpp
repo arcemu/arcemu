@@ -1386,6 +1386,34 @@ static PyObject* ArcPyUnit_getNativeDisplayId( ArcPyUnit *self, PyObject *args )
 	return PyLong_FromUnsignedLong( unit->GetNativeDisplayId() );
 }
 
+/// setNativeDisplayId
+///   Sets the native display Id of the Unit
+///
+/// Parameters
+///   displayId  -  The native display Id to be set for the Unit
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setNativeDisplayId( 1234 )
+///
+static PyObject* ArcPyUnit_setNativeDisplayId( ArcPyUnit *self, PyObject *args )
+{
+	uint32 displayId;
+
+	if( !PyArg_ParseTuple( args, "k", &displayId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a display Id" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetNativeDisplayId( displayId );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1435,6 +1463,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getDisplayId", (PyCFunction)ArcPyUnit_getDisplayId, METH_NOARGS, "Returns the display Id of the Unit" },
 	{ "setDisplayId", (PyCFunction)ArcPyUnit_setDisplayId, METH_VARARGS, "Sets the display Id of the Unit" },
 	{ "getNativeDisplayId", (PyCFunction)ArcPyUnit_getNativeDisplayId, METH_NOARGS, "Returns the native display Id of the Unit" },
+	{ "setNativeDisplayId", (PyCFunction)ArcPyUnit_setNativeDisplayId, METH_VARARGS, "Sets the native display Id of the Unit" },
 	{NULL}
 };
 
