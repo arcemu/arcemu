@@ -80,6 +80,7 @@ static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
 ///   type        -  Chat message type (integer). See constants.
 ///   lang        -  The language of this chat message (integer). See constants.
 ///   msg         -  The message (string)
+///   delay       -  Optional delay before sending the chat message (integer)
 ///
 /// Return value
 ///   None
@@ -92,14 +93,15 @@ static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
 	unsigned long type = 0;
 	unsigned long lang = 0;
 	const char *msg = NULL;
+	uint32 delay = 0;
 
-	if( ! PyArg_ParseTuple( args, "kks", &type, &lang, &msg ) )
+	if( ! PyArg_ParseTuple( args, "kks|k", &type, &lang, &msg, &delay ) )
 	{
 		return NULL;
 	}
 
 	Unit *unit = self->unitPtr;
-	unit->SendChatMessage( (uint8)type, lang, msg );
+	unit->SendChatMessage( (uint8)type, lang, msg, delay );
 
 	Py_RETURN_NONE;
 }
