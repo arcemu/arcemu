@@ -480,6 +480,24 @@ static PyObject* ArcPyCreature_removeVendorItems( ArcPyCreature *self, PyObject 
 	Py_RETURN_NONE;
 }
 
+/// getId()
+///   Returns the identifier of this Creature
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the identifier of this Creature
+///
+/// Example
+///   id = creature.getId()
+///
+static PyObject* ArcPyCreature_getId( ArcPyCreature *self, PyObject *args )
+{
+	Creature *creature = self->creaturePtr;
+	return PyLong_FromUnsignedLong( creature->GetProto()->Id );
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -495,6 +513,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "addVendorItem", (PyCFunction)ArcPyCreature_addVendorItem, METH_VARARGS, "Adds an item to the NPC's vendor inventory" },
 	{ "removeVendorItem", (PyCFunction)ArcPyCreature_removeVendorItem, METH_VARARGS, "Removes an item from the NPC's vendor inventory" },
 	{ "removeVendorItems", (PyCFunction)ArcPyCreature_removeVendorItems, METH_NOARGS, "Removes all items from the NPC's vendor inventory" },
+	{ "getId", (PyCFunction)ArcPyCreature_getId, METH_NOARGS, "Returns the identifier of this Creature" },
 	{NULL}
 };
 
