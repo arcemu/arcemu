@@ -85,7 +85,7 @@ void Vehicle::Load( Unit *owner, uint32 creature_entry, uint32 vehicleid ){
 	}
 
 	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ )
-		if( ( seats[ i ] != NULL ) && seats[ i ]->Usable() && ( !seats[ i ]->HasPassenger() ) )
+		if( ( seats[ i ] != NULL ) && ( !seats[ i ]->HasPassenger() ) )
 			freeseats++;
 
 }
@@ -102,7 +102,7 @@ void Vehicle::AddPassenger( Unit *passenger ){
 	// find seat
 	uint32 seatid = MAX_VEHICLE_SEATS;
 	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ )
-		if( ( seats[ i ] != NULL ) && seats[ i ]->Usable() && ( !seats[ i ]->HasPassenger() ) ){
+		if( ( seats[ i ] != NULL ) && ( !seats[ i ]->HasPassenger() ) ){
 			seatid = i;
 			break;
 		}
@@ -116,9 +116,6 @@ void Vehicle::AddPassenger( Unit *passenger ){
 
 void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 	if( seats[ seatid ]->HasPassenger() )
-		return;
-
-	if( !seats[ seatid ]->Usable() )
 		return;
 
 	passenger->RemoveAllAuraType( SPELL_AURA_MOUNTED );
@@ -208,6 +205,31 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 	}
 }
 
+bool Vehicle::canPassengerExit( Unit *passenger )
+{
+	if( passenger->GetCurrentVehicle() == NULL )
+		return false;
+
+	if( passenger->GetCurrentVehicle() != this )
+		return false;
+
+	// find the seat the passenger is on
+	uint32 seatid = MAX_VEHICLE_SEATS;
+	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ )
+		if( ( seats[ i ] != 0 ) && seats[ i ]->HasPassenger() && ( seats[ i ]->GetPassengerGUID() == passenger->GetGUID() ) ){
+			seatid = i;
+			break;
+		}
+
+	if( seatid == MAX_VEHICLE_SEATS )
+		return false;
+
+	if( seats[ seatid ]->isExitable() )
+		return true;
+	else
+		return false;
+}
+
 void Vehicle::EjectPassenger( Unit *passenger ){
 	if( passenger->GetCurrentVehicle() == NULL )
 		return;
@@ -218,7 +240,7 @@ void Vehicle::EjectPassenger( Unit *passenger ){
 	// find the seat the passenger is on
 	uint32 seatid = MAX_VEHICLE_SEATS;
 	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ )
-		if( ( seats[ i ] != 0 ) && seats[ i ]->Usable() && seats[ i ]->HasPassenger() && ( seats[ i ]->GetPassengerGUID() == passenger->GetGUID() ) ){
+		if( ( seats[ i ] != 0 ) && seats[ i ]->HasPassenger() && ( seats[ i ]->GetPassengerGUID() == passenger->GetGUID() ) ){
 			seatid = i;
 			break;
 		}
@@ -230,9 +252,6 @@ void Vehicle::EjectPassenger( Unit *passenger ){
 }
 
 void Vehicle::EjectPassengerFromSeat( uint32 seatid ){
-	if( !seats[ seatid ]->Usable() )
-		return;
-
 	if( !seats[ seatid ]->HasPassenger() )
 		return;
 
@@ -343,9 +362,6 @@ void Vehicle::MovePassengerToSeat( Unit *passenger, uint32 seat ){
 	if( seats[ seat ] == NULL )
 		return;
 
-	if( !seats[ seat ]->Usable() )
-		return;
-
 	if( seats[ seat ]->HasPassenger() )
 		return;
 
@@ -368,7 +384,7 @@ void Vehicle::MovePassengerToNextSeat( Unit *passenger ){
 	// Now find a next seat if possible
 	uint32 newseatid = oldseatid;
 	for( uint32 i = oldseatid + 1; i < MAX_VEHICLE_SEATS; i++ )
-		if( ( seats[ i ] != NULL ) && ( seats[ i ]->Usable() ) && ( !seats[ i ]->HasPassenger() ) ){
+		if( ( seats[ i ] != NULL ) && ( !seats[ i ]->HasPassenger() ) ){
 			newseatid = i;
 			break;
 		}
@@ -396,7 +412,7 @@ void Vehicle::MovePassengerToPrevSeat( Unit *passenger ){
 	// Now find a previous seat if possible
 	uint32 newseatid = oldseatid;
 	for( int32 i = static_cast< int32 >( oldseatid ) - 1; i >= 0; i-- )
-		if( ( seats[ i ] != NULL ) && ( seats[ i ]->Usable() ) && ( !seats[ i ]->HasPassenger() ) ){
+		if( ( seats[ i ] != NULL ) && !seats[ i ]->HasPassenger() ){
 			newseatid = static_cast< uint32 >( i );
 			break;
 		}

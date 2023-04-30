@@ -131,20 +131,20 @@ public:
 
 
 	////////////////////////////////////////////////////
-	//bool Usable()
-	//  Tells if the seat is usable for passengers
+	//bool isExitable()
+	//  Tells if the passenger can exit from the seat
 	//
 	//Parameter(s)
 	//  None
 	//
 	//Return Value
-	//  Returns true if the seat is usable.
+	//  Returns true if the passenger can exit.
 	//  Returns false otherwise.
 	//
 	//
 	///////////////////////////////////////////////////
-	bool Usable() const{
-		return seat_info->IsUsable();
+	bool isExitable() const{
+		return seat_info->isExitable();
 	}
 
 
@@ -264,6 +264,22 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////
 	void AddPassengerToSeat( Unit *passenger, uint32 seatid );
+
+
+	/////////////////////////////////////////////////////////////////////////
+	//bool canPassengerExit( Unit *passenger )
+	//  Tells if the specified passenger can exit the vehicle
+	//
+	//Parameter(s)
+	//  Unit *passenger  -  The passenger
+	//
+	//Return Value
+	//  Returns true if the passenger can exit.
+	//  Returns false otherwise.
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////
+	bool canPassengerExit( Unit *passenger );
 
 
 	/////////////////////////////////////////////////////////////////////////

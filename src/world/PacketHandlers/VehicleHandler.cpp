@@ -30,10 +30,14 @@ void WorldSession::HandleDismissVehicle( WorldPacket &recv_data ){
 	if( v == NULL )
 		return;
 
-	if( v->GetVehicleComponent() == NULL )
+	Vehicle *vehicle = v->GetVehicleComponent();
+	if( vehicle == NULL )
 		return;
 
-	v->GetVehicleComponent()->EjectPassenger( _player );
+	if( ! vehicle->canPassengerExit( _player ) )
+		return;
+
+	vehicle->EjectPassenger( _player );
 }
 
 
@@ -143,15 +147,22 @@ void WorldSession::HandleRemoveVehiclePassenger( WorldPacket &recv_data ){
 	if( passenger == NULL )
 		return;
 
+	if( ! v->canPassengerExit( passenger ) )
+		return;
+
 	v->EjectPassenger( passenger );
 }
 
 
 void WorldSession::HandleLeaveVehicle( WorldPacket &recv_data ){
-	if( _player->GetCurrentVehicle() == NULL )
+	Vehicle *vehicle = _player->GetCurrentVehicle();
+	if( vehicle == NULL )
 		return;
 
-	_player->GetCurrentVehicle()->EjectPassenger( _player );
+	if( ! vehicle->canPassengerExit( _player ) )
+		return;
+
+	vehicle->EjectPassenger( _player );
 }
 
 

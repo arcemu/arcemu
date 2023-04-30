@@ -1556,7 +1556,7 @@ enum VehicleSeatFlags{
     VEHICLE_SEAT_FLAG_UNK11                      = 0x00000400,
     VEHICLE_SEAT_FLAG_CAN_CONTROL                = 0x00000800,           // Lua_UnitInVehicleControlSeat
     VEHICLE_SEAT_FLAG_CAN_ATTACK                 = 0x00004000,           // Can attack, cast spells and use items from vehicle?
-    VEHICLE_SEAT_FLAG_USABLE                     = 0x02000000,           // Lua_CanExitVehicle
+    VEHICLE_SEAT_FLAG_EXITABLE                   = 0x02000000,           // Lua_CanExitVehicle
     VEHICLE_SEAT_FLAG_CAN_SWITCH                 = 0x04000000,           // Lua_CanSwitchVehicleSeats
     VEHICLE_SEAT_FLAG_CAN_CAST                   = 0x20000000,           // Lua_UnitHasVehicleUI
 };
@@ -1616,8 +1616,8 @@ struct VehicleSeatEntry{
     int32   uiSkin;                                       // 44
     uint32  flagsB;                                       // 45
 
-    bool IsUsable() const{
-		if( ( flags & VEHICLE_SEAT_FLAG_USABLE ) != 0 )
+    bool isExitable() const{
+		if( ( flags & VEHICLE_SEAT_FLAG_EXITABLE ) != 0 )
 			return true;
 		else
 			return false;
