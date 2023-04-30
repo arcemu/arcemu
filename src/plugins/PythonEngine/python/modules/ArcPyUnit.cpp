@@ -1321,6 +1321,25 @@ static PyObject* ArcPyUnit_castSpell( ArcPyUnit *self, PyObject *args )
 	return PyLong_FromUnsignedLong( result );
 }
 
+
+/// getDisplayId
+///   Returns the display Id of the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the display Id of the Unit
+///
+/// Example
+///   displayId = unit.getDisplayId()
+///
+static PyObject* ArcPyUnit_getDisplayId( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	return PyLong_FromUnsignedLong( unit->GetDisplayId() );
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1367,6 +1386,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
 	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
 	{ "castSpell", (PyCFunction)ArcPyUnit_castSpell, METH_VARARGS, "Makes the Unit cast a spell" },
+	{ "getDisplayId", (PyCFunction)ArcPyUnit_getDisplayId, METH_NOARGS, "Returns the display Id of the Unit" },
 	{NULL}
 };
 
