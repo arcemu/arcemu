@@ -502,15 +502,13 @@ bool MagicBroomMount(uint32 i,Spell *spell)
 	return true;
 }
 
-bool MagicRoosterMount(uint32 i, Aura* pAura, bool apply)
+bool MagicRoosterMount(uint32 i, Spell *spell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
+	Player *pPlayer = spell->GetPlayerTarget();
+	if( pPlayer == NULL )
 		return true;
 
-	if(apply)
-	{
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), 66122, true);
-	}
+	pPlayer->CastSpell(pPlayer, 66122, true);
 
 	return true;
 }
@@ -1053,7 +1051,7 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 	mgr->register_dummy_spell(54729, &WingedSteed);				// DK flying mount
 	mgr->register_dummy_spell(48025, &HeadlessHorsemanMountDummy);	// Headless Horseman Mount
 	mgr->register_dummy_spell(47977, &MagicBroomMount);			// Magic Broom Mount
-	mgr->register_dummy_aura(65917, &MagicRoosterMount);		// Magic Rooster Mount
+	mgr->register_dummy_spell(65917, &MagicRoosterMount);		// Magic Rooster Mount
 	mgr->register_dummy_spell(72286, &InvincibleDummy);         // Invincible
 
 	mgr->register_dummy_spell(30507, &Poultryizer);

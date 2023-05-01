@@ -1397,13 +1397,6 @@ void ApplyNormalFixes()
 	if(sp != NULL)
 		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
 
-	/**********************************************************
-	 * Scaled Mounts
-	 **********************************************************/
-	//Magic Rooster
-	sp = CheckAndReturnSpellEntry(65917);
-	if(sp != NULL)
-		sp->Effect[0] = SPELL_EFFECT_NULL;
 
 	//////////////////////////////////////////////////////
 	// CLASS-SPECIFIC SPELL FIXES						//
