@@ -639,8 +639,14 @@ void QuestMgr::BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr,
 				tmp_map.insert(std::map<uint32, uint8>::value_type((*it)->qst->id, 1));
 				LocalizedQuest* lq = (language > 0) ? sLocalizationMgr.GetLocalizedQuest((*it)->qst->id, language) : NULL;
 
+				uint32 icon;
+				if( status == QMGR_QUEST_NOT_FINISHED )
+					icon = QUEST_ICON_IN_PROGRESS;
+				else
+					icon = status;
+
 				*data << uint32( (*it)->qst->id );
-				*data << uint32( status );
+				*data << uint32( icon );
 				*data << int32((*it)->qst->questlevel);
 				*data << uint32((*it)->qst->quest_flags);
 				*data << uint8( (*it)->qst->is_repeatable );

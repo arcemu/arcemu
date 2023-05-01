@@ -45,6 +45,11 @@ enum QuestFieldOffsets
 
 #define QUEST_FIELD_OFFSETS_PER_SLOT 5
 
+enum QUEST_ICON
+{
+	QUEST_ICON_IN_PROGRESS = 4
+};
+
 enum QUEST_STATUS
 {
     QMGR_QUEST_NOT_AVAILABLE					= 0x00,	// There aren't any quests available.		| "No Mark"
