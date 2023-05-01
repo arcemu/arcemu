@@ -47,7 +47,11 @@ void ProspectorAnvilwardGossip::GossipHello(Object* pObject, Player* Plr)
 	GossipMenu* Menu;
 	objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 2, Plr);
 
-	Menu->AddItem(0, "Show me...", 1);
+	QuestLogEntry* qLogEntry = Plr->GetQuestLogForEntry(8483);
+	if(qLogEntry != NULL)
+	{
+		Menu->AddItem(0, "Show me...", 1);
+	}
 
 	Menu->SendTo(Plr);
 }
@@ -65,40 +69,9 @@ void ProspectorAnvilwardGossip::GossipSelectOption(Object* pObject, Player* Plr,
 				if(qLogEntry != NULL)
 				{
 					_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Follow me!");
-
-					WayPointMap *waypoints = new WayPointMap;
-					_unit->setCustomWayPoints( waypoints );
-
-					_unit->GetAIInterface()->SetWaypointMap(_unit->getCustomWayPoints());
-
-					WayPoint* wp = new WayPoint;
-					wp->id = 1;
-					wp->x = _unit->GetSpawnX();
-					wp->y = _unit->GetSpawnY();
-					wp->z = _unit->GetSpawnZ() + 2.05f;
-					wp->o = _unit->GetSpawnO();
-					wp->flags = 256;
-					wp->backwardskinid = wp->forwardskinid = _unit->GetDisplayId();
-					wp->backwardemoteid = wp->forwardemoteid = 0;
-					wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
-					wp->waittime = 0;
-					waypoints->push_back(wp);
-
-					for(uint32 i = 0; i < sizeof(ProspectorAnvilwardWaypoints) / sizeof(LocationExtra); i++)
-					{
-						wp = new WayPoint;
-						wp->id = i + 2;
-						wp->x = ProspectorAnvilwardWaypoints[i].x;
-						wp->y = ProspectorAnvilwardWaypoints[i].y;
-						wp->z = ProspectorAnvilwardWaypoints[i].z;
-						wp->o = ProspectorAnvilwardWaypoints[i].o;
-						wp->flags = 256;
-						wp->backwardskinid = wp->forwardskinid = _unit->GetDisplayId();
-						wp->backwardemoteid = wp->forwardemoteid = 0;
-						wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
-						wp->waittime = 0;
-						waypoints->push_back(wp);
-					}
+					_unit->GetAIInterface()->setMoveType( MOVEMENTTYPE_FORWARDTHANSTOP );
+					_unit->GetAIInterface()->StopMovement( 0 );
+					_unit->GetAIInterface()->setWaypointToMove( 0 );
 				}
 				else
 				{
@@ -118,47 +91,58 @@ class ProspectorAnvilwardAI : public CreatureAIScript
 		{
 		}
 
+		void OnLoad()
+		{
+			_unit->SetFaction(35);
+			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
+
+			WayPointMap *waypoints = new WayPointMap;
+			
+			_unit->setCustomWayPoints( waypoints );
+			_unit->GetAIInterface()->SetWaypointMap(_unit->getCustomWayPoints());
+			
+			WayPoint* wp = new WayPoint;
+			wp->id = 1;
+			wp->x = _unit->GetSpawnX();
+			wp->y = _unit->GetSpawnY();
+			wp->z = _unit->GetSpawnZ() + 2.05f;
+			wp->o = _unit->GetSpawnO();
+			wp->flags = 256;
+			wp->backwardskinid = wp->forwardskinid = _unit->GetDisplayId();
+			wp->backwardemoteid = wp->forwardemoteid = 0;
+			wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
+			wp->waittime = 0;
+			waypoints->push_back(wp);
+			
+			for(uint32 i = 0; i < sizeof(ProspectorAnvilwardWaypoints) / sizeof(LocationExtra); i++)
+			{
+				wp = new WayPoint;
+				wp->id = i + 2;
+				wp->x = ProspectorAnvilwardWaypoints[i].x;
+				wp->y = ProspectorAnvilwardWaypoints[i].y;
+				wp->z = ProspectorAnvilwardWaypoints[i].z;
+				wp->o = ProspectorAnvilwardWaypoints[i].o;
+				wp->flags = 256;
+				wp->backwardskinid = wp->forwardskinid = _unit->GetDisplayId();
+				wp->backwardemoteid = wp->forwardemoteid = 0;
+				wp->backwardemoteoneshot = wp->forwardemoteoneshot = false;
+				wp->waittime = 0;
+				waypoints->push_back(wp);
+			}
+		}
+
 		void OnReachWP(uint32 iWaypointId, bool bForwards)
 		{
 			if(iWaypointId == sizeof(ProspectorAnvilwardWaypoints) / sizeof(LocationExtra) && bForwards)
 			{
-				_unit->GetAIInterface()->SetWaypointMap(NULL, false);
 				_unit->SetFaction(14);
-				RegisterAIUpdateEvent(10000);
-			}
-			else if(iWaypointId == 2 && !bForwards)
-			{
-				_unit->GetAIInterface()->SetWaypointMap(NULL);
-				_unit->setCustomWayPoints( NULL );
-				_unit->GetAIInterface()->MoveTo(_unit->GetSpawnX(), _unit->GetSpawnY(), _unit->GetSpawnZ() + 2.05f, _unit->GetSpawnO());
-				_unit->SetFaction(35);
-			}
-		}
-
-		void AIUpdate()
-		{
-			if(!_unit->CombatStatus.IsInCombat())
-			{
-				RemoveAIUpdateEvent();
-				_unit->GetAIInterface()->SetWaypointMap(_unit->getCustomWayPoints());
 			}
 		}
 
 		void OnDied(Unit* mKiller)
 		{
-			RemoveAIUpdateEvent();
-			if(_unit->GetAIInterface()->GetWaypointMap() != NULL)
-				_unit->GetAIInterface()->SetWaypointMap(NULL);
-			else if(_unit->hasCustomWayPoints())
-			{
-				WayPointMap *waypoints = _unit->getCustomWayPoints();
-				for(WayPointMap::iterator itr = waypoints->begin(); itr != waypoints->end(); ++itr)
-					delete(*itr);
-				delete waypoints;
-			}
-			_unit->setCustomWayPoints( NULL );
-
-			_unit->SetFaction(35);
+			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
+			_unit->GetAIInterface()->SetWaypointMap(NULL);
 		}
 };
 
