@@ -116,12 +116,51 @@ static PyObject* ArcPyObject_getOrientation( ArcPyObject *self, PyObject *args )
 	return PyFloat_FromDouble( object->GetOrientation() );
 }
 
+
+/// getObjectsInRange
+///   Returns a list of objects that are in range
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a list of objects that are in range
+///
+/// Example
+///   objects = object.getObjectsInRange()
+///
+static PyObject* ArcPyObject_getObjectsInRange( ArcPyObject *self, PyObject *args )
+{
+	Object *obj = self->objectPtr;
+
+	std::set< Object* > &objects = obj->GetInRangeObjects();
+
+	if( objects.size() == 0 )
+	{
+		Py_RETURN_NONE;
+	}
+
+	PyObject* list = PyList_New( objects.size() );
+	int count = 0;
+
+	std::set< Object* >::iterator itr = objects.begin();
+	while( itr != objects.end() )
+	{
+		PyList_SetItem( list, count, (PyObject*)createArcPyObject( *itr ) );
+		count++;
+		++itr;
+	}
+
+	return list;
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
 	{ "getPositionY", (PyCFunction)ArcPyObject_getPositionY, METH_VARARGS, "Returns the Y coordinate of the Object" },
 	{ "getPositionZ", (PyCFunction)ArcPyObject_getPositionZ, METH_VARARGS, "Returns the Z coordinate of the Object" },
 	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },
+	{ "getObjectsInRange", (PyCFunction)ArcPyObject_getObjectsInRange, METH_NOARGS, "Returns the objects in range of this object" },
 	{NULL}
 };
 

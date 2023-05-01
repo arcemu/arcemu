@@ -473,6 +473,9 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer up until 123", 1104, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Tell me a random float", 1105, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Tell me a random integer up until 12.34", 1106, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Dump objects in range", 1107, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Dump units in range", 1108, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Make units in range cast", 1109, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -494,6 +497,24 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	if id == 1106:
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( Math.randomFloat( 12.34 ) ) )
 		
+	if id == 1107:
+		objects = creature.getObjectsInRange()
+		for o in objects:
+			print( str( o ) )
+
+	if id == 1108:
+		objects = creature.getObjectsInRange()
+		for o in objects:
+			u = arcemu.toUnit( o )
+			if u is not None:
+				print( u.getName() )
+	
+	if id == 1109:
+		objects = creature.getObjectsInRange()
+		for o in objects:
+			u = arcemu.toUnit( o )
+			if u is not None:
+				u.castSpell( 74153, False )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
