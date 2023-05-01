@@ -1408,10 +1408,7 @@ void ApplyNormalFixes()
 	sp = CheckAndReturnSpellEntry(54729);
 	if(sp != NULL)
 		sp->Effect[0] = SPELL_EFFECT_NULL;
-	//Headless Horsemen Mount
-	sp = CheckAndReturnSpellEntry(48025);
-	if(sp != NULL)
-		sp->Effect[0] = SPELL_EFFECT_NULL;
+
 	//Magic Broom
 	sp = CheckAndReturnSpellEntry(47977);
 	if(sp != NULL)

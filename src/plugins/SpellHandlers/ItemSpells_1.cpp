@@ -449,15 +449,14 @@ bool WingedSteed(uint32 i, Aura* pAura, bool apply)
 	return true;
 }
 
-bool HeadlessHorsemanMount(uint32 i, Aura* pAura, bool apply)
+bool HeadlessHorsemanMountDummy(uint32 i, Spell *spell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
+	Player *pPlayer = spell->GetPlayerTarget();
+	if( pPlayer == NULL )
 		return true;
 
-	if(apply)
-	{
+
 		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
 		AreaTable* pArea = dbcArea.LookupEntry(pPlayer->GetAreaID());
 
 		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) >= 225 &&
@@ -474,8 +473,7 @@ bool HeadlessHorsemanMount(uint32 i, Aura* pAura, bool apply)
 		else
 			newspell = 51621;
 
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
-	}
+		pPlayer->CastSpell(pPlayer, newspell, true);
 
 	return true;
 }
@@ -1060,7 +1058,7 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 	mgr->register_dummy_aura(46354, &OrbOfTheSindorei);         //Orb of the Sin'dorei
 	mgr->register_dummy_aura(58983, &BigBlizzardBear);			// Big Blizzard Bear mount
 	mgr->register_dummy_aura(54729, &WingedSteed);				// DK flying mount
-	mgr->register_dummy_aura(48025, &HeadlessHorsemanMount);	// Headless Horseman Mount
+	mgr->register_dummy_spell(48025, &HeadlessHorsemanMountDummy);	// Headless Horseman Mount
 	mgr->register_dummy_aura(47977, &MagicBroomMount);			// Magic Broom Mount
 	mgr->register_dummy_aura(65917, &MagicRoosterMount);		// Magic Rooster Mount
 	mgr->register_dummy_spell(72286, &InvincibleDummy);         // Invincible
