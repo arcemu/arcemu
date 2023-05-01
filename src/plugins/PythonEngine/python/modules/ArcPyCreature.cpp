@@ -609,7 +609,7 @@ ArcPyCreature* createArcPyCreature( Creature* c )
 	ArcPyCreature* creature = (ArcPyCreature*)type->tp_alloc( type, 0 );
 	creature->creaturePtr = c;
 	creature->unit.unitPtr = c;
-	creature->unit.Object.objectPtr = NULL;
+	creature->unit.Object.objectPtr = c;
 	return creature;
 }
 
