@@ -25,6 +25,7 @@
 
 #include "ArcPyObject.hpp"
 #include "ArcPyUnit.hpp"
+#include "ArcPyCreature.hpp"
 
 
 /// These are all in their own files
@@ -391,6 +392,42 @@ static PyObject* arcemu_toUnit( PyObject *self, PyObject *args )
 	}
 }
 
+/// toCreature
+///   Casts the ArcPyObject parameter to an ArcPyCreature
+///
+/// Parameters:
+///   object     -  An ArcPyObject
+///
+/// Example:
+///   unit = arcemu.toUnit( object )
+///
+static PyObject* arcemu_toCreature( PyObject *self, PyObject *args )
+{
+	PyObject *po;
+
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	if( ! isArcPyObject( po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	ArcPyObject *apo = (ArcPyObject*)po;
+	if( apo->objectPtr->IsCreature() )
+	{
+		return (PyObject*)createArcPyCreature( static_cast< Creature* >( apo->objectPtr ) );
+	}
+	else
+	{
+		Py_RETURN_NONE;
+	}
+}
+
 /// This is where we assign the Arcemu Python module's function names to functions, and properties
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
@@ -403,6 +440,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterInstanceEvent", arcemu_RegisterInstanceEvent, METH_VARARGS, "Registers an Instance script event" },
 	{ "RegisterDummySpellHandler", arcemu_RegisterDummySpellHandler, METH_VARARGS, "Registers a dummy spell effect handler function" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
+	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{NULL, NULL, 0, NULL }
 };
 
