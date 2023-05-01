@@ -60,7 +60,11 @@ static void ArcPySpell_dealloc( ArcPySpell* self )
 static PyObject* ArcPySpell_getName( ArcPySpell *self, PyObject *args )
 {
 	Spell* spell = self->spellPtr;
-	PyObject *name = PyUnicode_FromString(  spell->GetProto()->Name );	
+	const char *spellName = spell->GetProto()->Name;
+	if( spellName == NULL )
+		spellName = "NO NAME";
+
+	PyObject *name = PyUnicode_FromString( spellName );	
 	return name;
 }
 

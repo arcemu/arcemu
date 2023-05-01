@@ -54,7 +54,11 @@ static void ArcPyAura_dealloc( ArcPyAura* self )
 static PyObject* ArcPyAura_getSpellName( ArcPyAura *self, PyObject *args )
 {
 	Aura* aura = self->auraPtr;
-	PyObject *name = PyUnicode_FromString(  aura->GetSpellProto()->Name );	
+	const char *spellName = aura->GetSpellProto()->Name;
+	if( spellName == NULL )
+		spellName = "NO NAME";
+
+	PyObject *name = PyUnicode_FromString( spellName );	
 	return name;
 }
 
