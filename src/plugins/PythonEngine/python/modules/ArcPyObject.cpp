@@ -117,6 +117,38 @@ static PyObject* ArcPyObject_getOrientation( ArcPyObject *self, PyObject *args )
 }
 
 
+/// calcDistance
+///   Calculates the distance between two objects
+///
+/// Parameters
+///   object   -   The other object
+///
+/// Return value
+///   Returns the distance between this object and the other one.
+///
+/// Example
+///   d = obj.calcDistance( other )
+///
+static PyObject* ArcPyObject_calcDistance( ArcPyObject *self, PyObject *args )
+{
+	PyObject *po;
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyObject( po ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	ArcPyObject *apo = (ArcPyObject*)po;
+	return PyFloat_FromDouble( self->objectPtr->CalcDistance( apo->objectPtr ) );
+}
+
+
 /// getObjectsInRange
 ///   Returns a list of objects that are in range
 ///
@@ -160,6 +192,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "getPositionY", (PyCFunction)ArcPyObject_getPositionY, METH_VARARGS, "Returns the Y coordinate of the Object" },
 	{ "getPositionZ", (PyCFunction)ArcPyObject_getPositionZ, METH_VARARGS, "Returns the Z coordinate of the Object" },
 	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },
+	{ "calcDistance", (PyCFunction)ArcPyObject_calcDistance, METH_VARARGS, "Calculates the distance between two objects" },
 	{ "getObjectsInRange", (PyCFunction)ArcPyObject_getObjectsInRange, METH_NOARGS, "Returns the objects in range of this object" },
 	{NULL}
 };

@@ -476,6 +476,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Dump objects in range", 1107, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Dump units in range", 1108, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Make units in range cast", 1109, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "How far am I from you?", 1110, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -515,6 +516,10 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			u = arcemu.toUnit( o )
 			if u is not None:
 				u.castSpell( 74153, False )
+				
+	if id == 1110:
+		distance = creature.calcDistance( player )
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( distance ) )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
