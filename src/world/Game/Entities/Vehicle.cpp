@@ -161,8 +161,10 @@ void Vehicle::AddPassengerToSeat( Unit *passenger, uint32 seatid ){
 			owner->SetCharmedByGUID( player->GetGUID() );
 			owner->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE );
 
-			if( owner->IsCreature() )
+			if( owner->IsCreature() ){
+				owner->SetFaction( player->GetFaction() );
 				Messenger::SendCreatureSpells( player, TO< Creature* >( owner) );
+			}
 			else
 				Messenger::SendEmptyPetSpellsToPlayer( player );
 		}		
