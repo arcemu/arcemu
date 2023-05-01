@@ -1420,10 +1420,6 @@ void ApplyNormalFixes()
 	sp = CheckAndReturnSpellEntry(65917);
 	if(sp != NULL)
 		sp->Effect[0] = SPELL_EFFECT_NULL;
-	//Invincible
-	sp = CheckAndReturnSpellEntry(72286);
-	if(sp != NULL)
-		sp->Effect[0] = SPELL_EFFECT_NULL;
 
 	//////////////////////////////////////////////////////
 	// CLASS-SPECIFIC SPELL FIXES						//
