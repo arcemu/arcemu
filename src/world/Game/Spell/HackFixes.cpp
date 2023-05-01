@@ -1400,10 +1400,6 @@ void ApplyNormalFixes()
 	/**********************************************************
 	 * Scaled Mounts
 	 **********************************************************/
-	//Big Blizzard Bear
-	sp = CheckAndReturnSpellEntry(58983);
-	if(sp != NULL)
-		sp->Effect[0] = SPELL_EFFECT_NULL;
 	//Winged Steed of Ebon Blade
 	sp = CheckAndReturnSpellEntry(54729);
 	if(sp != NULL)
