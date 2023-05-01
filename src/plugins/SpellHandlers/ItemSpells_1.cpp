@@ -426,23 +426,21 @@ bool BigBlizzardBear(uint32 i, Spell *spell)
 	return true;
 }
 
-bool WingedSteed(uint32 i, Aura* pAura, bool apply)
+bool WingedSteed(uint32 i, Spell *spell)
 {
-	if(!pAura->GetTarget()->IsPlayer())
+	Player *pPlayer = spell->GetPlayerTarget();
+	if( pPlayer == NULL )
 		return true;
 
-	if(apply)
-	{
+
 		uint32 newspell = 0;
-		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
 
 		if(pPlayer->_GetSkillLineCurrent(SKILL_RIDING, true) == 300)
 			newspell = 54727;
 		else
 			newspell = 54726;
 
-		pAura->GetTarget()->CastSpell(pAura->GetTarget(), newspell, true);
-	}
+		pPlayer->CastSpell(pPlayer, newspell, true);
 
 	return true;
 }
@@ -1055,7 +1053,7 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 	mgr->register_script_effect(35036, &WarpRiftGenerator);       // Summon a Warp Rift in Void Ridge
 	mgr->register_dummy_aura(46354, &OrbOfTheSindorei);         //Orb of the Sin'dorei
 	mgr->register_dummy_spell(58983, &BigBlizzardBear);			// Big Blizzard Bear mount
-	mgr->register_dummy_aura(54729, &WingedSteed);				// DK flying mount
+	mgr->register_dummy_spell(54729, &WingedSteed);				// DK flying mount
 	mgr->register_dummy_spell(48025, &HeadlessHorsemanMountDummy);	// Headless Horseman Mount
 	mgr->register_dummy_aura(47977, &MagicBroomMount);			// Magic Broom Mount
 	mgr->register_dummy_aura(65917, &MagicRoosterMount);		// Magic Rooster Mount

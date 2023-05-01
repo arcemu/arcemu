@@ -1400,11 +1400,6 @@ void ApplyNormalFixes()
 	/**********************************************************
 	 * Scaled Mounts
 	 **********************************************************/
-	//Winged Steed of Ebon Blade
-	sp = CheckAndReturnSpellEntry(54729);
-	if(sp != NULL)
-		sp->Effect[0] = SPELL_EFFECT_NULL;
-
 	//Magic Broom
 	sp = CheckAndReturnSpellEntry(47977);
 	if(sp != NULL)
