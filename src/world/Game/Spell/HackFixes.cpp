@@ -1400,10 +1400,6 @@ void ApplyNormalFixes()
 	/**********************************************************
 	 * Scaled Mounts
 	 **********************************************************/
-	//Magic Broom
-	sp = CheckAndReturnSpellEntry(47977);
-	if(sp != NULL)
-		sp->Effect[0] = SPELL_EFFECT_NULL;
 	//Magic Rooster
 	sp = CheckAndReturnSpellEntry(65917);
 	if(sp != NULL)
