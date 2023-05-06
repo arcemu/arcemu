@@ -40,6 +40,7 @@
 #include "instance/PythonInstanceScriptFactory.hpp"
 #include "quest/PythonQuestScriptFactory.hpp"
 #include "spells/DummySpellHandlerRegisterer.hpp"
+#include "spells/ScriptedEffectHandlerRegisterer.hpp"
 
 void register_arcemu_extensions();
 
@@ -220,5 +221,8 @@ void PythonEngine::registerScripts()
 
 	DummySpellHandlerRegisterer dummySpellRegisterer( this->mgr );
 	FunctionRegistry::visitDummySpellHandlerFunctions( &dummySpellRegisterer );
+
+	ScriptedEffectHandlerRegisterer scriptedEffectRegisterer( this->mgr );
+	FunctionRegistry::visitScriptedEffectHandlerFunctions( &scriptedEffectRegisterer );
 }
 

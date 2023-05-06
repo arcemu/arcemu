@@ -34,6 +34,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* > FunctionRegist
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > FunctionRegistry::creatureFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > FunctionRegistry::questFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::dummySpellFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::scriptedEffectHandlerFunctions;
 
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
@@ -146,12 +147,44 @@ void FunctionRegistry::registerDummySpellHandler( unsigned long spellId, void* f
 	}
 }
 
+void FunctionRegistry::registerScriptedEffectHandler( unsigned long spellId, void* function )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = scriptedEffectHandlerFunctions.find( spellId );
+	if( itr == scriptedEffectHandlerFunctions.end() )
+	{
+		scriptedEffectHandlerFunctions.insert( std::pair< unsigned long, void* >( spellId, function ) );
+	}
+	else
+	{
+		void *oldFunction = itr->second;
+		Py_DECREF( oldFunction );
+		oldFunction = NULL;
+
+		scriptedEffectHandlerFunctions[ spellId ] = function;
+	}
+}
+
 void* FunctionRegistry::getDummySpellHandler( unsigned long spellId )
 {
 	void* function = NULL;
 
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummySpellFunctions.find( spellId );
 	if( itr != dummySpellFunctions.end() )
+	{
+		function = itr->second;
+	}
+
+	return function;
+}
+
+
+
+void* FunctionRegistry::getScriptedEffectHandler( unsigned long spellId )
+{
+	void* function = NULL;
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = scriptedEffectHandlerFunctions.find( spellId );
+	if( itr != scriptedEffectHandlerFunctions.end() )
 	{
 		function = itr->second;
 	}
@@ -234,6 +267,16 @@ void FunctionRegistry::visitDummySpellHandlerFunctions( DummySpellHandlerVisitor
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummySpellFunctions.begin();
 	while( itr != dummySpellFunctions.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitScriptedEffectHandlerFunctions( ScriptedEffectHandlerVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = scriptedEffectHandlerFunctions.begin();
+	while( itr != scriptedEffectHandlerFunctions.end() )
 	{
 		visitor->visit( itr->first, itr->second );
 		++itr;
@@ -416,6 +459,16 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	dummySpellFunctions.clear();
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator scriptedEffectsIterator = scriptedEffectHandlerFunctions.begin();
+	while( scriptedEffectsIterator != scriptedEffectHandlerFunctions.end() )
+	{
+		Py_DecRef( (PyObject*)scriptedEffectsIterator->second );
+		scriptedEffectsIterator->second = NULL;
+		++scriptedEffectsIterator;
+	}
+
+	scriptedEffectHandlerFunctions.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )

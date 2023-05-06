@@ -17,19 +17,14 @@
  *
  */
 
-#ifndef APE_SPELLSCRIPTHANDLER_HPP_
-#define APE_SPELLSCRIPTHANDLER_HPP_
+#ifndef APE_SEHV_HPP
+#define APE_SEHV_HPP
 
-class Spell;
-
-class SpellScriptHandler
+/// Visits Python scripted spell effect handler functions
+class ScriptedEffectHandlerVisitor
 {
 public:
-	/// Call the dummy spell handler Python function
-	static bool handleDummySpell( uint32 spellEffectIndex, Spell *spell );
-
-	/// Call the scripted effect handler Python function
-	static bool handleScriptedEffect( uint32 spellEffectIndex, Spell *spell );
+	virtual void visit( unsigned long spellId, void* function ) = 0;
 };
 
 #endif

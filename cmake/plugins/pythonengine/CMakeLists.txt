@@ -58,6 +58,7 @@ ${prefix}/quest/QuestScriptRegisterer.cpp
 ${prefix}/serverhooks/ServerHookRegistry.cpp
 ${prefix}/serverhooks/ServerHookHandler.cpp
 ${prefix}/spells/DummySpellHandlerRegisterer.cpp
+${prefix}/spells/ScriptedEffectHandlerRegisterer.cpp
 ${prefix}/spells/SpellScriptHandler.cpp
 )
 
@@ -123,6 +124,8 @@ ${prefix}/serverhooks/ServerHookRegistry.hpp
 ${prefix}/serverhooks/ServerHookHandler.hpp
 ${prefix}/spells/DummySpellHandlerRegisterer.hpp
 ${prefix}/spells/DummySpellHandlerVisitor.hpp
+${prefix}/spells/ScriptedEffectHandlerRegisterer.hpp
+${prefix}/spells/ScriptedEffectHandlerVisitor.hpp
 ${prefix}/spells/SpellScriptHandler.hpp
 )
 

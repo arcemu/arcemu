@@ -1,4 +1,4 @@
-/*
+ /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
@@ -17,19 +17,26 @@
  *
  */
 
-#ifndef APE_SPELLSCRIPTHANDLER_HPP_
-#define APE_SPELLSCRIPTHANDLER_HPP_
+#ifndef APE_SEHR_HPP
+#define APE_SEHR_HPP
 
-class Spell;
+#include "spells/ScriptedEffectHandlerVisitor.hpp"
 
-class SpellScriptHandler
+class ScriptMgr;
+
+/// Registers a Python scripted effect handler
+class ScriptedEffectHandlerRegisterer : public ScriptedEffectHandlerVisitor
 {
 public:
-	/// Call the dummy spell handler Python function
-	static bool handleDummySpell( uint32 spellEffectIndex, Spell *spell );
+	ScriptedEffectHandlerRegisterer( ScriptMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
 
-	/// Call the scripted effect handler Python function
-	static bool handleScriptedEffect( uint32 spellEffectIndex, Spell *spell );
+	void visit( unsigned long spellId, void* function );
+
+private:
+	ScriptMgr *mgr;
 };
 
 #endif

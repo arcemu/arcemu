@@ -66,3 +66,38 @@ bool SpellScriptHandler::handleDummySpell( uint32 spellEffectIndex, Spell *spell
 
 	return returnValue;
 }
+
+bool SpellScriptHandler::handleScriptedEffect( uint32 spellEffectIndex, Spell *spell )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 spellId = spell->GetProto()->Id;
+
+	void *function = FunctionRegistry::getScriptedEffectHandler( spellId );
+	if( function == NULL )
+		return false;
+
+	bool returnValue = true;
+
+	ArcPyTuple args( 2 );
+	args.setItem( 0, spellEffectIndex );
+	args.setItemSpell( 1, spell );
+
+	PythonCallable callable( function );
+	PythonValue value = callable.call( args );
+	if( value.isEmpty() )
+	{
+		Python::printError();
+		returnValue = false;
+	}
+	else
+	{
+		if( value.isBool() && !value.getBoolValue() )
+		{
+			returnValue = false;
+		}
+		value.decref();
+	}
+
+	return returnValue;
+}

@@ -36,6 +36,7 @@
 #include "quest/QuestFunctionTupleVisitor.hpp"
 
 #include "spells/DummySpellHandlerVisitor.hpp"
+#include "spells/ScriptedEffectHandlerVisitor.hpp"
 
 /// Organized storage of Python function references
 class FunctionRegistry
@@ -150,6 +151,19 @@ public:
 
 
 	///
+	/// Registers a scripted spell effect handler
+	///
+	/// Parameters
+	///   spellId    -  The id of the Spell
+	///   function   -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerScriptedEffectHandler( unsigned long spellId, void* function );
+
+
+	///
 	/// Visits all registered creature gossip functions
 	///
 	/// Parameters
@@ -239,6 +253,17 @@ public:
 	///
 	static void visitDummySpellHandlerFunctions( DummySpellHandlerVisitor *visitor );
 
+	///
+	/// Visits all registered scripted spell effect handler functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitScriptedEffectHandlerFunctions( ScriptedEffectHandlerVisitor *visitor );
+
 
 	///
 	/// Deallocate / release all registered functions
@@ -316,6 +341,19 @@ public:
 	///
 	static void* getDummySpellHandler( unsigned long spellId );
 
+
+	///
+	/// Retrieve the scripted spell effect handler function for the specified spell
+	///
+	/// Parameters
+	///   spellId - The numeric identifier of the spell
+	///
+	/// Return value
+	///   Returns a pointer to the scripted spell effect handler function
+	///   Returns NULL if there are no functions registered for the spell
+	///
+	static void* getScriptedEffectHandler( unsigned long spellId );
+
 private:
 	///
 	/// Contains the gossip event handler functions registered for Creatures
@@ -380,6 +418,14 @@ private:
 	/// value: Pointer to a function that handles the dummy spell
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > dummySpellFunctions;
+
+	///
+	/// Contains scripted spell effect handler functions for spells
+	///
+	/// key: spell Id
+	/// value: Pointer to a function that handles the scripted spell effect
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > scriptedEffectHandlerFunctions;
 };
 
 #endif

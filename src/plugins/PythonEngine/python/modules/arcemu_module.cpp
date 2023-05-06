@@ -356,6 +356,40 @@ static PyObject* arcemu_RegisterDummySpellHandler( PyObject *self, PyObject *arg
 }
 
 
+/// RegisterScriptedEffectHandler
+///   Registers a scripted spell effect handler
+///
+/// Parameters:
+///   spellId   - The numerical identifier of the spell
+///   function  - The Python function's name that will handle the scripted effect
+///
+/// Example:
+///   RegisterScriptedEffectHandler( 1234, spellname_handleDummyEffect )
+///
+static PyObject* arcemu_RegisterScriptedEffectHandler( PyObject *self, PyObject *args )
+{
+	unsigned long spellId;
+	PyObject *callback;
+
+	if( !PyArg_ParseTuple( args, "IO", &spellId, &callback ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a spell Id and a callback function be specified" );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( callback )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( callback );
+	FunctionRegistry::registerScriptedEffectHandler( spellId, callback );
+
+	Py_RETURN_NONE;
+}
+
+
 /// toUnit
 ///   Casts the ArcPyObject parameter to an ArcPyUnit
 ///
@@ -439,6 +473,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterQuestEvent", arcemu_RegisterQuestEvent, METH_VARARGS, "Registers a Quest event" },
 	{ "RegisterInstanceEvent", arcemu_RegisterInstanceEvent, METH_VARARGS, "Registers an Instance script event" },
 	{ "RegisterDummySpellHandler", arcemu_RegisterDummySpellHandler, METH_VARARGS, "Registers a dummy spell effect handler function" },
+	{ "RegisterScriptedEffectHandler", arcemu_RegisterScriptedEffectHandler, METH_VARARGS, "Registers a scripted spell effect handler function" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{NULL, NULL, 0, NULL }
