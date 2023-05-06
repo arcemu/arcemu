@@ -1490,6 +1490,35 @@ static PyObject* ArcPyUnit_knockBack( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getVehicleController
+///   Retrieves the vehicle's controller
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the vehicle's controller, if there's one.
+///   Returns None otherwise
+///
+/// Example
+///   controller = vehicle.getVehicleController()
+///
+static PyObject* ArcPyUnit_getVehicleController( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	Vehicle *vehicle = unit->GetVehicleComponent();
+	if( vehicle != NULL )
+	{
+		Unit *controller = vehicle->getController();
+		if( controller != NULL )
+		{
+			return (PyObject*)createArcPyUnit( controller );
+		}
+	}
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1507,6 +1536,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "enterVehicle", (PyCFunction)ArcPyUnit_enterVehicle, METH_VARARGS, "Makes the Unit enter a vehicle" },
 	{ "exitVehicle", (PyCFunction)ArcPyUnit_exitVehicle, METH_NOARGS, "Makes the Unit exit a vehicle" },
 	{ "getVehicleBase", (PyCFunction)ArcPyUnit_getVehicleBase, METH_NOARGS, "Returns the Vehicle the Unit is on" },
+	{ "getVehicleController", (PyCFunction)ArcPyUnit_getVehicleController, METH_NOARGS, "Returns the Vehicle's controller Unit" },
 	{ "playSoundToSet", (PyCFunction)ArcPyUnit_playSoundToSet, METH_VARARGS, "Plays a sound to nearby players" },
 	{ "setFaction", (PyCFunction)ArcPyUnit_setFaction, METH_VARARGS, "Sets the faction Id of the Unit" },
 	{ "getFaction", (PyCFunction)ArcPyUnit_getFaction, METH_NOARGS, "Returns the faction Id of the Unit" },

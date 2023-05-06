@@ -97,6 +97,21 @@ bool Vehicle::HasEmptySeat(){
 		return false;
 }
 
+Unit* Vehicle::getController()
+{
+	Unit *controller = NULL;
+	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ )
+	{
+		if( seats[ i ]->Controller() )
+		{
+			controller = owner->GetMapMgrUnit( seats[ i ]->GetPassengerGUID() );
+			break;
+		}
+	}
+
+	return controller;
+}
+
 void Vehicle::AddPassenger( Unit *passenger ){
 
 	// find seat
