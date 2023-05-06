@@ -1416,6 +1416,26 @@ static PyObject* ArcPyUnit_setNativeDisplayId( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// kill
+///   Kiss the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.kill()
+///
+static PyObject* ArcPyUnit_kill( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->DealDamage( unit, unit->GetMaxHealth(), 0, 0, 0 );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1466,6 +1486,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setDisplayId", (PyCFunction)ArcPyUnit_setDisplayId, METH_VARARGS, "Sets the display Id of the Unit" },
 	{ "getNativeDisplayId", (PyCFunction)ArcPyUnit_getNativeDisplayId, METH_NOARGS, "Returns the native display Id of the Unit" },
 	{ "setNativeDisplayId", (PyCFunction)ArcPyUnit_setNativeDisplayId, METH_VARARGS, "Sets the native display Id of the Unit" },
+	{ "kill", (PyCFunction)ArcPyUnit_kill, METH_NOARGS, "Kills the Unit" },
 	{NULL}
 };
 
