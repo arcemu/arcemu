@@ -331,7 +331,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] =
 	"RESTORE_POWER_PCT",         //    137
 	"KNOCKBACK2",                //    138
 	"CLEAR_QUEST",               //    139
-	"UNKNOWN20",                 //    140
+	"TRIGGER_SPELL_CASTER_IS_TARGET_140",                 //    140
 	"UNKNOWN21",                 //    141
 	"TRIGGER_SPELL_WITH_VALUE",  //    142
 	"APPLY_OWNER_AREA_AURA",     //    143
