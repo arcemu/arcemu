@@ -1436,6 +1436,30 @@ static PyObject* ArcPyUnit_kill( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// ejectAllPassengers
+///   Ejects all vehicle passengers
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.ejectAllPassengers()
+///
+static PyObject* ArcPyUnit_ejectAllPassengers( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	Vehicle *vehicle = unit->GetVehicleComponent();
+	if( vehicle != NULL )
+	{
+		vehicle->EjectAllPassengers();
+	}
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1447,6 +1471,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "RemoveAIUpdateEvent", (PyCFunction)ArcPyUnit_RemoveAIUpdateEvent, METH_NOARGS, "Removes regular AI updates from the Unit" },
 	{ "isOnVehicle", (PyCFunction)ArcPyUnit_isOnVehicle, METH_NOARGS, "Tells if the Unit is on a Vehicle" },
 	{ "dismissVehicle", (PyCFunction)ArcPyUnit_dismissVehicle, METH_NOARGS, "Dismisses the Unit's vehicle" },
+	{ "ejectAllPassengers", (PyCFunction)ArcPyUnit_ejectAllPassengers, METH_NOARGS, "Ejects all passengers from the vehicle" },
 	{ "addVehiclePassenger", (PyCFunction)ArcPyUnit_addVehiclePassenger, METH_VARARGS, "Adds a passenger to the Vehicle" },
 	{ "hasEmptyVehicleSeat", (PyCFunction)ArcPyUnit_hasEmptyVehicleSeat, METH_NOARGS, "Tells if the vehicle has an empty seat" },
 	{ "enterVehicle", (PyCFunction)ArcPyUnit_enterVehicle, METH_VARARGS, "Makes the Unit enter a vehicle" },
