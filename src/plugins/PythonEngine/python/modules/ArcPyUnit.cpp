@@ -1460,6 +1460,36 @@ static PyObject* ArcPyUnit_ejectAllPassengers( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// knockBack
+///   Knocks the Unit back
+///
+/// Parameters
+///   horizontal - Horizontal knockback
+///   vertical   - Vertical knockback
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.knockBack( 1.0, 2.0 )
+///
+static PyObject* ArcPyUnit_knockBack( ArcPyUnit *self, PyObject *args )
+{
+	float horizontal;
+	float vertical;
+
+	if( !PyArg_ParseTuple( args, "ff", &horizontal, &vertical ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a horizontal and a vertical knockback parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->HandleKnockback( unit, horizontal, vertical );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1512,6 +1542,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getNativeDisplayId", (PyCFunction)ArcPyUnit_getNativeDisplayId, METH_NOARGS, "Returns the native display Id of the Unit" },
 	{ "setNativeDisplayId", (PyCFunction)ArcPyUnit_setNativeDisplayId, METH_VARARGS, "Sets the native display Id of the Unit" },
 	{ "kill", (PyCFunction)ArcPyUnit_kill, METH_NOARGS, "Kills the Unit" },
+	{ "knockBack", (PyCFunction)ArcPyUnit_knockBack, METH_VARARGS, "Knocks the Unit back" },
 	{NULL}
 };
 
