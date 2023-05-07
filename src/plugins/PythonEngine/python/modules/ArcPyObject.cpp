@@ -186,6 +186,47 @@ static PyObject* ArcPyObject_isInFront( ArcPyObject *self, PyObject *args )
 }
 
 
+/// isInArc
+///   Tells if the object is our specified arc
+///
+/// Parameters
+///   object   -   The other object
+///   angle    -   The angle
+///
+/// Return value
+///   Returns True if the object is in the specified arc
+///   Returns False otherwise
+///
+/// Example
+///   if object.isInArc( otherObject, 90 ):
+///       print( "Object is in arc" )
+///
+static PyObject* ArcPyObject_isInArc( ArcPyObject *self, PyObject *args )
+{
+	PyObject *po;
+	float angle;
+
+	if( !PyArg_ParseTuple( args, "Of", &po, &angle ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyObject, and an angle parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyObject( po ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	ArcPyObject *apo = (ArcPyObject*)po;
+	bool isInArc = self->objectPtr->isInArc( apo->objectPtr, angle );
+	if( isInArc )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
+
 /// getObjectsInRange
 ///   Returns a list of objects that are in range
 ///
@@ -231,6 +272,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },
 	{ "calcDistance", (PyCFunction)ArcPyObject_calcDistance, METH_VARARGS, "Calculates the distance between two objects" },
 	{ "isInFront", (PyCFunction)ArcPyObject_isInFront, METH_VARARGS, "Tells if the Object is in front of another" },
+	{ "isInArc", (PyCFunction)ArcPyObject_isInArc, METH_VARARGS, "Tells if the Object is in the specified arc" },
 	{ "getObjectsInRange", (PyCFunction)ArcPyObject_getObjectsInRange, METH_NOARGS, "Returns the objects in range of this object" },
 	{NULL}
 };
