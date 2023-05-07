@@ -127,30 +127,14 @@ float Math::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, 
 
 bool Math::inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y)
 {
-	float angle = calcAngle(Position1X, Position1Y, Position2X, Position2Y);
-	float lborder = getEasyAngle((Orientation - (FOV * 0.5f/*/2*/)));
-	float rborder = getEasyAngle((Orientation + (FOV * 0.5f/*/2*/)));
-	//LOG_DEBUG("Orientation: %f Angle: %f LeftBorder: %f RightBorder %f",Orientation,angle,lborder,rborder);
-	if(((angle >= lborder) && (angle <= rborder)) || ((lborder > rborder) && ((angle < rborder) || (angle > lborder))))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool Math::isInFront( float ax, float ay, float ao, float bx, float by )
-{
-	double x = bx - ax;
-	double y = by - ay;
+	double x = Position2X - Position1X;
+	double y = Position2Y - Position1Y;
 
 	double angle = atan2(y, x);
 	if( angle < 0.0f )
 		angle = 2.0 * M_PI + angle;
 
-	angle -= ao;
+	angle -= Orientation;
 
 	while( angle > M_PI )
 		angle -= 2.0 * M_PI;
@@ -158,9 +142,15 @@ bool Math::isInFront( float ax, float ay, float ao, float bx, float by )
 	while(angle < -M_PI)
 		angle += 2.0 * M_PI;
 
-	// replace M_PI in the two lines below to reduce or increase angle
-	double left = -1.0 * (M_PI / 2.0);
-	double right = (M_PI / 2.0);
+	float fovRad = FOV * ( M_PI / 180.0 );
+
+	double left = -1.0 * ( fovRad / 2.0 );
+	double right = fovRad / 2.0;
 
 	return((angle >= left) && (angle <= right));
+}
+
+bool Math::isInFront( float ax, float ay, float ao, float bx, float by )
+{
+	return inArc( ax, ay, 180.0f, ao, bx, by );
 }
