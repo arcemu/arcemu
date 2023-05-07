@@ -148,6 +148,43 @@ static PyObject* ArcPyObject_calcDistance( ArcPyObject *self, PyObject *args )
 	return PyFloat_FromDouble( self->objectPtr->CalcDistance( apo->objectPtr ) );
 }
 
+/// isInFront
+///   Tells if the object is in front of another
+///
+/// Parameters
+///   object   -   The other object
+///
+/// Return value
+///   Returns True if the object is in front of the other.
+///   Returns False otherwise
+///
+/// Example
+///   if object.isInFront( otherObject ):
+///       print( "Object is in front of the other" )
+///
+static PyObject* ArcPyObject_isInFront( ArcPyObject *self, PyObject *args )
+{
+	PyObject *po;
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyObject( po ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	ArcPyObject *apo = (ArcPyObject*)po;
+	bool isInFront = self->objectPtr->isInFront( apo->objectPtr );
+	if( isInFront )
+		Py_RETURN_TRUE;
+	else
+		Py_RETURN_FALSE;
+}
+
 
 /// getObjectsInRange
 ///   Returns a list of objects that are in range
@@ -193,6 +230,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "getPositionZ", (PyCFunction)ArcPyObject_getPositionZ, METH_VARARGS, "Returns the Z coordinate of the Object" },
 	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },
 	{ "calcDistance", (PyCFunction)ArcPyObject_calcDistance, METH_VARARGS, "Calculates the distance between two objects" },
+	{ "isInFront", (PyCFunction)ArcPyObject_isInFront, METH_VARARGS, "Tells if the Object is in front of another" },
 	{ "getObjectsInRange", (PyCFunction)ArcPyObject_getObjectsInRange, METH_NOARGS, "Returns the objects in range of this object" },
 	{NULL}
 };
