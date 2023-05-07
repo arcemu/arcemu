@@ -59,7 +59,12 @@ def makeTraineesEmote( unit, emote ):
 			c.emote( arcemu.EMOTE_ONESHOT_NONE, 1000 )
 
 def sarge_steamcrank_onAIUpdate( unit, event ):
-	state = STEAMCRANK_STATE[ unit.getGUID() ]
+	guid = unit.getGUID()
+	# After reloading scripts this is uninitialized
+	if guid not in STEAMCRANK_STATE:
+		STEAMCRANK_STATE[ guid ] = 0
+		
+	state = STEAMCRANK_STATE[ guid ]
 	
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, STEAMCRANK_TEXTS[ state ] )
 	
