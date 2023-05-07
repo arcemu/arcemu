@@ -114,7 +114,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS] =
 	&Spell::SpellEffectBuildingDamage,				//SPELL_EFFECT_BUILDING_DAMAGE - 87
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_REPAIR - 88
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BUILDING_SWITCH_STATE - 89
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_KILL_CREDIT_90 - 90
+	&Spell::SpellEffectKillCredit,				//SPELL_EFFECT_KILL_CREDIT_90 - 90
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_THREAT_ALL - 91 UNUSED
 	&Spell::SpellEffectEnchantHeldItem,			//SPELL_EFFECT_ENCHANT_HELD_ITEM - 92
 	&Spell::SpellEffectSetMirrorName,			//SPELL_EFFECT_SUMMON_PHANTASM - 93 OLD
@@ -5129,8 +5129,23 @@ void Spell::SpellEffectForgetSpecialization(uint32 i)
 void Spell::SpellEffectKillCredit(uint32 i)
 {
 	CreatureInfo* ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
-	if(playerTarget != NULL && ci != NULL)
-		sQuestMgr._OnPlayerKill(playerTarget, GetProto()->EffectMiscValue[i], false);
+	if( ci == NULL )
+		return;
+
+	Player *player = playerTarget;
+	if( player == NULL )
+	{
+		if( ( unitTarget != NULL ) && unitTarget->IsVehicle() )
+		{
+			Vehicle *vehicle = unitTarget->GetVehicleComponent();
+			Unit *controller = vehicle->getController();
+			if( ( controller != NULL ) && controller->IsPlayer() )
+				player = TO_PLAYER( controller );
+		}
+	}
+
+	if(player != NULL)
+		sQuestMgr._OnPlayerKill(player, GetProto()->EffectMiscValue[i], false);
 }
 
 void Spell::SpellEffectRestorePowerPct(uint32 i)
