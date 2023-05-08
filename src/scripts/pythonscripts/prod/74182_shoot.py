@@ -24,7 +24,6 @@
 #
 
 import arcemu
-import math
 
 MECHANO_TANK_ATTACK_TARGET_NPC = 39711
 SHOT_IMPACT_VISUAL_SPELL_ID = 74179
