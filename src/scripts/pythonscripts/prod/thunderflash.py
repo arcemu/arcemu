@@ -28,8 +28,8 @@ from arcemu import GossipMenu
 THUNDERFLASH_ID = 39396
 THUNDERFLASH_TEXT_ID = 15615
 THUNDERFLASH_DISPLAY_ID = 22719
-VENT_HORIZON_TAXIPATH_ID = 1895
 VENT_HORIZON_QUEST_ID = 25212
+VENT_HORIZON_TAXI_SPELL = 73896
 
 def thunderflash_onHello( unit, event, player ):
 	menu = GossipMenu( THUNDERFLASH_TEXT_ID, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
@@ -43,7 +43,7 @@ def thunderflash_onSelectOption( unit, player, id, enteredCode ):
 	GossipMenu.complete( player )
 	
 	if id == 1:
-		player.startTaxi( VENT_HORIZON_TAXIPATH_ID, THUNDERFLASH_DISPLAY_ID, 0 )
+		unit.castSpell( VENT_HORIZON_TAXI_SPELL, False, player )
 
 arcemu.RegisterUnitGossipEvent( THUNDERFLASH_ID, arcemu.GOSSIP_EVENT_HELLO, thunderflash_onHello )
 arcemu.RegisterUnitGossipEvent( THUNDERFLASH_ID, arcemu.GOSSIP_EVENT_SELECT, thunderflash_onSelectOption )
