@@ -841,7 +841,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					        && ((distance <= m_nextSpell->maxrange + m_Unit->GetModelHalfSize()
 //					&& distance >= m_nextSpell->minrange
 					            )
-					            || m_nextSpell->maxrange == 0))  // Target is in Range -> Attack
+					            /*|| m_nextSpell->maxrange == 0*/))  // Target is in Range -> Attack
 					{
 						SpellEntry* spellInfo = m_nextSpell->spell;
 
