@@ -345,6 +345,7 @@ bool isArcPyObject( PyObject *obj )
 	const char *typeName = Py_TYPE( obj )->tp_name;
 
 	if( strcmp( typeName, "ArcPyObject" ) == 0 ||
+		strcmp( typeName, "ArcPyItem" ) == 0 ||
 		strcmp( typeName, "ArcPyGameObject" ) == 0 ||
 		strcmp( typeName, "ArcPyUnit"  ) == 0 ||
 		strcmp( typeName, "ArcPyCreature" ) == 0 ||
