@@ -22,6 +22,7 @@
 
 #include "StdAfx.h"
 
+#include "ArcPyObject.hpp"
 #include "ArcPyItem.hpp"
 #include "ArcPyUnit.hpp"
 #include "ArcPyPlayer.hpp"
@@ -61,22 +62,14 @@ static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject
 		return -1;
 	}
 
-	const char* typeName = Py_TYPE( obj )->tp_name;
-
-	if( strcmp( typeName, "ArcPyUnit" ) != 0 )
+	if( isArcPyObject( obj ) )
 	{
-		Unit *unit = ((ArcPyUnit*)obj)->unitPtr;
-		self->gossipMenuPtr = new Arcemu::Gossip::Menu( unit, textId );
-	}
-	else
-	if( strcmp( typeName, "ArcPyItem" ) != 0 )
-	{
-		Item *item = ((ArcPyItem*)obj)->itemPtr;
-		self->gossipMenuPtr = new Arcemu::Gossip::Menu( item, textId );
+		Object *apo = ((ArcPyObject*)obj)->objectPtr;
+		self->gossipMenuPtr = new Arcemu::Gossip::Menu( apo, textId );
 	}
 	else
 	{
-		PyErr_SetString( PyExc_TypeError, "Second argument should be a Unit or an Item!" );
+		PyErr_SetString( PyExc_TypeError, "Second argument should be an ArcPyObject subtype (GameObject, Item, Unit)" );
 		return -1;
 	}
 
