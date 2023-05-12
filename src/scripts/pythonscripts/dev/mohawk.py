@@ -531,11 +531,15 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
 		
 		menu.addItem( arcemu.ICON_CHAT, "Send me an areatrigger message!", 1201, 0 )		
+		menu.addItem( arcemu.ICON_CHAT, "Send me a broadcast message!", 1202, 0 )
 		
 		menu.sendToPlayer( player )
 		
 	if id == 1201:
 		player.sendAreaTriggerMessage( "I pity the fool!" )
+		
+	if id == 1202:
+		player.sendAreaTriggerMessage( "Fool!" )
 		
 
 def mohawk_onEnterVehicle( unit ):

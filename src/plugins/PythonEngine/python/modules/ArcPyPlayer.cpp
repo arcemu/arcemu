@@ -601,6 +601,35 @@ static PyObject* ArcPyPlayer_sendAreaTriggerMessage( ArcPyPlayer *self, PyObject
 }
 
 
+/// broadcastMessage
+///   Sends the Player an broadcast type message
+///
+/// Parameters
+///   message   -  The message to be sent
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.broadcastMessage( 'Hello' )
+///
+static PyObject* ArcPyPlayer_broadcastMessage( ArcPyPlayer *self, PyObject *args )
+{
+	const char *message = NULL;
+
+	if( !PyArg_ParseTuple( args, "s", &message ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a string parameter" );
+		return NULL;
+	}
+
+	Player *player = self->playerPtr;
+	player->BroadcastMessage( message );
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -620,6 +649,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "startTaxi", (PyCFunction)ArcPyPlayer_startTaxi, METH_VARARGS, "Puts the Player on a Taxi path" },
 	{ "hasQuest", (PyCFunction)ArcPyPlayer_hasQuest, METH_VARARGS, "Tells if the player is on the specified quest" },
 	{ "sendAreaTriggerMessage", (PyCFunction)ArcPyPlayer_sendAreaTriggerMessage, METH_VARARGS, "Sends the Player an AreaTrigger type message" },
+	{ "broadcastMessage", (PyCFunction)ArcPyPlayer_broadcastMessage, METH_VARARGS, "Sends the Player a broadcast type message" },
 	{NULL}
 };
 
