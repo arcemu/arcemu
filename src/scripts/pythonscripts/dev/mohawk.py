@@ -564,6 +564,10 @@ def mohawk_onAIUpdate( unit, event ):
 	tank = creature.getMostHated()
 	if tank is not None:
 		print( "The most hated is " + tank.getName() + " " + str( tank.getGUID() ) )
+		
+	offTank = creature.getSecondMostHated()
+	if offTank is not None:
+		print( "The second most hated is " + offTank.getName() + " " + str( offTank.getGUID() ) )
 	
 def mohawk_onHealed( unit, healer, spellId, amount ):
 	aura = unit.getAuraBySpellId( 1243 )
