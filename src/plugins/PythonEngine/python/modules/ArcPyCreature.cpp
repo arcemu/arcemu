@@ -554,6 +554,30 @@ static PyObject* ArcPyCreature_moveTo( ArcPyCreature *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getMostHated()
+///   Retrieves the Unit that has the most threat on this Creature
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Retrieves the Unit that has the most threat on this Creature.
+///   Returns None if there's no such Unit
+///
+/// Example
+///   tank = creature.getMostHated()
+///
+static PyObject* ArcPyCreature_getMostHated( ArcPyCreature *self, PyObject *args )
+{
+	Creature *creature = self->creaturePtr;
+	Unit *unit = creature->GetAIInterface()->GetMostHated();
+
+	if( unit == NULL )
+		Py_RETURN_NONE;
+	else
+		return (PyObject*)createArcPyUnit( unit );
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -572,6 +596,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "getId", (PyCFunction)ArcPyCreature_getId, METH_NOARGS, "Returns the identifier of this Creature" },
 	{ "getPlayerOwner", (PyCFunction)ArcPyCreature_getPlayerOwner, METH_NOARGS, "Returns the Player owner of this Creature" },
 	{ "moveTo", (PyCFunction)ArcPyCreature_moveTo, METH_VARARGS, "Makes the Creature move to the designated coordinates" },
+	{ "getMostHated", (PyCFunction)ArcPyCreature_getMostHated, METH_NOARGS, "Retrieves the Unit that has the most threat on this Creature" },
 	{NULL}
 };
 

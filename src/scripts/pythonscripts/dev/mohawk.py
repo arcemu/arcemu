@@ -146,6 +146,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	elif id == 12:
 		unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You really are a fool!" )
+		unit.RegisterAIUpdateEvent( 1000 )
 		unit.setFaction( 168 )
 		
 	elif id == 13:
@@ -558,6 +559,11 @@ def mohawk_onExitVehicle( unit ):
 	
 def mohawk_onAIUpdate( unit, event ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I pity the fool!" )
+	
+	creature = unit.toCreature()
+	tank = creature.getMostHated()
+	if tank is not None:
+		print( "The most hated is " + tank.getName() + " " + str( tank.getGUID() ) )
 	
 def mohawk_onHealed( unit, healer, spellId, amount ):
 	aura = unit.getAuraBySpellId( 1243 )
