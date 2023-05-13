@@ -629,6 +629,31 @@ static PyObject* ArcPyPlayer_broadcastMessage( ArcPyPlayer *self, PyObject *args
 	Py_RETURN_NONE;
 }
 
+/// getSelectedUnit
+///   Returns the Unit that player has selected
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a Unit if the Player has a Unit selected.
+///   Returns None otherwise.
+///
+/// Example
+///   selectedUnit = player.getSelectedUnit()
+///
+static PyObject* ArcPyPlayer_getSelectedUnit( ArcPyPlayer *self, PyObject *args )
+{
+	Player *player = self->playerPtr;
+	const uint64 selection = player->GetSelection();
+	Unit *unit = player->GetMapMgr()->GetUnit( selection );
+
+	if( unit == NULL )
+		Py_RETURN_NONE;
+	else
+		return (PyObject*)createArcPyUnit( unit );
+}
+
 
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
@@ -650,6 +675,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "hasQuest", (PyCFunction)ArcPyPlayer_hasQuest, METH_VARARGS, "Tells if the player is on the specified quest" },
 	{ "sendAreaTriggerMessage", (PyCFunction)ArcPyPlayer_sendAreaTriggerMessage, METH_VARARGS, "Sends the Player an AreaTrigger type message" },
 	{ "broadcastMessage", (PyCFunction)ArcPyPlayer_broadcastMessage, METH_VARARGS, "Sends the Player a broadcast type message" },
+	{ "getSelectedUnit", (PyCFunction)ArcPyPlayer_getSelectedUnit, METH_NOARGS, "Returns the Unit the Player has selected" },
 	{NULL}
 };
 
