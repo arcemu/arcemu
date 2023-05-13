@@ -521,6 +521,39 @@ static PyObject* ArcPyCreature_getPlayerOwner( ArcPyCreature *self, PyObject *ar
 	return (PyObject*)createArcPyPlayer( static_cast< Player* >( creature->GetPlayerOwner() ) );
 }
 
+
+/// moveTo()
+///   Makes the Creature move to the designated coordinates
+///
+/// Parameters
+///   x,y,z - coordinates
+///   o     - orientation
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.moveTo( 1.234, 2.3456, 3.4567, 0.2345 )
+///
+static PyObject* ArcPyCreature_moveTo( ArcPyCreature *self, PyObject *args )
+{
+	float x;
+	float y;
+	float z;
+	float o;
+
+	if( !PyArg_ParseTuple( args, "ffff", &x, &y, &z, &o ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires x,y,z coordinates and an orientation as parameter" );
+		return NULL;
+	}
+
+	Creature *creature = self->creaturePtr;
+	creature->GetAIInterface()->MoveTo( x, y, z, o );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -538,6 +571,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "removeVendorItems", (PyCFunction)ArcPyCreature_removeVendorItems, METH_NOARGS, "Removes all items from the NPC's vendor inventory" },
 	{ "getId", (PyCFunction)ArcPyCreature_getId, METH_NOARGS, "Returns the identifier of this Creature" },
 	{ "getPlayerOwner", (PyCFunction)ArcPyCreature_getPlayerOwner, METH_NOARGS, "Returns the Player owner of this Creature" },
+	{ "moveTo", (PyCFunction)ArcPyCreature_moveTo, METH_VARARGS, "Makes the Creature move to the designated coordinates" },
 	{NULL}
 };
 
