@@ -347,7 +347,6 @@ class SERVER_DECL AIInterface
 		};
 		ARCEMU_INLINE TargetMap* GetAITargets() { return &m_aiTargets; }
 		void addAssistTargets(Unit* Friends);
-		void ClearHateList();
 		void WipeHateList();
 		void WipeTargetList();
 		bool taunt(Unit* caster, bool apply = true);

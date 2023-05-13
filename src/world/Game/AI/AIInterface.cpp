@@ -3106,12 +3106,6 @@ void AIInterface::addAssistTargets(Unit* Friend)
 void AIInterface::WipeHateList()
 {
 	for(TargetMap::iterator itr = m_aiTargets.begin(); itr != m_aiTargets.end(); ++itr)
-		itr->second = 0;
-	m_currentHighestThreat = 0;
-}
-void AIInterface::ClearHateList() //without leaving combat
-{
-	for(TargetMap::iterator itr = m_aiTargets.begin(); itr != m_aiTargets.end(); ++itr)
 		itr->second = 1;
 	m_currentHighestThreat = 1;
 }

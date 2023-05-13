@@ -323,11 +323,6 @@ void MoonScriptCreatureAI::AggroRandomPlayer(int pInitialThreat)
 	}
 }
 
-void MoonScriptCreatureAI::ClearHateList()
-{
-	_unit->GetAIInterface()->ClearHateList();	//without leaving combat
-}
-
 void MoonScriptCreatureAI::WipeHateList()
 {
 	_unit->GetAIInterface()->WipeHateList();
@@ -1673,12 +1668,12 @@ void MoonScriptBossAI::AIUpdate()
 
 void SpellFunc_ClearHateList(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	pCreatureAI->ClearHateList();
+	pCreatureAI->WipeHateList();
 }
 
 void SpellFunc_Disappear(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	pCreatureAI->ClearHateList();
+	pCreatureAI->WipeHateList();
 	pCreatureAI->SetCanMove(false);
 	pCreatureAI->SetCanEnterCombat(false);
 	pCreatureAI->ApplyAura(SPELLFUNC_VANISH);

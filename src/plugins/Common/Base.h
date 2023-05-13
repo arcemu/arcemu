@@ -342,7 +342,6 @@ class MoonScriptCreatureAI : public CreatureAIScript
 		void					AggroRandomPlayer(int pInitialThreat = 1);
 
 		//Status
-		void					ClearHateList();
 		void					WipeHateList();
 		int32					GetHealthPercent();
 		int32					GetManaPercent();

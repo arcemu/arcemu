@@ -1534,7 +1534,7 @@ void SpellFunc_StormBlink(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, U
 		if(pTarget == pCurrentTarget)
 			return;
 
-		pStormFuryAI->ClearHateList();
+		pStormFuryAI->WipeHateList();
 		pStormFuryAI->GetUnit()->GetAIInterface()->AttackReaction(pTarget, 500);
 		pStormFuryAI->GetUnit()->GetAIInterface()->setNextTarget(pTarget);
 		pStormFuryAI->GetUnit()->GetAIInterface()->RemoveThreatByPtr(pCurrentTarget);
@@ -6054,7 +6054,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 							SetCanEnterCombat(true);
 							SetAllowMelee(true);
 							SetCanMove(true);
-							ClearHateList();
+							WipeHateList();
 							SetPhase(3);
 							_unit->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
 
@@ -6225,7 +6225,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 			{
 				if(mMiscEventPart == 5)
 				{
-					ClearHateList();
+					WipeHateList();
 					Unit* pTarget = GetBestPlayerTarget();
 					if(pTarget != NULL)
 					{
@@ -6284,7 +6284,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 			{
 				if(mMiscEventPart == 3)
 				{
-					ClearHateList();
+					WipeHateList();
 					SetPhase(4);			// without it he gets back to phase 1 and then immediatly to 2
 				}
 				else if(mMiscEventPart == 6)
@@ -6445,7 +6445,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 					pMaievAI->SetWieldWeapon(true);
 					pMaievAI->mIllidanAI = this;
 
-					ClearHateList();
+					WipeHateList();
 					_unit->GetAIInterface()->AttackReaction(pMaievAI->GetUnit(), 200);
 
 					mParasiticTimer = 30000;
@@ -6687,7 +6687,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 		{
 			if(pWaypointId == 1)
 			{
-				ClearHateList();
+				WipeHateList();
 				Unit* pTarget = _unit->GetAIInterface()->getNextTarget();
 				if(pTarget != NULL && (!pTarget->IsCreature() || pTarget->GetEntry() != CN_FACE_TRIGGER))
 				{
@@ -7079,7 +7079,7 @@ class FlameOfAzzinothAI : public MoonScriptCreatureAI
 					if((*itr)->CalcDistance(pBlade1) > 40.0f || (*itr)->CalcDistance(pBlade2) > 40.0f)
 					{
 						Unit* pUnit = TO< Unit* >(*itr);
-						ClearHateList();
+						WipeHateList();
 						_unit->GetAIInterface()->setNextTarget(pUnit);
 						_unit->GetAIInterface()->AttackReaction(pUnit, 10000);
 						CastSpellNowNoScheduling(mChargeSpellFunc);

@@ -1504,7 +1504,7 @@ class LuaUnit
 		static int ClearThreatList(lua_State* L, Unit* ptr)
 		{
 			TEST_UNIT()
-			ptr->GetAIInterface()->ClearHateList();
+			ptr->GetAIInterface()->WipeHateList();
 			return 0;
 		}
 
@@ -1925,7 +1925,7 @@ class LuaUnit
 		static int ClearHateList(lua_State* L, Unit* ptr)
 		{
 			TEST_UNIT()
-			ptr->GetAIInterface()->ClearHateList();
+			ptr->GetAIInterface()->WipeHateList();
 			return 0;
 		}
 
@@ -4039,7 +4039,6 @@ class LuaUnit
 			if(target)
 			{
 				ptr->GetAIInterface()->WipeTargetList();
-				ptr->GetAIInterface()->ClearHateList();
 				ptr->GetAIInterface()->WipeCurrentTarget();
 				ptr->GetAIInterface()->taunt(target);
 				lua_pushboolean(L, 1);

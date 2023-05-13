@@ -182,7 +182,7 @@ class MidnightAI : public MoonScriptBossAI
 					{
 						attumen->Regenerate();
 						attumen->SetDisplayId(16040);
-						attumen->ClearHateList();
+						attumen->WipeHateList();
 						attumen->SetAllowMelee(true);
 						attumen->SetAllowSpell(true);
 						Despawn();
