@@ -783,13 +783,13 @@ class LeotherasAI : public CreatureAIScript
 						{
 							_unit->CastSpell(_unit, info_whirlwind, true);
 							_unit->setAttackTimer(15000, false);
-							_unit->GetAIInterface()->WipeHateList(); //reset aggro
+							_unit->GetAIInterface()->WipeTargetList();
 							WhirlwindTimer = 15;
 							mInWhirlwind = true;
 						}
 						else
 						{
-							_unit->GetAIInterface()->WipeHateList(); //reset aggro
+							_unit->GetAIInterface()->WipeTargetList();
 							WhirlwindTimer = 15;
 							mInWhirlwind = false;
 						}
@@ -910,7 +910,7 @@ class LeotherasAI : public CreatureAIScript
 					Phase = 0;
 					WhirlwindTimer = 10 + rand() % 5;
 					SwitchTimer = 40 + rand() % 5; //wowwiki says 45, bosskillers says 40
-					_unit->GetAIInterface()->WipeHateList(); //reset aggro
+					_unit->GetAIInterface()->WipeTargetList();
 				}
 			}
 		}

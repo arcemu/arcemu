@@ -1673,7 +1673,7 @@ void SpellFunc_ClearHateList(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI
 
 void SpellFunc_Disappear(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
 {
-	pCreatureAI->WipeHateList();
+	pCreatureAI->GetUnit()->GetAIInterface()->WipeTargetList();
 	pCreatureAI->SetCanMove(false);
 	pCreatureAI->SetCanEnterCombat(false);
 	pCreatureAI->ApplyAura(SPELLFUNC_VANISH);

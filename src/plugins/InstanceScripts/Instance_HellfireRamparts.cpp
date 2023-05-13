@@ -174,7 +174,7 @@ class OmorTheUnscarredAI : public MoonScriptCreatureAI
 						}
 						else
 						{
-							WipeHateList();
+							_unit->GetAIInterface()->WipeTargetList();
 							_unit->GetAIInterface()->AttackReaction(pTarget, 500);
 							_unit->GetAIInterface()->setNextTarget(pTarget);
 						}

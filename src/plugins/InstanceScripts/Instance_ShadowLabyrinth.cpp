@@ -1867,7 +1867,7 @@ class MURMURAI : public CreatureAIScript
 				if(target)
 				{
 					_unit->CastSpell(target, spells[3].info, spells[3].instant);
-					_unit->GetAIInterface()->WipeHateList();
+					_unit->GetAIInterface()->WipeTargetList();
 					_unit->GetAIInterface()->AttackReaction(target, 100, 0);
 
 					spells[3].casttime = t + spells[3].cooldown;

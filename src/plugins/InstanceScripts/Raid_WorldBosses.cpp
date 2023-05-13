@@ -1787,7 +1787,7 @@ class AzuregosAI : public CreatureAIScript
 			{
 
 				_unit->CastSpell(_unit->GetAIInterface()->getNextTarget(), MASS_TELEPORT, true);
-				_unit->GetAIInterface()->WipeHateList();
+				_unit->GetAIInterface()->WipeTargetList();
 				masstele = 60;
 			}
 			else
@@ -2033,7 +2033,7 @@ class DoomwalkerAI : public CreatureAIScript
 						}
 						if(m_spellcheck[0] == true)  //Earthquake
 						{
-							_unit->GetAIInterface()->WipeHateList();
+							_unit->GetAIInterface()->WipeTargetList();
 							switch(RandomSpeach)
 							{
 								case 0:
@@ -2048,7 +2048,7 @@ class DoomwalkerAI : public CreatureAIScript
 						}
 						if(m_spellcheck[3] == true)  //Overrun
 						{
-							_unit->GetAIInterface()->WipeHateList();
+							_unit->GetAIInterface()->WipeTargetList();
 							switch(RandomSpeach)
 							{
 								case 0:

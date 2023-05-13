@@ -1534,10 +1534,9 @@ void SpellFunc_StormBlink(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, U
 		if(pTarget == pCurrentTarget)
 			return;
 
-		pStormFuryAI->WipeHateList();
+		pStormFuryAI->GetUnit()->GetAIInterface()->WipeTargetList();
 		pStormFuryAI->GetUnit()->GetAIInterface()->AttackReaction(pTarget, 500);
 		pStormFuryAI->GetUnit()->GetAIInterface()->setNextTarget(pTarget);
-		pStormFuryAI->GetUnit()->GetAIInterface()->RemoveThreatByPtr(pCurrentTarget);
 		pStormFuryAI->CastSpell(pStormFuryAI->mStormBlink);
 	}
 }
@@ -6049,12 +6048,12 @@ class IllidanStormrageAI : public MoonScriptBossAI
 								pTrigger->Despawn(0, 0);
 							}
 
+							_unit->GetAIInterface()->WipeTargetList();
 							_unit->GetAIInterface()->setNextTarget(GetBestPlayerTarget(TargetFilter_Closest));
 							_unit->SetEmoteState(EMOTE_ONESHOT_READY1H);
 							SetCanEnterCombat(true);
 							SetAllowMelee(true);
 							SetCanMove(true);
-							WipeHateList();
 							SetPhase(3);
 							_unit->SetUInt64Value(UNIT_FIELD_FLAGS, 0);
 
@@ -6225,7 +6224,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 			{
 				if(mMiscEventPart == 5)
 				{
-					WipeHateList();
+					_unit->GetAIInterface()->WipeTargetList();
 					Unit* pTarget = GetBestPlayerTarget();
 					if(pTarget != NULL)
 					{
@@ -6284,7 +6283,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 			{
 				if(mMiscEventPart == 3)
 				{
-					WipeHateList();
+					_unit->GetAIInterface()->WipeTargetList();
 					SetPhase(4);			// without it he gets back to phase 1 and then immediatly to 2
 				}
 				else if(mMiscEventPart == 6)
@@ -6445,7 +6444,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 					pMaievAI->SetWieldWeapon(true);
 					pMaievAI->mIllidanAI = this;
 
-					WipeHateList();
+					_unit->GetAIInterface()->WipeTargetList();
 					_unit->GetAIInterface()->AttackReaction(pMaievAI->GetUnit(), 200);
 
 					mParasiticTimer = 30000;
@@ -6687,7 +6686,7 @@ class IllidanStormrageAI : public MoonScriptBossAI
 		{
 			if(pWaypointId == 1)
 			{
-				WipeHateList();
+				_unit->GetAIInterface()->WipeTargetList();
 				Unit* pTarget = _unit->GetAIInterface()->getNextTarget();
 				if(pTarget != NULL && (!pTarget->IsCreature() || pTarget->GetEntry() != CN_FACE_TRIGGER))
 				{
@@ -7079,7 +7078,7 @@ class FlameOfAzzinothAI : public MoonScriptCreatureAI
 					if((*itr)->CalcDistance(pBlade1) > 40.0f || (*itr)->CalcDistance(pBlade2) > 40.0f)
 					{
 						Unit* pUnit = TO< Unit* >(*itr);
-						WipeHateList();
+						_unit->GetAIInterface()->WipeTargetList();
 						_unit->GetAIInterface()->setNextTarget(pUnit);
 						_unit->GetAIInterface()->AttackReaction(pUnit, 10000);
 						CastSpellNowNoScheduling(mChargeSpellFunc);

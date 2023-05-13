@@ -323,7 +323,7 @@ class Priestess_DelrissaAI : public MoonScriptBossAI
 		{
 			if(IsTimerFinished(mClearHateList))
 			{
-				WipeHateList();
+				_unit->GetAIInterface()->WipeTargetList();
 				AggroRandomUnit();
 				ResetTimer(mClearHateList, 15000);
 			};

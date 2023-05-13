@@ -2668,7 +2668,7 @@ class DarkenerAI : public MoonScriptCreatureAI
 				return true;
 			}
 
-			WipeHateList();
+			_unit->GetAIInterface()->WipeTargetList();
 			return false;
 		}
 

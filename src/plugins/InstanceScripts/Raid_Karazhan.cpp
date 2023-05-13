@@ -182,7 +182,7 @@ class MidnightAI : public MoonScriptBossAI
 					{
 						attumen->Regenerate();
 						attumen->SetDisplayId(16040);
-						attumen->WipeHateList();
+						_unit->GetAIInterface()->WipeTargetList();
 						attumen->SetAllowMelee(true);
 						attumen->SetAllowSpell(true);
 						Despawn();
@@ -1660,7 +1660,7 @@ class ShadeofAranAI : public CreatureAIScript
 				{
 					if(!m_time_pyroblast)
 					{
-						_unit->GetAIInterface()->WipeHateList();
+						_unit->GetAIInterface()->WipeTargetList();
 						_unit->PlaySoundToSet(9248);
 						_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Surely you would not deny an old man a replenishing drink? No, no I thought not.");
 						m_time_pyroblast = 10;

@@ -2260,7 +2260,7 @@ class WarbringerOmroggAI : public MoonScriptCreatureAI
 			Unit* pTarget = GetBestPlayerTarget(TargetFilter_NotCurrent);
 			if(pTarget != NULL)
 			{
-				WipeHateList();
+				_unit->GetAIInterface()->WipeTargetList();
 				_unit->GetAIInterface()->setNextTarget(pTarget);
 				_unit->GetAIInterface()->modThreatByPtr(pTarget, 1000);
 

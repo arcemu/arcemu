@@ -1583,7 +1583,7 @@ void SpellFunc_NothBlink(SpellDesc* pThis, MoonScriptCreatureAI* pCreatureAI, Un
 		float NewX = Noth->GetUnit()->GetPositionX() + 20.0f * cosf(Angle);
 		float NewY = Noth->GetUnit()->GetPositionY() + 20.0f * sinf(Angle);
 		Noth->GetUnit()->SetPosition(NewX, NewY, Noth->GetUnit()->GetPositionZ(), Angle);
-		Noth->WipeHateList();
+		Noth->GetUnit()->GetAIInterface()->WipeTargetList();
 		if(pTarget != NULL)
 			Noth->GetUnit()->GetAIInterface()->AttackReaction(pTarget, 500);
 
@@ -2450,7 +2450,7 @@ void DarkTouchedWarriorAI::AIUpdate()
 {
 	if(!IsCasting() && IsTimerFinished(mResetHateTimer))
 	{
-		WipeHateList();
+		_unit->GetAIInterface()->WipeTargetList();
 		mResetHateTimer = AddTimer(8000 + RandomUInt(7) * 1000);
 	};
 
