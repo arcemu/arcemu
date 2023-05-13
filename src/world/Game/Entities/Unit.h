@@ -1270,9 +1270,6 @@ class SERVER_DECL Unit : public Object
 		// AIInterface
 		AIInterface* GetAIInterface() { return m_aiInterface; }
 		void ReplaceAIInterface(AIInterface* new_interface) ;
-		void ClearHateList();
-		void WipeHateList();
-		void WipeTargetList();
 		void setAItoUse(bool value) {m_useAI = value;}
 
 		int32 GetThreatModifyer() { return m_threatModifyer; }

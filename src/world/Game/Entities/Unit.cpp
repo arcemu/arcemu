@@ -5258,20 +5258,6 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 	Messenger::SendChatMessageToSet( this, type, lang, string( ci->Name ), string( msg ) );
 }
 
-void Unit::WipeHateList()
-{
-	GetAIInterface()->WipeHateList();
-}
-void Unit::ClearHateList()
-{
-	GetAIInterface()->ClearHateList();
-}
-
-void Unit::WipeTargetList()
-{
-	GetAIInterface()->WipeTargetList();
-}
-
 void Unit::AddInRangeObject(Object* pObj)
 {
 	if(pObj->IsUnit())
