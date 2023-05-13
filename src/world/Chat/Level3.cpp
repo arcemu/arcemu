@@ -2252,7 +2252,6 @@ bool ChatHandler::HandleNpcReturnCommand(const char* args, WorldSession* m_sessi
 
 	// restart movement
 	creature->GetAIInterface()->SetAIState(STATE_IDLE);
-	creature->GetAIInterface()->WipeHateList();
 	creature->GetAIInterface()->WipeTargetList();
 	creature->GetAIInterface()->MoveTo(x, y, z, o);
 
@@ -3505,7 +3504,6 @@ bool ChatHandler::HandleNpcUnPossessCommand(const char* args, WorldSession* m_se
 	{
 		// restart movement
 		creature->GetAIInterface()->SetAIState(STATE_IDLE);
-		creature->GetAIInterface()->WipeHateList();
 		creature->GetAIInterface()->WipeTargetList();
 
 		if(creature->m_spawn)

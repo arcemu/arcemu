@@ -2607,7 +2607,6 @@ class WarlordKalitreshAI : public CreatureAIScript
 				pDistiller->SetChannelSpellTargetGUID(0);
 				pDistiller->SetChannelSpellId(0);
 				pDistiller->GetAIInterface()->WipeTargetList();
-				pDistiller->GetAIInterface()->WipeHateList();
 			}
 
 			RemoveAIUpdateEvent();
@@ -2692,7 +2691,6 @@ class WarlordKalitreshAI : public CreatureAIScript
 						pDistiller->SetChannelSpellTargetGUID(0);
 						pDistiller->SetChannelSpellId(0);
 						pDistiller->GetAIInterface()->WipeTargetList();
-						pDistiller->GetAIInterface()->WipeHateList();
 
 						_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
 						_unit->GetAIInterface()->m_canMove = true;

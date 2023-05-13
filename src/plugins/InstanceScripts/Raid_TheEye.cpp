@@ -2108,7 +2108,6 @@ class AlarAI : public CreatureAIScript
 			_unit->GetAIInterface()->StopMovement(0); // after respawn monster can move
 
 			_unit->GetAIInterface()->WipeTargetList();
-			_unit->GetAIInterface()->WipeHateList();
 			_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
 			_unit->GetAIInterface()->m_canMove = true;
 			Flying = false;

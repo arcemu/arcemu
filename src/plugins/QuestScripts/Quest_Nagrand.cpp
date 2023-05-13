@@ -315,7 +315,6 @@ class NotOnMyWatch : public CreatureAIScript
 					TO_PLAYER(pUnit)->EventAttackStop();
 
 				_unit->SetFaction(35);
-				_unit->GetAIInterface()->WipeHateList();
 				_unit->GetAIInterface()->WipeTargetList();
 				_unit->SetStandState(STANDSTATE_SIT);
 				_unit->SetUInt32Value(UNIT_NPC_FLAGS, 1);

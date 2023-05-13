@@ -1877,7 +1877,6 @@ class MURMURAI : public CreatureAIScript
 				else
 				{
 					_unit->GetAIInterface()->WipeTargetList();
-					_unit->GetAIInterface()->WipeHateList();
 				}
 			}
 

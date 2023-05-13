@@ -5006,7 +5006,6 @@ class AkamaAI : public MoonScriptBossAI
 					uint32 nullfix = 0;
 					_unit->GetAIInterface()->setNextTarget(nullfix);
 					_unit->GetAIInterface()->WipeTargetList();
-					_unit->GetAIInterface()->WipeHateList();
 					SetAllowMelee(false);
 					SetCanMove(false);
 					mIllidanAI->GetUnit()->GetAIInterface()->RemoveThreatByPtr(_unit);
@@ -5042,7 +5041,6 @@ class AkamaAI : public MoonScriptBossAI
 							uint32 nullfix = 0;
 							_unit->GetAIInterface()->setNextTarget(nullfix);
 							_unit->GetAIInterface()->WipeTargetList();
-							_unit->GetAIInterface()->WipeHateList();
 							SetAllowMelee(false);
 							SetCanMove(false);
 
@@ -5778,7 +5776,6 @@ class IllidanStormrageAI : public MoonScriptBossAI
 				pMaiev->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
 				pMaiev->GetAIInterface()->SetAIState(STATE_IDLE);
 				pMaiev->GetAIInterface()->WipeTargetList();
-				pMaiev->GetAIInterface()->WipeHateList();
 			}
 			else
 			{
@@ -5921,7 +5918,6 @@ class IllidanStormrageAI : public MoonScriptBossAI
 						uint32 nullfix = 0;
 						pAkamaAI->GetUnit()->GetAIInterface()->setNextTarget(nullfix);
 						pAkamaAI->GetUnit()->GetAIInterface()->WipeTargetList();
-						pAkamaAI->GetUnit()->GetAIInterface()->WipeHateList();
 						pAkamaAI->SetAllowMelee(false);
 						pAkamaAI->SetCanMove(false);
 

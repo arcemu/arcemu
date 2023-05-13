@@ -1652,7 +1652,6 @@ class ArchimondeAI : public CreatureAIScript
 					if(NextTarget->isAlive() && _unit->GetAIInterface()->getThreatByPtr(NextTarget) > 0)
 					{
 						_unit->GetAIInterface()->WipeTargetList();
-						_unit->GetAIInterface()->WipeHateList();
 						_unit->GetAIInterface()->AttackReaction(NextTarget, 1, 0);
 						return false;
 					}

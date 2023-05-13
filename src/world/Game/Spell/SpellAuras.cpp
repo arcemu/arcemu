@@ -2027,7 +2027,6 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->SetCharmedByGUID(caster->GetGUID());
 		caster->SetCharmedUnitGUID(target->GetGUID());
 		//damn it, the other effects of enslave demon will agro him on us anyway :S
-		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
 		m_target->GetAIInterface()->resetNextTarget();
 
@@ -2058,7 +2057,6 @@ void Aura::SpellAuraModCharm(bool apply)
 	{
 		m_target->m_special_state &= ~UNIT_STATE_CHARM;
 		m_target->SetFaction(m_target->GetCharmTempVal());
-		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
 		m_target->UpdateOppFactionSet();
 		m_target->GetAIInterface()->Init(m_target, AITYPE_AGRO, MOVEMENTTYPE_NONE);

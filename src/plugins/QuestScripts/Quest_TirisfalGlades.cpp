@@ -68,7 +68,6 @@ class CalvinMontague : public CreatureAIScript
 			_unit->CastSpell(_unit, dbcSpell.LookupEntry(433), true);
 			sEventMgr.AddEvent(TO_UNIT(_unit), &Unit::SetStandState, (uint8)STANDSTATE_STAND, EVENT_CREATURE_UPDATE, 18000, 0, 1);
 			_unit->GetAIInterface()->WipeTargetList();
-			_unit->GetAIInterface()->WipeHateList();
 			_unit->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, _unit, 0);
 			_unit->GetAIInterface()->disable_melee = true;
 			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);

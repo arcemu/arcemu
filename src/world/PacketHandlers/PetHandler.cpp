@@ -63,7 +63,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 				case PET_ACTION_FOLLOW:
 				{
 					pCharm->GetAIInterface()->WipeTargetList();
-					pCharm->GetAIInterface()->WipeHateList();
 					pCharm->GetAIInterface()->SetUnitToFollow(_player);
 					pCharm->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, pCharm, 0);
 				}
@@ -72,7 +71,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 				case PET_ACTION_STAY:
 				{
 					pCharm->GetAIInterface()->WipeTargetList();
-					pCharm->GetAIInterface()->WipeHateList();
 					pCharm->GetAIInterface()->ResetUnitToFollow();
 				}
 				break;
@@ -123,7 +121,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 
 								// Clear the threat
 								pPet->GetAIInterface()->WipeTargetList();
-								pPet->GetAIInterface()->WipeHateList();
 
 								// Attack target with melee if the owner if we don't have spells - other wise cast. All done by AIInterface.
 								if(pPet->GetAIInterface()->getUnitToFollow() == NULL)
@@ -138,7 +135,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 							{
 								// Clear the threat
 								pPet->GetAIInterface()->WipeTargetList();
-								pPet->GetAIInterface()->WipeHateList();
 
 								// Follow the owner... run to him...
 								pPet->GetAIInterface()->SetUnitToFollow(_player);
@@ -149,7 +145,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 							{
 								// Clear the threat
 								pPet->GetAIInterface()->WipeTargetList();
-								pPet->GetAIInterface()->WipeHateList();
 
 								// Stop following the owner, and sit.
 								pPet->GetAIInterface()->ResetUnitToFollow();
@@ -206,7 +201,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 							{
 								// Clear the threat
 								pPet->GetAIInterface()->WipeTargetList();
-								pPet->GetAIInterface()->WipeHateList();
 
 								pPet->GetAIInterface()->AttackReaction(pTarget, 1, 0);
 								pPet->GetAIInterface()->SetNextSpell(sp);
@@ -221,7 +215,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					{
 						// stop attacking and run to owner
 						pPet->GetAIInterface()->WipeTargetList();
-						pPet->GetAIInterface()->WipeHateList();
 						pPet->GetAIInterface()->SetUnitToFollow(_player);
 						pPet->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, pPet, 0);
 					}

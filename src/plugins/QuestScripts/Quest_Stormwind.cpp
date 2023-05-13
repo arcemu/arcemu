@@ -56,7 +56,6 @@ class DashelStonefist : public CreatureAIScript
 			_unit->SetFaction(12);
 			_unit->SetHealthPct(100);
 			_unit->GetAIInterface()->WipeTargetList();
-			_unit->GetAIInterface()->WipeHateList();
 			_unit->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, _unit, 0);
 			_unit->GetAIInterface()->disable_melee = true;
 			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
