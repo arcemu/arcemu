@@ -534,6 +534,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Send me an areatrigger message!", 1201, 0 )		
 		menu.addItem( arcemu.ICON_CHAT, "Send me a broadcast message!", 1202, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Move to my selection!", 1203, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Set the next target to my selection", 1204, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -549,6 +550,10 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			creature.faceUnit( selectedUnit )
 			o = creature.getOrientation()
 			creature.moveTo( selectedUnit.getPositionX(), selectedUnit.getPositionY(), selectedUnit.getPositionZ(), o )
+			
+	if id == 1204:
+		selectedUnit = player.getSelectedUnit()
+		creature.setNextTarget( selectedUnit )
 		
 
 def mohawk_onEnterVehicle( unit ):
