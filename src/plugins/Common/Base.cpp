@@ -175,6 +175,7 @@ void MoonScriptCreatureAI::SetCanEnterCombat(bool pCanEnterCombat)
 {
 	_unit->SetUInt64Value(UNIT_FIELD_FLAGS, (pCanEnterCombat) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
 	_unit->GetAIInterface()->SetAllowedToEnterCombat(pCanEnterCombat);
+	_unit->GetAIInterface()->SetAIType(AITYPE_AGRO);
 }
 
 bool MoonScriptCreatureAI::IsInCombat()
