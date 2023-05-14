@@ -603,6 +603,27 @@ static PyObject* ArcPyCreature_getSecondMostHated( ArcPyCreature *self, PyObject
 		return (PyObject*)createArcPyUnit( unit );
 }
 
+/// wipeTargetList()
+///   Removes all AI threat targets from the Creature
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.wipeTargetList()
+///
+static PyObject* ArcPyCreature_wipeTargetList( ArcPyCreature *self, PyObject *args )
+{
+	Creature *creature = self->creaturePtr;
+	creature->GetAIInterface()->WipeTargetList();
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -623,6 +644,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "moveTo", (PyCFunction)ArcPyCreature_moveTo, METH_VARARGS, "Makes the Creature move to the designated coordinates" },
 	{ "getMostHated", (PyCFunction)ArcPyCreature_getMostHated, METH_NOARGS, "Retrieves the Unit that has the most threat on this Creature" },
 	{ "getSecondMostHated", (PyCFunction)ArcPyCreature_getSecondMostHated, METH_NOARGS, "Retrieves the Unit that has the second most threat on this Creature" },
+	{ "wipeTargetList", (PyCFunction)ArcPyCreature_wipeTargetList, METH_NOARGS, "Wipes the Creature's AI threat target list" },
 	{NULL}
 };
 
