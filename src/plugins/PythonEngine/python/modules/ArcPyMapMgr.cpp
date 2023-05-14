@@ -20,6 +20,7 @@
 #include <Python.h>
 
 #include "ArcPyMapMgr.hpp"
+#include "ArcPyCreature.hpp"
 
 #include "StdAfx.h"
 
@@ -59,9 +60,63 @@ static PyObject* ArcPyMapMgr_getMapId( ArcPyMapMgr *self, PyObject *args )
 	return PyLong_FromUnsignedLong( mapMgr->GetMapId() );
 }
 
+/// spawnCreature
+///   Spawns a Creature on this map
+///
+/// Parameters
+///   id    -   Creature Id
+///   x     -   X coordinate of the spawn point
+///   y     -   X coordinate of the spawn point
+///   z     -   X coordinate of the spawn point
+///
+/// Return value
+///   Returns a reference to the spawned Creature on success.
+///   Returns None on failure.
+///
+/// Example
+///   creature = mapMgr.spawnCreature( 68, 1.234, 2.345, 3.456 )
+///
+static PyObject* ArcPyMapMgr_spawnCreature( ArcPyMapMgr *self, PyObject *args )
+{
+	uint32 id;
+	float x;
+	float y;
+	float z;
+
+	if( !PyArg_ParseTuple( args, "kfff", &id, &x, &y, &z ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires id,x,y,z parameters" );
+		return NULL;
+	}
+
+	CreatureInfo *info = CreatureNameStorage.LookupEntry( id );
+	if( info == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+
+	CreatureProto *proto = CreatureProtoStorage.LookupEntry( id );
+	if( proto == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+	
+	MapMgr *mapMgr = self->ptr;
+	Creature *creature = mapMgr->CreateCreature( id );
+	if( creature == NULL )
+		Py_RETURN_NONE;
+
+	creature->Load( proto, x, y, z );
+	creature->m_noRespawn = true;
+	creature->AddToWorld( mapMgr );
+
+	return (PyObject*)createArcPyCreature( creature );
+}
+
 static PyMethodDef ArcPyMapMgr_methods[] = 
 {
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
+	{ "spawnCreature", (PyCFunction)ArcPyMapMgr_spawnCreature, METH_VARARGS, "Spawns a Creature on this Map" },
 	{NULL}
 };
 

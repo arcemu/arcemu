@@ -536,6 +536,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Move to my selection!", 1203, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Set the next target to my selection", 1204, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "What is the map Id of this map?", 1205, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Spawn a creature", 1206, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -560,6 +561,16 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		mapMgr = creature.getMapMgr()
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "The map Id of this map is " + str( mapMgr.getMapId() ) )
 		
+	if id == 1206:
+		mapMgr = creature.getMapMgr();
+		spawn = mapMgr.spawnCreature( 31111, player.getPositionX(), player.getPositionY(), player.getPositionZ() )
+		
+		if spawn is not None:
+			spawn.setFaction( player.getFaction() )
+			spawn.faceUnit( unit )
+			spawn.equipWeapons( 32837, 32837 )
+			spawn.setSheatState( arcemu.SHEATSTATE_UNSHEATHED )
+			spawn.setScale( 1.5 )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
