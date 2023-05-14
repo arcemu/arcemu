@@ -5796,10 +5796,8 @@ class IllidanStormrageAI : public MoonScriptBossAI
 		// Does not work until it's hooked
 		void OnHit(Unit* mVictim, float fAmount)
 		{
-			Emote("ON HIT1!", Text_Yell, 0);
 			if(mVictim->IsCreature() && (mVictim->GetEntry() == CN_MAIEV || mVictim->GetEntry() == CN_AKAMA))
 			{
-				Emote("ON HIT2!", Text_Yell, 0);
 				Unit* pTarget = _unit->GetAIInterface()->getNextTarget();
 				if(pTarget == NULL || !pTarget->IsPlayer())
 				{
