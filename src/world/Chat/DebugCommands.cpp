@@ -1451,3 +1451,36 @@ bool ChatHandler::HandleDebugSendLFGQueueStatusCommand( const char *args, WorldS
 	return true;
 }
 
+bool ChatHandler::HandleDebugDamageUnitCommand( const char *args, WorldSession *session )
+{
+	uint32 damage;
+	
+	if( sscanf( args, "%u", &damage ) != 1 )
+	{
+		RedSystemMessage( session, "usage:" );
+		RedSystemMessage( session, "damageunit [damage]" );
+		return true;
+	}
+
+	Player *player = session->GetPlayer();
+	uint64 guid = player->GetSelection();
+
+	if( guid == 0 )
+	{
+		RedSystemMessage( session, "You need to select a target unit" );
+		return true;
+	}
+
+	Unit *target = player->GetMapMgr()->GetUnit( guid );
+
+	/// Shouldn't happen
+	if( target == NULL )
+	{
+		return true;
+	}
+
+	player->Strike( target, MELEE, NULL, 0, 0, damage, true, true, false );
+
+	return true;
+}
+
