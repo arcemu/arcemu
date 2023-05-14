@@ -154,7 +154,7 @@ void MoonScriptCreatureAI::SetFlyMode(bool pValue)
 		data << _unit->GetNewGUID();
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
-		_unit->GetAIInterface()->StopFlying();
+		_unit->GetAIInterface()->SetFly();
 	}
 	else if(!pValue && _unit->GetAIInterface()->Flying())
 	{
@@ -162,7 +162,7 @@ void MoonScriptCreatureAI::SetFlyMode(bool pValue)
 		data << _unit->GetNewGUID();
 		data << uint32(0);
 		_unit->SendMessageToSet(&data, false);
-		_unit->GetAIInterface()->SetFly();
+		_unit->GetAIInterface()->StopFlying();
 	}
 }
 
