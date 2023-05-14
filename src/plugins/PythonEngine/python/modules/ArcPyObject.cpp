@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPyObject.hpp"
+#include "ArcPyMapMgr.hpp"
 
 static PyObject* ArcPyObject_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -264,6 +265,30 @@ static PyObject* ArcPyObject_getObjectsInRange( ArcPyObject *self, PyObject *arg
 	return list;
 }
 
+
+/// getMapMgr
+///   Returns the MapMgr of this Object
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the MapMgr of this Object
+///
+/// Example
+///   mapMgr = object.getMapMgr
+///
+static PyObject* ArcPyObject_getMapMgr( ArcPyObject *self, PyObject *args )
+{
+	Object *obj = self->objectPtr;
+
+	MapMgr *mgr = obj->GetMapMgr();
+	if( mgr != NULL )
+		return (PyObject*)createArcPyMapMgr( mgr );
+	else
+		Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
@@ -274,6 +299,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "isInFront", (PyCFunction)ArcPyObject_isInFront, METH_VARARGS, "Tells if the Object is in front of another" },
 	{ "isInArc", (PyCFunction)ArcPyObject_isInArc, METH_VARARGS, "Tells if the Object is in the specified arc" },
 	{ "getObjectsInRange", (PyCFunction)ArcPyObject_getObjectsInRange, METH_NOARGS, "Returns the objects in range of this object" },
+	{ "getMapMgr", (PyCFunction)ArcPyObject_getMapMgr, METH_NOARGS, "Returns the MapMgr of the Object" },
 	{NULL}
 };
 

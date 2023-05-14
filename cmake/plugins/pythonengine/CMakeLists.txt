@@ -40,6 +40,7 @@ ${prefix}/python/modules/ArcPyGameObject.cpp
 ${prefix}/python/modules/ArcPyGossipMenu.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
 ${prefix}/python/modules/ArcPyItem.cpp
+${prefix}/python/modules/ArcPyMapMgr.cpp
 ${prefix}/python/modules/ArcPyMath.cpp
 ${prefix}/python/modules/ArcPyObject.cpp
 ${prefix}/python/modules/ArcPyUnit.cpp
@@ -107,6 +108,7 @@ ${prefix}/python/modules/ArcPyGameObject.hpp
 ${prefix}/python/modules/ArcPyGossipMenu.hpp
 ${prefix}/python/modules/ArcPyGuild.hpp
 ${prefix}/python/modules/ArcPyItem.hpp
+${prefix}/python/modules/ArcPyMapMgr.hpp
 ${prefix}/python/modules/ArcPyMath.hpp
 ${prefix}/python/modules/ArcPyObject.hpp
 ${prefix}/python/modules/ArcPyUnit.hpp

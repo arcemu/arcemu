@@ -535,6 +535,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Send me a broadcast message!", 1202, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Move to my selection!", 1203, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Set the next target to my selection", 1204, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "What is the map Id of this map?", 1205, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -554,6 +555,10 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	if id == 1204:
 		selectedUnit = player.getSelectedUnit()
 		creature.setNextTarget( selectedUnit )
+		
+	if id == 1205:
+		mapMgr = creature.getMapMgr()
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "The map Id of this map is " + str( mapMgr.getMapId() ) )
 		
 
 def mohawk_onEnterVehicle( unit ):
