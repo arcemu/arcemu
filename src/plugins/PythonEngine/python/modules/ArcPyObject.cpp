@@ -382,6 +382,36 @@ static PyObject* ArcPyObject_setUInt64Value( ArcPyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setScale
+///   Set the size scale of the Object
+///
+/// Parameters
+///   scale   -   The size scale of the Object
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setScale( 5.0 ) # Make the Object 5x of normal
+///   unit.setScale( 0.25 ) # Make the Object 1/4 of normal
+///   unit.setScale( 1.0 ) # Make the Object normal
+///
+static PyObject* ArcPyObject_setScale( ArcPyObject *self, PyObject *args )
+{
+	float scale = 1.0f;
+
+	if( !PyArg_ParseTuple( args, "f", &scale ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a scale parameter" );
+		return NULL;
+	}
+
+	Object *object = self->objectPtr;
+	object->SetScale( scale );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
@@ -396,6 +426,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "setFloatValue", (PyCFunction)ArcPyObject_setFloatValue, METH_VARARGS, "Sets the value of an float field" },
 	{ "setUInt32Value", (PyCFunction)ArcPyObject_setUInt32Value, METH_VARARGS, "Sets the value of an UInt32 field" },
 	{ "setUInt64Value", (PyCFunction)ArcPyObject_setUInt64Value, METH_VARARGS, "Sets the value of an UInt64 field" },
+	{ "setScale", (PyCFunction)ArcPyObject_setScale, METH_VARARGS, "Sets the size scale of the Object" },
 	{NULL}
 };
 

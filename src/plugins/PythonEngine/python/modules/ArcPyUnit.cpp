@@ -615,37 +615,6 @@ static PyObject* ArcPyUnit_stopFollowing( ArcPyUnit *self, PyObject *args )
 }
 
 
-/// setScale
-///   Set the size scale of the Unit
-///
-/// Parameters
-///   scale   -   The size scale of the Unit
-///
-/// Return value
-///   None
-///
-/// Example
-///   unit.setScale( 5.0 ) # Make the Unit 5x of normal
-///   unit.setScale( 0.25 ) # Make the Unit 1/4 of normal
-///   unit.setScale( 1.0 ) # Make the Unit normal
-///
-static PyObject* ArcPyUnit_setScale( ArcPyUnit *self, PyObject *args )
-{
-	float scale = 1.0f;
-
-	if( !PyArg_ParseTuple( args, "f", &scale ) )
-	{
-		PyErr_SetString( PyExc_TypeError, "This method requires a scale parameter" );
-		return NULL;
-	}
-
-	Unit *unit = self->unitPtr;
-	unit->SetScale( scale );
-
-	Py_RETURN_NONE;
-}
-
-
 /// setMount
 ///   Set the mount display Id of the Unit
 ///
@@ -1582,7 +1551,6 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getFaction", (PyCFunction)ArcPyUnit_getFaction, METH_NOARGS, "Returns the faction Id of the Unit" },
 	{ "setUnitToFollow", (PyCFunction)ArcPyUnit_setUnitToFollow, METH_VARARGS, "Sets the Unit that this Unit will follow" },
 	{ "stopFollowing", (PyCFunction)ArcPyUnit_stopFollowing, METH_NOARGS, "The Unit will stop following" },
-	{ "setScale", (PyCFunction)ArcPyUnit_setScale, METH_VARARGS, "Sets the size scale of the Unit" },
 	{ "setMount", (PyCFunction)ArcPyUnit_setMount, METH_VARARGS, "Sets the mount display Id of the Unit" },
 	{ "equipWeapons", (PyCFunction)ArcPyUnit_equipWeapons, METH_VARARGS, "Equips weapons on the Unit" },
 	{ "setSheatState", (PyCFunction)ArcPyUnit_setSheatState, METH_VARARGS, "Sets wheter the Unit will have it's equipeed weapon in hand(s) or in holster" },
