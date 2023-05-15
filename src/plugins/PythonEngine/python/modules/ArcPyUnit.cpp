@@ -1519,6 +1519,46 @@ static PyObject* ArcPyUnit_getVehicleController( ArcPyUnit *self, PyObject *args
 	Py_RETURN_NONE;
 }
 
+/// root()
+///   Roots the Unit (Makes it unable to move)
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.root()
+///
+static PyObject* ArcPyUnit_root( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->Root();
+
+	Py_RETURN_NONE;
+}
+
+/// unroot()
+///   Unroots the Unit (Makes it able to move again)
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.unroot()
+///
+static PyObject* ArcPyUnit_unroot( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	unit->Unroot();
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1573,6 +1613,8 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setNativeDisplayId", (PyCFunction)ArcPyUnit_setNativeDisplayId, METH_VARARGS, "Sets the native display Id of the Unit" },
 	{ "kill", (PyCFunction)ArcPyUnit_kill, METH_NOARGS, "Kills the Unit" },
 	{ "knockBack", (PyCFunction)ArcPyUnit_knockBack, METH_VARARGS, "Knocks the Unit back" },
+	{ "root", (PyCFunction)ArcPyUnit_root, METH_NOARGS, "Roots the Unit" },
+	{ "unroot", (PyCFunction)ArcPyUnit_unroot, METH_NOARGS, "Unroots the Unit" },
 	{NULL}
 };
 
