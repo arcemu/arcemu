@@ -166,6 +166,36 @@ static PyObject* ArcPyGameObject_RemoveAIUpdateEvent( ArcPyGameObject* self, PyO
 	Py_RETURN_NONE;
 }
 
+/// despawn
+///   Despawns the GameObject
+///
+/// Parameters:
+///   delay          -  Time interval until despawning (0 - immediately)
+///   respawnTime    -  Time interval until respawning (0 - no respawn)
+///
+/// Return value
+///   No return value
+///
+/// Example:
+///   go.RemoveAIUpdateEvent()
+///
+static PyObject* ArcPyGameObject_despawn( ArcPyGameObject* self, PyObject* args )
+{
+	uint32 delay;
+	uint32 respawnTime;
+
+	if( !PyArg_ParseTuple( args, "kk", &delay, &respawnTime ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a delay, and a respawn time parameter" );
+		return NULL;
+	}
+
+	GameObject *go = self->gameObjectPtr;
+	go->Despawn( delay, respawnTime );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyGameObject_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyGameObject_getName, METH_NOARGS, "Returns the name of the GameObject" },
@@ -173,7 +203,7 @@ static PyMethodDef ArcPyGameObject_methods[] =
 	{ "RegisterAIUpdateEvent", (PyCFunction)ArcPyGameObject_RegisterAIUpdateEvent, METH_VARARGS, "Registers AI Updates for the GameObject" },
 	{ "ModifyAIUpdateEvent", (PyCFunction)ArcPyGameObject_ModifyAIUpdateEvent, METH_VARARGS, "Modifies the interval of the AI Updates of the GameObject" },
 	{ "RemoveAIUpdateEvent", (PyCFunction)ArcPyGameObject_RemoveAIUpdateEvent, METH_VARARGS, "Stops AI Updates of the GameObject" },
-
+	{ "despawn", (PyCFunction)ArcPyGameObject_despawn, METH_VARARGS, "Despawns the GameObject" },
 	{NULL}
 };
 

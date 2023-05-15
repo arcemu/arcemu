@@ -16,6 +16,8 @@ def go_onActivate( go, event, player ):
 	
 	menu.addItem( arcemu.ICON_CHAT, "Dump location and orientation to the console", 7, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Despawn", 8, 0 )
+	
 	menu.sendToPlayer( player )
 	
 def go_onSelectOption( go, player, id, enteredCode ):
@@ -38,6 +40,9 @@ def go_onSelectOption( go, player, id, enteredCode ):
 		coords = "(" + str( go.getPositionX() ) + "," + str( go.getPositionY() ) + "," + str( go.getPositionZ() ) + ")";
 		print( "GO coords: " + coords )
 		print( "GO orientation: " + str( go.getOrientation() ) )
+		
+	elif id == 8:
+		go.despawn( 0, 0 )
 
 def go_onAIUpdate( go ):
 	print( "AI Update for " + str( go.getId() ) + " (" + go.getName() + ")" )

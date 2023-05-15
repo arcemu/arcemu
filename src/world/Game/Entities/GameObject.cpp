@@ -221,7 +221,7 @@ void GameObject::Spawn(MapMgr* m)
 
 void GameObject::Despawn(uint32 delay, uint32 respawntime)
 {
-	if(delay)
+	if(delay > 0)
 	{
 		sEventMgr.AddEvent(this, &GameObject::Despawn, (uint32)0, respawntime, EVENT_GAMEOBJECT_EXPIRE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		return;
@@ -241,7 +241,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 
 	CALL_GO_SCRIPT_EVENT(this, OnDespawn)();
 
-	if(respawntime)
+	if(respawntime > 0)
 	{
 		/* Get our originating mapcell */
 		MapCell* pCell = GetMapCell();
