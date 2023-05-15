@@ -193,6 +193,27 @@ static PyObject* ArcPySpell_getUnitTarget( ArcPySpell *self, PyObject *args )
 		Py_RETURN_NONE;
 }
 
+
+/// cancel()
+///   Cancels the spell
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   spell.cancel()
+///
+static PyObject* ArcPySpell_cancel( ArcPySpell *self, PyObject *args )
+{
+	Spell *spell = self->spellPtr;
+	spell->cancel();
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPySpell_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPySpell_getName, METH_NOARGS, "Returns the name of the Spell" },
@@ -202,6 +223,7 @@ static PyMethodDef ArcPySpell_methods[] =
 	{ "getTargetDestinationX", (PyCFunction)ArcPySpell_getTargetDestinationX, METH_NOARGS, "Returns the X coordinate of the Spell's target destination" },
 	{ "getTargetDestinationY", (PyCFunction)ArcPySpell_getTargetDestinationY, METH_NOARGS, "Returns the Y coordinate of the Spell's target destination" },
 	{ "getTargetDestinationZ", (PyCFunction)ArcPySpell_getTargetDestinationZ, METH_NOARGS, "Returns the Z coordinate of the Spell's target destination" },
+	{ "cancel", (PyCFunction)ArcPySpell_cancel, METH_NOARGS, "Cancels the spell" },
 	{NULL}
 };
 
