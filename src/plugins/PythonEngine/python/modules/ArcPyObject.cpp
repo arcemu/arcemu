@@ -289,6 +289,37 @@ static PyObject* ArcPyObject_getMapMgr( ArcPyObject *self, PyObject *args )
 		Py_RETURN_NONE;
 }
 
+/// setFloatValue
+///   Sets an float field's value
+///
+/// Parameters
+///   index    -   The field's index
+///   value    -   The value that should be set
+///
+/// Return value
+///   None
+///
+/// Example
+///   object.setFloatValue( 123, 0.0 )
+///
+static PyObject* ArcPyObject_setFloatValue( ArcPyObject *self, PyObject *args )
+{
+	uint32 index;
+	float value;
+
+	if( !PyArg_ParseTuple( args, "kf", &index, &value ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires an index, and a value parameter" );
+		return NULL;
+	}
+
+	Object *obj = self->objectPtr;
+
+	obj->SetFloatValue( index, value );
+
+	Py_RETURN_NONE;
+}
+
 /// setUInt32Value
 ///   Sets an uint32 field's value
 ///
@@ -362,6 +393,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "isInArc", (PyCFunction)ArcPyObject_isInArc, METH_VARARGS, "Tells if the Object is in the specified arc" },
 	{ "getObjectsInRange", (PyCFunction)ArcPyObject_getObjectsInRange, METH_NOARGS, "Returns the objects in range of this object" },
 	{ "getMapMgr", (PyCFunction)ArcPyObject_getMapMgr, METH_NOARGS, "Returns the MapMgr of the Object" },
+	{ "setFloatValue", (PyCFunction)ArcPyObject_setFloatValue, METH_VARARGS, "Sets the value of an float field" },
 	{ "setUInt32Value", (PyCFunction)ArcPyObject_setUInt32Value, METH_VARARGS, "Sets the value of an UInt32 field" },
 	{ "setUInt64Value", (PyCFunction)ArcPyObject_setUInt64Value, METH_VARARGS, "Sets the value of an UInt64 field" },
 	{NULL}
