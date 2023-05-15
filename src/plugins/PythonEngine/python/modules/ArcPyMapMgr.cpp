@@ -21,6 +21,7 @@
 
 #include "ArcPyMapMgr.hpp"
 #include "ArcPyCreature.hpp"
+#include "ArcPyGameObject.hpp"
 
 #include "StdAfx.h"
 
@@ -113,10 +114,55 @@ static PyObject* ArcPyMapMgr_spawnCreature( ArcPyMapMgr *self, PyObject *args )
 	return (PyObject*)createArcPyCreature( creature );
 }
 
+/// spawnGameObject
+///   Spawns a GameObject on this map
+///
+/// Parameters
+///   id    -   GameObject Id
+///   x     -   X coordinate of the spawn point
+///   y     -   X coordinate of the spawn point
+///   z     -   X coordinate of the spawn point
+///
+/// Return value
+///   Returns a reference to the spawned GameObject on success.
+///   Returns None on failure.
+///
+/// Example
+///   gameObject = mapMgr.spawGameObject( 68, 1.234, 2.345, 3.456 )
+///
+static PyObject* ArcPyMapMgr_spawnGameObject( ArcPyMapMgr *self, PyObject *args )
+{
+	uint32 id;
+	float x;
+	float y;
+	float z;
+
+	if( !PyArg_ParseTuple( args, "kfff", &id, &x, &y, &z ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires id,x,y,z parameters" );
+		return NULL;
+	}
+
+	GameObjectInfo *info = GameObjectNameStorage.LookupEntry( id );
+	if( info == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+
+	GameObject *go = mapMgr->CreateGameObject( id );
+	go->CreateFromProto( id, mapMgr->GetMapId(), x, y, z, 0.0f );
+	go->AddToWorld( mapMgr );
+
+	return (PyObject*)createArcPyGameObject( go );
+}
+
 static PyMethodDef ArcPyMapMgr_methods[] = 
 {
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
 	{ "spawnCreature", (PyCFunction)ArcPyMapMgr_spawnCreature, METH_VARARGS, "Spawns a Creature on this Map" },
+	{ "spawnGameObject", (PyCFunction)ArcPyMapMgr_spawnGameObject, METH_VARARGS, "Spawns a GameObject on this Map" },
 	{NULL}
 };
 
