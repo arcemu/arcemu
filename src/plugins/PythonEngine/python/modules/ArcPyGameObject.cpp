@@ -103,6 +103,7 @@ static PyObject* ArcPyGameObject_RegisterAIUpdateEvent( ArcPyGameObject* self, P
 
 	if( !PyArg_ParseTuple( args, "k", &interval ) )
 	{
+		PyErr_SetString( PyExc_ValueError, "This method requires an interval parameter" );
 		return NULL;
 	}
 
@@ -137,6 +138,7 @@ static PyObject* ArcPyGameObject_ModifyAIUpdateEvent( ArcPyGameObject* self, PyO
 
 	if( !PyArg_ParseTuple( args, "k", &interval ) )
 	{
+		PyErr_SetString( PyExc_ValueError, "This method requires an interval parameter" );
 		return NULL;
 	}
 
