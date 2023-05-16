@@ -277,6 +277,8 @@ void WorldSession::LogoutPlayer(bool Save)
 
 	if(_player != NULL)
 	{
+		bool dead = _player->IsDead();
+
 		sLfgMgr.removePlayer( _player->GetLowGUID() );
 
 		_player->SetFaction( _player->GetInitialFactionId() );
@@ -346,16 +348,19 @@ void WorldSession::LogoutPlayer(bool Save)
 			BattlegroundManager.RemovePlayerFromQueues(_player);
 
 		// Repop or Resurrect and remove from battlegrounds
-		if(_player->m_bg)
+		if( ! Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
 		{
-			if(pPlayer->getDeathState() == JUST_DIED)
-				pPlayer->RemoteRevive();
-			if(pPlayer->getDeathState() != ALIVE)
-				pPlayer->ResurrectPlayer();
-			_player->m_bg->RemovePlayer(_player, true);
+			if(_player->m_bg)
+			{
+				if(pPlayer->getDeathState() == JUST_DIED)
+					pPlayer->RemoteRevive();
+				if(pPlayer->getDeathState() != ALIVE)
+					pPlayer->ResurrectPlayer();
+				_player->m_bg->RemovePlayer(_player, true);
+			}
+			else if(_player->IsDead() && _player->getDeathState() == JUST_DIED)
+				_player->RepopRequestedPlayer();
 		}
-		else if(_player->IsDead() && _player->getDeathState() == JUST_DIED)
-			_player->RepopRequestedPlayer();
 
 		// Issue a message telling all guild members that this player signed
 		// off
@@ -381,7 +386,7 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		// _player->SaveAuras();
 
-		if(Save)
+		if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) && Save)
 			_player->SaveToDB(false);
 
 		// Dismounting with RemoveAllAuras may in certain cases add a player
@@ -440,8 +445,16 @@ void WorldSession::LogoutPlayer(bool Save)
 			}
 		}
 
+		uint64 guid = _player->GetGUID();
+
 		delete _player;
 		_player = NULL;
+
+		/// Hardcore mode: delete dead character
+		if( dead && Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
+		{
+			DeleteCharacter( (uint32)guid );
+		}
 
 		OutPacket(SMSG_LOGOUT_COMPLETE, 0, NULL);
 		LOG_DEBUG("SESSION: Sent SMSG_LOGOUT_COMPLETE Message");

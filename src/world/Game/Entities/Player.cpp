@@ -4559,6 +4559,11 @@ void Player::KillPlayer()
 
 	sHookInterface.OnDeath(this);
 
+	/// In hardcode mode the player is kicked and deleted on death
+	if( Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
+	{
+		sEventMgr.AddEvent(this, &Player::_Kick, EVENT_PLAYER_KICK, 1, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	}
 }
 
 void Player::CreateCorpse()
@@ -7105,7 +7110,7 @@ void Player::Kick(uint32 delay /* = 0 */)
 
 void Player::_Kick()
 {
-	if(!m_KickDelay)
+	if(m_KickDelay == 0)
 	{
 		sEventMgr.RemoveEvents(this, EVENT_PLAYER_KICK);
 		// remove now

@@ -915,5 +915,9 @@ void WorldSession::FullLogin(Player* plr)
 
 	objmgr.AddPlayer(_player);
 
+	if( Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
+	{
+		_player->BroadcastMessage("%sWelcome to the World of Hardcorecraft. If you die your character will be deleted.", MSG_COLOR_RED );
+	}
 }
 
