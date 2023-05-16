@@ -158,11 +158,45 @@ static PyObject* ArcPyMapMgr_spawnGameObject( ArcPyMapMgr *self, PyObject *args 
 	return (PyObject*)createArcPyGameObject( go );
 }
 
+
+/// getUnit
+///   Looks up and returns a Unit from this map by Guid
+///
+/// Parameters
+///   guid    -   The Unit's GUID
+///
+/// Return value
+///   Returns a reference to the Unit on success.
+///   Returns None on failure.
+///
+/// Example
+///   unit = mapMgr.getUnit( guid )
+///
+static PyObject* ArcPyMapMgr_getUnit( ArcPyMapMgr *self, PyObject *args )
+{
+	uint64 guid;
+
+	if( !PyArg_ParseTuple( args, "K", &guid ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a guid parameter" );
+		return NULL;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+	Unit *unit = mapMgr->GetUnit( guid );
+
+	if( unit != NULL )
+		return (PyObject*)createArcPyUnit( unit );
+	else
+		Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyMapMgr_methods[] = 
 {
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
 	{ "spawnCreature", (PyCFunction)ArcPyMapMgr_spawnCreature, METH_VARARGS, "Spawns a Creature on this Map" },
 	{ "spawnGameObject", (PyCFunction)ArcPyMapMgr_spawnGameObject, METH_VARARGS, "Spawns a GameObject on this Map" },
+	{ "getUnit", (PyCFunction)ArcPyMapMgr_getUnit, METH_VARARGS, "Looks up and returns a Unit from this map by Guid" },
 	{NULL}
 };
 
