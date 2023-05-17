@@ -1575,6 +1575,62 @@ static PyObject* ArcPyUnit_getTargetGUID( ArcPyUnit *self, PyObject *args )
 	return PyLong_FromUnsignedLongLong( unit->GetTargetGUID() );
 }
 
+/// setChannelSpellTargetGUID()
+///   Sets the channel spell target GUID for this Unit
+///
+/// Parameters
+///   guid    -   The target's GUID
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setChannelSpellTargetGUID( guid )
+///
+static PyObject* ArcPyUnit_setChannelSpellTargetGUID( ArcPyUnit *self, PyObject *args )
+{
+	uint64 guid;
+
+	if( !PyArg_ParseTuple( args, "K", &guid ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a guid parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetChannelSpellTargetGUID( guid );
+
+	Py_RETURN_NONE;
+}
+
+/// setChannelSpellId()
+///   Sets the channel spell Id
+///
+/// Parameters
+///   spellId    -   The channel spell Id
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setChannelSpellId( 12345 )
+///
+static PyObject* ArcPyUnit_setChannelSpellId( ArcPyUnit *self, PyObject *args )
+{
+	uint32 spellId;
+
+	if( !PyArg_ParseTuple( args, "k", &spellId ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a spellId parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetChannelSpellId( spellId );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1632,6 +1688,8 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "unroot", (PyCFunction)ArcPyUnit_unroot, METH_NOARGS, "Unroots the Unit" },
 	{ "setTargetGUID", (PyCFunction)ArcPyUnit_setTargetGUID, METH_VARARGS, "Sets the target GUID for this Unit" },
 	{ "getTargetGUID", (PyCFunction)ArcPyUnit_getTargetGUID, METH_NOARGS, "Returns the target GUID for this Unit" },
+	{ "setChannelSpellTargetGUID", (PyCFunction)ArcPyUnit_setChannelSpellTargetGUID, METH_VARARGS, "Sets the channel spell target GUID for this Unit" },
+	{ "setChannelSpellId", (PyCFunction)ArcPyUnit_setChannelSpellId, METH_VARARGS, "Sets the channel spell Id" },
 	{NULL}
 };
 

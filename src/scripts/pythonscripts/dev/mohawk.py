@@ -540,6 +540,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Spawn a GameObject", 1207, 0 )
 		
 		menu.addItem( arcemu.ICON_CHAT, "Set the target guid (visual) to my selection", 1208, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Channel a spell to my selection", 1209, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -588,6 +589,14 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		if selectedUnit is not None:
 			creature.setTargetGUID( selectedUnit.getGUID() )
 			print( str( creature.getTargetGUID() ) )
+			
+	if id == 1209:
+		selectedUnit = player.getSelectedUnit()
+		if selectedUnit is not None:
+			creature.faceUnit( selectedUnit )
+			creature.setTargetGUID( selectedUnit.getGUID() )
+			creature.setChannelSpellTargetGUID( selectedUnit.getGUID() )
+			creature.setChannelSpellId( 39857 )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
