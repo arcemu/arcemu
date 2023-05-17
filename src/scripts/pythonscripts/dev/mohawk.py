@@ -587,6 +587,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		selectedUnit = player.getSelectedUnit()
 		if selectedUnit is not None:
 			creature.setTargetGUID( selectedUnit.getGUID() )
+			print( str( creature.getTargetGUID() ) )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

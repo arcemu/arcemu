@@ -1557,6 +1557,24 @@ static PyObject* ArcPyUnit_setTargetGUID( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getTargetGUID()
+///   Retrieves the target GUID for this Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the target GUID
+///
+/// Example
+///   target = unit.getTargetGUID()
+///
+static PyObject* ArcPyUnit_getTargetGUID( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	return PyLong_FromUnsignedLongLong( unit->GetTargetGUID() );
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1613,6 +1631,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "root", (PyCFunction)ArcPyUnit_root, METH_NOARGS, "Roots the Unit" },
 	{ "unroot", (PyCFunction)ArcPyUnit_unroot, METH_NOARGS, "Unroots the Unit" },
 	{ "setTargetGUID", (PyCFunction)ArcPyUnit_setTargetGUID, METH_VARARGS, "Sets the target GUID for this Unit" },
+	{ "getTargetGUID", (PyCFunction)ArcPyUnit_getTargetGUID, METH_NOARGS, "Returns the target GUID for this Unit" },
 	{NULL}
 };
 
