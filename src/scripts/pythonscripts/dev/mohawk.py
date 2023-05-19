@@ -43,6 +43,8 @@ def mohawk_onHello( unit, event, player ):
 	
 	menu.addItem( arcemu.ICON_CHAT, "Misc2", 1200, 0 )
 	
+	menu.addItem( arcemu.ICON_CHAT, "Fields", 1300, 0 )
+	
 	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
 	
@@ -597,6 +599,18 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			creature.setTargetGUID( selectedUnit.getGUID() )
 			creature.setChannelSpellTargetGUID( selectedUnit.getGUID() )
 			creature.setChannelSpellId( 39857 )
+			
+	if id == 1300:
+		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
+		
+		menu.addItem( arcemu.ICON_CHAT, "What is your scale?", 1301, 0 )		
+		
+		menu.sendToPlayer( player )
+		
+	if id == 1301:
+		scale = creature.getFloatValue( arcemu.OBJECT_FIELD_SCALE_X );
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "My scale is " + str( scale ) )
+		
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
