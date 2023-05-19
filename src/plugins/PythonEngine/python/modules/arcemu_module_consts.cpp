@@ -30,6 +30,7 @@
 void registerArcemuConstants( PyObject *module )
 {
 	/// Fields
+	PyModule_AddIntConstant( module, "OBJECT_FIELD_ENTRY", OBJECT_FIELD_ENTRY );
 	PyModule_AddIntConstant( module, "OBJECT_FIELD_SCALE_X", OBJECT_FIELD_SCALE_X );
 
 	/// Server hook constants

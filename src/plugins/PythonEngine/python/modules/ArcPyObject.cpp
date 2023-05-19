@@ -330,7 +330,7 @@ static PyObject* ArcPyObject_setFloatValue( ArcPyObject *self, PyObject *args )
 ///   Returns the float field's value
 ///
 /// Example
-///   value = getFloatValue( 123 )
+///   value = object.getFloatValue( 123 )
 ///
 static PyObject* ArcPyObject_getFloatValue( ArcPyObject *self, PyObject *args )
 {
@@ -375,6 +375,33 @@ static PyObject* ArcPyObject_setUInt32Value( ArcPyObject *self, PyObject *args )
 	obj->SetUInt32Value( index, value );
 
 	Py_RETURN_NONE;
+}
+
+
+/// getUInt32Value
+///   Returns an uint32 field's value
+///
+/// Parameters
+///   index    -   The field's index
+///
+/// Return value
+///   Returns the value of the field
+///
+/// Example
+///   value = object.getUInt32Value( 123 )
+///
+static PyObject* ArcPyObject_getUInt32Value( ArcPyObject *self, PyObject *args )
+{
+	uint32 index;
+
+	if( !PyArg_ParseTuple( args, "k", &index ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires an index parameter" );
+		return NULL;
+	}
+
+	Object *obj = self->objectPtr;
+	return PyLong_FromUnsignedLong( obj->GetUInt32Value( index ) );
 }
 
 /// setUInt64Value
@@ -452,6 +479,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "setFloatValue", (PyCFunction)ArcPyObject_setFloatValue, METH_VARARGS, "Sets the value of a float field" },
 	{ "getFloatValue", (PyCFunction)ArcPyObject_getFloatValue, METH_VARARGS, "Returns the value of a float field" },
 	{ "setUInt32Value", (PyCFunction)ArcPyObject_setUInt32Value, METH_VARARGS, "Sets the value of an UInt32 field" },
+	{ "getUInt32Value", (PyCFunction)ArcPyObject_getUInt32Value, METH_VARARGS, "Returns the value of an uint32 field" },
 	{ "setUInt64Value", (PyCFunction)ArcPyObject_setUInt64Value, METH_VARARGS, "Sets the value of an UInt64 field" },
 	{ "setScale", (PyCFunction)ArcPyObject_setScale, METH_VARARGS, "Sets the size scale of the Object" },
 	{NULL}
