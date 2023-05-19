@@ -605,6 +605,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 		menu.addItem( arcemu.ICON_CHAT, "What is your scale?", 1301, 0 )		
 		menu.addItem( arcemu.ICON_CHAT, "What is your entry?", 1302, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "What is your GUID?", 1303, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -614,7 +615,11 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 1302:
 		entry = creature.getUInt32Value( arcemu.OBJECT_FIELD_ENTRY );
-		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "My entry is " + str( entry ) )		
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "My entry is " + str( entry ) )
+		
+	if id == 1303:
+		guid = creature.getUInt64Value( arcemu.OBJECT_FIELD_GUID );
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "My GUID is " + str( guid ) )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

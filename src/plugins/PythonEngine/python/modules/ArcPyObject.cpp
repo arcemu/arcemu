@@ -435,6 +435,32 @@ static PyObject* ArcPyObject_setUInt64Value( ArcPyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getUInt64Value
+///   Returns an uint64 field's value
+///
+/// Parameters
+///   index    -   The field's index
+///
+/// Return value
+///   Returns the field's value
+///
+/// Example
+///   value = object.getUInt64Value( 123 )
+///
+static PyObject* ArcPyObject_getUInt64Value( ArcPyObject *self, PyObject *args )
+{
+	uint32 index;
+
+	if( !PyArg_ParseTuple( args, "k", &index ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires an index, and a value parameter" );
+		return NULL;
+	}
+
+	Object *obj = self->objectPtr;
+	return PyLong_FromUnsignedLongLong( obj->GetUInt64Value( index ) );
+}
+
 /// setScale
 ///   Set the size scale of the Object
 ///
@@ -481,6 +507,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "setUInt32Value", (PyCFunction)ArcPyObject_setUInt32Value, METH_VARARGS, "Sets the value of an UInt32 field" },
 	{ "getUInt32Value", (PyCFunction)ArcPyObject_getUInt32Value, METH_VARARGS, "Returns the value of an uint32 field" },
 	{ "setUInt64Value", (PyCFunction)ArcPyObject_setUInt64Value, METH_VARARGS, "Sets the value of an UInt64 field" },
+	{ "getUInt64Value", (PyCFunction)ArcPyObject_getUInt64Value, METH_VARARGS, "Returns the value of an UInt64 field" },
 	{ "setScale", (PyCFunction)ArcPyObject_setScale, METH_VARARGS, "Sets the size scale of the Object" },
 	{NULL}
 };
