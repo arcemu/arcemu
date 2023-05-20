@@ -30,12 +30,16 @@ THUNDERFLASH_TEXT_ID = 15615
 THUNDERFLASH_DISPLAY_ID = 22719
 VENT_HORIZON_QUEST_ID = 25212
 VENT_HORIZON_TAXI_SPELL = 73896
+WORDS_FOR_DELIVERY2_QUEST_ID = 25287
+WORDS_FOR_DELIVERY2_TAXI_SPELL = 74166
 
 def thunderflash_onHello( unit, event, player ):
 	menu = GossipMenu( THUNDERFLASH_TEXT_ID, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
 	
 	if player.hasQuest( VENT_HORIZON_QUEST_ID ):
 		menu.addItem( arcemu.ICON_CHAT, "Board the flying machine", 1, 0 )
+	elif player.hasQuest( WORDS_FOR_DELIVERY2_QUEST_ID ):
+		menu.addItem( arcemu.ICON_CHAT, "Take me to Mekkatorque!", 2, 0 )
 	
 	menu.sendToPlayer( player )
 	
@@ -44,6 +48,8 @@ def thunderflash_onSelectOption( unit, player, id, enteredCode ):
 	
 	if id == 1:
 		unit.castSpell( VENT_HORIZON_TAXI_SPELL, False, player )
+	elif id == 2:
+		unit.castSpell( WORDS_FOR_DELIVERY2_TAXI_SPELL, False, player )
 
 arcemu.RegisterUnitGossipEvent( THUNDERFLASH_ID, arcemu.GOSSIP_EVENT_HELLO, thunderflash_onHello )
 arcemu.RegisterUnitGossipEvent( THUNDERFLASH_ID, arcemu.GOSSIP_EVENT_SELECT, thunderflash_onSelectOption )
