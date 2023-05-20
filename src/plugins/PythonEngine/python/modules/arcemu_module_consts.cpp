@@ -37,6 +37,27 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "UNIT_FIELD_CREATEDBY", UNIT_FIELD_CREATEDBY );
 	PyModule_AddIntConstant( module, "UNIT_FIELD_SUMMONEDBY", UNIT_FIELD_SUMMONEDBY );
 	PyModule_AddIntConstant( module, "UNIT_CREATED_BY_SPELL", UNIT_CREATED_BY_SPELL );
+	PyModule_AddIntConstant( module, "UNIT_FIELD_BYTES_0", UNIT_FIELD_BYTES_0 );
+	PyModule_AddIntConstant( module, "UNIT_FIELD_BYTES_1", UNIT_FIELD_BYTES_1 );
+	PyModule_AddIntConstant( module, "UNIT_FIELD_BYTES_2", UNIT_FIELD_BYTES_2 );
+
+	/// UNIT_FIELD_BYTES_0
+	PyModule_AddIntConstant( module, "RACE_BYTE", RACE_BYTE );
+	PyModule_AddIntConstant( module, "CLASS_BYTE", CLASS_BYTE );
+	PyModule_AddIntConstant( module, "GENDER_BYTE", GENDER_BYTE );
+	PyModule_AddIntConstant( module, "POWER_TYPE_BYTE", POWER_TYPE_BYTE );
+
+	/// UNIT_FIELD_BYTES_1
+	PyModule_AddIntConstant( module, "STANDSTATE_BYTE", STANDSTATE_BYTE );
+	PyModule_AddIntConstant( module, "PET_TALENT_POINTS_BYTE", PET_TALENT_POINTS_BYTE );
+	PyModule_AddIntConstant( module, "STANDFLAGS_BYTE", STANDFLAGS_BYTE );
+	PyModule_AddIntConstant( module, "VISIBILITY_BYTE", VISIBILITY_BYTE );
+
+	/// UNIT_FIELD_BYTES_2
+	PyModule_AddIntConstant( module, "SHEATSTATE_BYTE", SHEATSTATE_BYTE );
+	PyModule_AddIntConstant( module, "PVPFLAGS_BYTE", PVPFLAGS_BYTE );
+	PyModule_AddIntConstant( module, "PETFLAGS_BYTE", PETFLAGS_BYTE );
+	PyModule_AddIntConstant( module, "SHAPESHIFTFORM_BYTE", SHAPESHIFTFORM_BYTE );
 
 	/// Server hook constants
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_NEW_CHARACTER", SERVER_HOOK_EVENT_ON_NEW_CHARACTER );

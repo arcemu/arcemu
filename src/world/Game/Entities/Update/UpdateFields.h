@@ -433,6 +433,8 @@ enum ECorpseFields
     CORPSE_END                                = OBJECT_END + 0x001E,
 };
 
+// Offsets below are not auto-generated, and should be checked for every client version
+
 #define LOWGUID                                   OBJECT_FIELD_GUID
 #define HIGHGUID                                  ( OBJECT_FIELD_GUID + 1 )
 
@@ -441,12 +443,31 @@ enum ECorpseFields
 #define UNIT_FIELD_STAMINA                        UNIT_FIELD_STAT2
 #define UNIT_FIELD_INTELLECT                      UNIT_FIELD_STAT3
 #define UNIT_FIELD_SPIRIT                         UNIT_FIELD_STAT4
-//VLack: Don't forget to fix up these when generating this file from a new client!!!
+
 //#define PLAYER_VISIBLE_ITEM_LENGTH                (PLAYER_VISIBLE_ITEM_2_ENTRYID - PLAYER_VISIBLE_ITEM_1_ENTRYID)
 #define PLAYER_VISIBLE_ITEM_LENGTH                2
 #define GAMEOBJECT_PARENTROTATION_01              OBJECT_END + 0x0005 // Size: 4, Type: FLOAT, Flags: PUBLIC
 #define GAMEOBJECT_PARENTROTATION_02              OBJECT_END + 0x0006 // Size: 4, Type: FLOAT, Flags: PUBLIC
 #define GAMEOBJECT_PARENTROTATION_03              OBJECT_END + 0x0007 // Size: 4, Type: FLOAT, Flags: PUBLIC
+
+
+// UNIT_FIELD_BYTES_0
+#define RACE_BYTE              0
+#define CLASS_BYTE             1
+#define GENDER_BYTE            2
+#define POWER_TYPE_BYTE        3
+
+// UNIT_FIELD_BYTES_1
+#define STANDSTATE_BYTE        0
+#define PET_TALENT_POINTS_BYTE 1
+#define STANDFLAGS_BYTE        2
+#define VISIBILITY_BYTE        3
+
+// UNIT_FIELD_BYTES_2
+#define SHEATSTATE_BYTE        0
+#define PVPFLAGS_BYTE          1
+#define PETFLAGS_BYTE          2
+#define SHAPESHIFTFORM_BYTE    3
 
 #endif
 

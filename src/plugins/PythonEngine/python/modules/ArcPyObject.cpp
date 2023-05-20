@@ -491,6 +491,39 @@ static PyObject* ArcPyObject_setScale( ArcPyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setByteFlags
+///   Sets flags to a byte of a field
+///
+/// Parameters
+///   index   -   The index of the field
+///   byte    -   The byte of the field
+///   flag    -   The flag to be set
+///
+/// Return value
+///   None
+///
+/// Example
+///   object.setByteFlags( 123, 1, 123 )
+///
+static PyObject* ArcPyObject_setByteFlags( ArcPyObject *self, PyObject *args )
+{
+	uint32 index;
+	uint8 byte;
+	uint8 flags;
+
+	if( !PyArg_ParseTuple( args, "kbb", &index, &byte, &flags ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires index, byte, flags parameters" );
+		return NULL;
+	}
+
+	Object *obj = self->objectPtr;
+
+	obj->SetByteFlag( (uint16)index, byte, flags );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
@@ -509,6 +542,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "setUInt64Value", (PyCFunction)ArcPyObject_setUInt64Value, METH_VARARGS, "Sets the value of an UInt64 field" },
 	{ "getUInt64Value", (PyCFunction)ArcPyObject_getUInt64Value, METH_VARARGS, "Returns the value of an UInt64 field" },
 	{ "setScale", (PyCFunction)ArcPyObject_setScale, METH_VARARGS, "Sets the size scale of the Object" },
+	{ "setByteFlags", (PyCFunction)ArcPyObject_setByteFlags, METH_VARARGS, "Sets flags to a byte of a field" },
 	{NULL}
 };
 
