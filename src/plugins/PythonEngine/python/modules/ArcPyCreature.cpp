@@ -274,6 +274,10 @@ static PyObject* ArcPyCreature_despawn( ArcPyCreature *self, PyObject *args )
 		return NULL;
 	}
 
+	/// Don't allow scripts to specify 0 as a delay since we usually want to despawn on the next update
+	if( delay == 0 )
+		delay = 1;
+
 	Creature *creature = self->creaturePtr;
 	creature->Despawn( delay, respawnTime );
 
