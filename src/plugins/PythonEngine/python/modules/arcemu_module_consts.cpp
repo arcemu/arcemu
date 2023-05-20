@@ -34,6 +34,10 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "OBJECT_FIELD_ENTRY", OBJECT_FIELD_ENTRY );
 	PyModule_AddIntConstant( module, "OBJECT_FIELD_SCALE_X", OBJECT_FIELD_SCALE_X );
 
+	PyModule_AddIntConstant( module, "UNIT_FIELD_CREATEDBY", UNIT_FIELD_CREATEDBY );
+	PyModule_AddIntConstant( module, "UNIT_FIELD_SUMMONEDBY", UNIT_FIELD_SUMMONEDBY );
+	PyModule_AddIntConstant( module, "UNIT_CREATED_BY_SPELL", UNIT_CREATED_BY_SPELL );
+
 	/// Server hook constants
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_NEW_CHARACTER", SERVER_HOOK_EVENT_ON_NEW_CHARACTER );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_KILL_PLAYER", SERVER_HOOK_EVENT_ON_KILL_PLAYER );
