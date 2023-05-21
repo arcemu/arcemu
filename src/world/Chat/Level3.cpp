@@ -837,6 +837,10 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 	}
 	SystemMessage(m_session, "DisplayID: %u", crt->GetDisplayId() );
 	SystemMessage(m_session, "Mount: %u", crt->GetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID ) );
+	SystemMessage(m_session, "Slot1 item: %u", crt->GetEquippedItem( MELEE ) );
+	SystemMessage(m_session, "Slot2 item: %u", crt->GetEquippedItem( OFFHAND ) );
+	SystemMessage(m_session, "Slot3 item: %u", crt->GetEquippedItem( RANGED ) );
+
 	SystemMessage(m_session, "VehicleID: %u", crt->GetProto()->vehicleid );
 
 	if(crt->m_faction)
