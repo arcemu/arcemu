@@ -836,6 +836,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 		SystemMessage(m_session, "NPCFlags: %d%s", crt->GetUInt32Value(UNIT_NPC_FLAGS), s.c_str());
 	}
 	SystemMessage(m_session, "DisplayID: %u", crt->GetDisplayId() );
+	SystemMessage(m_session, "Mount: %u", crt->GetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID ) );
 	SystemMessage(m_session, "VehicleID: %u", crt->GetProto()->vehicleid );
 
 	if(crt->m_faction)
