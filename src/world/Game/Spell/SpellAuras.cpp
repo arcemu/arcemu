@@ -4452,10 +4452,23 @@ void Aura::SpellAuraTransform(bool apply)
 		return;
 
 	uint32 displayId = 0;
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(mod->m_miscValue);
 
-	if(ci)
-		displayId = ci->Male_DisplayID;
+	if( mod->m_miscValue == 0 )
+	{
+		LOG_ERROR( "No miscvalue for transform effect of spell %u", GetSpellId() );
+	}
+	else
+	{
+		CreatureInfo *ci = CreatureNameStorage.LookupEntry( mod->m_miscValue );
+		if( ci == NULL )
+		{
+			LOG_ERROR( "No creature data for creature %u while trying to apply a transform aura for spell %u", mod->m_miscValue, GetSpellId() );
+		}
+		else
+		{
+			displayId = ci->Male_DisplayID;
+		}
+	}
 
 	if(p_target != NULL)
 		p_target->Dismount();
@@ -4659,7 +4672,11 @@ void Aura::SpellAuraTransform(bool apply)
 
 		default:
 			{
-				if(!displayId) return;
+				if( displayId == 0 )
+				{
+					LOG_ERROR( "No display id for transform effect of spell %u", GetSpellId() );
+					return;
+				}
 
 				if(apply)
 				{
