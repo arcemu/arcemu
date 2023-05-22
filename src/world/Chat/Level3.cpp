@@ -943,7 +943,8 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 
 	uint32 unitflags = crt->GetUInt32Value(UNIT_FIELD_FLAGS);
 
-	SystemMessage(m_session, "Unit flags: %u", unitflags);
+	sprintf(hexBuffer, " (%08X)", unitflags);
+	SystemMessage(m_session, "Unit flags: %u%s", unitflags, hexBuffer);
 
 	for(uint32 i = 0; i < numflags; i++)
 		if((unitflags & UnitFlagToName[ i ].Flag) != 0)
