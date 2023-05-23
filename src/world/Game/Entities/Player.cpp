@@ -312,6 +312,7 @@ Player::Player(uint32 guid)
 	AuraStackCheat			 = false;
 	ItemStackCheat = false;
 	TriggerpassCheat = false;
+	AreaCheat = false;
 	FlyingMountCheat = false;
 	m_pvpTimer			  = 0;
 	m_globalCooldown = 0;

@@ -1889,6 +1889,7 @@ class SERVER_DECL Player : public Unit
 		bool ItemStackCheat;
 		bool AuraStackCheat;
 		bool TriggerpassCheat;
+		bool AreaCheat;
 		bool FlyingMountCheat;
 		bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
 		bool SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector & vec);

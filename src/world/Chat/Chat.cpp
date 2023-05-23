@@ -480,6 +480,7 @@ void CommandTableStorage::Init()
 		{ "stack",       'm', &ChatHandler::HandleAuraStackCheatCommand,   "Enables aura stacking cheat.",                    NULL, 0, 0, 0 },
 		{ "itemstack",   'm', &ChatHandler::HandleItemStackCheatCommand,   "Enables item stacking cheat.",                    NULL, 0, 0, 0 },
 		{ "triggerpass", 'm', &ChatHandler::HandleTriggerpassCheatCommand, "Ignores area trigger prerequisites.",             NULL, 0, 0, 0 },
+		{ "area",        'm', &ChatHandler::HandleAreaCheatCommand,        "Ignores spell area requirements.",                NULL, 0, 0, 0 },
 		{ "flyingmount", 'm', &ChatHandler::HandleFlyingMountCheatCommand, "Ignores area trigger prerequisites.",             NULL, 0, 0, 0 },
 		{ NULL,          '0', NULL,                                        "",                                                NULL, 0, 0, 0 }
 	};

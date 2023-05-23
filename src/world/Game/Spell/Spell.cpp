@@ -3525,7 +3525,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	Area requirement
 		 */
-		if(GetProto()->RequiresAreaId > 0)
+		if(GetProto()->RequiresAreaId > 0 && !p_caster->AreaCheat)
 		{
 			AreaGroup* ag = dbcAreaGroup.LookupEntry(GetProto()->RequiresAreaId);
 			uint32 plrarea = p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(), p_caster->GetPositionY());

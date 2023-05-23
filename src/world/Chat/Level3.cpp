@@ -1582,6 +1582,7 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 	print_cheat_status("AuraStack", plyr->AuraStackCheat);
 	print_cheat_status("ItemStack", plyr->ItemStackCheat);
 	print_cheat_status("TriggerPass", plyr->TriggerpassCheat);
+	print_cheat_status("Area", plyr->AreaCheat);
 	if(plyr->GetSession() && plyr->GetSession()->CanUseCommand('a'))
 	{
 		print_cheat_status("GM Invisibility", plyr->m_isGmInvisible);
@@ -2470,6 +2471,31 @@ bool ChatHandler::HandleTriggerpassCheatCommand(const char* args, WorldSession* 
 	}
 	else
 		return false;
+	return true;
+}
+
+bool ChatHandler::HandleAreaCheatCommand(const char* args, WorldSession* m_session)
+{
+	Player *player = getSelectedChar( m_session, true );
+	if( player == NULL )
+		return true;
+
+	if( !player->AreaCheat )
+	{
+		player->AreaCheat = true;
+		BlueSystemMessage( m_session, "activated the area cheat on %s.", player->GetName() );
+		GreenSystemMessageToPlr( player, "activated the area cheat on you.", m_session->GetPlayer()->GetName() );
+	}
+	else
+	{
+		player->AreaCheat = false;
+		BlueSystemMessage( m_session, "deactivated the area cheat on %s.", player->GetName() );
+		GreenSystemMessageToPlr( player, "deactivated the area cheat on you.", m_session->GetPlayer()->GetName() );
+
+		if( player != m_session->GetPlayer() )
+			sGMLog.writefromsession( m_session, "area cheat on %s set to %s", player->GetName(), args );
+	}
+
 	return true;
 }
 
