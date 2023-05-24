@@ -21,9 +21,6 @@
 
 bool WispAuraHandler( uint32 i, Aura* aura, bool apply )
 {
-	if( aura == NULL )
-		return true;
-
 	Unit *target = aura->GetTarget();
 
 	if( apply )
@@ -38,7 +35,24 @@ bool WispAuraHandler( uint32 i, Aura* aura, bool apply )
 	return true;
 }
 
+bool RedOgreCustomAuraHandler( uint32 i, Aura* aura, bool apply )
+{
+	Unit *target = aura->GetTarget();
+
+	if( apply )
+	{
+		target->SetDisplayId( 11549 );
+	}
+	else
+	{
+		target->SetDisplayId( target->GetNativeDisplayId() );
+	}
+
+	return true;
+}
+
 void setupTransformSpellHandlers( ScriptMgr *mgr )
 {
 	mgr->register_dummy_aura( 20584, &WispAuraHandler );
+	mgr->register_dummy_aura( 30167, &RedOgreCustomAuraHandler );
 }

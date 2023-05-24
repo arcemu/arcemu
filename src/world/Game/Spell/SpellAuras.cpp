@@ -4476,15 +4476,6 @@ void Aura::SpellAuraTransform(bool apply)
 	// SetPositive();
 	switch(GetSpellProto()->Id)
 	{
-		case 30167: // Red Ogre Costume
-			{
-				if(apply)
-					m_target->SetDisplayId(11549);
-				else
-					m_target->SetDisplayId(m_target->GetNativeDisplayId());
-			}
-			break;
-
 		case 41301: // Time-Lost Figurine
 			{
 				if(apply)
