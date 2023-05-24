@@ -4476,15 +4476,6 @@ void Aura::SpellAuraTransform(bool apply)
 	// SetPositive();
 	switch(GetSpellProto()->Id)
 	{
-		case 41301: // Time-Lost Figurine
-			{
-				if(apply)
-					m_target->SetDisplayId(18628);
-				else
-					m_target->SetDisplayId(m_target->GetNativeDisplayId());
-			}
-			break;
-
 		case 16739: // Orb of Deception
 			{
 				if(apply)
