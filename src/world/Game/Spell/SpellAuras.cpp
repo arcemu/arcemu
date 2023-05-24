@@ -4548,25 +4548,6 @@ void Aura::SpellAuraTransform(bool apply)
 			}
 			break;
 
-		case 19937:
-			{
-				if(apply)
-				{
-					// TODO: Sniff the spell / item, we need to know the real displayID
-					// guessed this may not be correct
-					// human = 7820
-					// dwarf = 7819
-					// Halfling = 7818
-					// maybe 7842 as its from a lesser npc
-					m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, 7842);
-				}
-				else
-				{
-					m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, m_target->GetNativeDisplayId());
-				}
-			}
-			break;
-
 		default:
 			{
 				if( displayId == 0 )

@@ -113,6 +113,28 @@ bool OrbOfDeceptionAuraHandler( uint32 i, Aura* aura, bool apply )
 	return true;
 }
 
+bool IllusionBlackDragonkinAuraHandler( uint32 i, Aura* aura, bool apply )
+{
+	Unit *target = aura->GetTarget();
+
+	if( apply )
+	{
+		// TODO: Sniff the spell / item, we need to know the real displayID
+		// guessed this may not be correct
+		// human = 7820
+		// dwarf = 7819
+		// Halfling = 7818
+		// maybe 7842 as its from a lesser npc
+		target->SetDisplayId( 7842 );
+	}
+	else
+	{
+		target->SetDisplayId( target->GetNativeDisplayId() );
+	}
+
+	return true;
+}
+
 bool WispAuraHandler( uint32 i, Aura* aura, bool apply )
 {
 	Unit *target = aura->GetTarget();
@@ -164,6 +186,7 @@ bool TimeLostFigurineAuraHandler( uint32 i, Aura* aura, bool apply )
 void setupTransformSpellHandlers( ScriptMgr *mgr )
 {
 	mgr->register_dummy_aura( 16739, &OrbOfDeceptionAuraHandler );
+	mgr->register_dummy_aura( 19937, &IllusionBlackDragonkinAuraHandler );
 	mgr->register_dummy_aura( 20584, &WispAuraHandler );
 	mgr->register_dummy_aura( 30167, &RedOgreCustomAuraHandler );
 	mgr->register_dummy_aura( 41301, &TimeLostFigurineAuraHandler );
