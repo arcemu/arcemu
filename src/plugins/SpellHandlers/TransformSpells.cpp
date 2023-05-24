@@ -285,7 +285,6 @@ void setupTransformSpellHandlers( ScriptMgr *mgr )
 	
 	mgr->register_dummy_aura( 118, &PolymorphAuraHandler );
 	mgr->register_dummy_aura( 851, &PolymorphAuraHandler );
-	mgr->register_dummy_aura( 5254, &PolymorphAuraHandler );
 	mgr->register_dummy_aura( 12824, &PolymorphAuraHandler );
 	mgr->register_dummy_aura( 12825, &PolymorphAuraHandler );
 	mgr->register_dummy_aura( 12826, &PolymorphAuraHandler );
