@@ -19,6 +19,100 @@
 
 #include "Setup.h"
 
+bool OrbOfDeceptionAuraHandler( uint32 i, Aura* aura, bool apply )
+{
+	Unit *target = aura->GetTarget();
+
+	if( apply )
+	{
+		if(target->getRace() == RACE_ORC)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10139);
+			else
+				target->SetDisplayId(10140);
+		}
+		else
+		if(target->getRace() == RACE_TAUREN)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10136);
+			else
+				target->SetDisplayId(10147);
+		}
+		else
+		if(target->getRace() == RACE_TROLL)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10135);
+			else
+				target->SetDisplayId(10134);
+		}
+		else
+		if(target->getRace() == RACE_UNDEAD)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10146);
+			else
+				target->SetDisplayId(10145);
+		}
+		else
+		if(target->getRace() == RACE_BLOODELF)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(17829);
+			else
+				target->SetDisplayId(17830);
+		}
+		else
+		if(target->getRace() == RACE_GNOME)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10148);
+			else
+				target->SetDisplayId(10149);
+		}
+		else
+		if(target->getRace() == RACE_DWARF)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10141);
+			else
+				target->SetDisplayId(10142);
+		}
+		else
+		if(target->getRace() == RACE_HUMAN)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10137);
+			else
+				target->SetDisplayId(10138);
+		}
+		else
+		if(target->getRace() == RACE_NIGHTELF)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(10143);
+			else
+				target->SetDisplayId(10144);
+		}
+		else
+		if(target->getRace() == RACE_DRAENEI)
+		{
+			if(target->getGender() == 0)
+				target->SetDisplayId(17827);
+			else
+				target->SetDisplayId(17828);
+		}
+	}
+	else
+	{
+		target->SetDisplayId(target->GetNativeDisplayId());
+	}
+
+	return true;
+}
+
 bool WispAuraHandler( uint32 i, Aura* aura, bool apply )
 {
 	Unit *target = aura->GetTarget();
@@ -69,6 +163,7 @@ bool TimeLostFigurineAuraHandler( uint32 i, Aura* aura, bool apply )
 
 void setupTransformSpellHandlers( ScriptMgr *mgr )
 {
+	mgr->register_dummy_aura( 16739, &OrbOfDeceptionAuraHandler );
 	mgr->register_dummy_aura( 20584, &WispAuraHandler );
 	mgr->register_dummy_aura( 30167, &RedOgreCustomAuraHandler );
 	mgr->register_dummy_aura( 41301, &TimeLostFigurineAuraHandler );

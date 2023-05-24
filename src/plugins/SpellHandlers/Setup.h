@@ -37,6 +37,7 @@ void SetupPetAISpells(ScriptMgr* mgr);
 void SetupQuestItems(ScriptMgr* mgr);
 void SetupItemSpells_1(ScriptMgr* mgr);
 void SetupMiscSpellhandlers(ScriptMgr* mgr);
+void setupTransformSpellHandlers(ScriptMgr* mgr);
 
 //Instance spells (mainly scripted targets)
 void SetupRaidBlackTempleSpells(ScriptMgr* mgr);
