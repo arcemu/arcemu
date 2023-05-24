@@ -18,7 +18,9 @@ Setup.cpp
 ShamanSpells.cpp
 WarlockSpells.cpp
 WarriorSpells.cpp
-MiscSpells.cpp )
+MiscSpells.cpp
+TransformSpells.cpp
+)
 
 foreach(src IN ITEMS ${sources} )
   SET( SRCS ${SRCS} ${prefix}/${src} )

@@ -4476,10 +4476,6 @@ void Aura::SpellAuraTransform(bool apply)
 	// SetPositive();
 	switch(GetSpellProto()->Id)
 	{
-		case 20584://wisp
-			m_target->SetDisplayId(apply ? 10045 : m_target->GetNativeDisplayId());
-			break;
-
 		case 30167: // Red Ogre Costume
 			{
 				if(apply)
