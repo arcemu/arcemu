@@ -4450,42 +4450,42 @@ void Aura::SpellAuraTransform(bool apply)
 	if(p_target != NULL)
 		p_target->Dismount();
 
-	// Try a dummy SpellHandler
-	if(sScriptMgr.CallScriptedDummyAura(GetSpellId(), mod->i, this, apply))
-		return;
-
-	uint32 displayId = 0;
-
-	if( mod->m_miscValue == 0 )
+	// Try a dummy SpellHandler first
+	if( !sScriptMgr.CallScriptedDummyAura(GetSpellId(), mod->i, this, apply))
 	{
-		LOG_ERROR( "No miscvalue for transform effect of spell %u", GetSpellId() );
-	}
-	else
-	{
-		CreatureInfo *ci = CreatureNameStorage.LookupEntry( mod->m_miscValue );
-		if( ci == NULL )
+		uint32 displayId = 0;
+
+		if( mod->m_miscValue == 0 )
 		{
-			LOG_ERROR( "No creature data for creature %u while trying to apply a transform aura for spell %u", mod->m_miscValue, GetSpellId() );
+			LOG_ERROR( "No miscvalue for transform effect of spell %u", GetSpellId() );
 		}
 		else
 		{
-			displayId = ci->Male_DisplayID;
+			CreatureInfo *ci = CreatureNameStorage.LookupEntry( mod->m_miscValue );
+			if( ci == NULL )
+			{
+				LOG_ERROR( "No creature data for creature %u while trying to apply a transform aura for spell %u", mod->m_miscValue, GetSpellId() );
+			}
+			else
+			{
+				displayId = ci->Male_DisplayID;
+			}
 		}
-	}
 
-	if( displayId == 0 )
-	{
-		LOG_ERROR( "No display id for transform effect of spell %u", GetSpellId() );
-		return;
-	}
+		if( displayId == 0 )
+		{
+			LOG_ERROR( "No display id for transform effect of spell %u", GetSpellId() );
+			return;
+		}
 
-	if( apply )
-	{
-		m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayId);
-	}
-	else
-	{
-		m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, m_target->GetNativeDisplayId());
+		if( apply )
+		{
+			m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayId);
+		}
+		else
+		{
+			m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, m_target->GetNativeDisplayId());
+		}
 	}
 
 	m_target->EventModelChange();
