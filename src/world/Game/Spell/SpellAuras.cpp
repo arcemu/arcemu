@@ -4476,10 +4476,6 @@ void Aura::SpellAuraTransform(bool apply)
 	// SetPositive();
 	switch(GetSpellProto()->Id)
 	{
-		case 42365:	// murloc costume
-			m_target->SetDisplayId(apply ? 21723 : m_target->GetNativeDisplayId());
-			break;
-
 		case 118://polymorph
 		case 851:
 		case 5254:

@@ -183,6 +183,22 @@ bool TimeLostFigurineAuraHandler( uint32 i, Aura* aura, bool apply )
 	return true;
 }
 
+bool MurlocCostumeAuraHandler( uint32 i, Aura* aura, bool apply )
+{
+	Unit *target = aura->GetTarget();
+
+	if( apply )
+	{
+		target->SetDisplayId( 21723 );
+	}
+	else
+	{
+		target->SetDisplayId( target->GetNativeDisplayId() );
+	}
+
+	return true;
+}
+
 void setupTransformSpellHandlers( ScriptMgr *mgr )
 {
 	mgr->register_dummy_aura( 16739, &OrbOfDeceptionAuraHandler );
@@ -190,4 +206,5 @@ void setupTransformSpellHandlers( ScriptMgr *mgr )
 	mgr->register_dummy_aura( 20584, &WispAuraHandler );
 	mgr->register_dummy_aura( 30167, &RedOgreCustomAuraHandler );
 	mgr->register_dummy_aura( 41301, &TimeLostFigurineAuraHandler );
+	mgr->register_dummy_aura( 42365, &MurlocCostumeAuraHandler );
 }
