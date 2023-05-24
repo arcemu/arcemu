@@ -4473,96 +4473,20 @@ void Aura::SpellAuraTransform(bool apply)
 	if(p_target != NULL)
 		p_target->Dismount();
 
-	// SetPositive();
-	switch(GetSpellProto()->Id)
+	if( displayId == 0 )
 	{
-		case 118://polymorph
-		case 851:
-		case 5254:
-		case 12824:
-		case 12825:
-		case 12826:
-		case 13323:
-		case 15534:
-		case 22274:
-		case 23603:
-		case 28270:	 // Polymorph: Cow
-		case 28271:	 // Polymorph: Turtle
-		case 28272:	 // Polymorph: Pig
-		case 61025:  // Polymorph: Serpent
-		case 61305:  // Polymorph: Black Cat
-		case 61721:  // Polymorph: Rabbit
-		case 61780:  // Polymorph: Turkey
-			{
-				if(!displayId)
-				{
-					switch(GetSpellProto()->Id)
-					{
-						case 28270:	 // Cow
-							displayId = 1060;
-							break;
+		LOG_ERROR( "No display id for transform effect of spell %u", GetSpellId() );
+		return;
+	}
 
-						case 28272:	 // Pig
-							displayId = 16356 + RandomUInt(2);
-							break;
-
-						case 28271:	 // Turtle
-							displayId = 16359 + RandomUInt(2);
-							break;
-
-						default:
-							displayId = 856;
-							break;
-
-					}
-				}
-
-				if(apply)
-				{
-					Unit* caster = GetUnitCaster();
-					if(caster != NULL && m_target->IsCreature())
-						m_target->GetAIInterface()->AttackReaction(caster, 1, GetSpellId());
-
-					m_target->SetDisplayId(displayId);
-
-					// remove the current spell (for channalers)
-					if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&
-					        m_target->m_currentSpell->getState() == SPELL_STATE_CASTING)
-					{
-						m_target->m_currentSpell->cancel();
-						m_target->m_currentSpell = 0;
-					}
-
-					sEventMgr.AddEvent(this, &Aura::EventPeriodicHeal1, (uint32)1000, EVENT_AURA_PERIODIC_HEAL, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-					m_target->polySpell = GetSpellProto()->Id;
-				}
-				else
-				{
-					m_target->SetDisplayId(m_target->GetNativeDisplayId());
-					m_target->polySpell = 0;
-				}
-			}
-			break;
-
-		default:
-			{
-				if( displayId == 0 )
-				{
-					LOG_ERROR( "No display id for transform effect of spell %u", GetSpellId() );
-					return;
-				}
-
-				if(apply)
-				{
-					m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayId);
-				}
-				else
-				{
-					m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, m_target->GetNativeDisplayId());
-				}
-			}
-			break;
-	};
+	if( apply )
+	{
+		m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayId);
+	}
+	else
+	{
+		m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, m_target->GetNativeDisplayId());
+	}
 
 	m_target->EventModelChange();
 }
