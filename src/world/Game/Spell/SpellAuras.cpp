@@ -4447,6 +4447,9 @@ void Aura::SpellAuraModSpellHitChance(bool apply)
 
 void Aura::SpellAuraTransform(bool apply)
 {
+	if(p_target != NULL)
+		p_target->Dismount();
+
 	// Try a dummy SpellHandler
 	if(sScriptMgr.CallScriptedDummyAura(GetSpellId(), mod->i, this, apply))
 		return;
@@ -4469,9 +4472,6 @@ void Aura::SpellAuraTransform(bool apply)
 			displayId = ci->Male_DisplayID;
 		}
 	}
-
-	if(p_target != NULL)
-		p_target->Dismount();
 
 	if( displayId == 0 )
 	{
