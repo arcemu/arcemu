@@ -17,23 +17,14 @@
  *
  */
 
-#ifndef APE_SPELLSCRIPTHANDLER_HPP_
-#define APE_SPELLSCRIPTHANDLER_HPP_
+#ifndef APE_DAHV_HPP_
+#define APE_DAHV_HPP_
 
-class Spell;
-class Aura;
-
-class SpellScriptHandler
+/// Visits an Arcemu Aura handler Python function
+class DummyAuraHandlerVisitor
 {
 public:
-	/// Call the dummy spell handler Python function
-	static bool handleDummySpell( uint32 spellEffectIndex, Spell *spell );
-
-	/// Call the scripted effect handler Python function
-	static bool handleScriptedEffect( uint32 spellEffectIndex, Spell *spell );
-
-	/// Call the dummy aura handler Python function
-	static bool handleDummyAura( uint32 i, Aura *aura, bool apply );
+	virtual void visit( unsigned long spellId, void* function ) = 0;
 };
 
 #endif

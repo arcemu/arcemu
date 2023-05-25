@@ -37,6 +37,7 @@
 
 #include "spells/DummySpellHandlerVisitor.hpp"
 #include "spells/ScriptedEffectHandlerVisitor.hpp"
+#include "spells/DummyAuraHandlerVisitor.hpp"
 
 /// Organized storage of Python function references
 class FunctionRegistry
@@ -164,6 +165,19 @@ public:
 
 
 	///
+	/// Registers a dummy aura handler
+	///
+	/// Parameters
+	///   spellId    -  The id of the Spell that applies this Aura
+	///   function   -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerDummyAuraHandler( unsigned long spellId, void* function );
+
+
+	///
 	/// Visits all registered creature gossip functions
 	///
 	/// Parameters
@@ -264,6 +278,17 @@ public:
 	///
 	static void visitScriptedEffectHandlerFunctions( ScriptedEffectHandlerVisitor *visitor );
 
+	///
+	/// Visits all registered dummy aura handler functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitDummyAuraHandlerFunctions( DummyAuraHandlerVisitor *visitor );
+
 
 	///
 	/// Deallocate / release all registered functions
@@ -354,6 +379,18 @@ public:
 	///
 	static void* getScriptedEffectHandler( unsigned long spellId );
 
+	///
+	/// Retrieve the dummy aura handler function for the specified spell
+	///
+	/// Parameters
+	///   spellId - The numeric identifier of the spell
+	///
+	/// Return value
+	///   Returns a pointer to the dummy aura handler function
+	///   Returns NULL if there are no functions registered for the aura
+	///
+	static void* getDummyAuraHandler( unsigned long spellId );
+
 private:
 	///
 	/// Contains the gossip event handler functions registered for Creatures
@@ -426,6 +463,14 @@ private:
 	/// value: Pointer to a function that handles the scripted spell effect
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > scriptedEffectHandlerFunctions;
+
+	///
+	/// Contains dummy spell aura handler functions for spells
+	///
+	/// key: spell Id
+	/// value: Pointer to a function that handles the dummy aura
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > dummyAuraFunctions;
 };
 
 #endif

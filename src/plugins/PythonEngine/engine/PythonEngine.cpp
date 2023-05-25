@@ -41,6 +41,7 @@
 #include "quest/PythonQuestScriptFactory.hpp"
 #include "spells/DummySpellHandlerRegisterer.hpp"
 #include "spells/ScriptedEffectHandlerRegisterer.hpp"
+#include "spells/DummyAuraHandlerRegisterer.hpp"
 
 void register_arcemu_extensions();
 
@@ -224,5 +225,8 @@ void PythonEngine::registerScripts()
 
 	ScriptedEffectHandlerRegisterer scriptedEffectRegisterer( this->mgr );
 	FunctionRegistry::visitScriptedEffectHandlerFunctions( &scriptedEffectRegisterer );
+
+	DummyAuraHandlerRegisterer dummyAuraRegisterer( this->mgr );
+	FunctionRegistry::visitDummyAuraHandlerFunctions( &dummyAuraRegisterer );
 }
 

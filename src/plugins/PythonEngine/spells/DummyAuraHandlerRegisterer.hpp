@@ -17,23 +17,25 @@
  *
  */
 
-#ifndef APE_SPELLSCRIPTHANDLER_HPP_
-#define APE_SPELLSCRIPTHANDLER_HPP_
+#ifndef APE_DAHR_HPP_
+#define APE_DAHR_HPP_
 
-class Spell;
-class Aura;
+#include "spells/DummyAuraHandlerVisitor.hpp"
 
-class SpellScriptHandler
+class ScriptMgr;
+
+class DummyAuraHandlerRegisterer : public DummyAuraHandlerVisitor
 {
 public:
-	/// Call the dummy spell handler Python function
-	static bool handleDummySpell( uint32 spellEffectIndex, Spell *spell );
+	DummyAuraHandlerRegisterer( ScriptMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
 
-	/// Call the scripted effect handler Python function
-	static bool handleScriptedEffect( uint32 spellEffectIndex, Spell *spell );
+	void visit( unsigned long spellId, void* function );
 
-	/// Call the dummy aura handler Python function
-	static bool handleDummyAura( uint32 i, Aura *aura, bool apply );
+private:
+	ScriptMgr *mgr;
 };
 
 #endif

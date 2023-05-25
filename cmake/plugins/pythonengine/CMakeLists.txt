@@ -58,6 +58,7 @@ ${prefix}/quest/PythonQuestScript.cpp
 ${prefix}/quest/QuestScriptRegisterer.cpp
 ${prefix}/serverhooks/ServerHookRegistry.cpp
 ${prefix}/serverhooks/ServerHookHandler.cpp
+${prefix}/spells/DummyAuraHandlerRegisterer.cpp
 ${prefix}/spells/DummySpellHandlerRegisterer.cpp
 ${prefix}/spells/ScriptedEffectHandlerRegisterer.cpp
 ${prefix}/spells/SpellScriptHandler.cpp
@@ -124,6 +125,8 @@ ${prefix}/quest/QuestFunctionTupleVisitor.hpp
 ${prefix}/quest/QuestScriptRegisterer.hpp
 ${prefix}/serverhooks/ServerHookRegistry.hpp
 ${prefix}/serverhooks/ServerHookHandler.hpp
+${prefix}/spells/DummyAuraHandlerRegisterer.hpp
+${prefix}/spells/DummyAuraHandlerVisitor.hpp
 ${prefix}/spells/DummySpellHandlerRegisterer.hpp
 ${prefix}/spells/DummySpellHandlerVisitor.hpp
 ${prefix}/spells/ScriptedEffectHandlerRegisterer.hpp

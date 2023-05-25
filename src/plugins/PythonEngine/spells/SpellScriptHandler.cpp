@@ -101,3 +101,39 @@ bool SpellScriptHandler::handleScriptedEffect( uint32 spellEffectIndex, Spell *s
 
 	return returnValue;
 }
+
+bool SpellScriptHandler::handleDummyAura( uint32 i, Aura *aura, bool apply )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 spellId = aura->GetSpellId();
+
+	void *function = FunctionRegistry::getDummyAuraHandler( spellId );
+	if( function == NULL )
+		return false;
+
+	bool returnValue = true;
+
+	ArcPyTuple args( 3 );
+	args.setItem( 0, i );
+	args.setItemAura( 1, aura );
+	args.setItemBool( 2, apply );
+
+	PythonCallable callable( function );
+	PythonValue value = callable.call( args );
+	if( value.isEmpty() )
+	{
+		Python::printError();
+		returnValue = false;
+	}
+	else
+	{
+		if( value.isBool() && !value.getBoolValue() )
+		{
+			returnValue = false;
+		}
+		value.decref();
+	}
+
+	return returnValue;
+}
