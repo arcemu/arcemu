@@ -23,6 +23,7 @@
 #include "StdAfx.h"
 
 #include "ArcPyAura.hpp"
+#include "ArcPyUnit.hpp"
 
 static PyObject* ArcPyAura_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -143,6 +144,26 @@ static PyObject* ArcPyAura_remove( ArcPyAura* self, PyObject* args )
 	Py_RETURN_NONE;
 }
 
+/// getTarget
+///   Retrieves the target of the Aura
+///
+/// Parameters:
+///   No parameters
+///
+/// Return value:
+///   Returns target of the Aura as an ArcPyUnit
+///
+/// Example:
+///   target = aura.getTarget()
+///
+static PyObject* ArcPyAura_getTarget( ArcPyAura* self, PyObject* args )
+{
+	Aura *aura = self->auraPtr;
+	Unit *target = aura->GetTarget();
+
+	return (PyObject*)createArcPyUnit( target );
+}
+
 static PyMethodDef ArcPyAura_methods[] = 
 {
 	{ "getSpellName", (PyCFunction)ArcPyAura_getSpellName, METH_NOARGS, "Returns the name of the Spell that applied this Aura" },
@@ -150,6 +171,7 @@ static PyMethodDef ArcPyAura_methods[] =
 	{ "getAuraSlot", (PyCFunction)ArcPyAura_getAuraSlot, METH_NOARGS, "Returns the slot of this Aura" },
 	{ "getCasterGuid", (PyCFunction)ArcPyAura_getCasterGuid, METH_NOARGS, "Returns the Aura caster's GUID" },
 	{ "remove", (PyCFunction)ArcPyAura_remove, METH_NOARGS, "Removes the Aura" },
+	{ "getTarget", (PyCFunction)ArcPyAura_getTarget, METH_NOARGS, "Retrieves the target of the Aura" },
 	{NULL}
 };
 
