@@ -1100,6 +1100,8 @@ bool ChatHandler::HandleUpdateWorldStateCommand( const char *args, WorldSession 
 
 	Messenger::SendWorldStateUpdate( session->GetPlayer(), field, state );
 
+	GreenSystemMessage( session, "Set worldstate field %u to %u", field, state );
+
 	return true;
 }
 
