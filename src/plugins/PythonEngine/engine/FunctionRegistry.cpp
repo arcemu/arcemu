@@ -518,7 +518,7 @@ void FunctionRegistry::releaseFunctions()
 		++dummyAurasIterator;
 	}
 
-	dummyAuraFunctions.end();
+	dummyAuraFunctions.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
