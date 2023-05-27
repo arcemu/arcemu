@@ -6208,7 +6208,7 @@ class LuaUnit
 				return 0;
 
 			uint32 value
-				= ptr->GetMapMgr()->GetWorldStatesHandler().GetWorldStateForZone( zone, 0, field );
+				= ptr->GetMapMgr()->GetWorldStatesHandler().GetWorldStateForZone( zone, field );
 
 			lua_pushinteger( L, value );
 
@@ -6236,7 +6236,7 @@ class LuaUnit
 			if( zone == 0 )
 				return 0;
 
-			ptr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone( zone, 0, field, value );
+			ptr->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone( zone, field, value );
 
 			return 0;
 		}

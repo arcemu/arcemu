@@ -625,7 +625,7 @@ void CBattleground::SetWorldState(uint32 Index, uint32 Value)
 	if( m_zoneid == 0 )
 		return;
 
-	m_mapMgr->GetWorldStatesHandler().SetWorldStateForZone( m_zoneid, 0, Index, Value );
+	m_mapMgr->GetWorldStatesHandler().SetWorldStateForZone( m_zoneid, Index, Value );
 }
 
 void CBattleground::Close()

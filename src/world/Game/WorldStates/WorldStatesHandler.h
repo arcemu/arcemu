@@ -41,12 +41,11 @@ class SERVER_DECL WorldStatesHandler{
 
 
 		////////////////////////////////////////////////////////////////////////////////////////////
-		//void SetWorldStateForZone( uint32 zone, uint32 area, uint32 field, uint32 value )
+		//void SetWorldStateForZone( uint32 zone, uint32 field, uint32 value )
 		//  Sets the specified worldstate's value for the specified zone
 		//
 		//Parameter(s)
 		//  uint32 zone  -  the zone where we set the worldstate
-		//  uint32 area  -  the area where we set the worldstate
 		//  uint32 field -  the worldstate field we are setting
 		//  uint32 value -  the value we assign to the field
 		//
@@ -55,16 +54,15 @@ class SERVER_DECL WorldStatesHandler{
 		//
 		//
 		////////////////////////////////////////////////////////////////////////////////////////////
-		void SetWorldStateForZone( uint32 zone, uint32 area, uint32 field, uint32 value );
+		void SetWorldStateForZone( uint32 zone, uint32 field, uint32 value );
 
 
 		////////////////////////////////////////////////////////////////////////////////////////////
-		//uint32 GetWorldStateForZone( uint32 zone, uint32 area, uint32 field ) const;
+		//uint32 GetWorldStateForZone( uint32 zone, uint32 field ) const;
 		//  Returns the value of the worldstate field queried.
 		//
 		//Parameter(s)
 		//  uint32 zone  -  the zone where we are querying
-		//  uint32 area  -  the area where we querying
 		//  uint32 field -  the field that we querying
 		//
 		//Return Value
@@ -73,7 +71,7 @@ class SERVER_DECL WorldStatesHandler{
 		//
 		//
 		////////////////////////////////////////////////////////////////////////////////////////////
-		uint32 GetWorldStateForZone( uint32 zone, uint32 area, uint32 field ) const;
+		uint32 GetWorldStateForZone( uint32 zone, uint32 field ) const;
 
 
 		////////////////////////////////////////////////////////////////////////////////////////////

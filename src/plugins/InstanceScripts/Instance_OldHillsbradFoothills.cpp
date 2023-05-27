@@ -148,7 +148,7 @@ class OldHilsbradInstance : public MoonInstanceScript
 				return;
 
 			if(pIndex == OHF_PHASE_2)
-				mInstance->GetWorldStatesHandler().SetWorldStateForZone( 2367, 0, WORLDSTATE_OLD_HILLSBRAD_BARRELS, 0 );			
+				mInstance->GetWorldStatesHandler().SetWorldStateForZone( 2367, WORLDSTATE_OLD_HILLSBRAD_BARRELS, 0 );			
 
 			m_phaseData[pIndex] = pData;
 		};
@@ -168,7 +168,7 @@ class OldHilsbradInstance : public MoonInstanceScript
 
 			pGameObject->Despawn(1000, 0);
 			m_numBarrel++;
-			pGameObject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone( 2367, 0, WORLDSTATE_OLD_HILLSBRAD_BARRELS, m_numBarrel);
+			pGameObject->GetMapMgr()->GetWorldStatesHandler().SetWorldStateForZone( 2367, WORLDSTATE_OLD_HILLSBRAD_BARRELS, m_numBarrel);
 			if(m_numBarrel != 5)
 				return;
 
