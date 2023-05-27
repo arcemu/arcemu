@@ -1966,3 +1966,15 @@ void MapMgr::onWorldStateUpdate( uint32 zone, uint32 field, uint32 value )
 	SendPacketToPlayersInZone( zone, &data );
 }
 
+void MapMgr::onWorldStatesReinitialization( uint32 zone )
+{
+	for( PlayerStorageMap::const_iterator itr = m_PlayerStorage.begin(); itr != m_PlayerStorage.end(); ++itr )
+	{
+		Player *p = itr->second;
+
+		if( ( p->GetSession() != NULL ) && ( p->GetZoneId() == zone ) )
+		{
+			p->SendInitialWorldstates();
+		}
+	}
+}

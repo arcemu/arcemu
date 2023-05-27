@@ -297,7 +297,9 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleDebugSpawnWarCommand(const char* args, WorldSession* m_session);
 		bool HandleUpdateWorldStateCommand( const char *args, WorldSession *session );
 		bool HandleInitWorldStatesCommand( const char *args, WorldSession *session );
-		bool HandleClearWorldStatesCommand( const char *args, WorldSession *session );
+		bool HandleClearWorldStatesCommand( const char *args, WorldSession *session );		
+		bool HandleAddWorldStateCommand( const char *args, WorldSession *session );
+		bool HandleRemoveWorldStateCommand( const char *args, WorldSession *session );
 		bool HandleDebugPlaySoundCommand( const char *args, WorldSession *session );
 		bool HandleDebugPlaySpellVisualCommand( const char *args, WorldSession *session );
 		bool HandleDebugShowEmoteCommand( const char *args, WorldSession *session );

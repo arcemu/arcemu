@@ -29,6 +29,7 @@ class SERVER_DECL WorldStatesHandler{
 		public:
 			virtual ~WorldStatesObserver(){}
 			virtual void onWorldStateUpdate( uint32 zone, uint32 field, uint32 value ) = 0;
+			virtual void onWorldStatesReinitialization( uint32 zone ) = 0;
 		};
 
 		WorldStatesHandler( uint32 mapid ){
@@ -105,6 +106,37 @@ class SERVER_DECL WorldStatesHandler{
 		//
 		////////////////////////////////////////////////////////////////////////////////////////////
 		void InitWorldStates( std::multimap< uint32, WorldState > *states );
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//void addWorldState( uint32 zoneId, WorldState state );
+		//  Adds a new WorldState. Triggers WorldState reinitialization for players in the zone.
+		//
+		//Parameter(s)
+		//  uint32 zoneId    -   The zone where the WorldState belongs to
+		//  WorldState state -   The WorldState to be added
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////
+		void addWorldState( uint32 zoneId, WorldState state );
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		//void removeWorldState( uint32 zoneId, uint32 field );
+		//  Removes a WorldState. Triggers WorldState reinitialization for players in the zone.
+		//
+		//Parameter(s)
+		//  uint32 zoneId    -  The zone where the WorldState belongs to
+		//  uint32 field     -  The WorldState field we're removing
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////////////////////////////////////////////
+		void removeWorldState( uint32 zoneId, uint32 field );
 
 		void setObserver( WorldStatesObserver *observer ){ this->observer = observer; }
 

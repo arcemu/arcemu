@@ -86,3 +86,39 @@ void WorldStatesHandler::InitWorldStates( std::multimap< uint32,WorldState > *st
 		worldstates[ zone ].insert( std::pair< uint32, uint32 >( itr->second.field, itr->second.value ) );
 	}
 }
+
+void WorldStatesHandler::addWorldState( uint32 zoneId, WorldState state )
+{
+	worldstates[ zoneId ];
+	worldstates[ zoneId ].insert( std::pair< uint32, uint32 >( state.field, state.value ) );
+	
+	if( observer != NULL )
+	{
+		observer->onWorldStatesReinitialization( zoneId );
+	}
+}
+
+void WorldStatesHandler::removeWorldState( uint32 zoneId, uint32 field )
+{
+	HM_NAMESPACE::HM_HASH_MAP< uint32, HM_NAMESPACE::HM_HASH_MAP< uint32, uint32 > >::iterator zoneItr = worldstates.find( zoneId );
+	if( zoneItr == worldstates.end() )
+		return;
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, uint32 > &states = zoneItr->second;
+
+	HM_NAMESPACE::HM_HASH_MAP< uint32, uint32 >::iterator statesItr = states.find( field );
+	if( statesItr == states.end() )
+		return;
+
+	states.erase( statesItr );
+
+	if( states.size() == 0 )
+	{
+		worldstates.erase( zoneItr );
+	}
+	
+	if( observer != NULL )
+	{
+		observer->onWorldStatesReinitialization( zoneId );
+	}
+}

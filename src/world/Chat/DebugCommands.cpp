@@ -1141,6 +1141,73 @@ bool ChatHandler::HandleClearWorldStatesCommand( const char *args, WorldSession 
 	return true;
 }
 
+bool ChatHandler::HandleAddWorldStateCommand( const char *args, WorldSession *session ){
+	if( *args == '\0' ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the value." );
+		return true;
+	}
+
+	uint32 field = 0;
+	uint32 state = 0;
+
+	std::stringstream ss( args );
+
+	ss >> field;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the value." );
+		return true;
+	}
+
+	ss >> state;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the value." );
+		return true;
+	}
+
+	WorldState ws;
+	ws.field = field;
+	ws.value = state;
+
+	Player *player = session->GetPlayer();
+	MapMgr *mapMgr = player->GetMapMgr();
+	WorldStatesHandler &worldStatesHandler = mapMgr->GetWorldStatesHandler();
+
+	worldStatesHandler.addWorldState( player->GetZoneId(), ws );
+
+	GreenSystemMessage( session, "Added worldstate field %u with initial value %u", field, state );
+
+	return true;
+}
+
+bool ChatHandler::HandleRemoveWorldStateCommand( const char *args, WorldSession *session ){
+	if( *args == '\0' ){
+		RedSystemMessage( session, "You need to specify the worldstate field you want removed." );
+		return true;
+	}
+
+	uint32 field = 0;
+
+	std::stringstream ss( args );
+
+	ss >> field;
+	if( ss.fail() ){
+		RedSystemMessage( session, "You need to specify the worldstate field and the value." );
+		return true;
+	}
+
+	Player *player = session->GetPlayer();
+	MapMgr *mapMgr = player->GetMapMgr();
+	WorldStatesHandler &worldStatesHandler = mapMgr->GetWorldStatesHandler();
+
+	mapMgr->onWorldStateUpdate( player->GetZoneId(), field, 0 );
+	
+	worldStatesHandler.removeWorldState( player->GetZoneId(), field );
+
+	GreenSystemMessage( session, "Removed worldstate field %u.", field );
+
+	return true;
+}
+
 bool ChatHandler::HandleDebugPlaySoundCommand(const char *args, WorldSession *session)
 {
 	Player *player = session->GetPlayer();

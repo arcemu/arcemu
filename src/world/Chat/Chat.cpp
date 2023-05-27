@@ -319,6 +319,8 @@ void CommandTableStorage::Init()
 		{ "updateworldstate",    'd', &ChatHandler::HandleUpdateWorldStateCommand, "Sets the specified worldstate field to the specified value",                                                        NULL, 0, 0, 0 },
 		{ "initworldstates",     'd', &ChatHandler::HandleInitWorldStatesCommand,  "(re)initializes the worldstates.",                                                                                  NULL, 0, 0, 0 },
 		{ "clearworldstates",    'd', &ChatHandler::HandleClearWorldStatesCommand, "Clears the worldstates",                                                                                            NULL, 0, 0, 0 },
+		{ "addworldstate",       'd', &ChatHandler::HandleAddWorldStateCommand, "Adds a new world state field",NULL, 0, 0, 0 },
+		{ "removeworldstate",    'd', &ChatHandler::HandleRemoveWorldStateCommand, "Removes a world state field",NULL, 0, 0, 0 },
 		{ "playsound", 'd', &ChatHandler::HandleDebugPlaySoundCommand, "Plays sound to the player's set",												NULL, 0, 0, 0 },
 		{ "playspellvisual", 'd', &ChatHandler::HandleDebugPlaySpellVisualCommand, "Makes the selected unit play a spell visual",									NULL, 0, 0, 0 },
 		{ "showemote", 'd', &ChatHandler::HandleDebugShowEmoteCommand, "Makes the selected unit show an emote. Using the emote message.",								NULL, 0, 0, 0 },
