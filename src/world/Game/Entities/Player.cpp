@@ -3723,6 +3723,8 @@ void Player::OnPushToWorld()
 
 	SendInitialWorldstates();
 
+	Messenger::sendSetPhaseShift( this );
+
 	if( resettalents ){
 		Reset_AllTalents();
 		resettalents = false;
