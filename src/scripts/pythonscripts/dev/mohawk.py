@@ -607,6 +607,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "What is your entry?", 1302, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "What is your GUID?", 1303, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Creep!", 1304, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Increase the number of Alliance controlled forts in Hellfire Penninsula", 1305, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -624,6 +625,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 1304:
 		creature.setByteFlags( arcemu.UNIT_FIELD_BYTES_1, arcemu.STANDFLAGS_BYTE, 2 )
+		
+	if id == 1305:
+		# Note: this works in Hellfire Penninsula only!
+		mapMgr = creature.getMapMgr()
+		value = mapMgr.getWorldState( 3483, 2476 )
+		mapMgr.updateWorldState( 3483, 2476, value + 1 )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

@@ -191,12 +191,79 @@ static PyObject* ArcPyMapMgr_getUnit( ArcPyMapMgr *self, PyObject *args )
 		Py_RETURN_NONE;
 }
 
+/// getWorldState
+///  Retrieves the value of a WorldState field
+///
+/// Parameters
+///   zone      -   The zone in which the worldstate should be updated
+///   field     -   The worldstate field to update
+///
+/// Return value
+///   Returns the value of the specified worldstate in the specified zone
+///
+/// Example
+///   value = mapMgr.getWorldState( 1234, 2345 )
+///
+static PyObject* ArcPyMapMgr_getWorldState( ArcPyMapMgr *self, PyObject *args )
+{
+	uint32 zoneId;
+	uint32 field;
+
+	if( !PyArg_ParseTuple( args, "kk", &zoneId, &field ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires zone, field parameters" );
+		return NULL;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+	WorldStatesHandler &worldStatesHandler = mapMgr->GetWorldStatesHandler();
+
+	uint32 value = worldStatesHandler.GetWorldStateForZone( zoneId, field );
+
+	return PyLong_FromUnsignedLong( value );
+}
+
+/// updateWorldState
+///   Updates a WorldState field for a zone
+///
+/// Parameters
+///   zone      -   The zone in which the worldstate should be updated
+///   field     -   The worldstate field to update
+///   value     -   The new value for the Worldstate field
+///
+/// Return value
+///   None
+///
+/// Example
+///   mapMgr.updateWorldState( 1234, 2345, 12 )
+///
+static PyObject* ArcPyMapMgr_updateWorldState( ArcPyMapMgr *self, PyObject *args )
+{
+	uint32 zoneId;
+	uint32 field;
+	uint32 value;
+
+	if( !PyArg_ParseTuple( args, "kkk", &zoneId, &field, &value ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires zone, field, value parameters" );
+		return NULL;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+	WorldStatesHandler &worldStatesHandler = mapMgr->GetWorldStatesHandler();
+	worldStatesHandler.SetWorldStateForZone( zoneId, field, value );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyMapMgr_methods[] = 
 {
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
 	{ "spawnCreature", (PyCFunction)ArcPyMapMgr_spawnCreature, METH_VARARGS, "Spawns a Creature on this Map" },
 	{ "spawnGameObject", (PyCFunction)ArcPyMapMgr_spawnGameObject, METH_VARARGS, "Spawns a GameObject on this Map" },
 	{ "getUnit", (PyCFunction)ArcPyMapMgr_getUnit, METH_VARARGS, "Looks up and returns a Unit from this map by Guid" },
+	{ "getWorldState", (PyCFunction)ArcPyMapMgr_getWorldState, METH_VARARGS, "Returns the value of a worldstate field in a zone" },
+	{ "updateWorldState", (PyCFunction)ArcPyMapMgr_updateWorldState, METH_VARARGS, "Update worldstate for a zone" },
 	{NULL}
 };
 
