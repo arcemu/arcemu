@@ -231,6 +231,12 @@ class PrisonerGossip : public GossipScript
 					Menu->SendTo(pPlayer);
 				}
 			}
+			else
+			{
+				Arcemu::Gossip::Menu menu( pPrisoner, 10104, pPlayer->GetSession()->language );
+				sQuestMgr.FillQuestMenu( pPrisoner, pPlayer, menu );
+				menu.Send( pPlayer );
+			}
 		}
 
 		void GossipSelectOption(Object* pObject, Player* pPlayer, uint32 Id, uint32 IntId, const char* EnteredCode)
