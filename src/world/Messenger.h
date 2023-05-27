@@ -307,6 +307,9 @@ public:
 
 	/// Sends the player the creature's vendor inventory list window
 	static void sendInventoryList( Player* player, const Creature* creature );
+
+	/// Sends the player the current phase
+	static void sendSetPhaseShift( Player* player );
 };
 
 #endif

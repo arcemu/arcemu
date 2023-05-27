@@ -1445,4 +1445,11 @@ void Messenger::sendInventoryList( Player* player, const Creature* creature )
 	PlayerMessenger::sendMessage( player, data );
 }
 
+void Messenger::sendSetPhaseShift( Player* player )
+{
+	WorldPacket data( SMSG_SET_PHASE_SHIFT, 4 );
+	data << uint32( player->GetPhase() );
+	PlayerMessenger::sendMessage( player, data );
+}
+
 

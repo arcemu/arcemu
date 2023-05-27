@@ -8534,9 +8534,7 @@ void Aura::SpellAuraPhase(bool apply)
 
 	if(m_target->IsPlayer())
 	{
-		WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
-		data << uint32(m_target->m_phase);
-		TO< Player* >(m_target)->GetSession()->SendPacket(&data);
+		Messenger::sendSetPhaseShift( TO_PLAYER( m_target ) );
 	}
 }
 

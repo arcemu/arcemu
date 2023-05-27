@@ -263,9 +263,7 @@ class LuaUnit
 					p_target->Phase(PHASE_SET, newphase);
 					if(p_target->GetSession())
 					{
-						WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
-						data << newphase;
-						p_target->GetSession()->SendPacket(&data);
+						Messenger::sendSetPhaseShift( p_target );
 					}
 					break;
 
@@ -305,9 +303,7 @@ class LuaUnit
 					p_target->Phase(PHASE_ADD, newphase);
 					if(p_target->GetSession())
 					{
-						WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
-						data << p_target->m_phase;
-						p_target->GetSession()->SendPacket(&data);
+						Messenger::sendSetPhaseShift( p_target );
 					}
 					break;
 
@@ -347,9 +343,7 @@ class LuaUnit
 					p_target->Phase(PHASE_DEL, newphase);
 					if(p_target->GetSession())
 					{
-						WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
-						data << p_target->m_phase;
-						p_target->GetSession()->SendPacket(&data);
+						Messenger::sendSetPhaseShift( p_target );
 					}
 					break;
 
