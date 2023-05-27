@@ -143,6 +143,7 @@ enum WorldStates{
 	WORLDSTATE_AV_HORDE_SCORE                                            = 3128,
 	WORLDSTATE_AV_ALLIANCE_SCORE_DISPLAY                                 = 3133,
 	WORLDSTATE_AV_HORDE_SCORE_DISPLAY                                    = 3134,
+	WORLDSTATE_ARENA_SEASON                                              = 3191,
 	WORLDSTATE_WG_HORDE_VEHICLES                                         = 3490, // current horde vehicles
 	WORLDSTATE_WG_MAX_HORDE_VEHICLES                                     = 3491, // max horde vehicles
 	WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY                                  = 3536, // displays the node capture bar ( GY for example )
@@ -259,6 +260,7 @@ enum WorldStates{
 	WORLDSTATE_WG_HORDE_CONTROL                                          = 3802, // horde control
 	WORLDSTATE_WG_ALLY_CONTROL                                           = 3803, // alliance control
 	WORLDSTATE_SOTA_CHAMBER_GATE                                         = 3849, // Chamber of the ancient relics gate
+	WORLDSTATE_ARENA_PROGRESS                                            = 3901,
 	WORLDSTATE_IOC_ALLIANCE_SCORE                                        = 4221,
 	WORLDSTATE_IOC_HORDE_SCORE                                           = 4222,
 	WORLDSTATE_IOC_ALLY_SCORE_VALUE                                      = 4226,

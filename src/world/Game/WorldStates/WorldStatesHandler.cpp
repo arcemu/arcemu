@@ -70,9 +70,9 @@ void WorldStatesHandler::BuildInitWorldStatesForZone( uint32 zone, uint32 area, 
 		data << uint16( 2 );
 	}
 
-	data << uint32( 3191 );
+	data << uint32( WORLDSTATE_ARENA_SEASON );
 	data << uint32( sWorld.Arena_Season );
-	data << uint32( 3901 );
+	data << uint32( WORLDSTATE_ARENA_PROGRESS );
 	data << uint32( sWorld.Arena_Progress );
 }
 
