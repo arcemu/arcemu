@@ -247,6 +247,8 @@ class PrisonerGossip : public GossipScript
 			if(!pObject->IsCreature())
 				return;
 
+			pPlayer->Gossip_Complete();
+
 			switch(IntId)
 			{
 				case 0:
