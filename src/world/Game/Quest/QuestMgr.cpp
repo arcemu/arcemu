@@ -640,7 +640,7 @@ void QuestMgr::BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr,
 				LocalizedQuest* lq = (language > 0) ? sLocalizationMgr.GetLocalizedQuest((*it)->qst->id, language) : NULL;
 
 				uint32 icon;
-				if( status == QMGR_QUEST_NOT_FINISHED )
+				if( status == QMGR_QUEST_NOT_FINISHED || status == QMGR_QUEST_FINISHED )
 					icon = QUEST_ICON_IN_PROGRESS;
 				else
 					icon = status;
