@@ -111,8 +111,8 @@ namespace Arcemu
 		class SERVER_DECL Menu
 		{
 			public:
-				Menu(uint64, uint32, uint32 = 0);
-				Menu(Object*, uint32, uint32 = 0);
+				Menu(uint64 Creature_Guid, uint32 Text_Id, uint32 language = 0);
+				Menu(Object* obj, uint32 textid, uint32 language = 0);
 
 				//************************************
 				// Purpose : Adds a menu item.
