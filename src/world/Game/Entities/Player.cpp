@@ -12595,6 +12595,8 @@ void Player::Phase(uint8 command, uint32 newphase)
 
 		charm->Phase(command, newphase);
 	}
+
+	Messenger::sendSetPhaseShift( this );
 }
 
 // TODO: Use this method all over source code

@@ -8531,11 +8531,6 @@ void Aura::SpellAuraPhase(bool apply)
 		m_target->Phase(PHASE_SET, m_spellProto->EffectMiscValue[mod->i]);
 	else
 		m_target->Phase(PHASE_RESET);
-
-	if(m_target->IsPlayer())
-	{
-		Messenger::sendSetPhaseShift( TO_PLAYER( m_target ) );
-	}
 }
 
 void Aura::SpellAuraCallStabledPet(bool apply)

@@ -261,10 +261,6 @@ class LuaUnit
 				case TYPEID_PLAYER:
 					p_target = TO_PLAYER(ptr);
 					p_target->Phase(PHASE_SET, newphase);
-					if(p_target->GetSession())
-					{
-						Messenger::sendSetPhaseShift( p_target );
-					}
 					break;
 
 				default:
@@ -301,10 +297,6 @@ class LuaUnit
 				case TYPEID_PLAYER:
 					p_target = TO_PLAYER(ptr);
 					p_target->Phase(PHASE_ADD, newphase);
-					if(p_target->GetSession())
-					{
-						Messenger::sendSetPhaseShift( p_target );
-					}
 					break;
 
 				default:
@@ -341,10 +333,6 @@ class LuaUnit
 				case TYPEID_PLAYER:
 					p_target = TO_PLAYER(ptr);
 					p_target->Phase(PHASE_DEL, newphase);
-					if(p_target->GetSession())
-					{
-						Messenger::sendSetPhaseShift( p_target );
-					}
 					break;
 
 				default:

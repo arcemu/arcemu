@@ -574,7 +574,5 @@ bool ChatHandler::HandlePhaseCommand(const char* args , WorldSession* m_session)
 	uint32 i = atoi(args);
 	p_target->Phase(PHASE_SET, i);
 
-	Messenger::sendSetPhaseShift( p_target );
-
 	return true;
 }
