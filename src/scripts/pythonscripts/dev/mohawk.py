@@ -539,10 +539,11 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Set the next target to my selection", 1204, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "What is the map Id of this map?", 1205, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Spawn a creature", 1206, 0 )
-		menu.addItem( arcemu.ICON_CHAT, "Spawn a GameObject", 1207, 0 )
-		
+		menu.addItem( arcemu.ICON_CHAT, "Spawn a GameObject", 1207, 0 )		
 		menu.addItem( arcemu.ICON_CHAT, "Set the target guid (visual) to my selection", 1208, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Channel a spell to my selection", 1209, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Set our phases to 256", 1210, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Set our phases to 1", 1211, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -599,6 +600,14 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			creature.setTargetGUID( selectedUnit.getGUID() )
 			creature.setChannelSpellTargetGUID( selectedUnit.getGUID() )
 			creature.setChannelSpellId( 39857 )
+			
+	if id == 1210:
+		player.setPhase( 256 )
+		creature.setPhase( 256 )
+		
+	if id == 1211:
+		player.setPhase( 1 )
+		creature.setPhase( 1 )
 			
 	if id == 1300:
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )

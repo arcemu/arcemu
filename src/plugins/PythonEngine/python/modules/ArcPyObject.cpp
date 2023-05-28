@@ -524,6 +524,35 @@ static PyObject* ArcPyObject_setByteFlags( ArcPyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// setPhase
+///   Sets the phase of the Object
+///
+/// Parameters
+///   phase   -   The new phase of the object
+///
+/// Return value
+///   None
+///
+/// Example
+///   object.setPhase( 257 )
+///
+static PyObject* ArcPyObject_setPhase( ArcPyObject *self, PyObject *args )
+{
+	uint32 phase;
+
+	if( !PyArg_ParseTuple( args, "k", &phase ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a phase parameter" );
+		return NULL;
+	}
+
+	Object *obj = self->objectPtr;
+	obj->Phase( PHASE_SET, phase );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
@@ -543,6 +572,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "getUInt64Value", (PyCFunction)ArcPyObject_getUInt64Value, METH_VARARGS, "Returns the value of an UInt64 field" },
 	{ "setScale", (PyCFunction)ArcPyObject_setScale, METH_VARARGS, "Sets the size scale of the Object" },
 	{ "setByteFlags", (PyCFunction)ArcPyObject_setByteFlags, METH_VARARGS, "Sets flags to a byte of a field" },
+	{ "setPhase", (PyCFunction)ArcPyObject_setPhase, METH_VARARGS, "Sets the phase of the object" },
 	{NULL}
 };
 
