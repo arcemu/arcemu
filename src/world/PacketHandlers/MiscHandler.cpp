@@ -1833,7 +1833,6 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
-	uint32 talent_points = 0x0000003D;
 	ByteBuffer m_Packed_GUID;
 	recv_data >> guid;
 
@@ -1860,7 +1859,7 @@ void WorldSession::HandleInspectOpcode(WorldPacket & recv_data)
 	guid_size = (uint32)m_Packed_GUID.size();
 
 	data.append(m_Packed_GUID);
-	data << uint32(talent_points);
+	data << uint32( player->m_specs[ player->m_talentActiveSpec ].GetTP() );
 
 	data << uint8(player->m_talentSpecsCount);
 	data << uint8(player->m_talentActiveSpec);
