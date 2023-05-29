@@ -483,8 +483,6 @@ void QuestLogEntry::UpdatePlayerFields()
 	{
 		if( m_quest->required_triggers[ i ] != 0 )
 		{
-			p[2 * i] |= (uint8)m_explored_areas[ i ];
-
 			if( m_explored_areas[ i ] != 1 )
 			{
 				objectivesComplete = false;
