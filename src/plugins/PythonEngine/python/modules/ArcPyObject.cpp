@@ -610,6 +610,24 @@ static PyObject* ArcPyObject_removePhase( ArcPyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getPhase
+///   Returns the phases of the Object
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the phases of the Object
+///
+/// Example
+///   phase = object.getPhase()
+///
+static PyObject* ArcPyObject_getPhase( ArcPyObject *self, PyObject *args )
+{
+	Object *obj = self->objectPtr;
+	return PyLong_FromUnsignedLong( obj->GetPhase() );
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
@@ -632,6 +650,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "setPhase", (PyCFunction)ArcPyObject_setPhase, METH_VARARGS, "Sets the phase of the object" },
 	{ "addPhase", (PyCFunction)ArcPyObject_addPhase, METH_VARARGS, "Adds a new phase to the Object" },
 	{ "removePhase", (PyCFunction)ArcPyObject_removePhase, METH_VARARGS, "Removes a phase from the Object" },
+	{ "getPhase", (PyCFunction)ArcPyObject_getPhase, METH_VARARGS, "Retruns the phases of the object" },
 	{NULL}
 };
 
