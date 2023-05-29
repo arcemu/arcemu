@@ -112,6 +112,7 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 //	SetFloatValue( GAMEOBJECT_POS_Y, y );
 //	SetFloatValue( GAMEOBJECT_POS_Z, z );
 //	SetFloatValue( GAMEOBJECT_FACING, ang );
+	SetScale( pInfo->Size );
 	SetPosition(x, y, z, ang);
 	SetParentRotation(0, r0);
 	SetParentRotation(1, r1);
