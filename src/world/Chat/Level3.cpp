@@ -862,7 +862,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "Spawn ID: %d", crt->GetSQL_id());
 	
 	// show byte
-	char hexBuffer[ 10 ];
+	char hexBuffer[ 12 ];
 	std::stringstream sstext;
 
 	uint32 theBytes = crt->GetUInt32Value(UNIT_FIELD_BYTES_0);
