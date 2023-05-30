@@ -113,7 +113,6 @@ class SERVER_DECL QuestMgr :  public Singleton < QuestMgr >
 		void OnPlayerEmote(Player* plr, uint32 emoteid, uint64 & victimguid);
 		void OnPlayerItemPickup(Player* plr, Item* item);
 		void OnPlayerExploreArea(Player* plr, uint32 AreaID);
-		void AreaExplored(Player* plr, uint32 QuestID);// scriptdev2
 
 		void OnQuestAccepted(Player* plr, Quest* qst, Object* qst_giver);
 		void OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint32 reward_slot);

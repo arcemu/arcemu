@@ -964,33 +964,6 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 	}
 }
 
-void QuestMgr::AreaExplored(Player* plr, uint32 QuestID)
-{
-	uint32 i, j;
-	QuestLogEntry* qle;
-	for(i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
-	{
-		if((qle = plr->GetQuestLogInSlot(i)) != 0)
-		{
-			// search for quest
-			if(qle->GetQuest()->id == QuestID)
-				for(j = 0; j < MAX_REQUIRED_TRIGGERS; ++j)
-				{
-					if(qle->GetQuest()->required_triggers[j] &&
-					        !qle->m_explored_areas[j])
-					{
-						qle->SetTrigger(j);
-						CALL_QUESTSCRIPT_EVENT(qle, OnExploreArea)(qle->m_explored_areas[j], plr, qle);
-						qle->UpdatePlayerFields();
-						if(qle->CanBeFinished())
-							qle->SendQuestComplete();
-						break;
-					}
-				}
-		}
-	}
-}
-
 void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object* qst_giver)
 {
 	// Reputation reward

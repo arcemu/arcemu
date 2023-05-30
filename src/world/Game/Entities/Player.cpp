@@ -6248,13 +6248,6 @@ void Player::EventTimedQuestExpire( uint32 questid ){
 	qle->Fail( true );
 }
 
-//scriptdev2
-
-void Player::AreaExploredOrEventHappens(uint32 questId)
-{
-	sQuestMgr.AreaExplored(this, questId);
-}
-
 void Player::Reset_Spells()
 {
 	PlayerCreateInfo* info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
