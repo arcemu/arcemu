@@ -953,7 +953,8 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 				        !qle->m_explored_areas[j])
 				{
 					qle->SetTrigger(j);
-					CALL_QUESTSCRIPT_EVENT(qle, OnExploreArea)(qle->m_explored_areas[j], plr, qle);
+					Quest *quest = qle->GetQuest();
+					CALL_QUESTSCRIPT_EVENT(qle, OnExploreArea)( quest->required_triggers[j], plr, qle);
 					qle->UpdatePlayerFields();
 					if(qle->CanBeFinished())
 						qle->SendQuestComplete();

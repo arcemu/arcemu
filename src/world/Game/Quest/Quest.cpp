@@ -294,7 +294,7 @@ bool QuestLogEntry::LoadFromDB(Field* fields)
 	{
 		m_explored_areas[i] = fields[f].GetUInt32();
 		f++;
-		CALL_QUESTSCRIPT_EVENT(this, OnExploreArea)(m_explored_areas[i], m_plr, this);
+		CALL_QUESTSCRIPT_EVENT(this, OnExploreArea)(m_quest->required_triggers[i], m_plr, this);
 	}
 
 	for(int i = 0; i < MAX_REQUIRED_MOBS; ++i)
