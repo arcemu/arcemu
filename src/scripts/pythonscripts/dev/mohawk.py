@@ -43,7 +43,7 @@ def mohawk_onHello( unit, event, player ):
 	
 	menu.addItem( arcemu.ICON_CHAT, "Misc2", 1200, 0 )
 	
-	menu.addItem( arcemu.ICON_CHAT, "Fields", 1300, 0 )
+	menu.addItem( arcemu.ICON_CHAT, "Misc3", 1300, 0 )
 	
 	menu.addQuests( unit, player )
 	menu.sendToPlayer( player )
@@ -643,6 +643,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "What is your GUID?", 1303, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Creep!", 1304, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Increase the number of Alliance controlled forts in Hellfire Penninsula", 1305, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Make Marshal Dugan larger", 1306, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -666,6 +667,13 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		mapMgr = creature.getMapMgr()
 		value = mapMgr.getWorldState( 3483, 2476 )
 		mapMgr.updateWorldState( 3483, 2476, value + 1 )
+		
+	if id == 1306:
+		# Note: This will work in Goldshire only
+		mapMgr = creature.getMapMgr()
+		marshal = mapMgr.getCreatureNearestCoords( -9465.51, 74.01, 56.77, 240 )
+		if marshal is not None:
+			marshal.setScale( 3.0 )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

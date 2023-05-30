@@ -256,6 +256,49 @@ static PyObject* ArcPyMapMgr_updateWorldState( ArcPyMapMgr *self, PyObject *args
 	Py_RETURN_NONE;
 }
 
+
+/// getCreatureNearestCoords
+///   Returns the Creature with the specified Id, that is nearest to the specified coordinates
+///
+/// Parameters
+///   x      -   The X coordinate of the Creature
+///   y      -   The Y coordinate of the Creature
+///   z      -   The Z coordinate of the Creature
+///   id     -   Id of the Creature
+///
+/// Return value
+///   Returns the Creature if there's such a Creature near the coordinates specified.
+///   Returns None on failure.
+///
+/// Example
+///   creature = mapMgr.getCreatureNearestCoords( 1, 2, 3, 123 )
+///
+static PyObject* ArcPyMapMgr_getCreatureNearestCoords( ArcPyMapMgr *self, PyObject *args )
+{
+	float x;
+	float y;
+	float z;
+	uint32 id;
+
+	if( !PyArg_ParseTuple( args, "fffk", &x, &y, &z, &id ) ) 
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires x,y,z and entry parameters" );
+		return NULL;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+	Creature *creature = mapMgr->GetInterface()->GetCreatureNearestCoords( x, y, z, id );
+
+	if( creature == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+	else
+	{
+		return (PyObject*)createArcPyCreature( creature );
+	}
+}
+
 static PyMethodDef ArcPyMapMgr_methods[] = 
 {
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
@@ -264,6 +307,7 @@ static PyMethodDef ArcPyMapMgr_methods[] =
 	{ "getUnit", (PyCFunction)ArcPyMapMgr_getUnit, METH_VARARGS, "Looks up and returns a Unit from this map by Guid" },
 	{ "getWorldState", (PyCFunction)ArcPyMapMgr_getWorldState, METH_VARARGS, "Returns the value of a worldstate field in a zone" },
 	{ "updateWorldState", (PyCFunction)ArcPyMapMgr_updateWorldState, METH_VARARGS, "Update worldstate for a zone" },
+	{ "getCreatureNearestCoords", (PyCFunction)ArcPyMapMgr_getCreatureNearestCoords, METH_VARARGS, "Returns the Creature with the specified Id, that is nearest to the specified coordinates" },
 	{NULL}
 };
 
