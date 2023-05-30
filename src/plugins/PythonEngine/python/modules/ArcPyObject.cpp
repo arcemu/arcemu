@@ -44,6 +44,26 @@ static void ArcPyObject_dealloc( ArcPyObject* self )
 }
 
 
+
+/// getZoneId
+///   Returns the Id of the Zone where the Object is located
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the Id of the Zone where the Object is located
+///
+/// Example
+///   phase = object.getZoneId()
+///
+static PyObject* ArcPyObject_getZoneId( ArcPyObject *self, PyObject *args )
+{
+	Object *obj = self->objectPtr;
+	return PyLong_FromUnsignedLong( obj->GetZoneId() );
+}
+
+
 /// getPositionX
 ///   Returns the X component of the Object's position
 ///
@@ -630,6 +650,7 @@ static PyObject* ArcPyObject_getPhase( ArcPyObject *self, PyObject *args )
 
 static PyMethodDef ArcPyObject_methods[] = 
 {
+	{ "getZoneId", (PyCFunction)ArcPyObject_getZoneId, METH_NOARGS, "Returns the Zone Id of the Object" },
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
 	{ "getPositionY", (PyCFunction)ArcPyObject_getPositionY, METH_VARARGS, "Returns the Y coordinate of the Object" },
 	{ "getPositionZ", (PyCFunction)ArcPyObject_getPositionZ, METH_VARARGS, "Returns the Z coordinate of the Object" },

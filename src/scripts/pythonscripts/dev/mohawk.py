@@ -547,6 +547,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Add phase 256 to our phases", 1212, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Remove phase 256 from our phases", 1213, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "What are your current phases?", 1214, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "What zone am in?", 1215, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -622,6 +623,9 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		
 	if id == 1214:
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( creature.getPhase() ) )
+		
+	if id == 1215:
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( player.getZoneId() ) )
 			
 	if id == 1300:
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
