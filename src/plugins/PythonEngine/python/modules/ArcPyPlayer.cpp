@@ -655,6 +655,25 @@ static PyObject* ArcPyPlayer_getSelectedUnit( ArcPyPlayer *self, PyObject *args 
 }
 
 
+/// getAreaId
+///   Returns the Id of the Area the Player is in
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the Id of the Area the Player is in
+///
+/// Example
+///   areaId = player.getAreaId()
+///
+static PyObject* ArcPyPlayer_getAreaId( ArcPyPlayer *self, PyObject *args )
+{
+	Player *player = self->playerPtr;
+	return PyLong_FromUnsignedLong( player->GetAreaID() );
+}
+
+
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyPlayer_getName, METH_NOARGS, "Returns the name of the Player" },
@@ -676,6 +695,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "sendAreaTriggerMessage", (PyCFunction)ArcPyPlayer_sendAreaTriggerMessage, METH_VARARGS, "Sends the Player an AreaTrigger type message" },
 	{ "broadcastMessage", (PyCFunction)ArcPyPlayer_broadcastMessage, METH_VARARGS, "Sends the Player a broadcast type message" },
 	{ "getSelectedUnit", (PyCFunction)ArcPyPlayer_getSelectedUnit, METH_NOARGS, "Returns the Unit the Player has selected" },
+	{ "getAreaId", (PyCFunction)ArcPyPlayer_getAreaId, METH_NOARGS, "Returns the Id of the Area the Player is in" },
 	{NULL}
 };
 
