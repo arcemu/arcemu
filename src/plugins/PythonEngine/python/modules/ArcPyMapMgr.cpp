@@ -299,6 +299,48 @@ static PyObject* ArcPyMapMgr_getCreatureNearestCoords( ArcPyMapMgr *self, PyObje
 	}
 }
 
+/// getGameObjectNearestCoords
+///   Returns the GameObject with the specified Id, that is nearest to the specified coordinates
+///
+/// Parameters
+///   x      -   The X coordinate of the Creature
+///   y      -   The Y coordinate of the Creature
+///   z      -   The Z coordinate of the Creature
+///   id     -   Id of the GameObject
+///
+/// Return value
+///   Returns the GameObject if there's such a GameObject near the coordinates specified.
+///   Returns None on failure.
+///
+/// Example
+///   go = mapMgr.getGameObjectNearestCoords( 1, 2, 3, 123 )
+///
+static PyObject* ArcPyMapMgr_getGameObjectNearestCoords( ArcPyMapMgr *self, PyObject *args )
+{
+	float x;
+	float y;
+	float z;
+	uint32 id;
+
+	if( !PyArg_ParseTuple( args, "fffk", &x, &y, &z, &id ) ) 
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires x,y,z and entry parameters" );
+		return NULL;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+	GameObject *go = mapMgr->GetInterface()->GetGameObjectNearestCoords( x, y, z, id );
+
+	if( go == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+	else
+	{
+		return (PyObject*)createArcPyGameObject( go );
+	}
+}
+
 static PyMethodDef ArcPyMapMgr_methods[] = 
 {
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
@@ -308,6 +350,7 @@ static PyMethodDef ArcPyMapMgr_methods[] =
 	{ "getWorldState", (PyCFunction)ArcPyMapMgr_getWorldState, METH_VARARGS, "Returns the value of a worldstate field in a zone" },
 	{ "updateWorldState", (PyCFunction)ArcPyMapMgr_updateWorldState, METH_VARARGS, "Update worldstate for a zone" },
 	{ "getCreatureNearestCoords", (PyCFunction)ArcPyMapMgr_getCreatureNearestCoords, METH_VARARGS, "Returns the Creature with the specified Id, that is nearest to the specified coordinates" },
+	{ "getGameObjectNearestCoords", (PyCFunction)ArcPyMapMgr_getGameObjectNearestCoords, METH_VARARGS, "Returns the GameObject with the specified Id, that is nearest to the specified coordinates" },
 	{NULL}
 };
 

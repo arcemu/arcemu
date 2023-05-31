@@ -644,6 +644,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Creep!", 1304, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Increase the number of Alliance controlled forts in Hellfire Penninsula", 1305, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Make Marshal Dugan larger", 1306, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Make the mailbox smaller", 1307, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -674,6 +675,15 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		marshal = mapMgr.getCreatureNearestCoords( -9465.51, 74.01, 56.77, 240 )
 		if marshal is not None:
 			marshal.setScale( 3.0 )
+			
+	if id == 1307:
+		# Note: This will work in Goldshire only
+		mapMgr = creature.getMapMgr()
+		mailbox = mapMgr.getGameObjectNearestCoords( -9455.85, 46.68, 56.60, 142075 )
+		if mailbox is not None:
+			mailbox.setScale( 0.5 )
+			# For some reason GOs need to be respawned for the new scale to be visible in the client
+			mailbox.despawn( 1, 1 )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
