@@ -629,6 +629,26 @@ static PyObject* ArcPyPlayer_broadcastMessage( ArcPyPlayer *self, PyObject *args
 	Py_RETURN_NONE;
 }
 
+/// getSelection
+///   Returns the GUID of the Unit the Player has selected
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the GUID of the Unit the Player has selected
+///   Returns 0 if there's no selection
+///
+/// Example
+///   selection = player.getSelection()
+///
+static PyObject* ArcPyPlayer_getSelection( ArcPyPlayer *self, PyObject *args )
+{
+	Player *player = self->playerPtr;
+	const uint64 selection = player->GetSelection();
+	return PyLong_FromUnsignedLongLong( selection );
+}
+
 /// getSelectedUnit
 ///   Returns the Unit that player has selected
 ///
@@ -694,6 +714,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "hasQuest", (PyCFunction)ArcPyPlayer_hasQuest, METH_VARARGS, "Tells if the player is on the specified quest" },
 	{ "sendAreaTriggerMessage", (PyCFunction)ArcPyPlayer_sendAreaTriggerMessage, METH_VARARGS, "Sends the Player an AreaTrigger type message" },
 	{ "broadcastMessage", (PyCFunction)ArcPyPlayer_broadcastMessage, METH_VARARGS, "Sends the Player a broadcast type message" },
+	{ "getSelection", (PyCFunction)ArcPyPlayer_getSelection, METH_NOARGS, "Returns the GUID of the Unit the Player has selected" },
 	{ "getSelectedUnit", (PyCFunction)ArcPyPlayer_getSelectedUnit, METH_NOARGS, "Returns the Unit the Player has selected" },
 	{ "getAreaId", (PyCFunction)ArcPyPlayer_getAreaId, METH_NOARGS, "Returns the Id of the Area the Player is in" },
 	{NULL}
