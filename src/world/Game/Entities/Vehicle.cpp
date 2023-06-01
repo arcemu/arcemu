@@ -104,7 +104,8 @@ Unit* Vehicle::getController()
 	{
 		if( seats[ i ]->Controller() )
 		{
-			controller = owner->GetMapMgrUnit( seats[ i ]->GetPassengerGUID() );
+			MapMgr *mapMgr = owner->GetMapMgr();
+			controller = mapMgr->GetUnit( seats[ i ]->GetPassengerGUID() );
 			break;
 		}
 	}
@@ -272,7 +273,8 @@ void Vehicle::EjectPassengerFromSeat( uint32 seatid ){
 	if( !seats[ seatid ]->HasPassenger() )
 		return;
 
-	Unit *passenger = owner->GetMapMgrUnit( seats[ seatid ]->GetPassengerGUID() );
+	MapMgr *mapMgr = owner->GetMapMgr();
+	Unit *passenger = mapMgr->GetUnit( seats[ seatid ]->GetPassengerGUID() );
 	if( passenger == NULL )
 		return;
 
@@ -453,7 +455,8 @@ uint32 Vehicle::GetSeatEntryForPassenger( Unit *passenger ){
 void Vehicle::MovePassengers( float x, float y, float z, float o ){
 	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ ){
 		if( ( seats[ i ] != NULL ) && ( seats[ i ]->GetPassengerGUID() != 0 ) ){
-			Unit *passenger = owner->GetMapMgrUnit( seats[ i ]->GetPassengerGUID() );
+			MapMgr *mapMgr = owner->GetMapMgr();
+			Unit *passenger = mapMgr->GetUnit( seats[ i ]->GetPassengerGUID() );
 			if( passenger == NULL )
 				continue;
 
@@ -468,7 +471,8 @@ uint32 Vehicle::GetPassengerCount() const{
 
 	for( uint32 i = 0; i < MAX_VEHICLE_SEATS; i++ ){
 		if( ( seats[ i ] != NULL ) && ( seats[ i ]->GetPassengerGUID() != 0 ) ){
-			Unit *passenger = owner->GetMapMgrUnit( seats[ i ]->GetPassengerGUID() );
+			MapMgr *mapMgr = owner->GetMapMgr();
+			Unit *passenger = mapMgr->GetUnit( seats[ i ]->GetPassengerGUID() );
 			if( passenger == NULL )
 				continue;
 

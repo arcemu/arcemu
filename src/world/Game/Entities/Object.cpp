@@ -1323,22 +1323,6 @@ void Object::OnRemoveInRangeObject(Object* pObj)
 	*/
 }
 
-Unit* Object::GetMapMgrUnit(const uint64 & guid)
-{
-	if(!IsInWorld())
-		return NULL;
-
-	return GetMapMgr()->GetUnit(guid);
-}
-
-Creature* Object::GetMapMgrCreature(const uint64 & guid)
-{
-	if(!IsInWorld())
-		return NULL;
-
-	return GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-}
-
 Object* Object::GetPlayerOwner()
 {
 	return NULL;

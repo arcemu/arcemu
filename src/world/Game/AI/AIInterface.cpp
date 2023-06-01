@@ -3443,7 +3443,8 @@ Unit* AIInterface::getUnitToFollow()
 {
 	if(m_UnitToFollow == 0)
 		return NULL;
-	Unit* unit = m_Unit->GetMapMgrUnit(m_UnitToFollow);
+	MapMgr *mapMgr = m_Unit->GetMapMgr();
+	Unit* unit = mapMgr->GetUnit(m_UnitToFollow);
 	if(unit == NULL)
 		m_UnitToFollow = 0;
 	return unit;
@@ -3452,8 +3453,9 @@ Unit* AIInterface::getUnitToFollow()
 Unit* AIInterface::getUnitToFollowBackup()
 {
 	if(m_UnitToFollow_backup == 0)
-		return NULL;
-	Unit* unit = m_Unit->GetMapMgrUnit(m_UnitToFollow_backup);
+		return NULL;	
+	MapMgr *mapMgr = m_Unit->GetMapMgr();
+	Unit* unit = mapMgr->GetUnit(m_UnitToFollow_backup);
 	if(unit == NULL)
 		m_UnitToFollow_backup = 0;
 	return unit;
@@ -3463,7 +3465,8 @@ Unit* AIInterface::getUnitToFear()
 {
 	if(m_UnitToFear == 0)
 		return NULL;
-	Unit* unit = m_Unit->GetMapMgrUnit(m_UnitToFear);
+	MapMgr *mapMgr = m_Unit->GetMapMgr();
+	Unit* unit = mapMgr->GetUnit(m_UnitToFear);
 	if(unit == NULL)
 		m_UnitToFear = 0;
 	return unit;
@@ -3473,7 +3476,8 @@ Creature* AIInterface::getFormationLinkTarget()
 {
 	if(m_formationLinkTarget == 0)
 		return NULL;
-	Creature* creature = m_Unit->GetMapMgrCreature(m_formationLinkTarget);
+	MapMgr *mapMgr = m_Unit->GetMapMgr();
+	Creature* creature = mapMgr->GetCreature(m_formationLinkTarget);
 	if(creature == NULL)
 		m_formationLinkTarget = 0;
 	return creature;

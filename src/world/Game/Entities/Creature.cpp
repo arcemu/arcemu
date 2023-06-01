@@ -1918,8 +1918,7 @@ void Creature::PrepareForRemove()
 
 	if(GetCreatedByGUID() != 0)
 	{
-
-		Unit* summoner = GetMapMgrUnit(GetCreatedByGUID());
+		Unit* summoner = m_mapMgr->GetUnit(GetCreatedByGUID());
 		if(summoner != NULL)
 		{
 			if(summoner->GetSummonedCritterGUID() == GetGUID())
