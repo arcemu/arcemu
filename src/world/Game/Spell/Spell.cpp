@@ -1213,7 +1213,7 @@ void Spell::cast(bool check)
 			if(TargetType & SPELL_TARGET_AREA_CURTARGET)
 			{
 				//this just forces dest as the targets location :P
-				Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+				Object* target = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 
 				if(target != NULL)
 				{
@@ -5868,7 +5868,7 @@ void Spell::HandleCastEffects(uint64 guid, uint32 i)
 
 			if(m_caster->GetGUID() != guid)
 			{
-				Object* obj = m_caster->GetMapMgr()->_GetObject(guid);
+				Object* obj = m_caster->GetMapMgr()->GetObject(guid);
 				if(obj == NULL)
 					return;
 
@@ -5938,7 +5938,7 @@ void Spell::HandleModeratedTarget(uint64 guid)
 
 			if(m_caster->GetGUID() != guid)
 			{
-				Object* obj = m_caster->GetMapMgr()->_GetObject(guid);
+				Object* obj = m_caster->GetMapMgr()->GetObject(guid);
 				if(obj == NULL)
 					return;
 
@@ -5976,7 +5976,7 @@ void Spell::HandleModeratedEffects(uint64 guid)
 	//note: because this was a miss etc, we don't need to do attackable target checks
 	if(u_caster != NULL && u_caster->GetMapMgr() != NULL)
 	{
-		Object* obj = u_caster->GetMapMgr()->_GetObject(guid);
+		Object* obj = u_caster->GetMapMgr()->GetObject(guid);
 
 		if(obj != NULL && obj->IsCreature() && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NO_INITIAL_AGGRO))
 		{
@@ -5994,7 +5994,7 @@ void Spell::SpellEffectJumpBehindTarget(uint32 i)
 		return;
 	if(m_targets.m_targetMask & TARGET_FLAG_UNIT)
 	{
-		Object* uobj = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+		Object* uobj = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 
 		if(uobj == NULL || !uobj->IsUnit())
 			return;

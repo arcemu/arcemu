@@ -1328,7 +1328,7 @@ Object* Object::GetMapMgrObject(const uint64 & guid)
 	if(!IsInWorld())
 		return NULL;
 
-	return GetMapMgr()->_GetObject(guid);
+	return GetMapMgr()->GetObject(guid);
 }
 
 Pet* Object::GetMapMgrPet(const uint64 & guid)

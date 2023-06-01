@@ -210,7 +210,7 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 // Lookup Wrappers
 ///////////////////////////////////
 		Unit* GetUnit(const uint64 & guid);
-		Object* _GetObject(const uint64 & guid);
+		Object* GetObject(const uint64 & guid);
 
 		bool run();
 		bool Do();

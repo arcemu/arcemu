@@ -461,7 +461,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
 			script = Arcemu::Gossip::Script::GetInterface(TO_ITEM(qst_giver));
 	}
 	else
-		qst_giver = GetPlayer()->GetMapMgr()->_GetObject(guid);
+		qst_giver = GetPlayer()->GetMapMgr()->GetObject(guid);
 	if(qst_giver != NULL)
 	{
 		if(guidtype == HIGHGUID_TYPE_UNIT)

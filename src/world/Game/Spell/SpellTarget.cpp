@@ -117,7 +117,7 @@ void Spell::FillTargetMap(uint32 i)
 	//always add this guy :P
 	if(!(TargetType & (SPELL_TARGET_AREA | SPELL_TARGET_AREA_SELF | SPELL_TARGET_AREA_CURTARGET | SPELL_TARGET_AREA_CONE | SPELL_TARGET_OBJECT_SELF | SPELL_TARGET_OBJECT_PETOWNER)))
 	{
-		Object* target = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+		Object* target = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 		AddTarget(i, TargetType, target);
 	}
 
@@ -218,7 +218,7 @@ void Spell::AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarg
 	if(!m_caster->IsInWorld())
 		return;
 
-	Object* targ = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+	Object* targ = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 
 	if(targ == NULL)
 		return;
@@ -285,7 +285,7 @@ void Spell::AddChainTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarg
 
 void Spell::AddPartyTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets)
 {
-	Object* u = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+	Object* u = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 	if(u == NULL)
 		u = m_caster;
 	Player* p = TO< Player* >(u->GetPlayerOwner());
@@ -317,7 +317,7 @@ void Spell::AddPartyTargets(uint32 i, uint32 TargetType, float r, uint32 maxtarg
 
 void Spell::AddRaidTargets(uint32 i, uint32 TargetType, float r, uint32 maxtargets, bool partylimit)
 {
-	Object* u = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+	Object* u = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 	if(u == NULL)
 		u = m_caster;
 	Player* p = TO< Player* >(u->GetPlayerOwner());
@@ -355,7 +355,7 @@ void Spell::AddAOETargets(uint32 i, uint32 TargetType, float r, uint32 maxtarget
 	if(TargetType & (SPELL_TARGET_AREA_PARTY | SPELL_TARGET_AREA_RAID) && !(p_caster == NULL && !m_caster->IsPet() && (!m_caster->IsCreature() || !m_caster->IsTotem())))
 		return;
 
-	Object* tarobj = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+	Object* tarobj = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 
 	if(TargetType & SPELL_TARGET_AREA_SELF)
 		source = m_caster->GetPosition();
@@ -413,7 +413,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 		return false;
 	if(TargetType & SPELL_TARGET_OBJECT_TARCLASS)
 	{
-		Object* originaltarget = m_caster->GetMapMgr()->_GetObject(m_targets.m_unitTarget);
+		Object* originaltarget = m_caster->GetMapMgr()->GetObject(m_targets.m_unitTarget);
 
 		if(originaltarget == NULL || (originaltarget->IsPlayer() && obj->IsPlayer() && TO_PLAYER(originaltarget)->getClass() != TO_PLAYER(obj)->getClass()) || (originaltarget->IsPlayer() && !obj->IsPlayer()) || (!originaltarget->IsPlayer() && obj->IsPlayer()))
 			return false;
@@ -468,7 +468,7 @@ bool Spell::AddTarget(uint32 i, uint32 TargetType, Object* obj)
 			/*Object* lasttarget = NULL;
 			if (m_orderedObjects.size() > 0)
 			{
-				lasttarget = m_caster->GetMapMgr()->_GetObject(m_orderedObjects[m_orderedObjects.size() - 1]);
+				lasttarget = m_caster->GetMapMgr()->GetObject(m_orderedObjects[m_orderedObjects.size() - 1]);
 				if (lasttarget != NULL)
 				{
 					x = lasttarget->GetPositionX();
@@ -526,7 +526,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 				if(u_caster->GetUInt64Value(UNIT_FIELD_TARGET))
 				{
 					//generate targets for things like arcane missiles trigger, tame pet, etc
-					Object* target = u_caster->GetMapMgr()->_GetObject(u_caster->GetUInt64Value(UNIT_FIELD_TARGET));
+					Object* target = u_caster->GetMapMgr()->GetObject(u_caster->GetUInt64Value(UNIT_FIELD_TARGET));
 					if(target != NULL)
 					{
 						if(target->IsUnit())
@@ -551,7 +551,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 				if(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
 				{
 					//generate targets for things like arcane missiles trigger, tame pet, etc
-					Object* target = u_caster->GetMapMgr()->_GetObject(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
+					Object* target = u_caster->GetMapMgr()->GetObject(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
 					if(target != NULL)
 					{
 						if(target->IsUnit())
@@ -571,7 +571,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 				else if(u_caster->GetUInt64Value(UNIT_FIELD_TARGET))
 				{
 					//generate targets for things like arcane missiles trigger, tame pet, etc
-					Object* target = u_caster->GetMapMgr()->_GetObject(u_caster->GetUInt64Value(UNIT_FIELD_TARGET));
+					Object* target = u_caster->GetMapMgr()->GetObject(u_caster->GetUInt64Value(UNIT_FIELD_TARGET));
 					if(target != NULL)
 					{
 						if(target->IsUnit())
@@ -644,7 +644,7 @@ bool Spell::GenerateTargets(SpellCastTargets* t)
 			//spells like blizzard, rain of fire
 			if(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
 			{
-				Object* target = u_caster->GetMapMgr()->_GetObject(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
+				Object* target = u_caster->GetMapMgr()->GetObject(u_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT));
 				if(target != NULL)
 				{
 					t->m_targetMask |= TARGET_FLAG_DEST_LOCATION | TARGET_FLAG_UNIT;

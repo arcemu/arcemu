@@ -1101,7 +1101,7 @@ class LuaGameObject
 		{
 			TEST_GO();
 			uint64 guid = CHECK_GUID(L, 1);
-			Object* obj = ptr->GetMapMgr()->_GetObject(guid);
+			Object* obj = ptr->GetMapMgr()->GetObject(guid);
 			if(obj != NULL && obj->IsUnit())
 				PUSH_UNIT(L, obj);
 			else if(obj != NULL && obj->IsGameObject())

@@ -1423,7 +1423,7 @@ Unit* MapMgr::GetUnit(const uint64 & guid)
 	return NULL;
 }
 
-Object* MapMgr::_GetObject(const uint64 & guid)
+Object* MapMgr::GetObject(const uint64 & guid)
 {
 	if(!guid)
 		return NULL;
