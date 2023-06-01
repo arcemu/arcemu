@@ -232,13 +232,8 @@ class SERVER_DECL Object : public EventableObject
 		//! Only for MapMgr use
 		MapMgr* GetMapMgr() const { return m_mapMgr; }
 
-		Object* GetMapMgrObject(const uint64 & guid);
-		Pet* GetMapMgrPet(const uint64 & guid);
 		Unit* GetMapMgrUnit(const uint64 & guid);
-		Player* GetMapMgrPlayer(const uint64 & guid);
 		Creature* GetMapMgrCreature(const uint64 & guid);
-		GameObject* GetMapMgrGameObject(const uint64 & guid);
-		DynamicObject* GetMapMgrDynamicObject(const uint64 & guid);
 
 		void SetMapId(uint32 newMap) { m_mapId = newMap; }
 		void SetZoneId(uint32 newZone);
