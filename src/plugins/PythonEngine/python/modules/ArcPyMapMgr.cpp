@@ -159,6 +159,39 @@ static PyObject* ArcPyMapMgr_spawnGameObject( ArcPyMapMgr *self, PyObject *args 
 }
 
 
+/// getObject
+///   Looks up and returns an Object from this map by Guid
+///
+/// Parameters
+///   guid    -   The Object's GUID
+///
+/// Return value
+///   Returns a reference to the Object on success.
+///   Returns None on failure.
+///
+/// Example
+///   obj = mapMgr.getObject( guid )
+///
+static PyObject* ArcPyMapMgr_getObject( ArcPyMapMgr *self, PyObject *args )
+{
+	uint64 guid;
+
+	if( !PyArg_ParseTuple( args, "K", &guid ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a guid parameter" );
+		return NULL;
+	}
+
+	MapMgr *mapMgr = self->ptr;
+	Object *object = mapMgr->GetObject( guid );
+
+	if( object != NULL )
+		return (PyObject*)createArcPyObject( object );
+	else
+		Py_RETURN_NONE;
+}
+
+
 /// getUnit
 ///   Looks up and returns a Unit from this map by Guid
 ///
@@ -346,6 +379,7 @@ static PyMethodDef ArcPyMapMgr_methods[] =
 	{ "getMapId", (PyCFunction)ArcPyMapMgr_getMapId, METH_NOARGS, "Returns the map Id of this MapMgr" },
 	{ "spawnCreature", (PyCFunction)ArcPyMapMgr_spawnCreature, METH_VARARGS, "Spawns a Creature on this Map" },
 	{ "spawnGameObject", (PyCFunction)ArcPyMapMgr_spawnGameObject, METH_VARARGS, "Spawns a GameObject on this Map" },
+	{ "getObject", (PyCFunction)ArcPyMapMgr_getObject, METH_VARARGS, "Looks up and returns an Object from this map by Guid" },
 	{ "getUnit", (PyCFunction)ArcPyMapMgr_getUnit, METH_VARARGS, "Looks up and returns a Unit from this map by Guid" },
 	{ "getWorldState", (PyCFunction)ArcPyMapMgr_getWorldState, METH_VARARGS, "Returns the value of a worldstate field in a zone" },
 	{ "updateWorldState", (PyCFunction)ArcPyMapMgr_updateWorldState, METH_VARARGS, "Update worldstate for a zone" },

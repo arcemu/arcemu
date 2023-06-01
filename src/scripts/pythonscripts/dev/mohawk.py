@@ -645,6 +645,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Increase the number of Alliance controlled forts in Hellfire Penninsula", 1305, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Make Marshal Dugan larger", 1306, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Make the mailbox smaller", 1307, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "What is the name of my selection?", 1308, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -684,6 +685,18 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			mailbox.setScale( 0.5 )
 			# For some reason GOs need to be respawned for the new scale to be visible in the client
 			mailbox.despawn( 1, 1 )
+			
+	if id == 1308:
+		guid = player.getSelection()
+		if guid == 0:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "You have not selected anything" )
+		else:
+			mapMgr = player.getMapMgr()
+			obj = mapMgr.getObject( guid )
+			if obj is not None:
+				u = arcemu.toUnit( obj )
+				if u is not None:
+					creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, u.getName() )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
