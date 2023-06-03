@@ -429,6 +429,21 @@ class SERVER_DECL CreatureAIScript
 		virtual void OnLastPassengerLeft( Unit *passenger ){}
 
 
+		////////////////////////////////////////////////////
+		//void OnActivate( Unit *activator )
+		//  Called when the Creature's AI script is activated
+		//
+		//Parameter(s)
+		//  Unit *activator  - The Unit which has activated the Creature's AI script
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////
+		virtual void OnActivate( Unit *activator ){}
+
+
 	protected:
 		Creature* _unit;
 

@@ -1048,6 +1048,17 @@ void Creature::CallScriptUpdate()
 	_myScriptClass->AIUpdate();
 }
 
+void Creature::activate( Unit *activator )
+{
+	if( !IsInWorld() )
+		return;
+
+	if( _myScriptClass == NULL )
+		return;
+
+	_myScriptClass->OnActivate( activator );
+}
+
 void Creature::createVendorComponent()
 {
 	if( vendor == NULL )
