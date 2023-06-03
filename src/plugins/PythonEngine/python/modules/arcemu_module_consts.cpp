@@ -192,6 +192,7 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_HEALED", PYTHON_CREATURE_EVENT_ON_HEALED );
 	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_APPLY_AURA", PYTHON_CREATURE_EVENT_ON_APPLY_AURA );
 	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_ACTIVATE", PYTHON_CREATURE_EVENT_ON_ACTIVATE );
+	PyModule_AddIntConstant( module, "CREATURE_EVENT_ON_DEACTIVATE", PYTHON_CREATURE_EVENT_ON_DEACTIVATE );
 
 	/// Quest events
 	PyModule_AddIntConstant( module, "QUEST_EVENT_ON_ACCEPT", PYTHON_QUEST_EVENT_ON_ACCEPT );

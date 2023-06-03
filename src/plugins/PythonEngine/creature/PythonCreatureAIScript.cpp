@@ -639,3 +639,20 @@ void PythonCreatureAIScript::OnActivate( Unit *activator )
 	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
+
+void PythonCreatureAIScript::OnDeactivate()
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_DEACTIVATE;
+
+	if( !functions.hasFunction( eventType ) )
+		return;
+
+	ArcPyTuple args( 1 );
+	args.setItemUnit( 0, _unit );
+
+	PythonCallable callable( functions.getFunction( eventType ) );
+	callable.callNoReturn( args );
+}
+

@@ -85,6 +85,7 @@ public:
 	void OnHealed( Unit* healer, uint32 spellId, int32 amount );
 	void OnApplyAura( Unit* caster, uint32 spellId );
 	void OnActivate( Unit* activator );
+	void OnDeactivate();
 
 private:
 	/// Contains the Python functions that this Python Creature AI Script calls

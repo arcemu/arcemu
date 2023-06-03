@@ -704,6 +704,26 @@ static PyObject* ArcPyCreature_activate( ArcPyCreature *self, PyObject *args )
 }
 
 
+/// deactivate()
+///   Deactivates the Creature's scripted behavior.
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.deactivate()
+///
+static PyObject* ArcPyCreature_deactivate( ArcPyCreature *self, PyObject *args )
+{
+	Creature *creature = self->creaturePtr;
+	creature->deactivate();
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -727,6 +747,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "wipeTargetList", (PyCFunction)ArcPyCreature_wipeTargetList, METH_NOARGS, "Wipes the Creature's AI threat target list" },
 	{ "setNextTarget", (PyCFunction)ArcPyCreature_setNextTarget, METH_VARARGS, "Sets the AI attack target for the Creature" },
 	{ "activate", (PyCFunction)ArcPyCreature_activate, METH_VARARGS, "Activates the Creature's scripted behavior" },
+	{ "deactivate", (PyCFunction)ArcPyCreature_deactivate, METH_NOARGS, "Deactivates the Creature's scripted behavior" },
 	{NULL}
 };
 
