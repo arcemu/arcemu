@@ -1659,6 +1659,18 @@ class LuaCreature : public CreatureAIScript
 			RELEASE_LOCK;
 		}
 
+		void OnActivate( Unit *activator )
+		{
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_ACTIVATE ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.PushUnit( activator );
+			sLuaMgr.ExecuteCall( 2 );
+
+			RELEASE_LOCK;
+		}
+
 		void StringFunctionCall(int fRef)
 		{
 
