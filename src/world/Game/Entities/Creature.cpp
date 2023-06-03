@@ -1059,6 +1059,17 @@ void Creature::activate( Unit *activator )
 	_myScriptClass->OnActivate( activator );
 }
 
+void Creature::deactivate()
+{
+	if( !IsInWorld() )
+		return;
+
+	if( _myScriptClass == NULL )
+		return;
+
+	_myScriptClass->OnDeactivate();
+}
+
 void Creature::createVendorComponent()
 {
 	if( vendor == NULL )

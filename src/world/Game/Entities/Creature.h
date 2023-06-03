@@ -592,6 +592,20 @@ class SERVER_DECL Creature : public Unit
 		/////////////////////////////////////////////////////////////////
 		void activate( Unit *activator );
 
+		/////////////////////////////////////////////////////////////////
+		//void deactivate
+		//  Deactivates the Creature's scripted behavior
+		//
+		//Parameters
+		//  None
+		//
+		//Return value
+		//  None
+		//
+		//
+		/////////////////////////////////////////////////////////////////
+		void deactivate();
+
 		ARCEMU_INLINE CreatureInfo* GetCreatureInfo() { return creature_info; }
 		ARCEMU_INLINE void SetCreatureInfo(CreatureInfo* ci) { creature_info = ci; }
 		void SetCreatureProto(CreatureProto* cp) { proto = cp; }

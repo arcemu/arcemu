@@ -443,6 +443,20 @@ class SERVER_DECL CreatureAIScript
 		////////////////////////////////////////////////////
 		virtual void OnActivate( Unit *activator ){}
 
+		////////////////////////////////////////////////////
+		//void OnDeactivate()
+		//  Called when the Creature's AI script is deactivated
+		//
+		//Parameter(s)
+		//  None
+		//
+		//Return Value
+		//  None
+		//
+		//
+		////////////////////////////////////////////////////
+		virtual void OnDeactivate(){}
+
 
 	protected:
 		Creature* _unit;
