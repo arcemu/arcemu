@@ -622,3 +622,20 @@ void PythonCreatureAIScript::OnApplyAura( Unit* caster, uint32 spellId )
 	PythonCallable callable( functions.getFunction( eventType ) );
 	callable.callNoReturn( args );
 }
+
+void PythonCreatureAIScript::OnActivate( Unit *activator )
+{
+	Guard g( ArcPython::getLock() );
+
+	uint32 eventType = PYTHON_CREATURE_EVENT_ON_ACTIVATE;
+
+	if( !functions.hasFunction( eventType ) )
+		return;
+
+	ArcPyTuple args( 2 );
+	args.setItemUnit( 0, _unit );
+	args.setItemUnit( 1, activator );
+
+	PythonCallable callable( functions.getFunction( eventType ) );
+	callable.callNoReturn( args );
+}

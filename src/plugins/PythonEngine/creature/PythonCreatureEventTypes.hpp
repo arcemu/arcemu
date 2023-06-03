@@ -55,6 +55,7 @@ enum PythonCreatureEventTypes
 	PYTHON_CREATURE_EVENT_ON_DESPAWN                 = 30,
 	PYTHON_CREATURE_EVENT_ON_HEALED                  = 31,
 	PYTHON_CREATURE_EVENT_ON_APPLY_AURA              = 32,
+	PYTHON_CREATURE_EVENT_ON_ACTIVATE                = 33,
 
 	PYTHON_CREATURE_EVENT_COUNT
 };

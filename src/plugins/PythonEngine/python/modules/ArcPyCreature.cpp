@@ -671,6 +671,39 @@ static PyObject* ArcPyCreature_setNextTarget( ArcPyCreature *self, PyObject *arg
 }
 
 
+/// activate()
+///   Activates the Creature's scripted behavior.
+///
+/// Parameters
+///   activator   -   The Unit which has activated this Creature
+///
+/// Return value
+///   None
+///
+/// Example
+///   creature.activate( unit )
+///
+static PyObject* ArcPyCreature_activate( ArcPyCreature *self, PyObject *args )
+{
+	PyObject *obj;
+	
+	if( !PyArg_ParseTuple( args, "O", &obj ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a Unit parameter" );
+		return NULL;
+	}
+
+	Creature *creature = self->creaturePtr;
+
+	if( isArcPyUnit( obj ) )
+	{
+		creature->activate( ((ArcPyUnit*)obj)->unitPtr );
+	}
+
+	Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ArcPyCreature_methods[] = 
 {
 	{ "destroyCustomWaypoints", (PyCFunction)ArcPyCreature_destroyCustomWaypoints, METH_NOARGS, "Destroys the custom waypoints of the Creature" },
@@ -693,6 +726,7 @@ static PyMethodDef ArcPyCreature_methods[] =
 	{ "getSecondMostHated", (PyCFunction)ArcPyCreature_getSecondMostHated, METH_NOARGS, "Retrieves the Unit that has the second most threat on this Creature" },
 	{ "wipeTargetList", (PyCFunction)ArcPyCreature_wipeTargetList, METH_NOARGS, "Wipes the Creature's AI threat target list" },
 	{ "setNextTarget", (PyCFunction)ArcPyCreature_setNextTarget, METH_VARARGS, "Sets the AI attack target for the Creature" },
+	{ "activate", (PyCFunction)ArcPyCreature_activate, METH_VARARGS, "Activates the Creature's scripted behavior" },
 	{NULL}
 };
 
