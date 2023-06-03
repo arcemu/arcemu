@@ -496,6 +496,24 @@ static PyObject* arcemu_toCreature( PyObject *self, PyObject *args )
 	}
 }
 
+
+/// getGameTime
+///   Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)
+///
+/// Parameters:
+///   None
+///
+/// Return value:
+///   Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)
+///
+/// Example:
+///   time = arcemu.getGameTime()
+///
+static PyObject* arcemu_getGameTime( PyObject *self, PyObject *args )
+{
+	return PyLong_FromUnsignedLongLong( UNIXTIME );
+}
+
 /// This is where we assign the Arcemu Python module's function names to functions, and properties
 static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterServerHook", arcemu_RegisterServerHook, METH_VARARGS, "Registers a server hook function" },
@@ -511,6 +529,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterDummyAuraHandler", arcemu_RegisterDummyAuraHandler, METH_VARARGS, "Registers a dummy aura handler function" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
+	{ "getGameTime", arcemu_getGameTime, METH_NOARGS, "Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)" },
 	{NULL, NULL, 0, NULL }
 };
 
