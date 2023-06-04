@@ -38,10 +38,24 @@ arcemu.RegisterQuestEvent( THEAFFRAY_QUEST_ID, arcemu.QUEST_EVENT_ON_EXPLORE_ARE
 ############################################################################################################################################
 
 AFFRAY_CHALLENGER_DISPLAY_IDS = [ 4968, 4969, 4970, 4971 ]
+AFFRAY_EMOTES = [
+	arcemu.EMOTE_ONESHOT_NONE,
+	arcemu.EMOTE_ONESHOT_CHEER,
+	arcemu.EMOTE_ONESHOT_LAUGH,
+	arcemu.EMOTE_ONESHOT_RUDE,
+	arcemu.EMOTE_ONESHOT_ROAR	]
 
-def AffrayChallenger_onLoad( unit, event ):
-	
+def AffrayChallenger_onLoad( unit, event ):	
 	unit.setDisplayId( AFFRAY_CHALLENGER_DISPLAY_IDS[ Math.randomUInt( 3 ) ] )
+	unit.RegisterAIUpdateEvent( 5000 )
+	return
+	
+def AffrayChallenger_onAIUpdate( unit, event ):
+	unit.emote( AFFRAY_EMOTES[ Math.randomUInt( 4 )  ] )
+	return
+	
+def AffrayChallenger_onCombatStart( unit, event, target ):
+	unit.removeAIUpdateEvent()
 	return
 
 def AffrayChallenger_onDied( unit, event, killer ):
@@ -53,6 +67,8 @@ def AffrayChallenger_onDied( unit, event, killer ):
 	return
 	
 arcemu.RegisterUnitEvent( AFFRAY_CHALLENGER_NPC_ID, arcemu.CREATURE_EVENT_ON_LOAD, AffrayChallenger_onLoad )
+arcemu.RegisterUnitEvent( AFFRAY_CHALLENGER_NPC_ID, arcemu.CREATURE_EVENT_ON_AIUPDATE, AffrayChallenger_onAIUpdate )
+arcemu.RegisterUnitEvent( AFFRAY_CHALLENGER_NPC_ID, arcemu.CREATURE_EVENT_ON_ENTER_COMBAT, AffrayChallenger_onCombatStart )
 arcemu.RegisterUnitEvent( AFFRAY_CHALLENGER_NPC_ID, arcemu.CREATURE_EVENT_ON_DIED, AffrayChallenger_onDied )
 
 ############################################################################################################################################
