@@ -267,6 +267,7 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_FLEX", EMOTE_ONESHOT_FLEX );
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_SHY", EMOTE_ONESHOT_SHY );
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_POINT", EMOTE_ONESHOT_POINT );
+	PyModule_AddIntConstant( module, "EMOTE_STATE_READYUNARMED", EMOTE_STATE_READYUNARMED );
 	PyModule_AddIntConstant( module, "EMOTE_STATE_NONE", EMOTE_STATE_NONE );
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_SALUTE", EMOTE_ONESHOT_SALUTE );
 	PyModule_AddIntConstant( module, "EMOTE_ONESHOT_DANCE", EMOTE_ONESHOT_DANCE );

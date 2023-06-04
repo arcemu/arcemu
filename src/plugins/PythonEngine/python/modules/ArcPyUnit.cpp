@@ -1198,6 +1198,62 @@ static PyObject* ArcPyUnit_emote( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+
+/// setEmoteState()
+///   Set the (permanent) emote state of the Unit
+///
+/// Parameters
+///   emote   -  The emote state to set
+///   delay   -  Delay before setting the emote state
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setEmoteState( 2 )
+///
+static PyObject* ArcPyUnit_setEmoteState( ArcPyUnit *self, PyObject *args )
+{
+	uint32 emote;
+	uint32 delay = 0;
+
+	if( !PyArg_ParseTuple( args, "k|k", &emote, &delay ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires an emote parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	if( delay > 0 )
+	{
+		sEventMgr.AddEvent( unit, &Unit::SetEmoteState, emote, EVENT_UNIT_EMOTE, delay, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}
+	else
+	{
+		unit->SetEmoteState( emote );
+	}
+
+	Py_RETURN_NONE;
+}
+
+/// getEmoteState()
+///   Returns the (permanent) emote state of the Unit
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the emote state of the Unit
+///
+/// Example
+///   emote = unit.getEmoteState()
+///
+static PyObject* ArcPyUnit_getEmoteState( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	return PyLong_FromUnsignedLong( unit->GetEmoteState() );
+}
+
 /// faceUnit
 ///   Make the Unit face another Unit
 ///
@@ -1676,6 +1732,8 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "toPlayer", (PyCFunction)ArcPyUnit_toPlayer, METH_NOARGS, "Casts the Unit to a Player if possible" },
 	{ "toCreature", (PyCFunction)ArcPyUnit_toCreature, METH_NOARGS, "Casts the Unit to a Creature if possible" },
 	{ "emote", (PyCFunction)ArcPyUnit_emote, METH_VARARGS, "Make the Unit perform an emote" },
+	{ "setEmoteState", (PyCFunction)ArcPyUnit_setEmoteState, METH_VARARGS, "Sets the Unit's emote state" },
+	{ "getEmoteState", (PyCFunction)ArcPyUnit_getEmoteState, METH_NOARGS, "Return the Unit's emote state" },
 	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
 	{ "castSpell", (PyCFunction)ArcPyUnit_castSpell, METH_VARARGS, "Makes the Unit cast a spell" },
 	{ "getDisplayId", (PyCFunction)ArcPyUnit_getDisplayId, METH_NOARGS, "Returns the display Id of the Unit" },

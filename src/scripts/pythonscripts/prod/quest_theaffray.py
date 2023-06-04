@@ -121,6 +121,8 @@ def BigWill_onReachWP( unit, event, waypointId ,forward ):
 			bigwill.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Ready when you are, warrior!" )
 			bigwill.setFaction( 189 )
 			bigwill.setMovementType( arcemu.MOVEMENTTYPE_DONTMOVEWP )
+			bigwill.emote( arcemu.EMOTE_ONESHOT_ROAR )
+			bigwill.setEmoteState( arcemu.EMOTE_STATE_READYUNARMED, 1000 )
 	
 	return
 	
