@@ -155,6 +155,32 @@ static PyObject* ArcPyObject_getOrientation( ArcPyObject *self, PyObject *args )
 	return PyFloat_FromDouble( object->GetOrientation() );
 }
 
+/// setOrientation
+///   Sets the orientation (0 - 2PI) of the Object
+///
+/// Parameters
+///   orientation - The orientation (0 - 2PI) of the Object
+///
+/// Return value
+///   None
+///
+/// Example
+///   object.setOrientation( 3.14 )
+///
+static PyObject* ArcPyObject_setOrientation( ArcPyObject *self, PyObject *args )
+{
+	float orientation;
+	if( !PyArg_ParseTuple( args, "f", &orientation ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a float parameter" );
+		return NULL;
+	}
+
+	Object *object = self->objectPtr;
+	object->SetOrientation( orientation );
+	Py_RETURN_NONE;
+}
+
 
 /// calcDistance
 ///   Calculates the distance between two objects
@@ -673,7 +699,8 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "getPositionX", (PyCFunction)ArcPyObject_getPositionX, METH_VARARGS, "Returns the X coordinate of the Object" },
 	{ "getPositionY", (PyCFunction)ArcPyObject_getPositionY, METH_VARARGS, "Returns the Y coordinate of the Object" },
 	{ "getPositionZ", (PyCFunction)ArcPyObject_getPositionZ, METH_VARARGS, "Returns the Z coordinate of the Object" },
-	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },
+	{ "getOrientation", (PyCFunction)ArcPyObject_getOrientation, METH_NOARGS, "Returns the orientation (0-2PI) of the Object" },	
+	{ "setOrientation", (PyCFunction)ArcPyObject_setOrientation, METH_VARARGS, "Sets the orientation (0-2PI) of the Object" },
 	{ "calcDistance", (PyCFunction)ArcPyObject_calcDistance, METH_VARARGS, "Calculates the distance between two objects" },
 	{ "isInFront", (PyCFunction)ArcPyObject_isInFront, METH_VARARGS, "Tells if the Object is in front of another" },
 	{ "isInArc", (PyCFunction)ArcPyObject_isInArc, METH_VARARGS, "Tells if the Object is in the specified arc" },
