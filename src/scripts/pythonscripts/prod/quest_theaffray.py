@@ -73,6 +73,21 @@ arcemu.RegisterUnitEvent( AFFRAY_CHALLENGER_NPC_ID, arcemu.CREATURE_EVENT_ON_DIE
 
 ############################################################################################################################################
 
+AFFRAY_SPECTATOR_NPC_ID = 6249
+
+def AffraySpectator_onLoad( unit, event ):	
+	unit.RegisterAIUpdateEvent( 5000 )
+	return
+	
+def AffraySpectator_onAIUpdate( unit, event ):
+	unit.emote( AFFRAY_EMOTES[ Math.randomUInt( 4 )  ] )
+	return
+	
+arcemu.RegisterUnitEvent( AFFRAY_SPECTATOR_NPC_ID, arcemu.CREATURE_EVENT_ON_LOAD, AffraySpectator_onLoad )
+arcemu.RegisterUnitEvent( AFFRAY_SPECTATOR_NPC_ID, arcemu.CREATURE_EVENT_ON_AIUPDATE, AffraySpectator_onAIUpdate )
+
+############################################################################################################################################
+
 BIG_WILL_WPS = [
 	[-1712.484619, -4342.101563, 6.033428, 6.187793],
 	[-1704.122803, -4342.901855, 4.705498, 6.187793],
