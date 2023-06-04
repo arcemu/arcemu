@@ -1291,6 +1291,34 @@ static PyObject* ArcPyUnit_faceUnit( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// setFacing()
+///   Set the Unit's orientation / facing
+///
+/// Parameters
+///   facing   -  The orientation/facing to set
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setFacing( 3.14 )
+///
+static PyObject* ArcPyUnit_setFacing( ArcPyUnit *self, PyObject *args )
+{
+	float facing;
+
+	if( !PyArg_ParseTuple( args, "f", &facing ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "This method requires a Unit parameter" );
+		return NULL;
+	}
+
+	Unit *unit = self->unitPtr;
+	unit->SetFacing( facing );
+
+	Py_RETURN_NONE;
+}
+
 
 /// castSpell
 ///   Makes the Unit cast a spell
@@ -1735,6 +1763,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "setEmoteState", (PyCFunction)ArcPyUnit_setEmoteState, METH_VARARGS, "Sets the Unit's emote state" },
 	{ "getEmoteState", (PyCFunction)ArcPyUnit_getEmoteState, METH_NOARGS, "Return the Unit's emote state" },
 	{ "faceUnit", (PyCFunction)ArcPyUnit_faceUnit, METH_VARARGS, "Make the Unit face another Unit" },
+	{ "setFacing", (PyCFunction)ArcPyUnit_setFacing, METH_VARARGS, "Sets the Unit's orientation / facing" },
 	{ "castSpell", (PyCFunction)ArcPyUnit_castSpell, METH_VARARGS, "Makes the Unit cast a spell" },
 	{ "getDisplayId", (PyCFunction)ArcPyUnit_getDisplayId, METH_NOARGS, "Returns the display Id of the Unit" },
 	{ "setDisplayId", (PyCFunction)ArcPyUnit_setDisplayId, METH_VARARGS, "Sets the display Id of the Unit" },
