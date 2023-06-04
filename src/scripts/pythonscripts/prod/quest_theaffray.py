@@ -25,8 +25,11 @@ AFFRAY_CHALLENGER_NPC_ID = 6240
 def TheAffray_onExploreArea( areaId, player, questId ):
 	if areaId != 522:
 		return
-
+		
 	mapMgr = player.getMapMgr()	
+	if mapMgr is None:
+		return
+
 	twiggy = mapMgr.getCreatureNearestCoords( -1686.14, -4323.04, 4.28, TWIGGY_FLATHEAD_NPC_ID )
 	if twiggy is not None:
 		twiggy.activate( player )
