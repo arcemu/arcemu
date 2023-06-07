@@ -1301,6 +1301,20 @@ bool LuaHookOnResurrect(Player* pPlayer)
 	return result;
 }
 
+void LuaHookOnTransportArrived(GameObject *go, uint32 route)
+{
+	GET_LOCK
+	for(std::vector<uint16>::iterator itr = EventAsToFuncName[SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED].begin(); itr != EventAsToFuncName[SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED].end(); ++itr)
+	{
+		sLuaMgr.BeginCall((*itr));
+		sLuaMgr.PUSH_INT(SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED);
+		sLuaMgr.PushGo(go);
+		sLuaMgr.PUSH_UINT(route);
+		sLuaMgr.ExecuteCall(3);
+	}
+	RELEASE_LOCK
+}
+
 bool LuaOnDummySpell(uint32 effectIndex, Spell* pSpell)
 {
 	GET_LOCK
@@ -2936,6 +2950,7 @@ void LuaEngine::Restart()
 	RegisterHook(SERVER_HOOK_EVENT_ON_DUEL_FINISHED, (void*)LuaHookOnDuelFinished)
 	RegisterHook(SERVER_HOOK_EVENT_ON_AURA_REMOVE, (void*)LuaHookOnAuraRemove)
 	RegisterHook(SERVER_HOOK_EVENT_ON_RESURRECT, (void*)LuaHookOnResurrect)
+	RegisterHook(SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED, (void*)LuaHookOnTransportArrived)
 
 	for(std::map<uint32, uint16>::iterator itr = m_luaDummySpells.begin(); itr != m_luaDummySpells.end(); ++itr)
 	{
