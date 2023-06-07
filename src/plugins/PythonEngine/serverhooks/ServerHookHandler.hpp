@@ -56,7 +56,8 @@ public:
 	static void hookOnAdvanceSkillLine( Player* player, uint32 skill, uint32 value );
 	static void hookOnDuelFinished( Player* winner, Player* loser );
 	static void hookOnAuraRemove( Aura* aura );
-	static bool hookOnPlayerResurrect( Player* player );	
+	static bool hookOnPlayerResurrect( Player* player );
+	static void hookOnTransportArrived( GameObject *go, uint32 route );
 };
 
 #endif

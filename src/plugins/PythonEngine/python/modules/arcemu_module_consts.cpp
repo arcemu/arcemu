@@ -92,6 +92,7 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_DUEL_FINISHED", SERVER_HOOK_EVENT_ON_DUEL_FINISHED );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_AURA_REMOVE", SERVER_HOOK_EVENT_ON_AURA_REMOVE );
 	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_RESURRECT", SERVER_HOOK_EVENT_ON_RESURRECT );
+	PyModule_AddIntConstant( module, "SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED", SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED );
 
 	/// Languages
 	PyModule_AddIntConstant( module, "LANG_UNIVERSAL", LANG_UNIVERSAL );

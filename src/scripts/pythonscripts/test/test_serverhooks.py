@@ -140,6 +140,10 @@ def onKillPlayer( killer, victim ):
 def onAuraRemove( aura ):
 	print( "Aura removed. Spell name: " + aura.getSpellName() + ", Spell Id:" + str( aura.getSpellId() ) + ", Aura slot:" + str( aura.getAuraSlot() ) )
 	
+def onTransportArrived( go, route ):
+	print( "Transport on route " + str( route ) + " has arrived" )
+	return
+	
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_NEW_CHARACTER, onNewCharacter )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_KILL_PLAYER, onKillPlayer )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, onFirstEnterWorld )
@@ -172,3 +176,4 @@ arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, onAdva
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_DUEL_FINISHED, onDuelFinished )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_AURA_REMOVE, onAuraRemove )
 arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_RESURRECT, onPlayerResurrect )
+arcemu.RegisterServerHook( arcemu.SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED, onTransportArrived )

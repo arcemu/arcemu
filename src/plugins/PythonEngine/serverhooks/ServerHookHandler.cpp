@@ -886,4 +886,22 @@ void ServerHookHandler::hookOnAuraRemove( Aura* aura )
 	}
 }
 
- 
+void ServerHookHandler::hookOnTransportArrived( GameObject *go, uint32 route )
+{
+	Guard g( ArcPython::getLock() );
+
+	std::vector< void* > handlers;
+	ServerHookRegistry::getHooksForEvent( SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED, handlers );
+
+	for( std::vector< void* >::iterator itr = handlers.begin(); itr != handlers.end(); ++itr )
+	{
+		void* handler = *itr;
+
+		ArcPyTuple args( 2 );
+		args.setItemGameObject( 0, go );
+		args.setItem( 1, route );
+
+		PythonCallable callable( handler );
+		callable.callNoReturn( args );
+	}
+}
