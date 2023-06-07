@@ -1119,3 +1119,12 @@ bool HookInterface::OnResurrect(Player* pPlayer)
 	}
 	return ret_val;
 }
+
+void HookInterface::onTransportArrived(GameObject *go, uint32 route)
+{
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED];
+	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
+	{
+		((tOnTransportArrived)*itr)(go, route);
+	}
+}

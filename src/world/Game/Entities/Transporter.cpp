@@ -364,6 +364,13 @@ void Transporter::UpdatePosition()
 					break;
 			}
 			TransportGossip(GetInfo()->DisplayID);
+			
+			/// Transports start up before scripts and the HookInterface
+			HookInterface *hookInterface = HookInterface::getSingletonPtr();			
+			if( hookInterface != NULL )
+			{
+				hookInterface->onTransportArrived(this, pInfo->SpellFocus);
+			}
 		}
 	}
 }
