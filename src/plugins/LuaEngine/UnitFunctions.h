@@ -3418,19 +3418,6 @@ class LuaUnit
 			return 0;
 		}
 
-		static int SetCreatureName(lua_State* L, Unit* ptr)
-		{
-			TEST_UNIT()
-			//Paroxysm : This method makes alot of sense...
-			/*
-			uint32 id = CHECK_ULONG(L,1);
-			if(!ptr|!id)
-				return 0;
-			TO_PLAYER(ptr)->SetCreatureInfo(CreatureNameStorage.LookupEntry(id));
-			*/
-			return 0;
-		}
-
 		static int SetBindPoint(lua_State* L, Unit* ptr)
 		{
 			TEST_PLAYER()
