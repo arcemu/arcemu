@@ -925,21 +925,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 //				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
 					resetNextTarget();
 
-					//WorldPacket data(SMSG_MESSAGECHAT, 100);
 					const char* msg = "%s attempts to run away in fear!";
-					//data << (uint8)CHAT_MSG_CHANNEL;
-					//data << (uint32)LANG_UNIVERSAL;
-					//data << (uint32)(strlen(TO< Creature* >(m_Unit)->GetCreatureInfo()->Name) + 1);
-					//data << TO< Creature* >(m_Unit)->GetCreatureInfo()->Name;
-					//data << (uint64)0;
-					//data << (uint32)(msg.size() + 1);
-					//data << msg;
-					//data << uint8(0);
-
-					//m_Unit->SendMessageToSet(&data, false);
 
 					m_Unit->SendChatMessage(CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, msg);
-					//sChatHandler.FillMessageData(&data, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, msg, m_Unit->GetGUID());
 
 					m_hasFleed = true;
 				}
