@@ -926,7 +926,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					resetNextTarget();
 
 					//WorldPacket data(SMSG_MESSAGECHAT, 100);
-					char msg[256] = "%s attempts to run away in fear!";
+					const char* msg = "%s attempts to run away in fear!";
 					//data << (uint8)CHAT_MSG_CHANNEL;
 					//data << (uint32)LANG_UNIVERSAL;
 					//data << (uint32)(strlen(TO< Creature* >(m_Unit)->GetCreatureInfo()->Name) + 1);
