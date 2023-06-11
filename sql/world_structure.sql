@@ -1995,6 +1995,7 @@ CREATE TABLE `quests` (
   `CompletionText` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `IncompleteText` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `EventObjective` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `ObjectivesCompleteText` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ObjectiveText1` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ObjectiveText2` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ObjectiveText3` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,

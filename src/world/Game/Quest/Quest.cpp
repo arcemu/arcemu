@@ -113,7 +113,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 		*data << qst->objectives;					// Objectives / description
 		*data << qst->details;						// Details
 		*data << qst->eventobjective;				// Describes the event that should be completed ( e.g.: Scourge Leader identified )
-		*data << uint8(0);							// most 3.3.0 quests i seen have something like "Return to NPCNAME"
+		*data << qst->objectivescompletetext;		// Shown when the quest objectives have been completed and the quest ready to be turned in. ( e.g.: Return to xyz )
 	}
 
 	for(i = 0; i < MAX_REQUIRED_MOBS; ++i)
