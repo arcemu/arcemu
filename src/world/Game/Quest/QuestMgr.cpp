@@ -919,7 +919,7 @@ void QuestMgr::OnPlayerItemPickup(Player* plr, Item* item)
 				{
 					pcount = plr->GetItemInterface()->GetItemCount(entry, true);
 					CALL_QUESTSCRIPT_EVENT(qle, OnPlayerItemPickup)(entry, pcount, plr, qle);
-					if(pcount < qle->GetQuest()->required_itemcount[j])
+					if(pcount <= qle->GetQuest()->required_itemcount[j])
 					{
 						WorldPacket data(8);
 						data.SetOpcode(SMSG_QUESTUPDATE_ADD_ITEM);
