@@ -181,7 +181,6 @@ void DeeprunRatRoundup(Player* pPlayer, Object* pObject)
 void TheEscape(Player* pPlayer, Object* pObject)
 {
 	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Here goes nothing...");
-	(TO_CREATURE(pObject))->SetOrientation(5.39307);
 	(TO_CREATURE(pObject))->Despawn(5000, 30000);
 }
 
