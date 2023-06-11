@@ -204,7 +204,7 @@ struct Quest
 	char* objectives;
 	char* completiontext;
 	char* incompletetext;
-	char* endtext;
+	char* eventobjective;
 
 	char* objectivetexts[MAX_OBJECTIVE_TEXTS];
 

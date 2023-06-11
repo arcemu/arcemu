@@ -1994,7 +1994,7 @@ CREATE TABLE `quests` (
   `Objectives` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `CompletionText` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `IncompleteText` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `EndText` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `EventObjective` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ObjectiveText1` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ObjectiveText2` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `ObjectiveText3` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -2875,7 +2875,7 @@ CREATE TABLE `world_db_version` (
 
 LOCK TABLES `world_db_version` WRITE;
 /*!40000 ALTER TABLE `world_db_version` DISABLE KEYS */;
-INSERT INTO `world_db_version` VALUES ('2012-08-14_21-25_worldmap_info');
+INSERT INTO `world_db_version` VALUES ('20230611-1927_event_objective');
 /*!40000 ALTER TABLE `world_db_version` ENABLE KEYS */;
 UNLOCK TABLES;
 

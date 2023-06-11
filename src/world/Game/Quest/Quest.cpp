@@ -112,7 +112,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest* qst)
 		*data << qst->title;						// Title / name of quest
 		*data << qst->objectives;					// Objectives / description
 		*data << qst->details;						// Details
-		*data << qst->endtext;						// Subdescription
+		*data << qst->eventobjective;				// Describes the event that should be completed ( e.g.: Scourge Leader identified )
 		*data << uint8(0);							// most 3.3.0 quests i seen have something like "Return to NPCNAME"
 	}
 
