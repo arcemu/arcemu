@@ -6452,18 +6452,17 @@ void Player::CalcResistance(uint32 type)
 
 void Player::UpdateNearbyGameObjects()
 {
-
 	for(Object::InRangeSet::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 	{
+		bool activate = false;
+
 		Object* obj = (*itr);
 		if(obj->IsGameObject())
 		{
-			bool activate_quest_object = false;
 			GameObject* go = TO_GAMEOBJECT(obj);
 			QuestLogEntry* qle = NULL;
 			GameObjectInfo* info = go->GetInfo();
 
-			bool deactivate = false;
 			if(info &&
 			        (info->goMap.size() || info->itemMap.size()))
 			{
@@ -6478,45 +6477,42 @@ void Player::UpdateNearbyGameObjects()
 							if(qle->GetQuest()->required_mob[i] == static_cast<int32>(go->GetEntry()) &&
 							        qle->GetMobCount(i) < qle->GetQuest()->required_mobcount[i])
 							{
-								activate_quest_object = true;
+								activate = true;
 								break;
 							}
 						}
-						if(activate_quest_object)
+						if(activate)
 							break;
 					}
 				}
 
-				if(!activate_quest_object)
+				if(!activate)
 				{
 					for(GameObjectItemMap::iterator GOitr = go->GetInfo()->itemMap.begin();
 					        GOitr != go->GetInfo()->itemMap.end();
 					        ++GOitr)
 					{
-						for(std::map<uint32, uint32>::iterator it2 = GOitr->second.begin();
-						        it2 != GOitr->second.end();
-						        ++it2)
-						{
-							if(GetItemInterface()->GetItemCount(it2->first) < it2->second)
+						if( GetQuestLogForEntry( GOitr->first->id ) != NULL )
+						{						
+							for(std::map<uint32, uint32>::iterator it2 = GOitr->second.begin();
+									it2 != GOitr->second.end();
+									++it2)
 							{
-								activate_quest_object = true;
-								break;
+								if(GetItemInterface()->GetItemCount(it2->first) < it2->second)
+								{
+									activate = true;
+									break;
+								}
 							}
+							if(activate)
+								break;
 						}
-						if(activate_quest_object)
-							break;
 					}
 				}
-
-				if(!activate_quest_object)
-				{
-					deactivate = true;
-				}
 			}
-			bool bPassed = !deactivate;
-			if(go->isQuestGiver())
+
+			if(go->isQuestGiver() && !activate)
 			{
-		bPassed = false;
 				if(go->HasQuests() && go->NumOfQuests() > 0)
 				{
 					std::list<QuestRelation*>::iterator itr2 = go->QuestsBegin();
@@ -6530,16 +6526,17 @@ void Player::UpdateNearbyGameObjects()
 						        || (qr->type & QUESTGIVER_QUEST_END && status == QMGR_QUEST_FINISHED)
 						  )
 						{
-							// Activate gameobject
-							EventActivateGameObject(go);
-							bPassed = true;
+							activate = true;
 							break;
 						}
 					}
 				}
 			}
-			if(!bPassed)
-				EventDeActivateGameObject(TO_GAMEOBJECT(*itr));
+
+			if( activate )
+				EventActivateGameObject(go);
+			else
+				EventDeActivateGameObject(go);
 		}
 	}
 }
