@@ -6226,16 +6226,6 @@ bool Player::removeDeletedSpell(uint32 SpellID)
 	return true;
 }
 
-void Player::EventActivateGameObject(GameObject* obj)
-{
-	UpdateBuilder::SendFieldUpdatePacket(this, obj, GAMEOBJECT_DYNAMIC, 1 | 8 );
-}
-
-void Player::EventDeActivateGameObject(GameObject* obj)
-{
-	UpdateBuilder::SendFieldUpdatePacket(this, obj, GAMEOBJECT_DYNAMIC, 0 );
-}
-
 void Player::EventTimedQuestExpire( uint32 questid ){
 	QuestLogEntry *qle = this->GetQuestLogForEntry( questid );
 	if( qle == NULL )
@@ -6534,9 +6524,9 @@ void Player::UpdateNearbyGameObjects()
 			}
 
 			if( activate )
-				EventActivateGameObject(go);
+				UpdateBuilder::SendFieldUpdatePacket(this, go, GAMEOBJECT_DYNAMIC, 1 | 8 );
 			else
-				EventDeActivateGameObject(go);
+				UpdateBuilder::SendFieldUpdatePacket(this, go, GAMEOBJECT_DYNAMIC, 0 );
 		}
 	}
 }

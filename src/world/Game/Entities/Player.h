@@ -1616,8 +1616,7 @@ class SERVER_DECL Player : public Unit
 		uint64 m_AutoShotTarget;
 		SpellEntry* m_AutoShotSpell;
 		void _InitialReputation();
-		void EventActivateGameObject(GameObject* obj);
-		void EventDeActivateGameObject(GameObject* obj);
+
 		void UpdateNearbyGameObjects();
 
 		void CalcResistance(uint32 type);
