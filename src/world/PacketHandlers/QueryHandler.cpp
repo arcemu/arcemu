@@ -352,7 +352,6 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 
 	WorldPacket data(SMSG_QUESTGIVER_STATUS_MULTIPLE, 1000);
 	Object::InRangeSet::iterator itr;
-	Creature* pCreature;
 	uint32 count = 0;
 	data << count;
 
@@ -363,16 +362,28 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 
 	for(itr = _player->m_objectsInRange.begin(); itr != _player->m_objectsInRange.end(); ++itr)
 	{
-		if(!(*itr)->IsCreature())
-			continue;
+		Object *obj = *itr;
 
-		pCreature = TO_CREATURE(*itr);
-
-		if(pCreature->isQuestGiver())
+		if( obj->IsCreature() )
 		{
-			data << pCreature->GetGUID();
-			data << uint8(sQuestMgr.CalcStatus(pCreature, _player));
-			++count;
+			Creature *pCreature = TO_CREATURE(obj);
+			if(pCreature->isQuestGiver())
+			{
+				data << uint64( pCreature->GetGUID() );
+				data << uint8(sQuestMgr.CalcStatus(pCreature, _player));
+				++count;
+			}
+		}
+		else
+		if( obj->IsGameObject() )
+		{
+			GameObject *go = TO_GAMEOBJECT(obj);
+			if( go->isQuestGiver() )
+			{
+				data << uint64( go->GetGUID() );
+				data << uint8( sQuestMgr.CalcStatus( go, _player ) );
+				++count;
+			}
 		}
 	}
 
