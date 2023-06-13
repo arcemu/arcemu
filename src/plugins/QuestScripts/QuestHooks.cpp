@@ -178,10 +178,9 @@ void DeeprunRatRoundup(Player* pPlayer, Object* pObject)
 	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Into the box me pretties! Thas it. One by one ye go.");
 }
 
-void MaybellComplete(Player* pPlayer, Object* pObject)
+void TheEscape(Player* pPlayer, Object* pObject)
 {
-	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Here goes nothing...");
-	(TO_CREATURE(pObject))->Emote(EMOTE_ONESHOT_CRY);
+	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Here goes nothing...");
 	(TO_CREATURE(pObject))->Despawn(5000, 30000);
 }
 
@@ -210,7 +209,7 @@ void OnQuestFinished(Player* pPlayer, Quest* pQuest, Object* pObject)
 			DeeprunRatRoundup(pPlayer, pObject);
 			break;
 		case 114:
-			MaybellComplete(pPlayer, pObject);
+			TheEscape(pPlayer, pObject);
 			break;
 	}
 }
