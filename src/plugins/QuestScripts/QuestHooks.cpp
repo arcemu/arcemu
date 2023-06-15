@@ -184,6 +184,17 @@ void TheEscape(Player* pPlayer, Object* pObject)
 	(TO_CREATURE(pObject))->Despawn(5000, 30000);
 }
 
+void HilarysNecklace(Player* pPlayer, Object* pObject)
+{
+	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I know how to speak kitty, and Effsee said thank you.");
+	
+	Creature* effsee = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-9351.24f, -2204.45f, 62.18f, 8963);
+	if(effsee != NULL)
+	{
+		effsee->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Meow!", 2000);
+	}
+}
+
 //========================================================================================
 
 void OnQuestFinished(Player* pPlayer, Quest* pQuest, Object* pObject)
@@ -210,6 +221,9 @@ void OnQuestFinished(Player* pPlayer, Quest* pQuest, Object* pObject)
 			break;
 		case 114:
 			TheEscape(pPlayer, pObject);
+			break;
+		case 3741:
+			HilarysNecklace(pPlayer, pObject);
 			break;
 	}
 }
