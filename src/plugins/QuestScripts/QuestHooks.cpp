@@ -80,9 +80,10 @@ void Rest_n_Relaxation(Player* pPlayer, Object* pObject)
 
 void ReportToGoldshire(Player* pPlayer, Object* pObject)
 {
-	char msg[256];
-	snprintf((char*)msg, 256, "You are dismissed %s . ", pPlayer->GetName());
-	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg);
+	string say = "You are dismissed, ";
+	say += pPlayer->GetName();
+	say += ".";
+	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, say.c_str());
 }
 
 void ZuluhedtheWhacked(Player* pPlayer, Object* pObject)
