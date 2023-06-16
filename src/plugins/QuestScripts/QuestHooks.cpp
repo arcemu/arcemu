@@ -83,7 +83,6 @@ void ReportToGoldshire(Player* pPlayer, Object* pObject)
 	char msg[256];
 	snprintf((char*)msg, 256, "You are dismissed %s . ", pPlayer->GetName());
 	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg);
-	(TO_CREATURE(pObject))->Emote(EMOTE_ONESHOT_SALUTE_NOSHEATH);
 }
 
 void ZuluhedtheWhacked(Player* pPlayer, Object* pObject)
