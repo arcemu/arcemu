@@ -97,9 +97,37 @@ static PyObject* ArcPyObjectLocator_findClosestFriendly( ArcPyObjectLocator *sel
 	return (PyObject*)createArcPyUnit( unit );
 }
 
+
+/// findClosestEnemy
+///   Returns the closest enemy Unit or returns None
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the closest enemy Unit or returns None
+///
+/// Example
+///   u = locator.findClosestEnemy()
+///
+
+static PyObject* ArcPyObjectLocator_findClosestEnemy( ArcPyObjectLocator *self, PyObject *args )
+{
+	ObjectLocator *locator = self->ptr;
+	Unit *unit = locator->findClosestEnemy();
+
+	if( unit == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+
+	return (PyObject*)createArcPyUnit( unit );
+}
+
 static PyMethodDef ArcPyObjectLocator_methods[] = 
 {
 	{ "findClosestFriendly", (PyCFunction)ArcPyObjectLocator_findClosestFriendly, METH_NOARGS, "Returns the closest friendly Unit" },
+	{ "findClosestEnemy", (PyCFunction)ArcPyObjectLocator_findClosestEnemy, METH_NOARGS, "Returns the closest enemy Unit" },
 	{ NULL }
 };
 
