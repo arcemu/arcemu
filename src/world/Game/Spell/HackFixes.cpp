@@ -26,6 +26,7 @@ void applyCompilerHacks()
 {
 	ObjectLocator locator( NULL );
 	locator.findClosestFriendly();
+	locator.findClosestEnemy();
 }
 
 void CreateDummySpell(uint32 id)

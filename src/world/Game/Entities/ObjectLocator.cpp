@@ -55,3 +55,41 @@ Unit* ObjectLocator::findClosestFriendly()
 
 	return closestUnit;
 }
+
+Unit* ObjectLocator::findClosestEnemy()
+{
+	if( object == NULL )
+		return NULL;
+
+	double closestDistance = std::numeric_limits< double >::max();
+	Unit *closestUnit = NULL;
+
+	std::set< Object* > &objects = object->GetInRangeObjects();
+
+	std::set< Object* >::iterator itr = objects.begin();
+	while( itr != objects.end() )
+	{
+		Object *obj = *itr;
+
+		if( obj->IsUnit() )
+		{
+			if( !obj->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE ) && !obj->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 ) )
+			{
+				if( isHostile( object, obj ) )
+				{
+					double distance = object->GetDistanceSq( obj );
+					if( distance < closestDistance )
+					{
+						closestDistance = distance;
+						closestUnit = TO_UNIT( obj );
+					}
+				}
+			}
+		}
+
+		++itr;
+	}
+
+	return closestUnit;
+}
+
