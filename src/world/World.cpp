@@ -286,9 +286,11 @@ bool BasicTaskExecutor::run()
 }
 
 void ApplyNormalFixes();
+void applyCompilerHacks();
 
 bool World::SetInitialWorldSettings()
 {
+	applyCompilerHacks();
 	Player::InitVisibleUpdateBits();
 
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");

@@ -20,6 +20,14 @@
 
 #include "StdAfx.h"
 
+/// This is necessary because these are not referenced elsewhere in the code as of now
+/// Which leads to the compiler removing them from the output binary, which causes a linking error
+void applyCompilerHacks()
+{
+	ObjectLocator locator( NULL );
+	locator.findClosestFriendly();
+}
+
 void CreateDummySpell(uint32 id)
 {
 	const char* name = "Dummy Trigger";

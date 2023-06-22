@@ -90,7 +90,8 @@ SET(sources
 	PacketHandlers/MovementHandler.cpp 
 	MovementInfo.cpp
 	PacketHandlers/NPCHandler.cpp 
-	Game/Entities/Object.cpp 
+	Game/Entities/Object.cpp
+    Game/Entities/ObjectLocator.cpp	
 	Game/Storage/ObjectMgr.cpp
 	Game/Storage/ObjectStorage.cpp
 	Opcodes.cpp 
@@ -265,6 +266,7 @@ SET( headers
 	PacketHandlers/NPCHandler.h
 	Game/Entities/ObjectConstants.h
 	Game/Entities/Object.h
+	Game/Entities/ObjectLocator.h
 	Game/Storage/ObjectMgr.h
 	Game/Storage/ObjectStorage.h
 	Opcodes.h
