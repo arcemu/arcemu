@@ -3,6 +3,7 @@ import ArcPyMath as Math
 from arcemu import GossipMenu
 from arcemu import Player
 from arcemu import Unit
+from arcemu import ObjectLocator
 
 def mohawk_onHello( unit, event, player ):
 	print( player.getName() + " said gossip hello to " + unit.getName() )
@@ -646,6 +647,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Make Marshal Dugan larger", 1306, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Make the mailbox smaller", 1307, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "What is the name of my selection?", 1308, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Closest friendly", 1309, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -697,6 +699,11 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 				u = arcemu.toUnit( obj )
 				if u is not None:
 					creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, u.getName() )
+					
+	if id == 1309:
+		locator = ObjectLocator( creature )
+		friendly = locator.findClosestFriendly()
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "The closest friendly Unit is " + friendly.getName() + " " + str( friendly.getGUID() ) )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )

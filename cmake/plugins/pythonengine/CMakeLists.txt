@@ -43,6 +43,7 @@ ${prefix}/python/modules/ArcPyItem.cpp
 ${prefix}/python/modules/ArcPyMapMgr.cpp
 ${prefix}/python/modules/ArcPyMath.cpp
 ${prefix}/python/modules/ArcPyObject.cpp
+${prefix}/python/modules/ArcPyObjectLocator.cpp
 ${prefix}/python/modules/ArcPyUnit.cpp
 ${prefix}/python/modules/ArcPyPlayer.cpp
 ${prefix}/python/modules/ArcPyQuest.cpp
@@ -112,6 +113,7 @@ ${prefix}/python/modules/ArcPyItem.hpp
 ${prefix}/python/modules/ArcPyMapMgr.hpp
 ${prefix}/python/modules/ArcPyMath.hpp
 ${prefix}/python/modules/ArcPyObject.hpp
+${prefix}/python/modules/ArcPyObjectLocator.hpp
 ${prefix}/python/modules/ArcPyUnit.hpp
 ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/python/modules/ArcPyQuest.hpp
