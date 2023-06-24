@@ -93,3 +93,35 @@ Unit* ObjectLocator::findClosestEnemy()
 	return closestUnit;
 }
 
+
+Player* ObjectLocator::findClosestPlayer()
+{
+	if( object == NULL )
+		return NULL;
+
+	double closestDistance = std::numeric_limits< double >::max();
+	Player *closestPlayer = NULL;
+
+	std::set< Object* > &objects = object->GetInRangeObjects();
+
+	std::set< Object* >::iterator itr = objects.begin();
+	while( itr != objects.end() )
+	{
+		Object *obj = *itr;
+
+		if( obj->IsPlayer() )
+		{
+			double distance = object->GetDistanceSq( obj );
+			if( distance < closestDistance )
+			{
+				closestDistance = distance;
+				closestPlayer = TO_PLAYER( obj );
+			}
+		}
+
+		++itr;
+	}
+
+	return closestPlayer;
+}
+

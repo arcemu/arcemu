@@ -26,6 +26,7 @@
 
 #include "ArcPyObject.hpp"
 #include "ArcPyUnit.hpp"
+#include "ArcPyPlayer.hpp"
 
 static PyObject* ArcPyObjectLocator_new( PyTypeObject *type, PyObject *args, PyObject *keywords )
 {
@@ -124,10 +125,38 @@ static PyObject* ArcPyObjectLocator_findClosestEnemy( ArcPyObjectLocator *self, 
 	return (PyObject*)createArcPyUnit( unit );
 }
 
+
+/// findClosestPlayer
+///   Returns the closest Player or returns None
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the closest Player or returns None
+///
+/// Example
+///   p = locator.findClosestPlayer()
+///
+
+static PyObject* ArcPyObjectLocator_findClosestPlayer( ArcPyObjectLocator *self, PyObject *args )
+{
+	ObjectLocator *locator = self->ptr;
+	Player *player = locator->findClosestPlayer();
+
+	if( player == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+
+	return (PyObject*)createArcPyPlayer( player );
+}
+
 static PyMethodDef ArcPyObjectLocator_methods[] = 
 {
 	{ "findClosestFriendly", (PyCFunction)ArcPyObjectLocator_findClosestFriendly, METH_NOARGS, "Returns the closest friendly Unit" },
 	{ "findClosestEnemy", (PyCFunction)ArcPyObjectLocator_findClosestEnemy, METH_NOARGS, "Returns the closest enemy Unit" },
+	{ "findClosestPlayer", (PyCFunction)ArcPyObjectLocator_findClosestPlayer, METH_NOARGS, "Returns the closest Player" },
 	{ NULL }
 };
 
