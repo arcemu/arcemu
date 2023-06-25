@@ -99,6 +99,33 @@ static PyObject* ArcPyObjectLocator_findClosestFriendly( ArcPyObjectLocator *sel
 }
 
 
+/// getRandomFriendly
+///   Returns a random friendly Unit or returns None
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns a random friendly Unit or returns None
+///
+/// Example
+///   u = locator.getRandomFriendly()
+///
+
+static PyObject* ArcPyObjectLocator_getRandomFriendly( ArcPyObjectLocator *self, PyObject *args )
+{
+	ObjectLocator *locator = self->ptr;
+	Unit *unit = locator->getRandomFriendly();
+
+	if( unit == NULL )
+	{
+		Py_RETURN_NONE;
+	}
+
+	return (PyObject*)createArcPyUnit( unit );
+}
+
+
 /// findClosestEnemy
 ///   Returns the closest enemy Unit or returns None
 ///
@@ -155,6 +182,7 @@ static PyObject* ArcPyObjectLocator_findClosestPlayer( ArcPyObjectLocator *self,
 static PyMethodDef ArcPyObjectLocator_methods[] = 
 {
 	{ "findClosestFriendly", (PyCFunction)ArcPyObjectLocator_findClosestFriendly, METH_NOARGS, "Returns the closest friendly Unit" },
+	{ "getRandomFriendly", (PyCFunction)ArcPyObjectLocator_getRandomFriendly, METH_NOARGS, "Returns a random friendly Unit" },
 	{ "findClosestEnemy", (PyCFunction)ArcPyObjectLocator_findClosestEnemy, METH_NOARGS, "Returns the closest enemy Unit" },
 	{ "findClosestPlayer", (PyCFunction)ArcPyObjectLocator_findClosestPlayer, METH_NOARGS, "Returns the closest Player" },
 	{ NULL }

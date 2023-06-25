@@ -56,6 +56,38 @@ Unit* ObjectLocator::findClosestFriendly()
 	return closestUnit;
 }
 
+Unit* ObjectLocator::getRandomFriendly()
+{
+	if( object == NULL )
+		return NULL;
+
+	std::vector< Unit* > units;
+
+	std::set< Object* > &objects = object->GetInRangeObjects();
+
+	std::set< Object* >::iterator itr = objects.begin();
+	while( itr != objects.end() )
+	{
+		Object *obj = *itr;
+
+		if( obj->IsUnit() )
+		{
+			if( !obj->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE ) && !obj->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 ) )
+			{
+				if( isFriendly( object, obj ) )
+				{
+					units.push_back( TO_UNIT( obj ) );
+				}
+			}
+		}
+
+		++itr;
+	}
+
+	uint32 idx = RandomUInt( units.size() -1 );
+	return units[ idx ];
+}
+
 Unit* ObjectLocator::findClosestEnemy()
 {
 	if( object == NULL )

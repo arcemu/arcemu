@@ -650,6 +650,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Closest friendly", 1309, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Closest enemy", 1310, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Closest player", 1311, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Random friendly", 1312, 0 )
 		
 		menu.sendToPlayer( player )
 		
@@ -725,6 +726,14 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "The closest player is " + closestPlayer.getName() + " " + str( closestPlayer.getGUID() ) )
 		else:
 			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't see an players" )
+			
+	if id == 1312:
+		locator = ObjectLocator( creature )
+		friendly = locator.getRandomFriendly()
+		if friendly is not None:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "The random friendly Unit is " + friendly.getName() + " " + str( friendly.getGUID() ) )
+		else:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "I don't see a friendly" )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
