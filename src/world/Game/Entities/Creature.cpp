@@ -211,14 +211,14 @@ Creature::Creature(uint64 guid)
 	m_PickPocketed = false;
 	vendor = NULL;
 	_myScriptClass = NULL;
-	myFamily = 0;
+	myFamily = NULL;
 
 	loot.gold = 0;
 	haslinkupevent = false;
 	original_emotestate = 0;
 	mTrainer = 0;
-	m_spawn = 0;
-	auctionHouse = 0;
+	m_spawn = NULL;
+	auctionHouse = NULL;
 	SetAttackPowerMultiplier(0.0f);
 	SetRangedAttackPowerMultiplier(0.0f);
 	m_custom_waypoint_map = NULL;
