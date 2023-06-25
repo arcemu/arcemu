@@ -73,15 +73,29 @@ class Chicken : public CreatureAIScript
 
 		void OnLoad()
 		{
-			_unit->SetFaction(12);
+			_unit->SetFaction(189);
 			_unit->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
-			RegisterAIUpdateEvent(120000);
 		}
 
 		void AIUpdate()
 		{
-			if(_unit->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER))
-				OnLoad();
+			OnLoad();
+			RemoveAIUpdateEvent();
+		}
+
+		void OnEmote(Player* pPlayer, EmoteType Emote)
+		{
+			if( Emote == EMOTE_ONESHOT_CHICKEN )
+			{
+				uint32 random = RandomUInt( 9 ) + 1;
+				if( random == 1 )
+				{
+					_unit->SetFaction(35);
+					_unit->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+
+					RegisterAIUpdateEvent( 120 * 1000 );
+				}
+			}
 		}
 };
 
