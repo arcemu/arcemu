@@ -186,13 +186,13 @@ void TheEscape(Player* pPlayer, Object* pObject)
 
 void HilarysNecklace(Player* pPlayer, Object* pObject)
 {
-	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I know how to speak kitty, and Effsee said thank you.");
-	
 	Creature* effsee = pPlayer->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-9351.24f, -2204.45f, 62.18f, 8963);
 	if(effsee != NULL)
 	{
-		effsee->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Meow!", 2000);
+		effsee->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Meow!");
 	}
+
+	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "I know how to speak kitty, and Effsee said thank you.", 2000);
 }
 
 //========================================================================================
