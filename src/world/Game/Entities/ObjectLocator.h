@@ -79,6 +79,21 @@ public:
 	Unit* getRandomFriendly();
 
 	//////////////////////////////////////////////////////////////////////////
+	// getRandomEnemy()
+	//   Returns a random enemy Unit that is in range
+	//
+	// Parameters
+	//   None
+	//
+	// Return value
+	//   Returns a random enemy Unit that is in range.
+	//   Returns NULL if there's no such Unit in range.
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////
+	Unit* getRandomEnemy();
+
+	//////////////////////////////////////////////////////////////////////////
 	// findClosestPlayer()
 	//   Finds the closest Player
 	//
