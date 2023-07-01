@@ -1175,9 +1175,9 @@ void MapMgr::PushToProcessed(Player* plr)
 }
 
 
-void MapMgr::ChangeFarsightLocation(Player* plr, DynamicObject* farsight)
+void MapMgr::ChangeFarsightLocation(Player* plr, Object* target)
 {
-	if(farsight == 0)
+	if(target == NULL)
 	{
 		// We're clearing.
 		for(ObjectSet::iterator itr = plr->m_visibleFarsightObjects.begin(); itr != plr->m_visibleFarsightObjects.end();
@@ -1193,8 +1193,8 @@ void MapMgr::ChangeFarsightLocation(Player* plr, DynamicObject* farsight)
 	}
 	else
 	{
-		uint32 cellX = GetPosX(farsight->GetPositionX());
-		uint32 cellY = GetPosY(farsight->GetPositionY());
+		uint32 cellX = GetPosX(target->GetPositionX());
+		uint32 cellY = GetPosY(target->GetPositionY());
 		uint32 endX = (cellX <= _sizeX) ? cellX + 1 : (_sizeX - 1);
 		uint32 endY = (cellY <= _sizeY) ? cellY + 1 : (_sizeY - 1);
 		uint32 startX = cellX > 0 ? cellX - 1 : 0;
@@ -1216,7 +1216,7 @@ void MapMgr::ChangeFarsightLocation(Player* plr, DynamicObject* farsight)
 					for(; iter != iend; ++iter)
 					{
 						obj = (*iter);
-						if(!plr->IsVisible(obj->GetGUID()) && plr->CanSee(obj) && farsight->GetDistance2dSq(obj) <= m_UpdateDistance)
+						if(!plr->IsVisible(obj->GetGUID()) && plr->CanSee(obj) && target->GetDistance2dSq(obj) <= m_UpdateDistance)
 						{
 							ByteBuffer buf;
 							count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, obj, plr);
