@@ -3862,8 +3862,8 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 	dynObj->SetUInt32Value(DYNAMICOBJECT_BYTES, 0x80000002);
 	dynObj->SetInstanceID(p_caster->GetInstanceID());
 	p_caster->SetFarsightTarget(dynObj->GetGUID());
-
-	p_caster->GetMapMgr()->ChangeFarsightLocation(p_caster, dynObj);
+	
+	p_caster->createForPlayer( dynObj );
 }
 
 void Spell::SpellEffectUseGlyph(uint32 i)

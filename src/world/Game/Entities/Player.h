@@ -1780,6 +1780,7 @@ class SERVER_DECL Player : public Unit
 
 		bool bProcessPending;
 		Mutex _bufferS;
+		void createForPlayer( Object *object );
 		void PushUpdateData(ByteBuffer* data, uint32 updatecount);
 		void PushCreationData(ByteBuffer* data, uint32 updatecount);
 		void PushOutOfRange(const WoWGuid & guid);

@@ -7238,6 +7238,13 @@ void Player::ResetAllCooldowns()
 	}
 }
 
+void Player::createForPlayer( Object *object )
+{
+	ByteBuffer buf;
+	uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer( &buf, object, this );
+	PushCreationData( &buf, count );
+}
+
 void Player::PushUpdateData(ByteBuffer* data, uint32 updatecount)
 {
 	// imagine the bytebuffer getting appended from 2 threads at once! :D
