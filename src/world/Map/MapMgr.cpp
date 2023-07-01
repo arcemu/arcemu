@@ -373,6 +373,11 @@ void MapMgr::PushObject(Object* obj)
 				m_DynamicObjectStorage[obj->GetLowGUID()] = (DynamicObject*)obj;
 				break;
 		}
+
+		if( obj->isPlayerControlled() )
+		{
+			UpdateCellActivity(x, y, 2);
+		}
 	}
 
 	// Handle activation of that object.
@@ -1148,7 +1153,7 @@ bool MapMgr::_CellActive(uint32 x, uint32 y)
 
 			if(objCell)
 			{
-				if(objCell->HasPlayers() || m_forcedcells.find(objCell) != m_forcedcells.end())
+				if(objCell->HasPlayers() || objCell->hasPlayerControlled() || m_forcedcells.find(objCell) != m_forcedcells.end())
 				{
 					return true;
 				}

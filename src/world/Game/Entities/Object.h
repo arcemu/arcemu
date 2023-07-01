@@ -620,6 +620,7 @@ class SERVER_DECL Object : public EventableObject
 		void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
 
 		//Andy's crap
+		virtual bool isPlayerControlled(){ return false; }
 		virtual Object* GetPlayerOwner();
 		std::set<Spell*> m_pendingSpells;
 

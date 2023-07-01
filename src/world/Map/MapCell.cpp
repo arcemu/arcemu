@@ -48,6 +48,10 @@ void MapCell::AddObject(Object* obj)
 {
 	if(obj->IsPlayer())
 		++_playerCount;
+	else if(obj->isPlayerControlled())
+	{
+		++_playerControlledCount;
+	}
 	else if(obj->IsCorpse())
 	{
 		_corpses.push_back(obj);
@@ -62,6 +66,10 @@ void MapCell::RemoveObject(Object* obj)
 {
 	if(obj->IsPlayer())
 		--_playerCount;
+	else if(obj->isPlayerControlled())
+	{
+		--_playerControlledCount;
+	}
 	else if(obj->IsCorpse())
 		_corpses.remove(obj);
 
@@ -164,6 +172,7 @@ void MapCell::RemoveObjects()
 	_objects.clear();
 	_corpses.clear();
 	_playerCount = 0;
+	_playerControlledCount = 0;
 	_loaded = false;
 }
 

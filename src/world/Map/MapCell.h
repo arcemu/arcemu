@@ -48,6 +48,12 @@ class SERVER_DECL MapCell
 		void RemoveObject(Object* obj);
 		bool HasObject(Object* obj) { return (_objects.find(obj) != _objects.end()); }
 		bool HasPlayers() { return ((_playerCount > 0) ? true : false); }
+		bool hasPlayerControlled() { 
+			if( _playerControlledCount > 0 )
+				return true;
+			else
+				return false;
+		}
 		ARCEMU_INLINE size_t GetObjectCount() { return _objects.size(); }
 		void RemoveObjects();
 		ARCEMU_INLINE ObjectSet::iterator Begin() { return _objects.begin(); }
@@ -86,6 +92,7 @@ class SERVER_DECL MapCell
 		bool _unloadpending;
 
 		uint16 _playerCount;
+		uint16 _playerControlledCount;
 
 		//checks if the MapCell can be unloaded, based on _corpses and if it's in a battleground
 		bool CanUnload();
