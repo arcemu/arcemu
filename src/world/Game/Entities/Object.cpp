@@ -1276,6 +1276,14 @@ void Object::AddInRangeObject(Object* pObj)
 	if(pObj->IsPlayer())
 		m_inRangePlayers.insert(pObj);
 
+	/// WIP: Proof of concept. Don't do this, this leads to LOTS of problems.
+	if(pObj->isPlayerControlled() && pObj->IsUnit())
+	{
+		Object *controller = GetMapMgr()->GetObject(TO_UNIT(pObj)->GetCharmedByGUID());
+		if( controller != NULL )
+			m_inRangePlayers.insert( controller );
+	}
+
 	m_objectsInRange.insert(pObj);
 }
 
