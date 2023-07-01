@@ -1182,54 +1182,32 @@ void MapMgr::PushToProcessed(Player* plr)
 
 void MapMgr::ChangeFarsightLocation(Player* plr, Object* target)
 {
-	if(target == NULL)
+	if( target == NULL )
 	{
-		// We're clearing.
-		for(ObjectSet::iterator itr = plr->m_visibleFarsightObjects.begin(); itr != plr->m_visibleFarsightObjects.end();
-		        ++itr)
+		uint64 targetGuid = plr->GetFarsightTarget();
+		target = GetObject( targetGuid );
+		if( target == NULL )
+			return;
+
+		std::set< Object* > &objects = target->GetInRangeObjects();		
+		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 		{
-			if(plr->IsVisible((*itr)->GetGUID()) && !plr->CanSee((*itr)))
+			Object *object = (*itr);
+			if( plr->IsVisible( object->GetGUID() ) && !plr->CanSee( object ) )
 			{
-				// Send destroy
-				plr->PushOutOfRange((*itr)->GetNewGUID());
+				plr->PushOutOfRange( object->GetNewGUID() );
 			}
 		}
-		plr->m_visibleFarsightObjects.clear();
 	}
 	else
 	{
-		uint32 cellX = GetPosX(target->GetPositionX());
-		uint32 cellY = GetPosY(target->GetPositionY());
-		uint32 endX = (cellX <= _sizeX) ? cellX + 1 : (_sizeX - 1);
-		uint32 endY = (cellY <= _sizeY) ? cellY + 1 : (_sizeY - 1);
-		uint32 startX = cellX > 0 ? cellX - 1 : 0;
-		uint32 startY = cellY > 0 ? cellY - 1 : 0;
-		uint32 posX, posY;
-		MapCell* cell;
-		Object* obj;
-		MapCell::ObjectSet::iterator iter, iend;
-		uint32 count;
-		for(posX = startX; posX <= endX; ++posX)
+		std::set< Object* > &objects = target->GetInRangeObjects();		
+		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 		{
-			for(posY = startY; posY <= endY; ++posY)
+			Object *object = (*itr);
+			if( !plr->IsVisible( object->GetGUID() ) && plr->CanSee( object ) && target->GetDistance2dSq( object ) <= m_UpdateDistance )
 			{
-				cell = GetCell(posX, posY);
-				if(cell)
-				{
-					iter = cell->Begin();
-					iend = cell->End();
-					for(; iter != iend; ++iter)
-					{
-						obj = (*iter);
-						if(!plr->IsVisible(obj->GetGUID()) && plr->CanSee(obj) && target->GetDistance2dSq(obj) <= m_UpdateDistance)
-						{
-							ByteBuffer buf;
-							count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, obj, plr);
-							plr->PushCreationData(&buf, count);
-							plr->m_visibleFarsightObjects.insert(obj);
-						}
-					}
-				}
+				plr->createForPlayer( object );
 			}
 		}
 	}

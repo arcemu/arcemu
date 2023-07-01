@@ -1860,7 +1860,6 @@ class SERVER_DECL Player : public Unit
 		uint32 m_arenaPoints;
 		uint32 m_honorless;
 		uint32 m_lastSeenWeather;
-		set<Object*> m_visibleFarsightObjects;
 		void EventTeleport(uint32 mapid, float x, float y, float z);
 		void EventTeleportTaxi(uint32 mapid, float x, float y, float z);
 		void ApplyLevelInfo(LevelInfo* Info, uint32 Level);

@@ -449,7 +449,6 @@ Player::Player(uint32 guid)
 	loginauras.clear();
 	damagedone.clear();
 	tocritchance.clear();
-	m_visibleFarsightObjects.clear();
 	SummonSpells.clear();
 	PetSpells.clear();
 	delayedPackets.clear();
