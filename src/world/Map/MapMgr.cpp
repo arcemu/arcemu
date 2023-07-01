@@ -632,6 +632,15 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 	{
 		plObj = TO< Player* >(obj);
 	}
+	else
+	if(obj->isPlayerControlled())
+	{
+		if( obj->IsUnit() )
+		{
+			uint64 controllerGuid = TO_UNIT( obj )->GetCharmedByGUID();
+			plObj = GetPlayer( (uint32)controllerGuid );
+		}
+	}
 
 	Object* curObj;
 	float fRange = 0.0f;
@@ -753,7 +762,7 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 		// if player we need to update cell activity
 		// radius = 2 is used in order to update both
 		// old and new cells
-		if(obj->IsPlayer())
+		if(obj->IsPlayer() || obj->isPlayerControlled())
 		{
 			// have to unlock/lock here to avoid a deadlock situation.
 			UpdateCellActivity(cellX, cellY, 2);
