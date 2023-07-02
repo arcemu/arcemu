@@ -374,7 +374,7 @@ void MapMgr::PushObject(Object* obj)
 				break;
 		}
 
-		if( obj->getFarsightViewer() != NULL )
+		if( obj->getFarsightViewer() != NULL || obj->IsDynamicObject() )
 		{
 			UpdateCellActivity(x, y, 2);
 		}
