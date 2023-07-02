@@ -1981,8 +1981,6 @@ class SERVER_DECL Unit : public Object
 		bool m_noFallDamage;
 		float z_axisposition;
 		int32 m_safeFall;
-
-		bool isPlayerControlled();
 };
 
 

@@ -8031,11 +8031,3 @@ Unit* Unit::GetVehicleBase(){
 
 	return NULL;
 }
-
-bool Unit::isPlayerControlled()
-{
-	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE ) )
-		return true;
-	else
-		return false;
-}

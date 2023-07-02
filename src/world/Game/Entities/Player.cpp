@@ -9841,6 +9841,7 @@ void Player::UnPossess()
 	}
 
 	m_noInterrupt--;
+	bindSight( NULL );
 	SetFarsightTarget(0);
 	SetCharmedUnitGUID(0);
 	pTarget->SetCharmedByGUID(0);
@@ -13200,6 +13201,8 @@ void Player::bindSight( Object *target )
 				PushOutOfRange( object->GetNewGUID() );
 			}
 		}
+
+		target->setFarsightViewer( NULL );
 	}
 	else
 	{
@@ -13212,5 +13215,7 @@ void Player::bindSight( Object *target )
 				createForPlayer( object );
 			}
 		}
+
+		target->setFarsightViewer( this );
 	}
 }

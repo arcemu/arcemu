@@ -38,10 +38,6 @@ class SERVER_DECL DynamicObject : public Object
 		void OnRemoveInRangeObject(Object* pObj);
 		void Remove();
 
-		bool isPlayerControlled();
-
-		Player* getPlayerCaster(){ return p_caster; }
-
 	protected:
 
 		SpellEntry* m_spellProto;

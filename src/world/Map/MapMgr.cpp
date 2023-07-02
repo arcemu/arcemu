@@ -374,7 +374,7 @@ void MapMgr::PushObject(Object* obj)
 				break;
 		}
 
-		if( obj->isPlayerControlled() )
+		if( obj->getFarsightViewer() != NULL )
 		{
 			UpdateCellActivity(x, y, 2);
 		}
@@ -633,13 +633,9 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 		plObj = TO< Player* >(obj);
 	}
 	else
-	if(obj->isPlayerControlled())
+	if(obj->getFarsightViewer() != NULL)
 	{
-		if( obj->IsUnit() )
-		{
-			uint64 controllerGuid = TO_UNIT( obj )->GetCharmedByGUID();
-			plObj = GetPlayer( (uint32)controllerGuid );
-		}
+		plObj = TO_PLAYER( obj->getFarsightViewer() );
 	}
 
 	Object* curObj;
@@ -762,7 +758,7 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 		// if player we need to update cell activity
 		// radius = 2 is used in order to update both
 		// old and new cells
-		if(obj->IsPlayer() || obj->isPlayerControlled())
+		if(obj->IsPlayer() || ( obj->getFarsightViewer() != NULL ) )
 		{
 			// have to unlock/lock here to avoid a deadlock situation.
 			UpdateCellActivity(cellX, cellY, 2);
@@ -990,6 +986,7 @@ void MapMgr::_UpdateObjects()
 
 				if(count)
 				{
+					/// First update Players
 					it_start = pObj->GetInRangePlayerSetBegin();
 					it_end = pObj->GetInRangePlayerSetEnd();
 
@@ -1002,23 +999,16 @@ void MapMgr::_UpdateObjects()
 							lplr->PushUpdateData(&update, count);
 					}
 
-					std::set< Object* > &playerControlledObjects = pObj->getPlayerControlledInRange();
+					/// Then update farsight viewers
+					std::set< Object* > &farsightBoundObjects = pObj->getFarsightBoundInRange();
 					
-					it_start = playerControlledObjects.begin();
-					it_end = playerControlledObjects.end();
+					it_start = farsightBoundObjects.begin();
+					it_end = farsightBoundObjects.end();
 					itr = it_start;
 					while( itr != it_end )
 					{
 						Object *o = (*itr);
-						if( o->IsUnit() )
-						{
-							lplr = GetPlayer( TO_UNIT( o )->GetCharmedByGUID() );
-						}
-						else
-						if( o->IsDynamicObject() )
-						{
-							lplr = static_cast< DynamicObject* >( o )->getPlayerCaster();
-						}
+						lplr = TO_PLAYER( o->getFarsightViewer() );
 						++itr;
 
 						if( lplr != NULL )
@@ -1189,7 +1179,7 @@ bool MapMgr::_CellActive(uint32 x, uint32 y)
 
 			if(objCell)
 			{
-				if(objCell->HasPlayers() || objCell->hasPlayerControlled() || m_forcedcells.find(objCell) != m_forcedcells.end())
+				if(objCell->HasPlayers() || objCell->hasFarsightBound() || m_forcedcells.find(objCell) != m_forcedcells.end())
 				{
 					return true;
 				}

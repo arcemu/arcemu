@@ -232,11 +232,3 @@ void DynamicObject::Remove()
 
 	delete this;
 }
-
-bool DynamicObject::isPlayerControlled()
-{
-	if( p_caster != NULL )
-		return true;
-	else
-		return false;
-}

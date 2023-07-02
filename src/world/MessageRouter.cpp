@@ -92,25 +92,11 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 
 	MapMgr *mgr = object->GetMapMgr();
 
-	std::set< Object* > &objects = object->getPlayerControlledInRange();
+	std::set< Object* > &objects = object->getFarsightBoundInRange();
 	for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 	{
-		Player *p = NULL;
-
 		Object *o = (*itr);
-		if( o->IsUnit() )
-		{
-			p = mgr->GetPlayer( (uint32)TO_UNIT( o )->GetCharmedByGUID() );
-		}
-		else
-		if( o->IsDynamicObject() )
-		{
-			p = static_cast< DynamicObject* >( o )->getPlayerCaster();
-		}
-
-		if( p != NULL )
-		{
-			PlayerMessenger::sendMessage( p, *packet );
-		}
+		Player *p = TO_PLAYER( o->getFarsightViewer() );
+		PlayerMessenger::sendMessage( p, *packet );
 	}
 }

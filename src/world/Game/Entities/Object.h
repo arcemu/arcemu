@@ -581,8 +581,7 @@ class SERVER_DECL Object : public EventableObject
 		std::set<Object*> m_inRangePlayers;
 		std::set<Object*> m_oppFactsInRange;
 		std::set<Object*> m_sameFactsInRange;
-		std::set<Object*> m_playerControlledInRange;
-
+		std::set<Object*> m_farsightBoundInRange;
 
 		int32 m_instanceId;
 
@@ -591,9 +590,31 @@ class SERVER_DECL Object : public EventableObject
 		// so we can set from scripts. :)
 		void _SetExtension(const string & name, void* ptr);
 
+		Object *farsightViewer;
+
+		void onFarsightViewerAdded();
+		void onFarsightViewerRemoved();
+
 	public:
 
-		std::set<Object*>& getPlayerControlledInRange(){ return m_playerControlledInRange; }
+		Object* getFarsightViewer() const{ return farsightViewer; }
+
+		void setFarsightViewer( Object *viewer ){
+			farsightViewer = viewer;
+			if( viewer == NULL )
+			{
+				onFarsightViewerRemoved();
+			}
+			else
+			{
+				onFarsightViewerAdded();
+			}
+		}
+
+		void addFarsightBoundInRangeObject( Object *o );
+		void removeFarsightBoundInRangeObject( Object *o );
+
+		std::set<Object*>& getFarsightBoundInRange(){ return m_farsightBoundInRange; }
 
 		template<typename T>
 		void SetExtension(const string & name, T ptr)
@@ -624,7 +645,6 @@ class SERVER_DECL Object : public EventableObject
 		void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
 
 		//Andy's crap
-		virtual bool isPlayerControlled(){ return false; }
 		virtual Object* GetPlayerOwner();
 		std::set<Spell*> m_pendingSpells;
 
