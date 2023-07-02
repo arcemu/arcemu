@@ -191,6 +191,7 @@ class SERVER_DECL Object : public EventableObject
 		bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
+		bool IsDynamicObject() { return m_objectTypeId == TYPEID_DYNAMICOBJECT; }
 
 		virtual void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 
@@ -580,6 +581,7 @@ class SERVER_DECL Object : public EventableObject
 		std::set<Object*> m_inRangePlayers;
 		std::set<Object*> m_oppFactsInRange;
 		std::set<Object*> m_sameFactsInRange;
+		std::set<Object*> m_playerControlledInRange;
 
 
 		int32 m_instanceId;
@@ -590,6 +592,8 @@ class SERVER_DECL Object : public EventableObject
 		void _SetExtension(const string & name, void* ptr);
 
 	public:
+
+		std::set<Object*>& getPlayerControlledInRange(){ return m_playerControlledInRange; }
 
 		template<typename T>
 		void SetExtension(const string & name, T ptr)

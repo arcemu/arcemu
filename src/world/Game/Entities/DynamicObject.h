@@ -40,6 +40,8 @@ class SERVER_DECL DynamicObject : public Object
 
 		bool isPlayerControlled();
 
+		Player* getPlayerCaster(){ return p_caster; }
+
 	protected:
 
 		SpellEntry* m_spellProto;

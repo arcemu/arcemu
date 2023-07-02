@@ -1001,6 +1001,33 @@ void MapMgr::_UpdateObjects()
 						if(lplr->IsVisible(pObj->GetGUID()))
 							lplr->PushUpdateData(&update, count);
 					}
+
+					std::set< Object* > &playerControlledObjects = pObj->getPlayerControlledInRange();
+					
+					it_start = playerControlledObjects.begin();
+					it_end = playerControlledObjects.end();
+					itr = it_start;
+					while( itr != it_end )
+					{
+						Object *o = (*itr);
+						if( o->IsUnit() )
+						{
+							lplr = GetPlayer( TO_UNIT( o )->GetCharmedByGUID() );
+						}
+						else
+						if( o->IsDynamicObject() )
+						{
+							lplr = static_cast< DynamicObject* >( o )->getPlayerCaster();
+						}
+						++itr;
+
+						if( lplr != NULL )
+						{
+							if(lplr->IsVisible(pObj->GetGUID()))
+								lplr->PushUpdateData(&update, count);
+						}
+					}
+
 					update.clear();
 				}
 			}

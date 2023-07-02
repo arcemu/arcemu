@@ -72,6 +72,7 @@ Object::Object() : m_position(0, 0, 0, 0), m_spawnLocation(0, 0, 0, 0)
 	m_inRangePlayers.clear();
 	m_oppFactsInRange.clear();
 	m_sameFactsInRange.clear();
+	m_playerControlledInRange.clear();
 
 	Active = false;
 }
@@ -1276,12 +1277,9 @@ void Object::AddInRangeObject(Object* pObj)
 	if(pObj->IsPlayer())
 		m_inRangePlayers.insert(pObj);
 
-	/// WIP: Proof of concept. Don't do this, this leads to LOTS of problems.
-	if(pObj->isPlayerControlled() && pObj->IsUnit())
+	if(pObj->isPlayerControlled())
 	{
-		Object *controller = GetMapMgr()->GetObject(TO_UNIT(pObj)->GetCharmedByGUID());
-		if( controller != NULL )
-			m_inRangePlayers.insert( controller );
+		m_playerControlledInRange.insert(pObj);
 	}
 
 	m_objectsInRange.insert(pObj);
@@ -1301,6 +1299,9 @@ void Object::RemoveInRangeObject(Object* pObj)
 	{
 		ARCEMU_ASSERT(m_inRangePlayers.erase(pObj) == 1);
 	}
+
+	/// No assert here, as player assumes control after being added to the world
+	m_playerControlledInRange.erase(pObj);
 
 	ARCEMU_ASSERT(m_objectsInRange.erase(pObj) == 1);
 
