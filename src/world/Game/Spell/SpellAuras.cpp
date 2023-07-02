@@ -1614,7 +1614,10 @@ void Aura::SpellAuraBindSight(bool apply)
 	if(apply)
 		caster->SetFarsightTarget(m_target->GetGUID());
 	else
+	{
+		caster->bindSight( NULL );
 		caster->SetFarsightTarget(0);
+	}
 }
 
 void Aura::SpellAuraModPossess(bool apply)
