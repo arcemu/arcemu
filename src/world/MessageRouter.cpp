@@ -46,6 +46,9 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 			if((p->GetPhase() & object->GetPhase()) == 0)
 				continue;
 
+			if( ( p->GetFarsightTarget() != 0 ) && ( object->GetGUID() != p->GetFarsightTarget() ) )
+				continue;
+
 			PlayerMessenger::sendMessage( p, *packet );
 		}
 	}
@@ -85,6 +88,9 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 				if( ! p->IsVisible( player->GetGUID() ) )
 					continue;
 			}
+
+			if( ( p->GetFarsightTarget() != 0 ) && ( object->GetGUID() != p->GetFarsightTarget() ) )
+				continue;
 
 			PlayerMessenger::sendMessage( p, *packet );
 		}

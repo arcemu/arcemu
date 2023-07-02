@@ -994,6 +994,10 @@ void MapMgr::_UpdateObjects()
 					{
 						lplr = TO< Player* >(*itr);
 						++itr;
+
+						if( ( lplr->GetFarsightTarget() != 0 ) && ( pObj->GetGUID() != lplr->GetFarsightTarget() ) )
+							continue;
+
 						// Make sure that the target player can see us.
 						if(lplr->IsVisible(pObj->GetGUID()))
 							lplr->PushUpdateData(&update, count);
