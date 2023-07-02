@@ -2437,6 +2437,8 @@ class SERVER_DECL Player : public Unit
 		bool CanTrainAt(Trainer*);
 
 		Object* GetPlayerOwner() { return this; };
+
+		void bindSight( Object *target );
 };
 
 class SkillIterator

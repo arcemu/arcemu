@@ -1216,39 +1216,6 @@ void MapMgr::PushToProcessed(Player* plr)
 }
 
 
-void MapMgr::ChangeFarsightLocation(Player* plr, Object* target)
-{
-	if( target == NULL )
-	{
-		uint64 targetGuid = plr->GetFarsightTarget();
-		target = GetObject( targetGuid );
-		if( target == NULL )
-			return;
-
-		std::set< Object* > &objects = target->GetInRangeObjects();		
-		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
-		{
-			Object *object = (*itr);
-			if( plr->IsVisible( object->GetGUID() ) && !plr->CanSee( object ) )
-			{
-				plr->PushOutOfRange( object->GetNewGUID() );
-			}
-		}
-	}
-	else
-	{
-		std::set< Object* > &objects = target->GetInRangeObjects();		
-		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
-		{
-			Object *object = (*itr);
-			if( !plr->IsVisible( object->GetGUID() ) && plr->CanSee( object ) && target->GetDistance2dSq( object ) <= m_UpdateDistance )
-			{
-				plr->createForPlayer( object );
-			}
-		}
-	}
-}
-
 bool MapMgr::run()
 {
 	bool rv = true;

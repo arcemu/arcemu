@@ -222,7 +222,6 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		void PushStaticObject(Object* obj);
 		void RemoveObject(Object* obj, bool free_guid);
 		void ChangeObjectLocation(Object* obj); // update inrange lists
-		void ChangeFarsightLocation(Player* plr, Object* target);
 
 		//! Mark object as updated
 		void ObjectUpdated(Object* obj);

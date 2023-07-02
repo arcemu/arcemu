@@ -13181,3 +13181,36 @@ void Player::RemoveVehicleComponent(){
 	delete vehicle;
 	vehicle = NULL;
 }
+
+void Player::bindSight( Object *target )
+{
+	if( target == NULL )
+	{
+		uint64 targetGuid = GetFarsightTarget();
+		target = m_mapMgr->GetObject( targetGuid );
+		if( target == NULL )
+			return;
+
+		std::set< Object* > &objects = target->GetInRangeObjects();		
+		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
+		{
+			Object *object = (*itr);
+			if( IsVisible( object->GetGUID() ) && !CanSee( object ) )
+			{
+				PushOutOfRange( object->GetNewGUID() );
+			}
+		}
+	}
+	else
+	{
+		std::set< Object* > &objects = target->GetInRangeObjects();		
+		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
+		{
+			Object *object = (*itr);
+			if( !IsVisible( object->GetGUID() ) && CanSee( object ) && target->GetDistance2dSq( object ) <= m_mapMgr->m_UpdateDistance )
+			{
+				createForPlayer( object );
+			}
+		}
+	}
+}

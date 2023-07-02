@@ -49,11 +49,11 @@ DEFINE_PACKET_HANDLER_METHOD( FarSightHandler )
 	switch( cmd )
 	{
 	case FARSIGHT_CMD_CLEAR:
-		mapMgr->ChangeFarsightLocation( _player, NULL );
+		_player->bindSight( NULL );
 		break;
 
 	case FARSIGHT_CMD_SET:
-		mapMgr->ChangeFarsightLocation( _player, target );
+		_player->bindSight( target );
 		break;
 
 	default:
