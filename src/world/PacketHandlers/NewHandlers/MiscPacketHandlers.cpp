@@ -37,15 +37,6 @@ DEFINE_PACKET_HANDLER_METHOD( FarSightHandler )
 
 	LOG_DETAIL( "CMSG_FAR_SIGHT cmd: %u", cmd );
 
-	uint64 targetGuid = _player->GetFarsightTarget();
-	if( targetGuid == 0 )
-		return;
-
-	MapMgr *mapMgr = _player->GetMapMgr();
-	Object *target = mapMgr->GetObject( targetGuid );
-	if( target == NULL )
-		return;
-
 	switch( cmd )
 	{
 	case FARSIGHT_CMD_CLEAR:
@@ -53,8 +44,18 @@ DEFINE_PACKET_HANDLER_METHOD( FarSightHandler )
 		break;
 
 	case FARSIGHT_CMD_SET:
-		_player->bindSight( target );
-		break;
+		{
+			uint64 targetGuid = _player->GetFarsightTarget();
+			if( targetGuid == 0 )
+				return;
+		
+			MapMgr *mapMgr = _player->GetMapMgr();
+			Object *target = mapMgr->GetObject( targetGuid );
+			if( target == NULL )
+				return;
+			_player->bindSight( target );		
+			break;
+		}
 
 	default:
 		LOG_DETAIL( "Unimplemented farsight command: ", cmd );
