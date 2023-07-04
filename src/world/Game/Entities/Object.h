@@ -408,6 +408,7 @@ class SERVER_DECL Object : public EventableObject
 			m_inRangePlayers.clear();
 			m_oppFactsInRange.clear();
 			m_sameFactsInRange.clear();
+			m_farsightBoundInRange.clear();
 		}
 
 		size_t GetInRangeCount() { return m_objectsInRange.size(); }
