@@ -49,15 +49,16 @@ void MapCell::AddObject(Object* obj)
 {
 	if(obj->IsPlayer())
 		++_playerCount;
-	else if(obj->getFarsightViewer() != NULL)
-	{
-		++_farsightBoundCount;
-	}
 	else if(obj->IsCorpse())
 	{
 		_corpses.push_back(obj);
 		if(_unloadpending)
 			CancelPendingUnload();
+	}
+
+	if(obj->getFarsightViewer() != NULL)
+	{
+		++_farsightBoundCount;
 	}
 
 	_objects.insert(obj);
@@ -67,12 +68,13 @@ void MapCell::RemoveObject(Object* obj)
 {
 	if(obj->IsPlayer())
 		--_playerCount;
-	else if(obj->getFarsightViewer() != NULL)
+	else if(obj->IsCorpse())
+		_corpses.remove(obj);
+
+	if(obj->getFarsightViewer() != NULL)
 	{
 		--_farsightBoundCount;
 	}
-	else if(obj->IsCorpse())
-		_corpses.remove(obj);
 
 	if(objects_iterator != _objects.end() && (*objects_iterator) == obj)
 		++objects_iterator;
