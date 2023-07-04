@@ -55,6 +55,17 @@ class SERVER_DECL MapCell
 			else
 				return false;
 		}
+
+		void increaseFarsightBoundCount()
+		{
+			_farsightBoundCount++;
+		}
+
+		void decreaseFarsightBoundCount()
+		{
+			_farsightBoundCount--;
+		}
+
 		ARCEMU_INLINE size_t GetObjectCount() { return _objects.size(); }
 		void RemoveObjects();
 		ARCEMU_INLINE ObjectSet::iterator Begin() { return _objects.begin(); }

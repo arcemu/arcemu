@@ -1330,6 +1330,9 @@ void Object::RemoveSelfFromInrangeSets()
 
 void Object::onFarsightViewerAdded()
 {
+	MapCell *cell = GetMapCell();
+	cell->increaseFarsightBoundCount();
+
 	std::set< Object* >::iterator itr = m_objectsInRange.begin();
 	while( itr != m_objectsInRange.end() )
 	{
@@ -1342,6 +1345,9 @@ void Object::onFarsightViewerAdded()
 
 void Object::onFarsightViewerRemoved()
 {
+	MapCell *cell = GetMapCell();
+	cell->decreaseFarsightBoundCount();
+
 	std::set< Object* >::iterator itr = m_objectsInRange.begin();
 	while( itr != m_objectsInRange.end() )
 	{
