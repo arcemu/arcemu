@@ -36,6 +36,7 @@ void MapCell::Init(uint32 x, uint32 y, MapMgr* mapmgr)
 	_active = false;
 	_loaded = false;
 	_playerCount = 0;
+	_farsightBoundCount = 0;
 	_corpses.clear();
 	_x = static_cast<uint16>(x);
 	_y = static_cast<uint16>(y);
