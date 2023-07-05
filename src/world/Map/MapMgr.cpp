@@ -1183,7 +1183,7 @@ bool MapMgr::_CellActive(uint32 x, uint32 y)
 
 			if(objCell)
 			{
-				if(objCell->HasPlayers() || objCell->hasFarsightBound() || m_forcedcells.find(objCell) != m_forcedcells.end())
+				if(objCell->HasPlayers() || objCell->hasFarsightBound() || objCell->hasDynObjects() || m_forcedcells.find(objCell) != m_forcedcells.end())
 				{
 					return true;
 				}

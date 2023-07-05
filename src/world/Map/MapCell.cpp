@@ -36,6 +36,7 @@ void MapCell::Init(uint32 x, uint32 y, MapMgr* mapmgr)
 	_active = false;
 	_loaded = false;
 	_playerCount = 0;
+	_dynObjCount = 0;
 	_farsightBoundCount = 0;
 	_corpses.clear();
 	_x = static_cast<uint16>(x);
@@ -48,7 +49,13 @@ void MapCell::Init(uint32 x, uint32 y, MapMgr* mapmgr)
 void MapCell::AddObject(Object* obj)
 {
 	if(obj->IsPlayer())
+	{
 		++_playerCount;
+	}
+	else if(obj->IsDynamicObject())
+	{
+		++_dynObjCount;
+	}
 	else if(obj->IsCorpse())
 	{
 		_corpses.push_back(obj);
@@ -67,7 +74,13 @@ void MapCell::AddObject(Object* obj)
 void MapCell::RemoveObject(Object* obj)
 {
 	if(obj->IsPlayer())
+	{
 		--_playerCount;
+	}
+	else if(obj->IsDynamicObject())
+	{
+		--_dynObjCount;
+	}
 	else if(obj->IsCorpse())
 		_corpses.remove(obj);
 
