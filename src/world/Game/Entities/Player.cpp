@@ -7308,6 +7308,10 @@ void Player::PushCreationData(ByteBuffer* data, uint32 updatecount)
 
 	_bufferS.Release();
 
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->PushCreationData( data, updatecount );
+	}
 }
 
 void Player::ProcessPendingUpdates()
