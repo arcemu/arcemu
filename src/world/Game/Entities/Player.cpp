@@ -5784,6 +5784,26 @@ void Player::ClearInRangeSet()
 	Unit::ClearInRangeSet();
 }
 
+void Player::AddVisibleObject(uint64 guid)
+{
+	m_visibleObjects.insert(guid);
+
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->AddVisibleObject( guid );
+	}
+}
+
+void Player::RemoveVisibleObject(uint64 guid)
+{
+	m_visibleObjects.erase(guid);
+
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->RemoveVisibleObject( guid );
+	}
+}
+
 void Player::EventCannibalize(uint32 amount)
 {
 	if(GetChannelSpellId() != 20577)
