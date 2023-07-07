@@ -7282,6 +7282,11 @@ void Player::PushOutOfRange(const WoWGuid & guid)
 		m_mapMgr->PushToProcessed(this);
 	}
 	_bufferS.Release();
+
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->PushOutOfRange( guid );
+	}
 }
 
 void Player::PushCreationData(ByteBuffer* data, uint32 updatecount)
