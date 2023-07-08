@@ -13229,9 +13229,10 @@ void Player::bindSight( Object *target )
 		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 		{
 			Object *object = (*itr);
-			if( IsVisible( object->GetGUID() ) && !CanSee( object ) )
+			if( IsVisible( object->GetGUID() ) && ( !CanSee( object ) || ( !IsInRangeSet( object) ) ) )
 			{
 				PushOutOfRange( object->GetNewGUID() );
+				RemoveVisibleObject( object->GetGUID() );
 			}
 		}
 
@@ -13243,9 +13244,10 @@ void Player::bindSight( Object *target )
 		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 		{
 			Object *object = (*itr);
-			if( !IsVisible( object->GetGUID() ) && CanSee( object ) && target->GetDistance2dSq( object ) <= m_mapMgr->m_UpdateDistance )
+			if( !IsVisible( object->GetGUID() ) && CanSee( object ) && !IsInRangeSet( object ) )
 			{
 				createForPlayer( object );
+				AddVisibleObject( object->GetGUID() );
 			}
 		}
 
