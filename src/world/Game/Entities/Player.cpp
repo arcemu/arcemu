@@ -13225,26 +13225,43 @@ void Player::bindSight( Object *target )
 		if( target == NULL )
 			return;
 
-		std::set< Object* > &objects = target->GetInRangeObjects();		
-		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
+		/// Remove everything from the client
+		for( std::set< uint64 >::iterator itr = m_visibleObjects.begin(); itr != m_visibleObjects.end(); ++itr )
 		{
-			Object *object = (*itr);
-			if( IsVisible( object->GetGUID() ) && ( !CanSee( object ) || ( !IsInRangeSet( object) ) ) )
-			{
-				PushOutOfRange( object->GetNewGUID() );
-				RemoveVisibleObject( object->GetGUID() );
-			}
+			uint64 guid = *itr;
+			PushOutOfRange( guid );
 		}
+		m_visibleObjects.clear();
 
 		target->setFarsightViewer( NULL );
+
+		/// Then recreate those who we can see
+		for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
+		{
+			Object *o = *itr;
+			if( CanSee( o ) )
+			{
+				createForPlayer( o );
+				AddVisibleObject( o->GetGUID() );
+			}
+		}
 	}
 	else
 	{
+		/// Remove everything from the client
+		for( std::set< uint64 >::iterator itr = m_visibleObjects.begin(); itr != m_visibleObjects.end(); ++itr )
+		{
+			uint64 guid = *itr;
+			PushOutOfRange( guid );
+		}
+		m_visibleObjects.clear();
+
+		/// Add those that the object can see
 		std::set< Object* > &objects = target->GetInRangeObjects();		
 		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 		{
 			Object *object = (*itr);
-			if( !IsVisible( object->GetGUID() ) && CanSee( object ) && !IsInRangeSet( object ) )
+			if( CanSee( object ) )
 			{
 				createForPlayer( object );
 				AddVisibleObject( object->GetGUID() );
