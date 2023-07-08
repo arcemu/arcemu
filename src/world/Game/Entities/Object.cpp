@@ -1345,6 +1345,10 @@ void Object::onFarsightViewerAdded()
 
 void Object::onFarsightViewerRemoved()
 {
+	/// If we are not in world anymore, we don't have to announce that we're no longer farsight bound
+	if( ! IsInWorld() )
+		return;
+
 	MapCell *cell = GetMapCell();
 	cell->decreaseFarsightBoundCount();
 
