@@ -9798,7 +9798,16 @@ void Player::Possess(uint64 GUID, uint32 delay)
 	if(m_CurrentCharm)
 		return;
 
-	Root();
+	Unit* pTarget = m_mapMgr->GetUnit(GUID);
+	if(pTarget == NULL)
+	{
+		return;
+	}
+
+	if(pTarget->getFarsightViewer() != NULL)
+	{
+		return;
+	}
 
 	if(delay != 0)
 	{
@@ -9806,12 +9815,7 @@ void Player::Possess(uint64 GUID, uint32 delay)
 		return;
 	}
 
-	Unit* pTarget = m_mapMgr->GetUnit(GUID);
-	if(pTarget == NULL)
-	{
-		Unroot();
-		return;
-	}
+	Root();
 
 	m_CurrentCharm = GUID;
 	if(pTarget->IsCreature())

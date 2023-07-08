@@ -53,6 +53,8 @@ DEFINE_PACKET_HANDLER_METHOD( FarSightHandler )
 			Object *target = mapMgr->GetObject( targetGuid );
 			if( target == NULL )
 				return;
+			if( target->getFarsightViewer() != NULL )
+				return;
 			_player->bindSight( target );		
 			break;
 		}

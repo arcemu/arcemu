@@ -3519,6 +3519,12 @@ bool ChatHandler::HandleNpcPossessCommand(const char* args, WorldSession* m_sess
 		return true;
 	}
 
+	if(pTarget->getFarsightViewer() != NULL)
+	{
+		RedSystemMessage(m_session, "You can't possess a target that is already farsight bound");
+		return true;
+	}
+
 	m_session->GetPlayer()->Possess(pTarget->GetGUID());
 	BlueSystemMessage(m_session, "Possessed " I64FMT, pTarget->GetGUID());
 	switch(pTarget->GetTypeId())
