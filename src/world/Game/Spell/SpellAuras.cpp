@@ -895,7 +895,9 @@ void Aura::Remove()
 
 		if(j != 3)
 		{
-			TO_PLAYER(caster)->SetFarsightTarget(0);
+			Player *playerCaster = TO_PLAYER(caster);
+			playerCaster->bindSight(NULL);
+			playerCaster->SetFarsightTarget(0);
 		}
 	}
 
