@@ -46,6 +46,9 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 			if((p->GetPhase() & object->GetPhase()) == 0)
 				continue;
 
+			if( ( p->GetFarsightTarget() != 0 ) && ( object->GetGUID() != p->GetFarsightTarget() ) )
+				continue;
+
 			PlayerMessenger::sendMessage( p, *packet );
 		}
 	}
@@ -86,7 +89,20 @@ void MessageRouter::sendMessageToPlayersInRange( WorldPacket* packet, bool sendT
 					continue;
 			}
 
+			if( ( p->GetFarsightTarget() != 0 ) && ( object->GetGUID() != p->GetFarsightTarget() ) )
+				continue;
+
 			PlayerMessenger::sendMessage( p, *packet );
 		}
+	}
+
+	MapMgr *mgr = object->GetMapMgr();
+
+	std::set< Object* > &objects = object->getFarsightBoundInRange();
+	for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
+	{
+		Object *o = (*itr);
+		Player *p = TO_PLAYER( o->getFarsightViewer() );
+		PlayerMessenger::sendMessage( p, *packet );
 	}
 }

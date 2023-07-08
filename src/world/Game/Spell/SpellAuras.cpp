@@ -895,7 +895,9 @@ void Aura::Remove()
 
 		if(j != 3)
 		{
-			TO_PLAYER(caster)->SetFarsightTarget(0);
+			Player *playerCaster = TO_PLAYER(caster);
+			playerCaster->bindSight(NULL);
+			playerCaster->SetFarsightTarget(0);
 		}
 	}
 
@@ -1611,10 +1613,20 @@ void Aura::SpellAuraBindSight(bool apply)
 	if(caster == NULL)
 		return;
 
+	if(m_target->getFarsightViewer() != NULL)
+	{
+		Remove();
+		return;
+	}
+	
+
 	if(apply)
 		caster->SetFarsightTarget(m_target->GetGUID());
 	else
+	{
+		caster->bindSight( NULL );
 		caster->SetFarsightTarget(0);
+	}
 }
 
 void Aura::SpellAuraModPossess(bool apply)
@@ -1624,7 +1636,15 @@ void Aura::SpellAuraModPossess(bool apply)
 	if(apply)
 	{
 		if(caster != NULL && caster->IsInWorld())
+		{
+			if( m_target->getFarsightViewer() != NULL )
+			{
+				Remove();
+				return;
+			}
+
 			TO< Player* >(caster)->Possess(m_target->GetGUID());
+		}
 	}
 	else
 	{

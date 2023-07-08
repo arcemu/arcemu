@@ -72,8 +72,10 @@ Object::Object() : m_position(0, 0, 0, 0), m_spawnLocation(0, 0, 0, 0)
 	m_inRangePlayers.clear();
 	m_oppFactsInRange.clear();
 	m_sameFactsInRange.clear();
+	m_farsightBoundInRange.clear();
 
 	Active = false;
+	farsightViewer = NULL;
 }
 
 Object::~Object()
@@ -94,6 +96,8 @@ Object::~Object()
 		m_currentSpell->cancel();
 		m_currentSpell = NULL;
 	}
+
+	farsightViewer = NULL;
 
 	//avoid leaving traces in eventmanager. Have to work on the speed. Not all objects ever had events so list iteration can be skipped
 	sEventMgr.RemoveEvents(this);
@@ -1276,6 +1280,11 @@ void Object::AddInRangeObject(Object* pObj)
 	if(pObj->IsPlayer())
 		m_inRangePlayers.insert(pObj);
 
+	if(pObj->getFarsightViewer() != NULL)
+	{
+		m_farsightBoundInRange.insert(pObj);
+	}
+
 	m_objectsInRange.insert(pObj);
 }
 
@@ -1293,6 +1302,9 @@ void Object::RemoveInRangeObject(Object* pObj)
 	{
 		ARCEMU_ASSERT(m_inRangePlayers.erase(pObj) == 1);
 	}
+
+	/// No assert here, as player assumes control after being added to the world
+	m_farsightBoundInRange.erase(pObj);
 
 	ARCEMU_ASSERT(m_objectsInRange.erase(pObj) == 1);
 
@@ -1315,6 +1327,50 @@ void Object::RemoveSelfFromInrangeSets()
 
 }
 
+
+void Object::onFarsightViewerAdded()
+{
+	MapCell *cell = GetMapCell();
+	cell->increaseFarsightBoundCount();
+
+	std::set< Object* >::iterator itr = m_objectsInRange.begin();
+	while( itr != m_objectsInRange.end() )
+	{
+		Object *o = (*itr);
+		o->addFarsightBoundInRangeObject( this );
+		++itr;
+	}
+}
+
+
+void Object::onFarsightViewerRemoved()
+{
+	/// If we are not in world anymore, we don't have to announce that we're no longer farsight bound
+	if( ! IsInWorld() )
+		return;
+
+	MapCell *cell = GetMapCell();
+	cell->decreaseFarsightBoundCount();
+
+	std::set< Object* >::iterator itr = m_objectsInRange.begin();
+	while( itr != m_objectsInRange.end() )
+	{
+		Object *o = (*itr);
+		o->removeFarsightBoundInRangeObject( this );
+		++itr;
+	}
+}
+
+void Object::addFarsightBoundInRangeObject( Object *o )
+{
+	m_farsightBoundInRange.insert( o );
+}
+
+
+void Object::removeFarsightBoundInRangeObject( Object *o )
+{
+	ARCEMU_ASSERT( m_farsightBoundInRange.erase( o ) == 1 );
+}
 
 void Object::OnRemoveInRangeObject(Object* pObj)
 {

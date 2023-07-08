@@ -3836,7 +3836,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 	target->SetPickPocketed(true);
 }
 
-void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
+void Spell::SpellEffectAddFarsight(uint32 i)
 {
 	if(p_caster == NULL)
 		return;
@@ -3851,19 +3851,12 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 	DynamicObject* dynObj = p_caster->GetMapMgr()->CreateDynamicObject();
 	dynObj->Create(u_caster, this, x, y, z, GetDuration(), GetRadius(i));
 
-	/*
-	if( dynObj == NULL ) //i <3 burlex :P
-	{
-	delete dynObj;
-	return;
-	}
-	*/
 	dynObj->SetUInt32Value(OBJECT_FIELD_TYPE, 65);
 	dynObj->SetUInt32Value(DYNAMICOBJECT_BYTES, 0x80000002);
 	dynObj->SetInstanceID(p_caster->GetInstanceID());
 	p_caster->SetFarsightTarget(dynObj->GetGUID());
-
-	p_caster->GetMapMgr()->ChangeFarsightLocation(p_caster, dynObj);
+	
+	p_caster->createForPlayer( dynObj );
 }
 
 void Spell::SpellEffectUseGlyph(uint32 i)

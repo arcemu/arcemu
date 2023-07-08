@@ -182,6 +182,7 @@ SET(sources
 	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp
 	PacketHandlers/NewHandlers/LFGPacketHandlers.cpp
+	PacketHandlers/NewHandlers/MiscPacketHandlers.cpp
 	PacketHandlers/InventoryListBuilder.cpp
 	Math/Math.cpp
 )
@@ -330,6 +331,7 @@ SET( headers
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h
 	PacketHandlers/NewHandlers/LFGPacketHandlers.h
+	PacketHandlers/NewHandlers/MiscPacketHandlers.h
 	Math/Math.h
 	PacketHandlers/InventoryListBuilder.h
 )

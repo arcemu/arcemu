@@ -28,6 +28,7 @@
 #include "PacketHandlers/NewHandlers/ItemPacketHandlers.h"
 #include "PacketHandlers/NewHandlers/PlayerPacketHandlers.h"
 #include "PacketHandlers/NewHandlers/LFGPacketHandlers.h"
+#include "PacketHandlers/NewHandlers/MiscPacketHandlers.h"
 
 struct PacketHandler
 {
@@ -582,6 +583,8 @@ void WorldSession::InitPacketHandlerTable()
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_JOIN, LFGJoinHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_LEAVE, LFGLeaveHandler );
 	REGISTER_PACKETHANDLER_CLASS( CMSG_LFG_TELEPORT, LFGTeleportHandler );
+
+	REGISTER_PACKETHANDLER_CLASS( CMSG_FAR_SIGHT, FarSightHandler );
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

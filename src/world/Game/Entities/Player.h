@@ -1580,9 +1580,8 @@ class SERVER_DECL Player : public Unit
 		void AddInRangeObject(Object* pObj);
 		void OnRemoveInRangeObject(Object* pObj);
 		void ClearInRangeSet();
-		void AddVisibleObject(uint64 pObj) { m_visibleObjects.insert(pObj); }
-		void RemoveVisibleObject(uint64 pObj) { m_visibleObjects.erase(pObj); }
-		void RemoveVisibleObject(std::set< uint64 >::iterator itr) { m_visibleObjects.erase(itr); }
+		void AddVisibleObject(uint64 pObj);
+		void RemoveVisibleObject(uint64 pObj);
 		std::set< uint64 >::iterator FindVisible(uint64 obj) { return m_visibleObjects.find(obj); }
 		void RemoveIfVisible(uint64 obj);
 
@@ -1780,6 +1779,7 @@ class SERVER_DECL Player : public Unit
 
 		bool bProcessPending;
 		Mutex _bufferS;
+		void createForPlayer( Object *object );
 		void PushUpdateData(ByteBuffer* data, uint32 updatecount);
 		void PushCreationData(ByteBuffer* data, uint32 updatecount);
 		void PushOutOfRange(const WoWGuid & guid);
@@ -1859,7 +1859,6 @@ class SERVER_DECL Player : public Unit
 		uint32 m_arenaPoints;
 		uint32 m_honorless;
 		uint32 m_lastSeenWeather;
-		set<Object*> m_visibleFarsightObjects;
 		void EventTeleport(uint32 mapid, float x, float y, float z);
 		void EventTeleportTaxi(uint32 mapid, float x, float y, float z);
 		void ApplyLevelInfo(LevelInfo* Info, uint32 Level);
@@ -2437,6 +2436,8 @@ class SERVER_DECL Player : public Unit
 		bool CanTrainAt(Trainer*);
 
 		Object* GetPlayerOwner() { return this; };
+
+		void bindSight( Object *target );
 };
 
 class SkillIterator

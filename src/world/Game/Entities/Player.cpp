@@ -449,7 +449,6 @@ Player::Player(uint32 guid)
 	loginauras.clear();
 	damagedone.clear();
 	tocritchance.clear();
-	m_visibleFarsightObjects.clear();
 	SummonSpells.clear();
 	PetSpells.clear();
 	delayedPackets.clear();
@@ -5785,6 +5784,26 @@ void Player::ClearInRangeSet()
 	Unit::ClearInRangeSet();
 }
 
+void Player::AddVisibleObject(uint64 guid)
+{
+	m_visibleObjects.insert(guid);
+
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->AddVisibleObject( guid );
+	}
+}
+
+void Player::RemoveVisibleObject(uint64 guid)
+{
+	m_visibleObjects.erase(guid);
+
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->RemoveVisibleObject( guid );
+	}
+}
+
 void Player::EventCannibalize(uint32 amount)
 {
 	if(GetChannelSpellId() != 20577)
@@ -7238,6 +7257,13 @@ void Player::ResetAllCooldowns()
 	}
 }
 
+void Player::createForPlayer( Object *object )
+{
+	ByteBuffer buf;
+	uint32 count = UpdateBuilder::BuildCreateUpdateBlockForPlayer( &buf, object, this );
+	PushCreationData( &buf, count );
+}
+
 void Player::PushUpdateData(ByteBuffer* data, uint32 updatecount)
 {
 	// imagine the bytebuffer getting appended from 2 threads at once! :D
@@ -7276,6 +7302,11 @@ void Player::PushOutOfRange(const WoWGuid & guid)
 		m_mapMgr->PushToProcessed(this);
 	}
 	_bufferS.Release();
+
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->PushOutOfRange( guid );
+	}
 }
 
 void Player::PushCreationData(ByteBuffer* data, uint32 updatecount)
@@ -7302,6 +7333,10 @@ void Player::PushCreationData(ByteBuffer* data, uint32 updatecount)
 
 	_bufferS.Release();
 
+	if( getFarsightViewer() != NULL )
+	{
+		TO_PLAYER( getFarsightViewer() )->PushCreationData( data, updatecount );
+	}
 }
 
 void Player::ProcessPendingUpdates()
@@ -9763,7 +9798,16 @@ void Player::Possess(uint64 GUID, uint32 delay)
 	if(m_CurrentCharm)
 		return;
 
-	Root();
+	Unit* pTarget = m_mapMgr->GetUnit(GUID);
+	if(pTarget == NULL)
+	{
+		return;
+	}
+
+	if(pTarget->getFarsightViewer() != NULL)
+	{
+		return;
+	}
 
 	if(delay != 0)
 	{
@@ -9771,12 +9815,7 @@ void Player::Possess(uint64 GUID, uint32 delay)
 		return;
 	}
 
-	Unit* pTarget = m_mapMgr->GetUnit(GUID);
-	if(pTarget == NULL)
-	{
-		Unroot();
-		return;
-	}
+	Root();
 
 	m_CurrentCharm = GUID;
 	if(pTarget->IsCreature())
@@ -9835,6 +9874,7 @@ void Player::UnPossess()
 	}
 
 	m_noInterrupt--;
+	bindSight( NULL );
 	SetFarsightTarget(0);
 	SetCharmedUnitGUID(0);
 	pTarget->SetCharmedByGUID(0);
@@ -13174,4 +13214,60 @@ void Player::AddVehicleComponent( uint32 creature_entry, uint32 vehicleid ){
 void Player::RemoveVehicleComponent(){
 	delete vehicle;
 	vehicle = NULL;
+}
+
+void Player::bindSight( Object *target )
+{
+	if( target == NULL )
+	{
+		uint64 targetGuid = GetFarsightTarget();
+		target = m_mapMgr->GetObject( targetGuid );
+		if( target == NULL )
+			return;
+
+		/// Remove everything from the client
+		for( std::set< uint64 >::iterator itr = m_visibleObjects.begin(); itr != m_visibleObjects.end(); ++itr )
+		{
+			uint64 guid = *itr;
+			PushOutOfRange( guid );
+		}
+		m_visibleObjects.clear();
+
+		target->setFarsightViewer( NULL );
+
+		/// Then recreate those who we can see
+		for( std::set< Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
+		{
+			Object *o = *itr;
+			if( CanSee( o ) )
+			{
+				createForPlayer( o );
+				AddVisibleObject( o->GetGUID() );
+			}
+		}
+	}
+	else
+	{
+		/// Remove everything from the client
+		for( std::set< uint64 >::iterator itr = m_visibleObjects.begin(); itr != m_visibleObjects.end(); ++itr )
+		{
+			uint64 guid = *itr;
+			PushOutOfRange( guid );
+		}
+		m_visibleObjects.clear();
+
+		/// Add those that the object can see
+		std::set< Object* > &objects = target->GetInRangeObjects();		
+		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
+		{
+			Object *object = (*itr);
+			if( CanSee( object ) )
+			{
+				createForPlayer( object );
+				AddVisibleObject( object->GetGUID() );
+			}
+		}
+
+		target->setFarsightViewer( this );
+	}
 }

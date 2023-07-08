@@ -191,6 +191,7 @@ class SERVER_DECL Object : public EventableObject
 		bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 		bool IsCorpse() { return m_objectTypeId == TYPEID_CORPSE; }
 		bool IsContainer() { return m_objectTypeId == TYPEID_CONTAINER; }
+		bool IsDynamicObject() { return m_objectTypeId == TYPEID_DYNAMICOBJECT; }
 
 		virtual void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
 
@@ -407,6 +408,7 @@ class SERVER_DECL Object : public EventableObject
 			m_inRangePlayers.clear();
 			m_oppFactsInRange.clear();
 			m_sameFactsInRange.clear();
+			m_farsightBoundInRange.clear();
 		}
 
 		size_t GetInRangeCount() { return m_objectsInRange.size(); }
@@ -580,7 +582,7 @@ class SERVER_DECL Object : public EventableObject
 		std::set<Object*> m_inRangePlayers;
 		std::set<Object*> m_oppFactsInRange;
 		std::set<Object*> m_sameFactsInRange;
-
+		std::set<Object*> m_farsightBoundInRange;
 
 		int32 m_instanceId;
 
@@ -589,7 +591,31 @@ class SERVER_DECL Object : public EventableObject
 		// so we can set from scripts. :)
 		void _SetExtension(const string & name, void* ptr);
 
+		Object *farsightViewer;
+
+		void onFarsightViewerAdded();
+		void onFarsightViewerRemoved();
+
 	public:
+
+		Object* getFarsightViewer() const{ return farsightViewer; }
+
+		void setFarsightViewer( Object *viewer ){
+			farsightViewer = viewer;
+			if( viewer == NULL )
+			{
+				onFarsightViewerRemoved();
+			}
+			else
+			{
+				onFarsightViewerAdded();
+			}
+		}
+
+		void addFarsightBoundInRangeObject( Object *o );
+		void removeFarsightBoundInRangeObject( Object *o );
+
+		std::set<Object*>& getFarsightBoundInRange(){ return m_farsightBoundInRange; }
 
 		template<typename T>
 		void SetExtension(const string & name, T ptr)

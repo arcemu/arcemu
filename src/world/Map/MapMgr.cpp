@@ -373,6 +373,11 @@ void MapMgr::PushObject(Object* obj)
 				m_DynamicObjectStorage[obj->GetLowGUID()] = (DynamicObject*)obj;
 				break;
 		}
+
+		if( obj->getFarsightViewer() != NULL || obj->IsDynamicObject() )
+		{
+			UpdateCellActivity(x, y, 2);
+		}
 	}
 
 	// Handle activation of that object.
@@ -627,6 +632,11 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 	{
 		plObj = TO< Player* >(obj);
 	}
+	else
+	if(obj->getFarsightViewer() != NULL)
+	{
+		plObj = TO_PLAYER( obj->getFarsightViewer() );
+	}
 
 	Object* curObj;
 	float fRange = 0.0f;
@@ -748,7 +758,7 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 		// if player we need to update cell activity
 		// radius = 2 is used in order to update both
 		// old and new cells
-		if(obj->IsPlayer())
+		if(obj->IsPlayer() || ( obj->getFarsightViewer() != NULL ) )
 		{
 			// have to unlock/lock here to avoid a deadlock situation.
 			UpdateCellActivity(cellX, cellY, 2);
@@ -976,6 +986,7 @@ void MapMgr::_UpdateObjects()
 
 				if(count)
 				{
+					/// First update Players
 					it_start = pObj->GetInRangePlayerSetBegin();
 					it_end = pObj->GetInRangePlayerSetEnd();
 
@@ -983,10 +994,34 @@ void MapMgr::_UpdateObjects()
 					{
 						lplr = TO< Player* >(*itr);
 						++itr;
+
+						if( ( lplr->GetFarsightTarget() != 0 ) && ( pObj->GetGUID() != lplr->GetFarsightTarget() ) )
+							continue;
+
 						// Make sure that the target player can see us.
 						if(lplr->IsVisible(pObj->GetGUID()))
 							lplr->PushUpdateData(&update, count);
 					}
+
+					/// Then update farsight viewers
+					std::set< Object* > &farsightBoundObjects = pObj->getFarsightBoundInRange();
+					
+					it_start = farsightBoundObjects.begin();
+					it_end = farsightBoundObjects.end();
+					itr = it_start;
+					while( itr != it_end )
+					{
+						Object *o = (*itr);
+						lplr = TO_PLAYER( o->getFarsightViewer() );
+						++itr;
+
+						if( lplr != NULL )
+						{
+							if(lplr->IsVisible(pObj->GetGUID()))
+								lplr->PushUpdateData(&update, count);
+						}
+					}
+
 					update.clear();
 				}
 			}
@@ -1148,7 +1183,7 @@ bool MapMgr::_CellActive(uint32 x, uint32 y)
 
 			if(objCell)
 			{
-				if(objCell->HasPlayers() || m_forcedcells.find(objCell) != m_forcedcells.end())
+				if(objCell->HasPlayers() || objCell->hasFarsightBound() || objCell->hasDynObjects() || m_forcedcells.find(objCell) != m_forcedcells.end())
 				{
 					return true;
 				}
@@ -1174,61 +1209,6 @@ void MapMgr::PushToProcessed(Player* plr)
 	_processQueue.insert(plr);
 }
 
-
-void MapMgr::ChangeFarsightLocation(Player* plr, DynamicObject* farsight)
-{
-	if(farsight == 0)
-	{
-		// We're clearing.
-		for(ObjectSet::iterator itr = plr->m_visibleFarsightObjects.begin(); itr != plr->m_visibleFarsightObjects.end();
-		        ++itr)
-		{
-			if(plr->IsVisible((*itr)->GetGUID()) && !plr->CanSee((*itr)))
-			{
-				// Send destroy
-				plr->PushOutOfRange((*itr)->GetNewGUID());
-			}
-		}
-		plr->m_visibleFarsightObjects.clear();
-	}
-	else
-	{
-		uint32 cellX = GetPosX(farsight->GetPositionX());
-		uint32 cellY = GetPosY(farsight->GetPositionY());
-		uint32 endX = (cellX <= _sizeX) ? cellX + 1 : (_sizeX - 1);
-		uint32 endY = (cellY <= _sizeY) ? cellY + 1 : (_sizeY - 1);
-		uint32 startX = cellX > 0 ? cellX - 1 : 0;
-		uint32 startY = cellY > 0 ? cellY - 1 : 0;
-		uint32 posX, posY;
-		MapCell* cell;
-		Object* obj;
-		MapCell::ObjectSet::iterator iter, iend;
-		uint32 count;
-		for(posX = startX; posX <= endX; ++posX)
-		{
-			for(posY = startY; posY <= endY; ++posY)
-			{
-				cell = GetCell(posX, posY);
-				if(cell)
-				{
-					iter = cell->Begin();
-					iend = cell->End();
-					for(; iter != iend; ++iter)
-					{
-						obj = (*iter);
-						if(!plr->IsVisible(obj->GetGUID()) && plr->CanSee(obj) && farsight->GetDistance2dSq(obj) <= m_UpdateDistance)
-						{
-							ByteBuffer buf;
-							count = UpdateBuilder::BuildCreateUpdateBlockForPlayer(&buf, obj, plr);
-							plr->PushCreationData(&buf, count);
-							plr->m_visibleFarsightObjects.insert(obj);
-						}
-					}
-				}
-			}
-		}
-	}
-}
 
 bool MapMgr::run()
 {

@@ -232,6 +232,3 @@ void DynamicObject::Remove()
 
 	delete this;
 }
-
-
-
