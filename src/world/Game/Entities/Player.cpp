@@ -13248,13 +13248,19 @@ void Player::bindSight( Object *target )
 	}
 	else
 	{
-		/// Remove everything from the client
+		/// Remove everything from the client, except the object we are viewing through
 		for( std::set< uint64 >::iterator itr = m_visibleObjects.begin(); itr != m_visibleObjects.end(); ++itr )
 		{
 			uint64 guid = *itr;
-			PushOutOfRange( guid );
+			if( guid != target->GetGUID() )
+			{
+				PushOutOfRange( guid );
+			}
 		}
-		m_visibleObjects.clear();
+
+		/// Remove all visible objects, and then readd the target as that will surely is visible at this point
+		m_visibleObjects.clear();		
+		m_visibleObjects.insert( target->GetGUID() );
 
 		/// Add those that the object can see
 		std::set< Object* > &objects = target->GetInRangeObjects();		
