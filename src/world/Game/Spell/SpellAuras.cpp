@@ -1611,6 +1611,13 @@ void Aura::SpellAuraBindSight(bool apply)
 	if(caster == NULL)
 		return;
 
+	if(m_target->getFarsightViewer() != NULL)
+	{
+		Remove();
+		return;
+	}
+	
+
 	if(apply)
 		caster->SetFarsightTarget(m_target->GetGUID());
 	else
@@ -1627,7 +1634,15 @@ void Aura::SpellAuraModPossess(bool apply)
 	if(apply)
 	{
 		if(caster != NULL && caster->IsInWorld())
+		{
+			if( m_target->getFarsightViewer() != NULL )
+			{
+				Remove();
+				return;
+			}
+
 			TO< Player* >(caster)->Possess(m_target->GetGUID());
+		}
 	}
 	else
 	{
