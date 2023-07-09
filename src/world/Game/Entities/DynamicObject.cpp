@@ -23,6 +23,7 @@
 
 DynamicObject::DynamicObject(uint32 high, uint32 low)
 {
+	targetingEnabled = true;
 	m_objectTypeId = TYPEID_DYNAMICOBJECT;
 	m_valuesCount = DYNAMICOBJECT_END;
 	m_uint32Values = _fields;
@@ -115,6 +116,9 @@ void DynamicObject::OnRemoveInRangeObject(Object* pObj)
 
 void DynamicObject::UpdateTargets()
 {
+	if( !targetingEnabled )
+		return;
+
 	if(m_aliveDuration == 0)
 		return;
 
@@ -208,15 +212,18 @@ void DynamicObject::Remove()
 		return;
 	}
 
-	for(std::set< uint64 >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+	if( targetingEnabled )
 	{
+		for(std::set< uint64 >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+		{
 
-		uint64 TargetGUID = *itr;
+			uint64 TargetGUID = *itr;
 
-		target = m_mapMgr->GetUnit(TargetGUID);
+			target = m_mapMgr->GetUnit(TargetGUID);
 
-		if(target != NULL)
-			target->RemoveAura(m_spellProto->Id);
+			if(target != NULL)
+				target->RemoveAura(m_spellProto->Id);
+		}
 	}
 
 	Messenger::SendGameObjectDespawnAnim( this );

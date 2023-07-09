@@ -38,6 +38,8 @@ class SERVER_DECL DynamicObject : public Object
 		void OnRemoveInRangeObject(Object* pObj);
 		void Remove();
 
+		void setTargetingEnabled( bool b ){ targetingEnabled = b; }
+
 	protected:
 
 		SpellEntry* m_spellProto;
@@ -48,6 +50,8 @@ class SERVER_DECL DynamicObject : public Object
 
 		uint32 m_aliveDuration;
 		uint32 _fields[DYNAMICOBJECT_END];
+
+		bool targetingEnabled;
 };
 
 #endif

@@ -3849,6 +3849,7 @@ void Spell::SpellEffectAddFarsight(uint32 i)
 	if(z == 0) z = m_targets.m_srcZ;
 
 	DynamicObject* dynObj = p_caster->GetMapMgr()->CreateDynamicObject();
+	dynObj->setTargetingEnabled( false );
 	dynObj->Create(u_caster, this, x, y, z, GetDuration(), GetRadius(i));
 
 	dynObj->SetUInt32Value(OBJECT_FIELD_TYPE, 65);
