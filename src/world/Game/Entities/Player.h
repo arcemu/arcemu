@@ -1529,14 +1529,7 @@ class SERVER_DECL Player : public Unit
 		const uint32 & GetBindMapId() const { return m_bind_mapid; }
 		const uint32 & GetBindZoneId() const { return m_bind_zoneid; }
 
-		void delayAttackTimer(int32 delay)
-		{
-			if(!delay)
-				return;
-
-			m_attackTimer += delay;
-			m_attackTimer_1 += delay;
-		}
+		void delayAttackTimer(int32 delay);
 
 		void SetShapeShift(uint8 ss);
 

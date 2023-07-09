@@ -9305,6 +9305,25 @@ void Player::SaveAuras(stringstream & ss)
 	}
 }
 
+void Player::delayAttackTimer( int32 delay )
+{
+	if( delay == 0 )
+		return;
+	
+	int32 tmp;
+	tmp = static_cast< int32 >( m_attackTimer ) + delay;
+	if( tmp >= 0 )
+	{
+		m_attackTimer += delay;
+	}
+
+	tmp = static_cast< int32 >( m_attackTimer_1 ) + delay;
+	if( tmp >= 0 )
+	{
+		m_attackTimer_1 += delay;
+	}
+}
+
 void Player::SetShapeShift(uint8 ss)
 {
 	uint8 old_ss = GetShapeShift(); //GetByte( UNIT_FIELD_BYTES_2, 3 );
