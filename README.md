@@ -9,6 +9,11 @@ This project is mostly abandoned since the end of 2014. It is only developed and
 
 [![Build status](https://ci.appveyor.com/api/projects/status/avvvuy4vpn183ncm?svg=true)](https://ci.appveyor.com/project/dfighter1985/arcemu-vulhc) Windows build on AppVeyor
 
+
+## Code Quality
+
+[![CodeFactor](https://www.codefactor.io/repository/github/arcemu/arcemu/badge/master)](https://www.codefactor.io/repository/github/arcemu/arcemu/overview/master) CodeFactor static analysis
+
 ## Introduction
 
 Arcemu is a World of Warcraft server package. Based on the popular Ascent project (defunct as of 2007) it aims to provide players with a gameplay very close or identical to the real thing as of World of Warcraft version 3.3.5a.
