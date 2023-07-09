@@ -744,7 +744,7 @@ Aura::Aura(SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool
 	}
 
 	if(GetDuration() > 0 && m_spellProto->ChannelInterruptFlags != 0 && caster->IsUnit())
-		SetDuration(GetDuration() * int(TO_UNIT(caster)->GetCastSpeedMod()));
+		SetDuration( int32( GetDuration() * TO_UNIT(caster)->GetCastSpeedMod() ) );
 
 	//SetCasterFaction(caster->_getFaction());
 
