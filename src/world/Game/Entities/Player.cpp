@@ -13258,7 +13258,7 @@ void Player::bindSight( Object *target )
 			}
 		}
 
-		/// Remove all visible objects, and then readd the target as that will surely is visible at this point
+		/// Remove all visible objects, and then readd the target as that will surely be visible at this point
 		m_visibleObjects.clear();		
 		m_visibleObjects.insert( target->GetGUID() );
 
