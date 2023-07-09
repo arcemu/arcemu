@@ -896,8 +896,15 @@ void Aura::Remove()
 		if(j != 3)
 		{
 			Player *playerCaster = TO_PLAYER(caster);
+			uint64 targetGuid = playerCaster->GetFarsightTarget();
 			playerCaster->bindSight(NULL);
 			playerCaster->SetFarsightTarget(0);
+
+			MapMgr *mgr = playerCaster->GetMapMgr();
+			DynamicObject *dynamicObject = mgr->GetDynamicObject( Arcemu::Util::GUID_LOPART( targetGuid ) );
+
+			/// Client needs time to release the object, so remove the object with a little delay. Otherwise the object remains on screen even after it's removed from world
+			sEventMgr.AddEvent( dynamicObject, &DynamicObject::Remove, EVENT_DELETE_TIMER, 1 * 1000, 1, EVENT_FLAG_DELETES_OBJECT | EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		}
 	}
 
