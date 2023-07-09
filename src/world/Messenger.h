@@ -56,6 +56,9 @@ public:
 	/// Destroys this Object for the player's client
 	static void SendDestroyObject( Player* player, Object* object );
 
+	/// Destroys this Object for the player's client
+	static void SendDestroyObject( Player* player, uint64 guid );
+
 	/// Sends a gameobject animation to the player
 	static void SendGameObjectCustomAnim( GameObject* go, uint32 anim, Player* player );
 

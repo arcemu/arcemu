@@ -13248,7 +13248,11 @@ void Player::bindSight( Object *target )
 		for( std::set< uint64 >::iterator itr = m_visibleObjects.begin(); itr != m_visibleObjects.end(); ++itr )
 		{
 			uint64 guid = *itr;
-			PushOutOfRange( guid );
+
+			if( guid != GetGUID() )
+			{
+				Messenger::SendDestroyObject( this, guid );
+			}
 		}
 		m_visibleObjects.clear();
 
@@ -13273,7 +13277,7 @@ void Player::bindSight( Object *target )
 			uint64 guid = *itr;
 			if( guid != target->GetGUID() )
 			{
-				PushOutOfRange( guid );
+				Messenger::SendDestroyObject( this, guid );
 			}
 		}
 
@@ -13286,7 +13290,7 @@ void Player::bindSight( Object *target )
 		for( std::set< Object* >::iterator itr = objects.begin(); itr != objects.end(); ++itr )
 		{
 			Object *object = (*itr);
-			if( CanSee( object ) )
+			if( ( object->GetGUID() != this->GetGUID() ) && CanSee( object ) )
 			{
 				createForPlayer( object );
 				AddVisibleObject( object->GetGUID() );
@@ -13295,4 +13299,6 @@ void Player::bindSight( Object *target )
 
 		target->setFarsightViewer( this );
 	}
+
+	ProcessPendingUpdates();
 }
