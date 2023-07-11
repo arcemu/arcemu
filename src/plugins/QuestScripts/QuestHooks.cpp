@@ -42,7 +42,7 @@ void Hanazua(Player* pPlayer, Object* pObject)
 
 void AHumbleTask(Player* pPlayer, Object* pObject)
 {
-	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Greatmother Hawkwind gestures to the pitcher of water sitting on the edge of the well.");
+	(TO_CREATURE(pObject))->SendChatMessage(CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, "Greatmother Hawkwind gestures to the pitcher of water sitting on the edge of the well.");
 }
 
 void Yorus_Barleybrew(Player* pPlayer, Object* pObject)
