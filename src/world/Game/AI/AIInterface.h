@@ -236,6 +236,14 @@ struct AI_Spell
 	float minrange;
 	float maxrange;
 	uint32 autocast_type;
+
+	bool hasRange() const
+	{
+		if( ( minrange != 0 ) || ( maxrange != 0 ) )
+			return true;
+		else
+			return false;
+	}
 };
 
 //Assume previous point can be reached through linked list or current creature position.

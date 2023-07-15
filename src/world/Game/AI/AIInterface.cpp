@@ -840,11 +840,11 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					{
 						los = CollideInterface.CheckLOS(m_Unit->GetMapId(), m_Unit->GetPositionNC(), getNextTarget()->GetPositionNC());
 					}
-					if(los
-					        && ((distance <= m_nextSpell->maxrange + m_Unit->GetModelHalfSize()
-//					&& distance >= m_nextSpell->minrange
-					            )
-					            /*|| m_nextSpell->maxrange == 0*/))  // Target is in Range -> Attack
+
+					/// If target is in range, or spell has no range and is not AOE cast the spell
+					if( ( los && ( distance <= m_nextSpell->maxrange + m_Unit->GetModelHalfSize() ) ) ||
+						( !m_nextSpell->hasRange() && ( m_nextSpell->spellType != STYPE_AOEDAMAGE ) )
+						)
 					{
 						SpellEntry* spellInfo = m_nextSpell->spell;
 
