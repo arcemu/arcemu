@@ -5065,6 +5065,7 @@ void SetupGuardGossip(ScriptMgr* mgr)
 	mgr->register_gossip_script(3212, new BloodhoofGuard);			// Brave Ironhorn
 	mgr->register_gossip_script(5953, new RazorHillGuard);			// Razor Hill Grunt
 	mgr->register_gossip_script(5725, new BrillGuard);				// Deathguard Lundmark
+	mgr->register_gossip_script(1735, new BrillGuard);				// Deathguard Abraham
 	mgr->register_gossip_script(1738, new BrillGuard);				// Deathguard Terrence
 	mgr->register_gossip_script(1652, new BrillGuard);				// Deathguard Burgess
 	mgr->register_gossip_script(1746, new BrillGuard);				// Deathguard Cyrus
