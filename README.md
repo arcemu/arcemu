@@ -1,4 +1,4 @@
-# ![logo](http://arcemu.org/forums/public/style_images/1_arcemulogo.png) Arcemu
+# ![logo](https://raw.githubusercontent.com/arcemu/arcemu/master/arcemulogo.png) Arcemu
 
 ## Project Status
 This project is mostly abandoned since the end of 2014. It is only developed and maintained ocassionally.
