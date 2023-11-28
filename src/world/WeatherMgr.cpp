@@ -47,59 +47,91 @@ enum WeatherSounds
 
 initialiseSingleton(WeatherMgr);
 
-void BuildWeatherPacket(WorldPacket* data, uint32 Effect, float Density)
+/// Builds a WorldPacket for SMSG_WEATHER
+class WeatherPacketBuilder
 {
-	data->Initialize( SMSG_WEATHER );	
-	*data << uint32( Effect );
-	
-	if( Effect <= WEATHER_TYPE_FOG )
-		*data << float( 0 ) << uint32( 0 ) << uint8( 0 );
-	else
-		*data << float( Density ) << uint32( GetSound( Effect, Density ) ) << uint8( 0 );
-}
 
-uint32 GetSound(uint32 Effect, float Density)
-{
+public:
+	uint32 type;
+	float density;
 	uint32 sound;
-	if(Density <= 0.30f)
-		return WEATHER_NOSOUND;
+	uint8 unknown;
 
-	switch(Effect)
+public:
+	WeatherPacketBuilder()
 	{
-		case WEATHER_TYPE_RAIN:
-		case WEATHER_TYPE_HEAVY_RAIN:
-			if(Density  < 0.40f)
-				sound = WEATHER_RAINLIGHT;
-			else if(Density  < 0.70f)
-				sound = WEATHER_RAINMEDIUM;
-			else
-				sound = WEATHER_RAINHEAVY;
-			break;
-
-		case WEATHER_TYPE_SNOW:
-			if(Density  < 0.40f)
-				sound = WEATHER_SNOWLIGHT;
-			else if(Density  < 0.70f)
-				sound = WEATHER_SNOWMEDIUM;
-			else
-				sound = WEATHER_SNOWHEAVY;
-			break;
-
-		case WEATHER_TYPE_SANDSTORM:
-			if(Density  < 0.40f)
-				sound = WEATHER_SANDSTORMLIGHT;
-			else if(Density  < 0.70f)
-				sound = WEATHER_SANDSTORMMEDIUM;
-			else
-				sound = WEATHER_SANDSTORMHEAVY;
-			break;
-
-		default:
-			sound = WEATHER_NOSOUND;
-			break;
+		type = 0;
+		density = 0.0f;
+		sound = 0;
+		unknown = 0;
 	}
-	return sound;
-}
+
+	WeatherPacketBuilder( uint32 type, float density )
+	{
+		this->type = type;
+		this->density = density;
+		unknown = 0;
+		
+		setSound();
+	}
+
+	void buildPacket( WorldPacket &data )
+	{
+		data << uint32( type );
+		data << float( density );
+		data << uint32( sound );
+		data << uint8( unknown );
+	}
+
+private:
+
+	/// Sets the sound id based on weather type and density
+	void setSound()
+	{
+		if( type == 0 || density <= 0.3f )
+		{
+			sound = WEATHER_NOSOUND;
+			return;
+		}
+
+		switch( type )
+		{
+			case WEATHER_TYPE_RAIN:
+			case WEATHER_TYPE_HEAVY_RAIN:
+				if( density  < 0.40f )
+					sound = WEATHER_RAINLIGHT;
+				else
+				if( density  < 0.70f )
+					sound = WEATHER_RAINMEDIUM;
+				else
+					sound = WEATHER_RAINHEAVY;
+				
+				break;
+			
+			case WEATHER_TYPE_SNOW:
+				if( density  < 0.40f )
+					sound = WEATHER_SNOWLIGHT;
+				else
+				if( density  < 0.70f )
+					sound = WEATHER_SNOWMEDIUM;
+				else
+					sound = WEATHER_SNOWHEAVY;
+				
+				break;
+			
+			case WEATHER_TYPE_SANDSTORM:
+				if( density  < 0.40f )
+					sound = WEATHER_SANDSTORMLIGHT;
+				else
+				if( density  < 0.70f )
+					sound = WEATHER_SANDSTORMMEDIUM;
+				else
+					sound = WEATHER_SANDSTORMHEAVY;
+				
+				break;
+		}
+	}
+};
 
 WeatherMgr::WeatherMgr()
 {
@@ -153,7 +185,8 @@ void WeatherMgr::SendWeather(Player* plr)  //Update weather when player has chan
 	if(itr == m_zoneWeathers.end())
 	{
 		WorldPacket data(SMSG_WEATHER, 9);
-		BuildWeatherPacket(&data, 0, 0);
+		WeatherPacketBuilder builder( 0, 0 );
+		builder.buildPacket( data );
 		plr->GetSession()->SendPacket(&data);
 		plr->m_lastSeenWeather = 0;
 
@@ -262,7 +295,8 @@ void WeatherInfo::Update()
 void WeatherInfo::SendUpdate()
 {
 	WorldPacket data(SMSG_WEATHER, 9);
-	BuildWeatherPacket(&data, m_currentEffect, m_currentDensity);
+	WeatherPacketBuilder builder( m_currentEffect, m_currentDensity );
+	builder.buildPacket( data );
 	sWorld.SendZoneMessage(&data, m_zoneId, 0);
 }
 
@@ -274,6 +308,7 @@ void WeatherInfo::SendUpdate(Player* plr) //Updates weather for player's zone-ch
 	plr->m_lastSeenWeather = m_currentEffect;
 
 	WorldPacket data(SMSG_WEATHER, 9);
-	BuildWeatherPacket(&data, m_currentEffect, m_currentDensity);
+	WeatherPacketBuilder builder( m_currentEffect, m_currentDensity );
+	builder.buildPacket( data );
 	plr->GetSession()->SendPacket(&data);
 }

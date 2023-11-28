@@ -26,9 +26,6 @@
 class WeatherInfo;
 class WeatherMgr;
 
-void   BuildWeatherPacket(WorldPacket* data, uint32 Effect, float Density);
-uint32 GetSound(uint32 Effect, float Density);
-
 class WeatherMgr :  public Singleton < WeatherMgr >
 {
 	public:
