@@ -49,14 +49,13 @@ initialiseSingleton(WeatherMgr);
 
 void BuildWeatherPacket(WorldPacket* data, uint32 Effect, float Density)
 {
-	data->Initialize(SMSG_WEATHER);
-	if(Effect == 0)  // set all parameter to 0 for sunny.
-		*data << uint32(0) << float(0) << uint32(0) << uint8(0);
-	else if(Effect == 1)  // No sound/density for fog
-		*data << Effect << float(0) << uint32(0) << uint8(0);
+	data->Initialize( SMSG_WEATHER );	
+	*data << uint32( Effect );
+	
+	if( Effect <= WEATHER_TYPE_FOG )
+		*data << float( 0 ) << uint32( 0 ) << uint8( 0 );
 	else
-		*data << Effect << Density << GetSound(Effect, Density) << uint8(0) ;
-//	LOG_DEBUG("Send Weather Update %d, Density %f, Sound %d, unint8(0)", Effect,Density,GetSound(Effect,Density));
+		*data << float( Density ) << uint32( GetSound( Effect, Density ) ) << uint8( 0 );
 }
 
 uint32 GetSound(uint32 Effect, float Density)
