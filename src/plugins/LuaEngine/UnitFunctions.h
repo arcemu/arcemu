@@ -1226,64 +1226,18 @@ class LuaUnit
 
 		static int SetZoneWeather(lua_State* L, Unit* ptr)
 		{
-			/*
-			WEATHER_TYPE_NORMAL            = 0, // NORMAL (SUNNY)
-			WEATHER_TYPE_FOG               = 1, // FOG
-			WEATHER_TYPE_RAIN              = 2, // RAIN
-			WEATHER_TYPE_HEAVY_RAIN        = 4, // HEAVY_RAIN
-			WEATHER_TYPE_SNOW              = 8, // SNOW
-			WEATHER_TYPE_SANDSTORM         = 16 // SANDSTORM
-			*/
+			/* See Weather.h for weather types */
+
 			uint32 zone_id = CHECK_ULONG(L, 1);
 			uint32 type = CHECK_ULONG(L, 2);
 			float Density = CHECK_FLOAT(L, 3); //min: 0.30 max: 2.00
 			if(Density < 0.30f || Density > 2.0f || !zone_id || !type)
 				return 0;
 
-			uint32 sound;
-			if(Density <= 0.30f)
-				sound = 0;
-
-			switch(type)
-			{
-				case 2:                                             //rain
-				case 4:
-					if(Density  < 0.40f)
-						sound = 8533;
-					else if(Density  < 0.70f)
-						sound = 8534;
-					else
-						sound = 8535;
-					break;
-				case 8:                                             //snow
-					if(Density  < 0.40f)
-						sound = 8536;
-					else if(Density  < 0.70f)
-						sound = 8537;
-					else
-						sound = 8538;
-					break;
-				case 16:                                             //storm
-					if(Density  < 0.40f)
-						sound = 8556;
-					else if(Density  < 0.70f)
-						sound = 8557;
-					else
-						sound = 8558;
-					break;
-				default:											//no sound
-					sound = 0;
-					break;
-			}
 			WorldPacket data(SMSG_WEATHER, 9);
-			data.Initialize(SMSG_WEATHER);
-			if(type == 0)  // set all parameter to 0 for sunny.
-				data << uint32(0) << float(0) << uint32(0) << uint8(0);
-			else if(type == 1)  // No sound/density for fog
-				data << type << float(0) << uint32(0) << uint8(0);
-			else
-				data << type << Density << sound << uint8(0) ;
-
+			WeatherPacketBuilder builder( type, Density );
+			
+			builder.buildPacket( data );
 			sWorld.SendZoneMessage(&data, zone_id, 0);
 
 			return 0;
@@ -1291,14 +1245,8 @@ class LuaUnit
 
 		static int SetPlayerWeather(lua_State* L, Unit* ptr)
 		{
-			/*
-			WEATHER_TYPE_NORMAL            = 0, // NORMAL (SUNNY)
-			WEATHER_TYPE_FOG               = 1, // FOG
-			WEATHER_TYPE_RAIN              = 2, // RAIN
-			WEATHER_TYPE_HEAVY_RAIN        = 4, // HEAVY_RAIN
-			WEATHER_TYPE_SNOW              = 8, // SNOW
-			WEATHER_TYPE_SANDSTORM         = 16 // SANDSTORM
-			*/
+			/* See Weather.h for weather types */
+
 			TEST_PLAYER()
 			Player* plr = TO_PLAYER(ptr);
 			uint32 type = CHECK_ULONG(L, 1);
@@ -1306,50 +1254,10 @@ class LuaUnit
 			if(Density < 0.30f || Density > 2.0f || !type)
 				return 0;
 
-			uint32 sound;
-			if(Density <= 0.30f)
-				sound = 0;
-
-			switch(type)
-			{
-				case 2:                                             //rain
-				case 4:
-					if(Density  < 0.40f)
-						sound = 8533;
-					else if(Density  < 0.70f)
-						sound = 8534;
-					else
-						sound = 8535;
-					break;
-				case 8:                                             //snow
-					if(Density  < 0.40f)
-						sound = 8536;
-					else if(Density  < 0.70f)
-						sound = 8537;
-					else
-						sound = 8538;
-					break;
-				case 16:                                             //storm
-					if(Density  < 0.40f)
-						sound = 8556;
-					else if(Density  < 0.70f)
-						sound = 8557;
-					else
-						sound = 8558;
-					break;
-				default:											//no sound
-					sound = 0;
-					break;
-			}
 			WorldPacket data(SMSG_WEATHER, 9);
-			data.Initialize(SMSG_WEATHER);
-			if(type == 0)  // set all parameter to 0 for sunny.
-				data << uint32(0) << float(0) << uint32(0) << uint8(0);
-			else if(type == 1)  // No sound/density for fog
-				data << type << float(0) << uint32(0) << uint8(0);
-			else
-				data << type << Density << sound << uint8(0) ;
-
+			WeatherPacketBuilder builder( type, Density );
+			
+			builder.buildPacket( data );
 			plr->GetSession()->SendPacket(&data);
 
 			return 0;
