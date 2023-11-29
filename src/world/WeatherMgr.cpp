@@ -20,6 +20,8 @@
 
 #include "StdAfx.h"
 
+#define WEATHER_DENSITY_UPDATE 0.05f
+
 initialiseSingleton(WeatherMgr);
 
 WeatherMgr::WeatherMgr()

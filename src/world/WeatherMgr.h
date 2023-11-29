@@ -21,8 +21,6 @@
 #ifndef __WEATHERMGR_H
 #define __WEATHERMGR_H
 
-#define WEATHER_DENSITY_UPDATE 0.05f
-
 class WeatherInfo;
 class WeatherMgr;
 
