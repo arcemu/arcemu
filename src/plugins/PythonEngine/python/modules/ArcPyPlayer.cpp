@@ -693,6 +693,49 @@ static PyObject* ArcPyPlayer_getAreaId( ArcPyPlayer *self, PyObject *args )
 	return PyLong_FromUnsignedLong( player->GetAreaID() );
 }
 
+/// sendWeather
+///  Send new weather to the player
+///
+/// Parameters
+///  type    -  The weather type
+///  density -  The density value of the weather type (optional)
+///
+/// Return value
+///   None
+///
+/// Example
+///   player.sendWeather( 1, 0.5 )
+///
+static PyObject* ArcPyPlayer_sendWeather( ArcPyPlayer *self, PyObject *args )
+{
+	uint32 type = 0;
+	float density = 0.0f;
+
+	if( !PyArg_ParseTuple( args, "k|f", &type, &density ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a type parameter" );
+		return NULL;
+	}
+
+	if( type == 0 )
+	{
+		density = 0.0f;
+	}
+	else
+	{
+		density = Math::clamp< float >( density, WEATHER_DENSITY_MIN, WEATHER_DENSITY_MAX );
+	}
+
+	Player *player = self->playerPtr;
+
+	WorldPacket data( SMSG_WEATHER, 9 );
+	WeatherPacketBuilder builder( type, density );
+	
+	builder.buildPacket( data );
+	player->SendPacket( &data );
+
+	Py_RETURN_NONE;
+}
 
 static PyMethodDef ArcPyPlayer_methods[] = 
 {
@@ -717,6 +760,7 @@ static PyMethodDef ArcPyPlayer_methods[] =
 	{ "getSelection", (PyCFunction)ArcPyPlayer_getSelection, METH_NOARGS, "Returns the GUID of the Unit the Player has selected" },
 	{ "getSelectedUnit", (PyCFunction)ArcPyPlayer_getSelectedUnit, METH_NOARGS, "Returns the Unit the Player has selected" },
 	{ "getAreaId", (PyCFunction)ArcPyPlayer_getAreaId, METH_NOARGS, "Returns the Id of the Area the Player is in" },
+	{ "sendWeather", (PyCFunction)ArcPyPlayer_sendWeather, METH_VARARGS, "Sends weather to the Player" },
 	{NULL}
 };
 

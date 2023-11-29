@@ -749,6 +749,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	if id == 1400:
 		menu = GossipMenu( 1, unit, arcemu.GOSSIP_AUTOSEND_FALSE )
 		menu.addItem( arcemu.ICON_CHAT, "Send the zone random weather", 1401, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Send me random weather", 1402, 0 )
 		menu.sendToPlayer( player )
 		
 	if id == 1401:
@@ -761,6 +762,19 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 			density = 1.15
 		
 		player.sendZoneWeather( type, density )
+		
+		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
+		
+	if id == 1402:
+		types = [ arcemu.WEATHER_TYPE_NORMAL, arcemu.WEATHER_TYPE_FOG, arcemu.WEATHER_TYPE_RAIN, arcemu.WEATHER_TYPE_HEAVY_RAIN, arcemu.WEATHER_TYPE_SNOW, arcemu.WEATHER_TYPE_SANDSTORM ]
+		
+		type = types[ Math.randomUInt( 5 ) ]
+		density = 0
+		
+		if type != 0:
+			density = 1.15
+		
+		player.sendWeather( type, density )
 		
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
 
