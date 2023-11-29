@@ -394,11 +394,11 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		void PlaySoundToAll(uint32 soundid);
 
 
-		void SendZoneMessage(WorldPacket* packet, uint32 zoneid, WorldSession* self = 0);
-		void SendInstanceMessage(WorldPacket* packet, uint32 instanceid, WorldSession* self = 0);
+		void SendZoneMessage(WorldPacket* packet, uint32 zoneid, WorldSession* self = NULL);
+		void SendInstanceMessage(WorldPacket* packet, uint32 instanceid, WorldSession* self = NULL);
 		void SendFactionMessage(WorldPacket* packet, uint8 teamId);
-		void SendGamemasterMessage(WorldPacket* packet, WorldSession* self = 0);
-		void SendGMWorldText(const char* text, WorldSession* self = 0);
+		void SendGamemasterMessage(WorldPacket* packet, WorldSession* self = NULL);
+		void SendGMWorldText(const char* text, WorldSession* self = NULL);
 		void SendDamageLimitTextToGM(const char* playername, const char* dmglog);
 		void SendBCMessageByID(uint32 id);
 		void SendLocalizedWorldText(bool wide, const char* format, ...);
