@@ -132,8 +132,8 @@ SET(sources
 	Game/Entities/Vendor.cpp
 	PacketHandlers/VehicleHandler.cpp
 	Chat/WayPoints.cpp
-	WeatherInfo.cpp
-	WeatherMgr.cpp 
+	Game/Weather/WeatherInfo.cpp
+	Game/Weather/WeatherMgr.cpp 
 	WeatherPacketBuilder.cpp
 	World.cpp 
 	WorldCreator.cpp 
@@ -315,9 +315,9 @@ SET( headers
 	Game/Entities/Warlock.h
 	Game/Entities/Warrior.h
 	Waypoint.h
-	Weather.h
-	WeatherInfo.h
-	WeatherMgr.h
+	Game/Weather/Weather.h
+	Game/Weather/WeatherInfo.h
+	Game/Weather/WeatherMgr.h
 	WeatherPacketBuilder.h
 	Game/Entities/Summons/WildSummon.h
 	WordFilter.h
