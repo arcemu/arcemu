@@ -17,8 +17,8 @@
  *
  */
  
- #ifndef ARCEMU_WEATHER_H
- #define ARCEMU_WEATHER_H
+#ifndef ARCEMU_WEATHER_H
+#define ARCEMU_WEATHER_H
 
 enum WeatherTypes
 {
@@ -44,5 +44,5 @@ enum WeatherSounds
     WEATHER_SANDSTORMHEAVY         = 8558
 };
 
- #endif
+#endif
  
