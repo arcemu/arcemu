@@ -299,4 +299,12 @@ void registerArcemuConstants( PyObject *module )
 	PyModule_AddIntConstant( module, "NPC_FLAG_GUILD_BANK", UNIT_NPC_FLAG_GUILD_BANK );
 	PyModule_AddIntConstant( module, "NPC_FLAG_SPELLCLICK", UNIT_NPC_FLAG_SPELLCLICK );
 	PyModule_AddIntConstant( module, "NPC_FLAG_PLAYER_VEHICLE", UNIT_NPC_FLAG_PLAYER_VEHICLE );
+
+	/// Weather!
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_NORMAL", WEATHER_TYPE_NORMAL );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_FOG", WEATHER_TYPE_FOG );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_RAIN", WEATHER_TYPE_RAIN );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_HEAVY_RAIN", WEATHER_TYPE_HEAVY_RAIN );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_SNOW", WEATHER_TYPE_SNOW );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_SANDSTORM", WEATHER_TYPE_SANDSTORM );
 }
