@@ -693,7 +693,8 @@ static PyObject* ArcPyObject_getPhase( ArcPyObject *self, PyObject *args )
 }
 
 /// sendZoneWeather
-///  Send new weather to players in the zone of the Object
+///  Send new weather to players in the zone of the Object.
+///  This doesn't change weather on the server, only shows the new weather on the client!
 ///
 /// Parameters
 ///  type    -  The weather type

@@ -694,7 +694,8 @@ static PyObject* ArcPyPlayer_getAreaId( ArcPyPlayer *self, PyObject *args )
 }
 
 /// sendWeather
-///  Send new weather to the player
+///  Send new weather to the player.
+///  This doesn't change weather on the server, only shows the new weather on the client!
 ///
 /// Parameters
 ///  type    -  The weather type
