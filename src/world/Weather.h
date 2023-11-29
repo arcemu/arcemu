@@ -44,5 +44,9 @@ enum WeatherSounds
     WEATHER_SANDSTORMHEAVY         = 8558
 };
 
+#define WEATHER_DENSITY_MIN 0.3f
+#define WEATHER_DENSITY_MID 1.15f
+#define WEATHER_DENSITY_MAX 2.0f
+
 #endif
  

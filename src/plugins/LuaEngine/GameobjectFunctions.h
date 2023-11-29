@@ -692,8 +692,8 @@ class LuaGameObject
 
 			uint32 zone_id = CHECK_ULONG(L, 1);
 			uint32 type = CHECK_ULONG(L, 2);
-			float Density = CHECK_FLOAT(L, 3); //min: 0.30 max: 2.00
-			if(Density < 0.30f || Density > 2.0f || !zone_id || !type)
+			float Density = CHECK_FLOAT(L, 3);
+			if(Density < WEATHER_DENSITY_MIN || Density > WEATHER_DENSITY_MAX || !zone_id || !type)
 				return 0;
 
 			WorldPacket data(SMSG_WEATHER, 9);
