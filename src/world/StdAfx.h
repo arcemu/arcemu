@@ -206,6 +206,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Entities/Transporter.h"
 #include "Weather.h"
 #include "WeatherPacketBuilder.h"
+#include "WeatherInfo.h"
 #include "WeatherMgr.h"
 #include "World.h"
 #include "EquipmentSetMgr.h"

@@ -1,7 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008-2012 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,22 +17,34 @@
  *
  */
 
-#ifndef __WEATHERMGR_H
-#define __WEATHERMGR_H
+#ifndef ARCEMU_WEATHERINFO_H
+#define ARCEMU_WEATHERINFO_H
 
-class WeatherMgr :  public Singleton < WeatherMgr >
+class WeatherInfo : public EventableObject
 {
+		friend class WeatherMgr;
 	public:
-		WeatherMgr();
-		~WeatherMgr();
+		WeatherInfo();
+		~WeatherInfo();
 
-		void LoadFromDB();
-		void SendWeather(Player* plr);
+		void BuildUp();
+		void Update();
+		void SendUpdate();
+		void SendUpdate(Player* plr);
 
-	private:
-		std::map<uint32, WeatherInfo*> m_zoneWeathers;
+	protected:
+		void _GenerateWeather();
+
+		uint32 m_zoneId;
+
+		uint32 m_totalTime;
+		uint32 m_currentTime;
+
+		float m_maxDensity;
+		float m_currentDensity;
+
+		uint32 m_currentEffect;
+		std::map<uint32, uint32> m_effectValues;
 };
-
-#define sWeatherMgr WeatherMgr::getSingleton()
 
 #endif
