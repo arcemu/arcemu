@@ -53,7 +53,15 @@ class WeatherInfo : public EventableObject
 		void sendUpdate();
 		void sendUpdate(Player* plr);
 
+		/// Enable or disable automatically generated weather
+		void setEnableGeneratedWeather( bool enabled );
+
+		/// Sets the weather type and density. Disables automatic weather generation.
+		void setWeather( uint32 type, float density );
+
 	protected:
+
+		/// Starts automatic weather generation
 		void generateWeather();
 
 		uint32 m_zoneId;

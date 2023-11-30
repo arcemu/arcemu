@@ -87,3 +87,21 @@ void WeatherMgr::SendWeather(Player* plr)  //Update weather when player has chan
 		itr->second->sendUpdate(plr);
 	}
 }
+
+void WeatherMgr::setEnableGeneratedWeather( uint32 zone, bool enable )
+{
+	std::map< uint32, WeatherInfo* >::const_iterator itr = m_zoneWeathers.find( zone );
+	if( itr == m_zoneWeathers.end() )
+		return;
+
+	itr->second->setEnableGeneratedWeather( enable );
+}
+
+void WeatherMgr::setWeather( uint32 zone, uint32 type, float density )
+{
+	std::map< uint32, WeatherInfo* >::const_iterator itr = m_zoneWeathers.find( zone );
+	if( itr == m_zoneWeathers.end() )
+		return;
+
+	itr->second->setWeather( type, density );
+}

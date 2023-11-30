@@ -38,8 +38,32 @@ WeatherInfo::~WeatherInfo()
 
 }
 
+void WeatherInfo::setEnableGeneratedWeather( bool enabled )
+{
+	if( enabled )
+	{
+		generateWeather();
+	}
+	else
+	{
+		sEventMgr.RemoveEvents( this, EVENT_WEATHER_UPDATE );
+	}
+}
+
+void WeatherInfo::setWeather( uint32 type, float density )
+{
+	sEventMgr.RemoveEvents( this, EVENT_WEATHER_UPDATE );
+
+	m_currentEffect = type;
+	m_currentDensity = density;
+
+	sendUpdate();
+}
+
 void WeatherInfo::generateWeather()
 {
+	sEventMgr.RemoveEvents(this, EVENT_WEATHER_UPDATE);
+
 	m_currentEffect = WEATHER_TYPE_NORMAL;
 	m_currentDensity = WEATHER_DENSITY_MIN; //Starting Offset (don't go below, it's annoying fog)
 	m_maxDensity = RandomFloat() + 1; //1 - 2
@@ -97,7 +121,6 @@ void WeatherInfo::update()
 		{
 			m_currentDensity = 0.0f;
 			m_currentEffect = 0;
-			sEventMgr.RemoveEvents(this, EVENT_WEATHER_UPDATE);
 			generateWeather();
 			return;
 		}

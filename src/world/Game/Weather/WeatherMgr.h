@@ -30,6 +30,12 @@ class WeatherMgr :  public Singleton < WeatherMgr >
 		void LoadFromDB();
 		void SendWeather(Player* plr);
 
+		/// Enable or disable automatically generated weather for the zone
+		void setEnableGeneratedWeather( uint32 zone, bool enabled );
+
+		/// Set weather for the zone
+		void setWeather( uint32 zone, uint32 type, float density );
+
 	private:
 		std::map<uint32, WeatherInfo*> m_zoneWeathers;
 };
