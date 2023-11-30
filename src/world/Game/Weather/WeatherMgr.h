@@ -21,7 +21,7 @@
 #ifndef __WEATHERMGR_H
 #define __WEATHERMGR_H
 
-class WeatherMgr :  public Singleton < WeatherMgr >
+class SERVER_DECL WeatherMgr :  public Singleton < WeatherMgr >
 {
 	public:
 		WeatherMgr();

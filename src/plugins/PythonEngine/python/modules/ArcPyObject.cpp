@@ -738,6 +738,47 @@ static PyObject* ArcPyObject_sendZoneWeather( ArcPyObject *self, PyObject *args 
 	Py_RETURN_NONE;
 }
 
+/// setZoneWeather
+///  Set new static weather in the zone of the Object
+///
+/// Parameters
+///  type    -  The weather type
+///  density -  The density value of the weather type (optional)
+///
+/// Return value
+///   None
+///
+/// Example
+///   unit.setZoneWeather( 1, 0.5 )
+///
+static PyObject* ArcPyObject_setZoneWeather( ArcPyObject *self, PyObject *args )
+{
+	uint32 type = 0;
+	float density = 0.0f;
+
+	if( !PyArg_ParseTuple( args, "k|f", &type, &density ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This method requires a type parameter" );
+		return NULL;
+	}
+
+	if( type == 0 )
+	{
+		density = 0.0f;
+	}
+	else
+	{
+		density = Math::clamp< float >( density, WEATHER_DENSITY_MIN, WEATHER_DENSITY_MAX );
+	}
+
+	Object *object = self->objectPtr;
+	uint32 zoneId = object->GetZoneId();
+
+	sWeatherMgr.setWeather( zoneId, type, density );
+
+	Py_RETURN_NONE;
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getZoneId", (PyCFunction)ArcPyObject_getZoneId, METH_NOARGS, "Returns the Zone Id of the Object" },
@@ -765,6 +806,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "removePhase", (PyCFunction)ArcPyObject_removePhase, METH_VARARGS, "Removes a phase from the Object" },
 	{ "getPhase", (PyCFunction)ArcPyObject_getPhase, METH_VARARGS, "Retruns the phases of the object" },
 	{ "sendZoneWeather", (PyCFunction)ArcPyObject_sendZoneWeather, METH_VARARGS, "Send new weather to players in the zone" },
+	{ "setZoneWeather", (PyCFunction)ArcPyObject_setZoneWeather, METH_VARARGS, "Set new static weather in the zone" },
 	{NULL}
 };
 
