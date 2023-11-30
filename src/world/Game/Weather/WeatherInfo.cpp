@@ -25,7 +25,6 @@ WeatherInfo::WeatherInfo()
 {
 	m_currentDensity = 0;
 	m_currentEffect = 0;
-	m_currentTime = 0;
 	m_maxDensity = 0;
 	m_totalTime = 0;
 	m_zoneId = 0;
@@ -41,7 +40,6 @@ WeatherInfo::~WeatherInfo()
 
 void WeatherInfo::generateWeather()
 {
-	m_currentTime = 0;
 	m_currentEffect = WEATHER_TYPE_NORMAL;
 	m_currentDensity = WEATHER_DENSITY_MIN; //Starting Offset (don't go below, it's annoying fog)
 	m_maxDensity = RandomFloat() + 1; //1 - 2

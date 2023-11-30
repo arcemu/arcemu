@@ -59,7 +59,6 @@ class WeatherInfo : public EventableObject
 		uint32 m_zoneId;
 
 		uint32 m_totalTime;
-		uint32 m_currentTime;
 
 		float m_maxDensity;
 		float m_currentDensity;
