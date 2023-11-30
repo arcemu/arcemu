@@ -24,7 +24,7 @@
 #endif
 
 #include "LUAEngine.h"
-#include <ScriptSetup.h>
+#include <Game/Scripting/ScriptSetup.h>
 
 #ifdef WIN32
 #pragma warning(disable:4129)

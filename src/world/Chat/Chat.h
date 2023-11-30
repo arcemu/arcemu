@@ -21,7 +21,7 @@
 #ifndef ARCEMU_CHAT_H
 #define ARCEMU_CHAT_H
 
-#include "SkillNameMgr.h"
+#include "Game/Skill/SkillNameMgr.h"
 
 class ChatHandler;
 class WorldSession;

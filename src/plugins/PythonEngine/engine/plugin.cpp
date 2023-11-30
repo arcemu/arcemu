@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include <ScriptSetup.h>
+#include <Game/Scripting/ScriptSetup.h>
 #include "engine/PythonEngine.hpp"
 
 static PythonEngine *pythonEngine = NULL;

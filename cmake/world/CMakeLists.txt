@@ -10,13 +10,13 @@ SET(sources
 	Game/Network/ItemPackets.cpp
 	Game/Network/LFGPackets.cpp
 	Game/Achievements/AchievementMgr.cpp 
-	CollideInterface.cpp  
+	Framework/Collision/CollideInterface.cpp  
 	PacketHandlers/VoiceChatHandler.cpp 
-	DayWatcherThread.cpp 
-	CommonScheduleThread.cpp 
+	Game/World/DayWatcherThread.cpp 
+	Game/World/CommonScheduleThread.cpp 
 	Game/Arena/ArenaTeam.cpp 
 	PacketHandlers/ArenaTeamHandler.cpp 
-	DatabaseCleaner.cpp 
+	Server/DatabaseCleaner.cpp 
 	Game/Addons/AddonMgr.cpp 
 	Game/AI/AIInterface.cpp 
 	Game/AI/AIEvents.cpp
@@ -49,8 +49,8 @@ SET(sources
 	PacketHandlers/DuelHandler.cpp 
 	Game/Entities/DynamicObject.cpp 
 	Game/EquipmentSet/EquipmentSetMgr.cpp
-	EventableObject.cpp 
-	EventMgr.cpp 
+	Framework/TimedEvents/EventableObject.cpp 
+	Framework/TimedEvents/EventMgr.cpp 
 	Game/Factions/faction.cpp 
 	Game/Entities/GameObject.cpp 
 	PacketHandlers/GMTicketHandler.cpp 
@@ -108,10 +108,10 @@ SET(sources
 	Chat/QuestCommands.cpp 
 	PacketHandlers/RaidHandler.cpp 
 	Chat/RecallCommands.cpp 
-	ReputationHandler.cpp 
-	ScriptMgr.cpp 
+	Game/Reputation/ReputationHandler.cpp 
+	Game/Scripting/ScriptMgr.cpp 
 	PacketHandlers/SocialHandler.cpp 
-	SpeedDetector.cpp 
+	Framework/SpeedCheatDetector/SpeedDetector.cpp 
 	Game/Spell/SpellAuras.cpp 
 	Game/Spell/SpellTarget.cpp 
 	Game/Spell/Spell.cpp 
@@ -120,7 +120,7 @@ SET(sources
 	Game/Spell/SpellEffects.cpp 
 	PacketHandlers/SpellHandler.cpp 
 	Game/Spell/HackFixes.cpp 
-	Stats.cpp 
+	Game/Entities/Stats.cpp 
 	PacketHandlers/TaxiHandler.cpp 
 	Game/Taxi/TaxiMgr.cpp 
 	Map/TerrainMgr.cpp 
@@ -135,18 +135,18 @@ SET(sources
 	Game/Weather/WeatherInfo.cpp
 	Game/Weather/WeatherMgr.cpp 
 	Game/Network/WeatherPacketBuilder.cpp
-	World.cpp 
+	Game/World/World.cpp 
 	Game/Instances/WorldCreator.cpp 
-	WorldSession.cpp 
+	Game/Network/WorldSession.cpp 
 	Server/WorldSocket.cpp 
 	Game/WorldStates/WorldStatesHandler.cpp
-	WorldRunnable.cpp 
-	WordFilter.cpp 
+	Game/World/WorldRunnable.cpp 
+	Framework/WordFilter/WordFilter.cpp 
 	Server/MainServerDefines.cpp
 	Server/CConsole.cpp 
 	Server/ConsoleCommands.cpp 
 	Server/ConsoleListener.cpp 
-	WUtil.cpp 
+	Game/WUtil.cpp 
 	Game/Spell/SpellProc.cpp
 	Game/Spell/SpellProc_DeathKnight.cpp
 	Game/Spell/SpellProc_Druid.cpp
@@ -206,31 +206,31 @@ SET( headers
 	Server/BaseConsole.h
 	Game/BattleGround/Battleground.h
 	Game/BattleGround/BattlegroundMgr.h
-	ByteBufferExtension.h
+	Game/Network/ByteBufferExtension.h
 	Server/CConsole.h
 	Map/CellHandler.h
 	Chat/Channel.h
 	Chat/ChannelMgr.h
 	Chat/Chat.h
-	CollideInterface.h
-	CommonScheduleThread.h
+	Framework/Collision/CollideInterface.h
+	Game/World/CommonScheduleThread.h
 	Game/Entities/Summons/CompanionSummon.h
 	Server/ConsoleCommands.h
 	Game/Entities/Container.h
 	Game/Entities/Corpse.h
 	Game/Entities/Creature.h
 	Game/Commands/CreatureCommands.h
-	DatabaseCleaner.h
-	DayWatcherThread.h
+	Server/DatabaseCleaner.h
+	Game/World/DayWatcherThread.h
 	DBC/DBCStores.h
 	Game/Entities/DeathKnight.h
 	Game/Instances/Definitions.h
 	Game/Entities/Druid.h
 	Game/Entities/DynamicObject.h
 	Game/EquipmentSet/EquipmentSetMgr.h
-	Events.h
-	EventableObject.h
-	EventMgr.h
+	Framework/TimedEvents/Events.h
+	Framework/TimedEvents/EventableObject.h
+	Framework/TimedEvents/EventMgr.h
 	Game/Factions/faction.h
 	Game/Entities/GameObject.h
 	Game/Gossip/Gossip.h
@@ -284,13 +284,13 @@ SET( headers
 	Game/Quest/Quest.h
 	Game/Quest/QuestMgr.h
 	Game/Entities/Rogue.h
-	ScriptMgr.h
-	ScriptSetup.h
+	Game/Scripting/ScriptMgr.h
+	Game/Scripting/ScriptSetup.h
 	Game/Entities/Shaman.h
-	Skill.h
-	SkillNameMgr.h
-	SpawnTimedEmotes.h
-	SpeedDetector.h
+	Game/Skill/Skill.h
+	Game/Skill/SkillNameMgr.h
+	Game/Entities/SpawnTimedEmotes.h
+	Framework/SpeedCheatDetector/SpeedDetector.h
 	Game/Spell/Spell.h
 	Game/Spell/SpellAuras.h
 	Game/Spell/SpellFailure.h
@@ -298,7 +298,7 @@ SET( headers
 	Game/Spell/SpellNameHashes.h
 	Game/Spell/SpellProc.h
 	Game/Spell/SpellTarget.h
-	Stats.h
+	Game/Entities/Stats.h
 	StdAfx.h
 	Game/Entities/Summons/Summon.h
 	Game/Entities/Summons/SummonHandler.h
@@ -320,18 +320,18 @@ SET( headers
 	Game/Weather/WeatherMgr.h
 	Game/Network/WeatherPacketBuilder.h
 	Game/Entities/Summons/WildSummon.h
-	WordFilter.h
-	World.h
-	WorldConfig.h
+	Framework/WordFilter/WordFilter.h
+	Game/World/World.h
+	Game/World/WorldConfig.h
 	Game/Instances/WorldCreator.h
-	WorldRunnable.h
-	WorldSession.h
+	Game/World/WorldRunnable.h
+	Game/Network/WorldSession.h
 	Server/WorldSocket.h
 	Game/WorldStates/WorldStatesHandler.h
 	Game/WorldStates/WorldStates.h
 	Server/WowCrypt.h
 	Game/Network/WoWGuid.h
-	WUtil.h
+	Game/WUtil.h
 	PacketHandlers/NewHandlers/ItemPacketHandlers.h
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h

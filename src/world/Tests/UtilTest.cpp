@@ -23,7 +23,7 @@
 #include "../../shared/System/Platform.h"
 
 #include "Game/Entities/ObjectConstants.h"
-#include "../WUtil.h"
+#include "Game/WUtil.h"
 
 #include <iostream>
 

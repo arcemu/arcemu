@@ -21,7 +21,7 @@
 #ifndef ARCEMU_ITEM_H
 #define ARCEMU_ITEM_H
 
-#include "Skill.h"
+#include "Game/Skill/Skill.h"
 
 struct EnchantmentInstance
 {
