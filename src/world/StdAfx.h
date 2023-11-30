@@ -37,7 +37,7 @@ template< class T, class U > T TO(U u) { return static_cast< T >(u); }
 
 #include "WorldConfig.h"
 
-#include "Definitions.h"
+#include "Game/Instances/Definitions.h"
 
 #include <cstring>
 #include <cstdlib>
@@ -132,10 +132,10 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Entities/Vehicle.h"
 #include "Game/Entities/Vendor.h"
 #include "Game/Entities/Unit.h"
-#include "Gossip.h"
+#include "Game/Gossip/Gossip.h"
 #include "SpawnTimedEmotes.h"
 
-#include "AchievementMgr.h"
+#include "Game/Achievements/AchievementMgr.h"
 
 //VMAP
 #include "ModelInstance.h"
@@ -146,10 +146,10 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "VMapManager2.h"
 #include "VMapDefinitions.h"
 
-#include "AddonMgr.h"
+#include "Game/Addons/AddonMgr.h"
 #include "Game/AI/AIEvents.h"
 #include "Game/AI/AIInterface.h"
-#include "AreaTrigger.h"
+#include "Game/AreaTrigger.h"
 #include "Game/BattleGround/BattlegroundMgr.h"
 #include "Game/BattleGround/Battleground.h"
 #include "Map/CellHandler.h"
@@ -167,8 +167,8 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Entities/DynamicObject.h"
 #include "Game/Entities/GameObject.h"
 #include "Game/Entities/ObjectLocator.h"
-#include "Group.h"
-#include "Guild.h"
+#include "Game/Group/Group.h"
+#include "Game/Guild/Guild.h"
 #include "HonorHandler.h"
 #include "Game/Item/ItemPrototype.h"
 #include "Game/Item/ItemPrototypeFilter.h"
@@ -195,7 +195,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Map/MapScriptInterface.h"
 #include "Game/Entities/Player.h"
 #include "Game/Item/PlayerItemPrototypeFilter.h"
-#include "faction.h"
+#include "Game/Factions/faction.h"
 #include "Skill.h"
 #include "SkillNameMgr.h"
 #include "Game/Spell/SpellNameHashes.h"
@@ -209,12 +209,12 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Weather/WeatherInfo.h"
 #include "Game/Weather/WeatherMgr.h"
 #include "World.h"
-#include "EquipmentSetMgr.h"
+#include "Game/EquipmentSet/EquipmentSetMgr.h"
 #include "Game/Item/ItemInterface.h"
 #include "Game/Item/ItemIterator.h"
 #include "Game/Commands/ItemCommands.h"
 #include "Stats.h"
-#include "WorldCreator.h"
+#include "Game/Instances/WorldCreator.h"
 #include "Game/Storage/ObjectMgr.h"
 #include "Threading/CThreads.h"
 #include "ScriptMgr.h"

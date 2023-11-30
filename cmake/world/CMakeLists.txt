@@ -9,7 +9,7 @@ SET(sources
 	Game/Network/AccountPackets.cpp
 	Game/Network/ItemPackets.cpp
 	Game/Network/LFGPackets.cpp
-	AchievementMgr.cpp 
+	Game/Achievements/AchievementMgr.cpp 
 	CollideInterface.cpp  
 	PacketHandlers/VoiceChatHandler.cpp 
 	DayWatcherThread.cpp 
@@ -17,7 +17,7 @@ SET(sources
 	Game/Arena/ArenaTeam.cpp 
 	PacketHandlers/ArenaTeamHandler.cpp 
 	DatabaseCleaner.cpp 
-	AddonMgr.cpp 
+	Game/Addons/AddonMgr.cpp 
 	Game/AI/AIInterface.cpp 
 	Game/AI/AIEvents.cpp
 	PacketHandlers/AreaTrigger.cpp 
@@ -48,17 +48,17 @@ SET(sources
 	Chat/DebugCommands.cpp 
 	PacketHandlers/DuelHandler.cpp 
 	Game/Entities/DynamicObject.cpp 
-	EquipmentSetMgr.cpp
+	Game/EquipmentSet/EquipmentSetMgr.cpp
 	EventableObject.cpp 
 	EventMgr.cpp 
-	faction.cpp 
+	Game/Factions/faction.cpp 
 	Game/Entities/GameObject.cpp 
 	PacketHandlers/GMTicketHandler.cpp 
 	Chat/GMTicketCommands.cpp
-	Gossip.cpp
-	Group.cpp 
+	Game/Gossip/Gossip.cpp
+	Game/Group/Group.cpp 
 	PacketHandlers/GroupHandler.cpp 
-	Guild.cpp 
+	Game/Guild/Guild.cpp 
 	PacketHandlers/GuildHandler.cpp 
 	HonorHandler.cpp 
 	Chat/InstanceCommands.cpp 
@@ -136,7 +136,7 @@ SET(sources
 	Game/Weather/WeatherMgr.cpp 
 	WeatherPacketBuilder.cpp
 	World.cpp 
-	WorldCreator.cpp 
+	Game/Instances/WorldCreator.cpp 
 	WorldSession.cpp 
 	Server/WorldSocket.cpp 
 	Game/WorldStates/WorldStatesHandler.cpp
@@ -194,11 +194,11 @@ SET( headers
 	Game/Network/AccountPackets.h
 	Game/Network/ItemPackets.h
 	Game/Network/LFGPackets.h
-	AchievementMgr.h
-	AddonMgr.h
+	Game/Achievements/AchievementMgr.h
+	Game/Addons/AddonMgr.h
 	Game/AI/AIInterface.h
 	Game/AI/AIEvents.h
-	AreaTrigger.h
+	Game/AreaTrigger.h
 	Game/Arena/Arenas.h
 	Game/Arena/ArenaTeam.h
 	Game/Auction/AuctionHouse.h
@@ -224,19 +224,19 @@ SET( headers
 	DayWatcherThread.h
 	DBC/DBCStores.h
 	Game/Entities/DeathKnight.h
-	Definitions.h
+	Game/Instances/Definitions.h
 	Game/Entities/Druid.h
 	Game/Entities/DynamicObject.h
-	EquipmentSetMgr.h
+	Game/EquipmentSet/EquipmentSetMgr.h
 	Events.h
 	EventableObject.h
 	EventMgr.h
-	faction.h
+	Game/Factions/faction.h
 	Game/Entities/GameObject.h
-	Gossip.h
-	Group.h
+	Game/Gossip/Gossip.h
+	Game/Group/Group.h
 	Game/Entities/Summons/GuardianSummon.h
-	Guild.h
+	Game/Guild/Guild.h
 	HonorHandler.h
 	Game/Entities/Hunter.h
 	Game/Entities/Item.h
@@ -323,7 +323,7 @@ SET( headers
 	WordFilter.h
 	World.h
 	WorldConfig.h
-	WorldCreator.h
+	Game/Instances/WorldCreator.h
 	WorldRunnable.h
 	WorldSession.h
 	Server/WorldSocket.h
