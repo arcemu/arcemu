@@ -1553,3 +1553,22 @@ bool ChatHandler::HandleDebugDamageUnitCommand( const char *args, WorldSession *
 	return true;
 }
 
+bool ChatHandler::HandleDebugSetWeatherCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint32 zoneId = player->GetZoneId();
+
+	uint32 type;
+	float density;
+
+	if( sscanf( args, "%u%f", &type, &density ) != 2 )
+	{
+		RedSystemMessage( session, "Usage:" );
+		RedSystemMessage( session, "setweather [type] [density]" );
+		return false;
+	}
+
+	sWeatherMgr.setWeather( zoneId, type, density );
+
+	return true;
+}

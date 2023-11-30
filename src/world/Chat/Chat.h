@@ -311,6 +311,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleDebugLFGUpdateCommand( const char *args, WorldSession *session );
 		bool HandleDebugSendLFGQueueStatusCommand( const char *args, WorldSession *session );
 		bool HandleDebugDamageUnitCommand( const char *args, WorldSession *session );
+		bool HandleDebugSetWeatherCommand( const char *args, WorldSession *session );
 
 		// WayPoint Commands
 		bool HandleWPAddCommand(const char* args, WorldSession* m_session);
