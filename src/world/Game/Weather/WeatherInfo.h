@@ -20,6 +20,27 @@
 #ifndef ARCEMU_WEATHERINFO_H
 #define ARCEMU_WEATHERINFO_H
 
+struct WeatherTypeProbability
+{
+public:
+	uint32 probability;
+	uint32 type;
+
+	WeatherTypeProbability()
+	{
+		probability = 0;
+		type = 0;
+	}
+};
+
+struct WeatherProbabilities
+{
+public:
+	WeatherTypeProbability lowProbabilityWeather;
+	WeatherTypeProbability medProbabilityWeather;
+	WeatherTypeProbability highProbabilityWeather;
+};
+
 class WeatherInfo : public EventableObject
 {
 		friend class WeatherMgr;
@@ -27,13 +48,13 @@ class WeatherInfo : public EventableObject
 		WeatherInfo();
 		~WeatherInfo();
 
-		void BuildUp();
-		void Update();
-		void SendUpdate();
-		void SendUpdate(Player* plr);
+		void buildUp();
+		void update();
+		void sendUpdate();
+		void sendUpdate(Player* plr);
 
 	protected:
-		void _GenerateWeather();
+		void generateWeather();
 
 		uint32 m_zoneId;
 
@@ -44,7 +65,8 @@ class WeatherInfo : public EventableObject
 		float m_currentDensity;
 
 		uint32 m_currentEffect;
-		std::map<uint32, uint32> m_effectValues;
+
+		WeatherProbabilities weatherProbabilities;
 };
 
 #endif

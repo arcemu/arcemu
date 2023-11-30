@@ -50,15 +50,16 @@ void WeatherMgr::LoadFromDB()
 		Field* fields = result->Fetch();
 		WeatherInfo* wi = new WeatherInfo;
 		wi->m_zoneId = fields[0].GetUInt32();
-		wi->m_effectValues[0] = fields[1].GetUInt32();  // high_chance
-		wi->m_effectValues[1] = fields[2].GetUInt32();  // high_type
-		wi->m_effectValues[2] = fields[3].GetUInt32();  // med_chance
-		wi->m_effectValues[3] = fields[4].GetUInt32();  // med_type
-		wi->m_effectValues[4] = fields[5].GetUInt32();  // low_chance
-		wi->m_effectValues[5] = fields[6].GetUInt32();  // low_type
+		wi->weatherProbabilities.highProbabilityWeather.probability = fields[ 1 ].GetUInt32();
+		wi->weatherProbabilities.highProbabilityWeather.type        = fields[ 2 ].GetUInt32();
+		wi->weatherProbabilities.medProbabilityWeather.probability  = fields[ 3 ].GetUInt32();
+		wi->weatherProbabilities.medProbabilityWeather.type         = fields[ 4 ].GetUInt32();
+		wi->weatherProbabilities.lowProbabilityWeather.probability  = fields[ 5 ].GetUInt32();
+		wi->weatherProbabilities.lowProbabilityWeather.type         = fields[ 6 ].GetUInt32();
+
 		m_zoneWeathers[wi->m_zoneId] = wi;
 
-		wi->_GenerateWeather();
+		wi->generateWeather();
 	}
 	while(result->NextRow());
 	Log.Notice("WeatherMgr", "Loaded weather information for %u zones.", result->GetRowCount());
@@ -83,6 +84,6 @@ void WeatherMgr::SendWeather(Player* plr)  //Update weather when player has chan
 	}
 	else
 	{
-		itr->second->SendUpdate(plr);
+		itr->second->sendUpdate(plr);
 	}
 }
