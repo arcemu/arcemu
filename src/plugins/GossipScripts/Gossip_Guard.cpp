@@ -18,7 +18,7 @@
  */
 
 #include "Setup.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 /************************************************************************/
 /* GENERAL GUARD SCRIPT                                                 */

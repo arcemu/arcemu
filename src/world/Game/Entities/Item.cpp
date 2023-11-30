@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 Item::Item()//this is called when constructing as container
 {

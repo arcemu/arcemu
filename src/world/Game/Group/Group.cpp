@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "PlayerMessenger.h"
+#include "Game/Network/PlayerMessenger.h"
 
 Group::Group(bool Assign)
 {

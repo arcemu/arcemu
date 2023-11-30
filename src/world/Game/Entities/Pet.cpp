@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 #define WATER_ELEMENTAL		510
 #define WATER_ELEMENTAL_NEW 37994

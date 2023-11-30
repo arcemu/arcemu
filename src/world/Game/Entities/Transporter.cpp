@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 Mutex m_transportGuidGen;
 uint32 m_transportGuidMax = 50;

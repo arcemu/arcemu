@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 #include "git_version.h"
 
 #define BUGTRACKER "https://github.com/arcemu/arcemu/issues"

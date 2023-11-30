@@ -20,7 +20,7 @@
 
 
 #include "StdAfx.h"
-#include "PlayerMessenger.h"
+#include "Game/Network/PlayerMessenger.h"
 
 /**
 	Takes achievementlink c-string and returns the ID value from it.

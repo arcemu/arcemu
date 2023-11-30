@@ -23,8 +23,8 @@
 //
 
 #include "StdAfx.h"
-#include "Messenger.h"
-#include "PlayerMessenger.h"
+#include "Game/Network/Messenger.h"
+#include "Game/Network/PlayerMessenger.h"
 
 bool ChatHandler::HandleDebugInFrontCommand(const char* args, WorldSession* m_session)
 {

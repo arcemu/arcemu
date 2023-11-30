@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 #define SWIMMING_TOLERANCE_LEVEL -0.08f
 #define MOVEMENT_PACKET_TIME_DELAY 500

@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // float CalcHPCoefficient( MapInfo *mi, uint32 mode, bool boss )

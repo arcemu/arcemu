@@ -60,7 +60,7 @@ SET(sources
 	PacketHandlers/GroupHandler.cpp 
 	Game/Guild/Guild.cpp 
 	PacketHandlers/GuildHandler.cpp 
-	HonorHandler.cpp 
+	Game/Honor/HonorHandler.cpp 
 	Chat/InstanceCommands.cpp 
 	Game/Entities/Item.cpp
 	Game/Commands/ItemCommands.cpp
@@ -71,9 +71,9 @@ SET(sources
 	Chat/Level1.cpp 
 	Chat/Level2.cpp 
 	Chat/Level3.cpp 
-	LfgMgr.cpp 
-	LootMgr.cpp 
-	LocalizationMgr.cpp 
+	Game/LFG/LfgMgr.cpp 
+	Game/Loot/LootMgr.cpp 
+	Localization/LocalizationMgr.cpp 
 	Server/LogonSocket.cpp 
 	Server/LogonCommHandler.cpp 
 	Game/Mail/MailMessage.cpp
@@ -84,22 +84,22 @@ SET(sources
 	Map/Map.cpp 
 	Map/MapScriptInterface.cpp 
 	Map/MapMgr.cpp 
-	MessageRouter.cpp
-	Messenger.cpp
+	Game/Network/MessageRouter.cpp
+	Game/Network/Messenger.cpp
 	PacketHandlers/MiscHandler.cpp 
 	PacketHandlers/MovementHandler.cpp 
-	MovementInfo.cpp
+	Game/Network/MovementInfo.cpp
 	PacketHandlers/NPCHandler.cpp 
 	Game/Entities/Object.cpp
     Game/Entities/ObjectLocator.cpp	
 	Game/Storage/ObjectMgr.cpp
 	Game/Storage/ObjectStorage.cpp
-	Opcodes.cpp 
+	Game/Network/Opcodes.cpp 
 	Game/Entities/Pet.cpp 
 	PacketHandlers/PetHandler.cpp 
 	Game/Entities/Player.cpp 
 	Game/Commands/PlayerCommands.cpp
-	PlayerMessenger.cpp
+	Game/Network/PlayerMessenger.cpp
 	Game/Entities/PlayerPacketWrapper.cpp 
 	PacketHandlers/QueryHandler.cpp 
 	Game/Quest/Quest.cpp 
@@ -116,13 +116,13 @@ SET(sources
 	Game/Spell/SpellTarget.cpp 
 	Game/Spell/Spell.cpp 
 	StdAfx.cpp
-	SummonHandler.cpp
+	Game/Entities/Summons/SummonHandler.cpp
 	Game/Spell/SpellEffects.cpp 
 	PacketHandlers/SpellHandler.cpp 
 	Game/Spell/HackFixes.cpp 
 	Stats.cpp 
 	PacketHandlers/TaxiHandler.cpp 
-	TaxiMgr.cpp 
+	Game/Taxi/TaxiMgr.cpp 
 	Map/TerrainMgr.cpp 
 	PacketHandlers/TradeHandler.cpp
 	Game/Entities/Transporter.cpp
@@ -134,7 +134,7 @@ SET(sources
 	Chat/WayPoints.cpp
 	Game/Weather/WeatherInfo.cpp
 	Game/Weather/WeatherMgr.cpp 
-	WeatherPacketBuilder.cpp
+	Game/Network/WeatherPacketBuilder.cpp
 	World.cpp 
 	Game/Instances/WorldCreator.cpp 
 	WorldSession.cpp 
@@ -237,7 +237,7 @@ SET( headers
 	Game/Group/Group.h
 	Game/Entities/Summons/GuardianSummon.h
 	Game/Guild/Guild.h
-	HonorHandler.h
+	Game/Honor/HonorHandler.h
 	Game/Entities/Hunter.h
 	Game/Entities/Item.h
 	Game/Commands/ItemCommands.h
@@ -246,12 +246,12 @@ SET( headers
 	Game/Item/ItemPrototype.h
 	Game/Item/ItemPrototypeFilter.h
 	Game/Item/PlayerItemPrototypeFilter.h
-	LfgMgr.h
-	LocalizationMgr.h
-	LocationVector.h
+	Game/LFG/LfgMgr.h
+	Localization/LocalizationMgr.h
+	Math/LocationVector.h
 	Server/LogonSocket.h
 	Server/LogonCommHandler.h
-	LootMgr.h
+	Game/Loot/LootMgr.h
 	Game/Entities/Mage.h
 	Game/Mail/MailMessage.h
 	Game/Mail/MailBox.h
@@ -261,24 +261,24 @@ SET( headers
 	Map/MapCell.h
 	Map/MapMgr.h
 	Map/MapScriptInterface.h
-	MessageRouter.h
-	Messenger.h
-	MovementInfo.h
+	Game/Network/MessageRouter.h
+	Game/Network/Messenger.h
+	Game/Network/MovementInfo.h
 	PacketHandlers/MiscHandler.h
-	NameTables.h
+	Game/Network/NameTables.h
 	PacketHandlers/NPCHandler.h
 	Game/Entities/ObjectConstants.h
 	Game/Entities/Object.h
 	Game/Entities/ObjectLocator.h
 	Game/Storage/ObjectMgr.h
 	Game/Storage/ObjectStorage.h
-	Opcodes.h
+	Game/Network/Opcodes.h
 	Game/Entities/Paladin.h
 	Game/Entities/Pet.h
 	Game/Entities/Player.h
 	Game/Entities/PlayerCache.h
 	Game/Commands/PlayerCommands.h
-	PlayerMessenger.h
+	Game/Network/PlayerMessenger.h
 	Game/Entities/Summons/PossessedSummon.h
 	Game/Entities/Priest.h
 	Game/Quest/Quest.h
@@ -301,8 +301,8 @@ SET( headers
 	Stats.h
 	StdAfx.h
 	Game/Entities/Summons/Summon.h
-	SummonHandler.h
-	TaxiMgr.h
+	Game/Entities/Summons/SummonHandler.h
+	Game/Taxi/TaxiMgr.h
 	Map/TerrainMgr.h
 	Game/Entities/Summons/TotemSummon.h
 	Game/Entities/Transporter.h
@@ -314,11 +314,11 @@ SET( headers
 	Game/Entities/Vendor.h
 	Game/Entities/Warlock.h
 	Game/Entities/Warrior.h
-	Waypoint.h
+	Game/AI/Waypoint.h
 	Game/Weather/Weather.h
 	Game/Weather/WeatherInfo.h
 	Game/Weather/WeatherMgr.h
-	WeatherPacketBuilder.h
+	Game/Network/WeatherPacketBuilder.h
 	Game/Entities/Summons/WildSummon.h
 	WordFilter.h
 	World.h
@@ -330,7 +330,7 @@ SET( headers
 	Game/WorldStates/WorldStatesHandler.h
 	Game/WorldStates/WorldStates.h
 	Server/WowCrypt.h
-	WoWGuid.h
+	Game/Network/WoWGuid.h
 	WUtil.h
 	PacketHandlers/NewHandlers/ItemPacketHandlers.h
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 

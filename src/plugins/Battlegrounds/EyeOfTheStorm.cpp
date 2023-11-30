@@ -21,7 +21,7 @@
 
 #include "StdAfx.h"
 #include "EyeOfTheStorm.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 
 static float EOTSBuffCoordinates[4][4] =

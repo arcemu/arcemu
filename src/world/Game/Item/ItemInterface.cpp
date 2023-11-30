@@ -18,14 +18,9 @@
  *
  */
 
-// Last edited by:	$Author$
-// revision:		$Rev$
-// date:			$Date$
-
-
 #include "StdAfx.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 //
 //-------------------------------------------------------------------//
 ItemInterface::ItemInterface(Player* pPlayer) :

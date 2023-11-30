@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 Summon::Summon(uint64 GUID) : Creature(GUID)
 {

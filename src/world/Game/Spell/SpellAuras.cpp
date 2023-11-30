@@ -20,8 +20,8 @@
 
 #include "StdAfx.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "Messenger.h"
-#include "PlayerMessenger.h"
+#include "Game/Network/Messenger.h"
+#include "Game/Network/PlayerMessenger.h"
 
 pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS] =
 {

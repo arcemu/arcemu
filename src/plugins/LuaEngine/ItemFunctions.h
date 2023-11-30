@@ -22,7 +22,7 @@
 
 #include "StdAfx.h"
 #include "ItemFunctions.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 namespace luaItem
 {

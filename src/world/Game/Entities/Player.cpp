@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_INDOOR_CHECK_INTERVAL 1000

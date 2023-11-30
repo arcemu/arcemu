@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 trainertype trainer_types[TRAINER_TYPE_MAX] =
 {

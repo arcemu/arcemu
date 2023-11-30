@@ -21,8 +21,8 @@
 #include "StdAfx.h"
 #include "Game/Entities/Unit.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "Messenger.h"
-#include "MessageRouter.h"
+#include "Game/Network/Messenger.h"
+#include "Game/Network/MessageRouter.h"
 
 using namespace std;
 

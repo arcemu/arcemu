@@ -25,7 +25,7 @@
 
 #include "StdAfx.h"
 #include "Game/Entities/Update/UpdateBuilder.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 
 static float AttackToRageConversionTable[PLAYER_LEVEL_CAP + 1] =

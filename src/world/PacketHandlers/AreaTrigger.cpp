@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
 {

@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 #include "PlayerCommands.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 SendTalentResetConfirmDialogCommand::SendTalentResetConfirmDialogCommand( Player* player )
 {

@@ -21,7 +21,7 @@
 
 #include "StdAfx.h"
 #include "LUAEngine.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 class LuaGameObject
 {

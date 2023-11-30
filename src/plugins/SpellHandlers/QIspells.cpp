@@ -18,7 +18,7 @@
 
 #include "Setup.h"
 #include "../Common/EasyFunctions.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 bool CleansingVial(uint32 i, Spell* pSpell)
 {

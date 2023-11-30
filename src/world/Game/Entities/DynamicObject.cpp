@@ -19,7 +19,7 @@
  */
 
 #include "StdAfx.h"
-#include "Messenger.h"
+#include "Game/Network/Messenger.h"
 
 DynamicObject::DynamicObject(uint32 high, uint32 low)
 {
