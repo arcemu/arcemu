@@ -7,7 +7,6 @@ adler32.c
 compress.c
 crc32.c
 deflate.c
-example.c
 gzio.c
 infback.c
 inffast.c
@@ -23,7 +22,11 @@ endforeach(src)
 
 REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
 
+ADD_DEFINITIONS( -DZLIB_DLL )
+
 include_directories( ${DEPENDENCY_INCLUDE_ROOT}/zlib)
-add_library(${PROJECT_NAME} STATIC ${SRCS} )
+add_library(${PROJECT_NAME} SHARED ${SRCS} )
 #Set it to the project name.
 set(ZLIB_LIBRARIES ${PROJECT_NAME} CACHE INTERNAL "Zlib Libraries")
+
+INSTALL( TARGETS zlib DESTINATION . )
