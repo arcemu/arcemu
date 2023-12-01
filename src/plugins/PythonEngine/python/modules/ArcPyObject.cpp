@@ -779,6 +779,24 @@ static PyObject* ArcPyObject_setZoneWeather( ArcPyObject *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// getInstanceId
+///   Returns the id of the Instance the Object is in
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns the id of the Instance the Object is in
+///
+/// Example
+///   instanceId = object.getInstanceId()
+///
+static PyObject* ArcPyObject_getInstanceId( ArcPyObject *self, PyObject *args )
+{
+	Object *object = self->objectPtr;
+	return PyLong_FromLong( object->GetInstanceID() );
+}
+
 static PyMethodDef ArcPyObject_methods[] = 
 {
 	{ "getZoneId", (PyCFunction)ArcPyObject_getZoneId, METH_NOARGS, "Returns the Zone Id of the Object" },
@@ -807,6 +825,7 @@ static PyMethodDef ArcPyObject_methods[] =
 	{ "getPhase", (PyCFunction)ArcPyObject_getPhase, METH_VARARGS, "Retruns the phases of the object" },
 	{ "sendZoneWeather", (PyCFunction)ArcPyObject_sendZoneWeather, METH_VARARGS, "Send new weather to players in the zone" },
 	{ "setZoneWeather", (PyCFunction)ArcPyObject_setZoneWeather, METH_VARARGS, "Set new static weather in the zone" },
+	{ "getInstanceId", (PyCFunction)ArcPyObject_getInstanceId, METH_NOARGS, "Returns the id of the Instance the Object is in" },
 	{NULL}
 };
 
