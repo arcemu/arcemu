@@ -77,7 +77,7 @@ SET(DEPENDENCY_DLLS ${DEPENDENCY_ROOT}/dll64)
 
 #Install libmysql.dll required for our core to run.
 IF( WIN32)
-	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libeay32.dll)
+	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libcrypto-1_1-x64.dll)
 ENDIF(WIN32)
 
 #Our configurable variables.
@@ -173,7 +173,7 @@ SET( EXTRA_LIBS)
 SET( EXTRA_LIBS_PATH)
 
 if(WIN32)
-	SET( EXTRA_LIBS libeay32_win64.lib )
+	SET( EXTRA_LIBS libcrypto64MT.lib )
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		SET(EXTRA_LIBS ${EXTRA_LIBS} libmysql_debug_x64.lib )
 	else()
