@@ -31,7 +31,9 @@ include_directories( ${DEPENDENCY_INCLUDE_ROOT}/pcre )
 
 REMOVE_DEFINITIONS( -DHAS_CXX0X -std=gnu++0x )
 
-add_library( ${PROJECT_NAME} STATIC ${SRCS} )
+add_library( ${PROJECT_NAME} SHARED ${SRCS} )
 
 SET(PCRE_LIBRARIES ${PROJECT_NAME} CACHE INTERNAL "PCRE Libraries.")
 SET(PCRE_INCLUDE_DIRS ${prefix} CACHE INTERNAL "PCRE include dirs.")
+
+INSTALL( TARGETS pcre DESTINATION . )

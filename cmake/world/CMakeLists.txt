@@ -395,7 +395,7 @@ ENABLE_TESTING()
 ADD_EXECUTABLE( WorldUtilTest ${prefix}/Tests/UtilTest.cpp )
 
 ADD_DEPENDENCIES( WorldUtilTest ${PROJECT_NAME}lib )
-TARGET_LINK_LIBRARIES( WorldUtilTest shared ${PROJECT_NAME}lib )
+TARGET_LINK_LIBRARIES( WorldUtilTest shared ${PROJECT_NAME}lib ${PCRE_LIBRARIES})
 
 ADD_TEST( NAME WorldUtilTest COMMAND WorldUtilTest )
 
