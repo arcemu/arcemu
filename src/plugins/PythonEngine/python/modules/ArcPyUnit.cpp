@@ -1715,6 +1715,30 @@ static PyObject* ArcPyUnit_setChannelSpellId( ArcPyUnit *self, PyObject *args )
 	Py_RETURN_NONE;
 }
 
+/// isInCombat()
+///   Tells if the Unit is currently in combat
+///
+/// Parameters
+///   None
+///
+/// Return value
+///   Returns True if the Unit is in combat.
+///   Returns False if the Unit is not in combat.
+///
+/// Example
+///   if unit.isInCombat():
+///     print( "The unit is not in combat" )
+///
+static PyObject* ArcPyUnit_isInCombat( ArcPyUnit *self, PyObject *args )
+{
+	Unit *unit = self->unitPtr;
+	
+	if( unit->CombatStatus.IsInCombat() )
+		return Py_True;
+	else
+		return Py_False;
+}
+
 static PyMethodDef ArcPyUnit_methods[] = 
 {
 	{ "getName", (PyCFunction)ArcPyUnit_getName, METH_NOARGS, "Returns the name of the Unit" },
@@ -1777,6 +1801,7 @@ static PyMethodDef ArcPyUnit_methods[] =
 	{ "getTargetGUID", (PyCFunction)ArcPyUnit_getTargetGUID, METH_NOARGS, "Returns the target GUID for this Unit" },
 	{ "setChannelSpellTargetGUID", (PyCFunction)ArcPyUnit_setChannelSpellTargetGUID, METH_VARARGS, "Sets the channel spell target GUID for this Unit" },
 	{ "setChannelSpellId", (PyCFunction)ArcPyUnit_setChannelSpellId, METH_VARARGS, "Sets the channel spell Id" },
+	{ "isInCombat", (PyCFunction)ArcPyUnit_isInCombat, METH_NOARGS, "Tells if the Unit is in combat" },
 	{NULL}
 };
 

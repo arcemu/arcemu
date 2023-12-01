@@ -752,6 +752,7 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.addItem( arcemu.ICON_CHAT, "Send me random weather", 1402, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "Set random weather in the zone", 1403, 0 )
 		menu.addItem( arcemu.ICON_CHAT, "What is your instance Id?", 1404, 0 )
+		menu.addItem( arcemu.ICON_CHAT, "Are you in combat?", 1405, 0 )
 		menu.sendToPlayer( player )
 		
 	if id == 1401:
@@ -796,6 +797,12 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 	if id == 1404:
 		instanceId = creature.getInstanceId()
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, str( instanceId ) )
+		
+	if id == 1405:
+		if creature.isInCombat():
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Yes" )
+		else:
+			creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "No" )
 
 def mohawk_onEnterVehicle( unit ):
 	unit.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Nice I am on a vehicle now!" )
