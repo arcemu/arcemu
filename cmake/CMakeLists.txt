@@ -77,7 +77,7 @@ SET(DEPENDENCY_DLLS ${DEPENDENCY_ROOT}/dll64)
 
 #Install libmysql.dll required for our core to run.
 IF( WIN32)
-	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libcrypto-1_1-x64.dll)
+	SET( INSTALLED_DEPENDENCIES ${DEPENDENCY_DLLS}/libmysql.dll ${DEPENDENCY_DLLS}/libcrypto-1_1-x64.dll ${DEPENDENCY_DLLS}/libssl-1_1-x64.dll ${DEPENDENCY_DLLS}/libcurl.dll)
 ENDIF(WIN32)
 
 #Our configurable variables.
@@ -163,7 +163,8 @@ ENDIF()
 IF(WIN32)	#On windows, we have to specify the includes for libeay and mysql libs.
 	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS} 
 	${DEPENDENCY_INCLUDE_ROOT}/openssl
-	${DEPENDENCY_INCLUDE_ROOT}/mysql )
+	${DEPENDENCY_INCLUDE_ROOT}/mysql
+	${DEPENDENCY_INCLUDE_ROOT}/curl)
 ELSE()	#On apple n linux, mysql.h should have been found.
 	SET( GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS} ${MYSQL_INCLUDE_DIR} )
 ENDIF()
@@ -173,7 +174,7 @@ SET( EXTRA_LIBS)
 SET( EXTRA_LIBS_PATH)
 
 if(WIN32)
-	SET( EXTRA_LIBS libcrypto64MT.lib )
+	SET( EXTRA_LIBS libcrypto64MT.lib libcurl_imp.lib )
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		SET(EXTRA_LIBS ${EXTRA_LIBS} libmysql_debug_x64.lib )
 	else()
