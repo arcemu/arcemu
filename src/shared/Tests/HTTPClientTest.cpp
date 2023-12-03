@@ -35,8 +35,9 @@ TESTCASE_REGISTRY_END()
 
 bool HTTPClientTest::testSimpleGET()
 {
+	std::string url = "https://raw.githubusercontent.com/arcemu/arcemu/master/Jenkinsfile";
 	HTTPClient client;
-	HTTPRequest request( "https://www.google.com/ncr", HTTPRequest::HTTP_GET );
+	HTTPRequest request( url, HTTPRequest::HTTP_GET );
 
 	client.setFollowLocation( true );
 
