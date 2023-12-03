@@ -22,7 +22,7 @@ FROM ubuntu:bionic
 
 RUN apt-get update
 RUN apt-get install -y git cmake make g++
-RUN apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev
+RUN apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev libcurl4-openssl-dev
 
 RUN mkdir -p /srv/build/arcemu
 RUN mkdir -p /srv/build/arcemu/bin

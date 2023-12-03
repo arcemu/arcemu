@@ -9,7 +9,7 @@ debconf-set-selections <<< 'mysql-server mysql-server/root_password_again passwo
 # Install dependencies
 apt-get update
 apt-get install -y git cmake make g++ mysql-server mysql-client
-apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev
+apt-get install -y zlib1g-dev libssl-dev libpcre3-dev libbz2-dev libmysqlclient-dev libmysql++-dev libcurl4-openssl-dev
 
 # Enable PTrace for debugging
 echo 0 > /proc/sys/kernel/yama/ptrace_scope
