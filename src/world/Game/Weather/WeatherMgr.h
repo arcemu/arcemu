@@ -27,7 +27,10 @@ class SERVER_DECL WeatherMgr :  public Singleton < WeatherMgr >
 		WeatherMgr();
 		~WeatherMgr();
 
-		void LoadFromDB();
+		/// Should be called on server startup to initialize this WeatherMgr
+		void onStartup();
+
+		/// Send zone weather information to the player
 		void SendWeather(Player* plr);
 
 		/// Enable or disable automatically generated weather for the zone
@@ -37,6 +40,9 @@ class SERVER_DECL WeatherMgr :  public Singleton < WeatherMgr >
 		void setWeather( uint32 zone, uint32 type, float density );
 
 	private:
+		/// Load data for weather generation
+		void loadFromDB();
+
 		std::map<uint32, WeatherInfo*> m_zoneWeathers;
 };
 

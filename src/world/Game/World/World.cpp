@@ -417,7 +417,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(ObjectMgr,  SetHighestGuids);
 	MAKE_TASK(ObjectMgr,  LoadReputationModifiers);
 	MAKE_TASK(ObjectMgr,  LoadMonsterSay);
-	MAKE_TASK(WeatherMgr, LoadFromDB);
+	MAKE_TASK(WeatherMgr, onStartup);
 	MAKE_TASK(ObjectMgr,  LoadGroups);
 	//LoadMonsterSay() must have finished before calling LoadExtraCreatureProtoStuff()
 	tl.wait();
