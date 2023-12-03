@@ -34,7 +34,8 @@ SET( sources
     Database/MySQLDatabase.cpp 
     Database/CreateInterface.cpp 
     Container/CircularBuffer.cpp 
-    Network/Socket.cpp  )
+    Network/Socket.cpp
+    Network/HTTPClient.cpp)
 	
 set( headers 
 	Util/arcemu_getopt.h
@@ -90,6 +91,9 @@ set( headers
 	Network/SocketMgrWin32.h
 	Network/SocketOps.h
 	Network/SocketDefines.h
+	Network/HTTPRequest.h
+	Network/HTTPResponse.h
+	Network/HTTPClient.h
 	Threading/AtomicBoolean.h
 	Threading/AtomicCounter.h
 	Threading/AtomicFloat.h
@@ -141,3 +145,7 @@ ADD_TEST( NAME UtilTest COMMAND UtilTest )
 ADD_EXECUTABLE( ServerControllerTest ${prefix}/Tests/ServerControllerTest.cpp )
 TARGET_LINK_LIBRARIES( ServerControllerTest ${PROJECT_NAME} )
 ADD_TEST( NAME ServerControllerTest COMMAND ServerControllerTest )
+
+ADD_EXECUTABLE( HTTPClientTest ${prefix}/Tests/HTTPClientTest.cpp )
+TARGET_LINK_LIBRARIES( HTTPClientTest ${PROJECT_NAME} )
+ADD_TEST( NAME HTTPClientTest COMMAND HTTPClientTest )
