@@ -36,7 +36,7 @@ TESTCASE_REGISTRY_END()
 bool HTTPClientTest::testSimpleGET()
 {
 	HTTPClient client;
-	HTTPRequest request( "https://wwww.google.com/ncr", HTTPRequest::HTTP_GET );
+	HTTPRequest request( "https://www.google.com/ncr", HTTPRequest::HTTP_GET );
 
 	client.setFollowLocation( true );
 
