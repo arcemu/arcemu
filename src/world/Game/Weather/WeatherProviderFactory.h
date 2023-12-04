@@ -1,6 +1,5 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,31 +17,24 @@
  *
  */
 
-#ifndef __WEATHERMGR_H
-#define __WEATHERMGR_H
+#ifndef ARCEMU_WEATHERPROVIDER_FACTORY_H
+#define ARCEMU_WEATHERPROVIDER_FACTORY_H
 
-class SERVER_DECL WeatherMgr :  public Singleton < WeatherMgr >
+typedef WeatherProvider* (*WeatherProviderFactoryFct)();
+
+/// Creates weather providers
+class WeatherProviderFactory
 {
-	public:
-		WeatherMgr( const std::string providerName );
-		~WeatherMgr();
+public:
+	WeatherProviderFactory();
 
-		/// Should be called on server startup to initialize this WeatherMgr
-		void onStartup();
+	~WeatherProviderFactory();
 
-		/// Send zone weather information to the player
-		void SendWeather(Player* plr);
+	/// Create a new weather provider based on it's name
+	WeatherProvider* createProvider( std::string providerName );
 
-		/// Enable or disable automatically generated weather for the zone
-		void setEnableGeneratedWeather( uint32 zone, bool enabled );
-
-		/// Set weather for the zone
-		void setWeather( uint32 zone, uint32 type, float density );
-
-	private:
-		WeatherProvider *provider;
+private:
+	std::map< std::string, WeatherProviderFactoryFct > factoryMethods;
 };
-
-#define sWeatherMgr WeatherMgr::getSingleton()
 
 #endif

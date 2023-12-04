@@ -132,6 +132,8 @@ SET(sources
 	Game/Entities/Vendor.cpp
 	PacketHandlers/VehicleHandler.cpp
 	Chat/WayPoints.cpp
+	Game/Weather/WeatherProviderFactory.cpp
+	Game/Weather/GeneratedWeatherProvider.cpp
 	Game/Weather/WeatherInfo.cpp
 	Game/Weather/WeatherMgr.cpp 
 	Game/Network/WeatherPacketBuilder.cpp
@@ -316,6 +318,9 @@ SET( headers
 	Game/Entities/Warrior.h
 	Game/AI/Waypoint.h
 	Game/Weather/Weather.h
+	Game/Weather/WeatherProvider.h
+	Game/Weather/WeatherProviderFactory.h
+	Game/Weather/GeneratedWeatherProvider.h
 	Game/Weather/WeatherInfo.h
 	Game/Weather/WeatherMgr.h
 	Game/Network/WeatherPacketBuilder.h

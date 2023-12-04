@@ -370,7 +370,7 @@ bool World::SetInitialWorldSettings()
 	new QuestMgr;
 	new LootMgr;
 	new LfgMgr;
-	new WeatherMgr;
+	new WeatherMgr( "GeneratedWeatherProvider" );
 	new TaxiMgr;
 	new AddonMgr;
 	new WorldLog;

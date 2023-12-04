@@ -43,7 +43,7 @@ public:
 
 class WeatherInfo : public EventableObject
 {
-		friend class WeatherMgr;
+		friend class GeneratedWeatherProvider;
 	public:
 		WeatherInfo();
 		~WeatherInfo();

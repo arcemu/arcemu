@@ -1,6 +1,5 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2023 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,31 +17,28 @@
  *
  */
 
-#ifndef __WEATHERMGR_H
-#define __WEATHERMGR_H
+#ifndef ARCEMU_GENERATEDWEATHERPROVIDER_H
+#define ARCEMU_GENERATEDWEATHERPROVIDER_H
 
-class SERVER_DECL WeatherMgr :  public Singleton < WeatherMgr >
+/// Generated weather using parameters loaded from the database
+class GeneratedWeatherProvider : public WeatherProvider
 {
-	public:
-		WeatherMgr( const std::string providerName );
-		~WeatherMgr();
+public:
+	GeneratedWeatherProvider();
+	~GeneratedWeatherProvider();
+	void onStartup();
+	void sendWeather( Player *player );
+	void setEnableGeneratedWeather( uint32 zone, bool enable );
+	void setWeather( uint32 zone, uint32 type, float density );
 
-		/// Should be called on server startup to initialize this WeatherMgr
-		void onStartup();
+	static WeatherProvider* create(){ return new GeneratedWeatherProvider(); }
 
-		/// Send zone weather information to the player
-		void SendWeather(Player* plr);
-
-		/// Enable or disable automatically generated weather for the zone
-		void setEnableGeneratedWeather( uint32 zone, bool enabled );
-
-		/// Set weather for the zone
-		void setWeather( uint32 zone, uint32 type, float density );
-
-	private:
-		WeatherProvider *provider;
+private:
+	/// Load data for weather generation
+	void loadFromDB();
+	
+	/// Weather data for the zones
+	std::map< uint32, WeatherInfo* > m_zoneWeathers;
 };
-
-#define sWeatherMgr WeatherMgr::getSingleton()
 
 #endif
