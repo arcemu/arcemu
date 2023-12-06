@@ -370,7 +370,7 @@ bool World::SetInitialWorldSettings()
 	new QuestMgr;
 	new LootMgr;
 	new LfgMgr;
-	new WeatherMgr( "GeneratedWeatherProvider" );
+	new WeatherMgr( Config.MainConfig.GetStringDefault( "WeatherSettings", "Provider", "GeneratedWeatherProvider" ) );
 	new TaxiMgr;
 	new AddonMgr;
 	new WorldLog;
