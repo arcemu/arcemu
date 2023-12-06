@@ -28,6 +28,8 @@ WeatherMgr::WeatherMgr( const std::string providerName )
 
 	provider = factory.createProvider( providerName );
 	Arcemu::Util::ArcemuAssert( provider != NULL );
+
+	Log.Notice( "WeatherMgr", "Using '%s'", providerName.c_str() );
 }
 
 WeatherMgr::~WeatherMgr()

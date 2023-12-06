@@ -17,29 +17,21 @@
  *
  */
 
-#include "StdAfx.h"
+#ifndef ARCEMU_NULLWEATHERPROVIDER_H
+#define ARCEMU_NULLWEATHERPROVIDER_H
 
-WeatherProviderFactory::WeatherProviderFactory()
+/// A weather provider that does absolutely nothing
+class NullWeatherProvider : public WeatherProvider
 {
-	factoryMethods[ "GeneratedWeatherProvider" ] = GeneratedWeatherProvider::create;
-	factoryMethods[ "NullWeatherProvider" ] = NullWeatherProvider::create;
-}
+public:
+	NullWeatherProvider(){}
+	~NullWeatherProvider(){}
+	void onStartup(){}
+	void sendWeather( Player *player ){}
+	void setEnableGeneratedWeather( uint32 zone, bool enabled ){}
+	void setWeather( uint32 zone, uint32 type, float density ){}
 
-WeatherProviderFactory::~WeatherProviderFactory()
-{
-	factoryMethods.clear();
-}
+	static WeatherProvider* create(){ return new NullWeatherProvider(); }
+};
 
-WeatherProvider* WeatherProviderFactory::createProvider( std::string providerName )
-{
-	std::map< std::string, WeatherProviderFactoryFct >::const_iterator itr
-		= factoryMethods.find( providerName );
-
-	if( itr == factoryMethods.end() )
-	{
-		Log.Notice( "WeatherMgr", "Couldn't find provider '%s'. Using NullWeatherProvider instead.", providerName.c_str() );
-		return new NullWeatherProvider();
-	}
-
-	return itr->second();
-}
+#endif

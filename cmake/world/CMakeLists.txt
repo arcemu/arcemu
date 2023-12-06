@@ -321,6 +321,7 @@ SET( headers
 	Game/Weather/WeatherProvider.h
 	Game/Weather/WeatherProviderFactory.h
 	Game/Weather/GeneratedWeatherProvider.h
+	Game/Weather/NullWeatherProvider.h
 	Game/Weather/WeatherInfo.h
 	Game/Weather/WeatherMgr.h
 	Game/Network/WeatherPacketBuilder.h

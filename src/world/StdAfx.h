@@ -210,6 +210,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Weather/WeatherProvider.h"
 #include "Game/Weather/WeatherProviderFactory.h"
 #include "Game/Weather/WeatherInfo.h"
+#include "Game/Weather/NullWeatherProvider.h"
 #include "Game/Weather/GeneratedWeatherProvider.h"
 #include "Game/Weather/WeatherMgr.h"
 #include "Game/World/World.h"
