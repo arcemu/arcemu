@@ -20,17 +20,50 @@
 #ifndef ARCEMU_WEATHER_H
 #define ARCEMU_WEATHER_H
 
-enum WeatherTypes
+enum WeatherType
 {
-    WEATHER_TYPE_NORMAL            = 0, // NORMAL
-    WEATHER_TYPE_FOG               = 1, // FOG --> current value irrelevant
-    WEATHER_TYPE_RAIN              = 2, // RAIN
-    WEATHER_TYPE_HEAVY_RAIN        = 4, // HEAVY_RAIN
-    WEATHER_TYPE_SNOW              = 8, // SNOW
-    WEATHER_TYPE_SANDSTORM         = 16 // SANDSTORM
+	WEATHER_TYPE_NORMAL            = 0,
+	WEATHER_TYPE_FOG               = 1,
+	WEATHER_TYPE_LIGHT_RAIN        = 2,
+	WEATHER_TYPE_MEDIUM_RAIN       = 3,
+	WEATHER_TYPE_HEAVY_RAIN        = 4,
+	WEATHER_TYPE_VERY_HEAVY_RAIN   = 5,
+	WEATHER_TYPE_LIGHT_SNOW        = 6,
+	WEATHER_TYPE_MEDIUM_SNOW       = 7,
+	WEATHER_TYPE_HEAVY_SNOW        = 8,
+	
+	WEATHER_TYPE_LIGHT_SANDSTORM   = 41,
+	WEATHER_TYPE_SANDSTORM         = 42,
+	
+	WEATHER_TYPE_THUNDERSTORM      = 86,
+	WEATHER_TYPE_BLACK_RAIN        = 90
 };
 
-enum WeatherSounds
+/// Tells if the specified numeric value is a valid weather type
+ARCEMU_INLINE bool isValidWeatherType( uint32 type )
+{
+	switch( type )
+	{
+	case WEATHER_TYPE_NORMAL:
+	case WEATHER_TYPE_FOG:
+	case WEATHER_TYPE_LIGHT_RAIN:
+	case WEATHER_TYPE_MEDIUM_RAIN:
+	case WEATHER_TYPE_HEAVY_RAIN:
+	case WEATHER_TYPE_VERY_HEAVY_RAIN:
+	case WEATHER_TYPE_LIGHT_SNOW:
+	case WEATHER_TYPE_MEDIUM_SNOW:
+	case WEATHER_TYPE_HEAVY_SNOW:
+	case WEATHER_TYPE_LIGHT_SANDSTORM:
+	case WEATHER_TYPE_SANDSTORM:
+	case WEATHER_TYPE_THUNDERSTORM:
+	case WEATHER_TYPE_BLACK_RAIN:
+		return true;
+	}
+
+	return false;
+}
+
+enum WeatherSound
 {
     WEATHER_NOSOUND                = 0,
     WEATHER_RAINLIGHT              = 8533,

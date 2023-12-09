@@ -105,6 +105,30 @@ void GeneratedWeatherProvider::loadFromDB()
 		wi->weatherProbabilities.lowProbabilityWeather.probability  = fields[ 5 ].GetUInt32();
 		wi->weatherProbabilities.lowProbabilityWeather.type         = fields[ 6 ].GetUInt32();
 
+		if( !isValidWeatherType( wi->weatherProbabilities.highProbabilityWeather.type ) )
+		{
+			Log.Notice( "WeatherMgr", "Weather type %u for zone %u is invalid. Skipping weather for this zone.", wi->weatherProbabilities.highProbabilityWeather.type, wi->m_zoneId );
+			delete wi;
+			wi = NULL;
+			continue;
+		}
+
+		if( !isValidWeatherType( wi->weatherProbabilities.medProbabilityWeather.type ) )
+		{
+			Log.Notice( "WeatherMgr", "Weather type %u for zone %u is invalid. Skipping weather for this zone.", wi->weatherProbabilities.medProbabilityWeather.type, wi->m_zoneId );
+			delete wi;
+			wi = NULL;
+			continue;
+		}
+
+		if( !isValidWeatherType( wi->weatherProbabilities.lowProbabilityWeather.type ) )
+		{
+			Log.Notice( "WeatherMgr", "Weather type %u for zone %u is invalid. Skipping weather for this zone.", wi->weatherProbabilities.lowProbabilityWeather.type, wi->m_zoneId );
+			delete wi;
+			wi = NULL;
+			continue;
+		}
+
 		m_zoneWeathers[wi->m_zoneId] = wi;
 
 		wi->generateWeather();

@@ -303,8 +303,15 @@ void registerArcemuConstants( PyObject *module )
 	/// Weather!
 	PyModule_AddIntConstant( module, "WEATHER_TYPE_NORMAL", WEATHER_TYPE_NORMAL );
 	PyModule_AddIntConstant( module, "WEATHER_TYPE_FOG", WEATHER_TYPE_FOG );
-	PyModule_AddIntConstant( module, "WEATHER_TYPE_RAIN", WEATHER_TYPE_RAIN );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_LIGHT_RAIN", WEATHER_TYPE_LIGHT_RAIN );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_MEDIUM_RAIN", WEATHER_TYPE_MEDIUM_RAIN );
 	PyModule_AddIntConstant( module, "WEATHER_TYPE_HEAVY_RAIN", WEATHER_TYPE_HEAVY_RAIN );
-	PyModule_AddIntConstant( module, "WEATHER_TYPE_SNOW", WEATHER_TYPE_SNOW );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_VERY_HEAVY_RAIN", WEATHER_TYPE_VERY_HEAVY_RAIN );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_LIGHT_SNOW", WEATHER_TYPE_LIGHT_SNOW );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_MEDIUM_SNOW", WEATHER_TYPE_MEDIUM_SNOW );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_HEAVY_SNOW", WEATHER_TYPE_HEAVY_SNOW );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_LIGHT_SANDSTORM", WEATHER_TYPE_LIGHT_SANDSTORM );
 	PyModule_AddIntConstant( module, "WEATHER_TYPE_SANDSTORM", WEATHER_TYPE_SANDSTORM );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_THUNDERSTORM", WEATHER_TYPE_THUNDERSTORM );
+	PyModule_AddIntConstant( module, "WEATHER_TYPE_BLACK_RAIN", WEATHER_TYPE_BLACK_RAIN );
 }

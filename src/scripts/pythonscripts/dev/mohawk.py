@@ -756,39 +756,72 @@ def mohawk_onSelectOption( unit, player, id, enteredCode ):
 		menu.sendToPlayer( player )
 		
 	if id == 1401:
-		types = [ arcemu.WEATHER_TYPE_NORMAL, arcemu.WEATHER_TYPE_FOG, arcemu.WEATHER_TYPE_RAIN, arcemu.WEATHER_TYPE_HEAVY_RAIN, arcemu.WEATHER_TYPE_SNOW, arcemu.WEATHER_TYPE_SANDSTORM ]
+		types = [
+			arcemu.WEATHER_TYPE_NORMAL,
+			arcemu.WEATHER_TYPE_FOG,
+			arcemu.WEATHER_TYPE_LIGHT_RAIN,
+			arcemu.WEATHER_TYPE_MEDIUM_RAIN,
+			arcemu.WEATHER_TYPE_HEAVY_RAIN,
+			arcemu.WEATHER_TYPE_VERY_HEAVY_RAIN,
+			arcemu.WEATHER_TYPE_LIGHT_SNOW,
+			arcemu.WEATHER_TYPE_MEDIUM_SNOW,
+			arcemu.WEATHER_TYPE_HEAVY_SNOW,
+			arcemu.WEATHER_TYPE_LIGHT_SANDSTORM,
+			arcemu.WEATHER_TYPE_SANDSTORM,
+			arcemu.WEATHER_TYPE_THUNDERSTORM,
+			arcemu.WEATHER_TYPE_BLACK_RAIN,
+		]
 		
-		type = types[ Math.randomUInt( 5 ) ]
-		density = 0
-		
-		if type != 0:
-			density = 1.15
+		type = types[ Math.randomUInt( len( types ) ) - 1 ]
+		density = 2.0
 		
 		player.sendZoneWeather( type, density )
 		
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
 		
 	if id == 1402:
-		types = [ arcemu.WEATHER_TYPE_NORMAL, arcemu.WEATHER_TYPE_FOG, arcemu.WEATHER_TYPE_RAIN, arcemu.WEATHER_TYPE_HEAVY_RAIN, arcemu.WEATHER_TYPE_SNOW, arcemu.WEATHER_TYPE_SANDSTORM ]
+		types = [
+			arcemu.WEATHER_TYPE_NORMAL,
+			arcemu.WEATHER_TYPE_FOG,
+			arcemu.WEATHER_TYPE_LIGHT_RAIN,
+			arcemu.WEATHER_TYPE_MEDIUM_RAIN,
+			arcemu.WEATHER_TYPE_HEAVY_RAIN,
+			arcemu.WEATHER_TYPE_VERY_HEAVY_RAIN,
+			arcemu.WEATHER_TYPE_LIGHT_SNOW,
+			arcemu.WEATHER_TYPE_MEDIUM_SNOW,
+			arcemu.WEATHER_TYPE_HEAVY_SNOW,
+			arcemu.WEATHER_TYPE_LIGHT_SANDSTORM,
+			arcemu.WEATHER_TYPE_SANDSTORM,
+			arcemu.WEATHER_TYPE_THUNDERSTORM,
+			arcemu.WEATHER_TYPE_BLACK_RAIN,
+		]
 		
-		type = types[ Math.randomUInt( 5 ) ]
-		density = 0
-		
-		if type != 0:
-			density = 1.15
+		type = types[ Math.randomUInt( len( types ) ) - 1 ]
+		density = 2.0
 		
 		player.sendWeather( type, density )
 		
 		creature.sendChatMessage( arcemu.CHAT_MSG_MONSTER_SAY, arcemu.LANG_UNIVERSAL, "Done" )
 		
 	if id == 1403:
-		types = [ arcemu.WEATHER_TYPE_NORMAL, arcemu.WEATHER_TYPE_FOG, arcemu.WEATHER_TYPE_RAIN, arcemu.WEATHER_TYPE_HEAVY_RAIN, arcemu.WEATHER_TYPE_SNOW, arcemu.WEATHER_TYPE_SANDSTORM ]
+		types = [
+			arcemu.WEATHER_TYPE_NORMAL,
+			arcemu.WEATHER_TYPE_FOG,
+			arcemu.WEATHER_TYPE_LIGHT_RAIN,
+			arcemu.WEATHER_TYPE_MEDIUM_RAIN,
+			arcemu.WEATHER_TYPE_HEAVY_RAIN,
+			arcemu.WEATHER_TYPE_VERY_HEAVY_RAIN,
+			arcemu.WEATHER_TYPE_LIGHT_SNOW,
+			arcemu.WEATHER_TYPE_MEDIUM_SNOW,
+			arcemu.WEATHER_TYPE_HEAVY_SNOW,
+			arcemu.WEATHER_TYPE_LIGHT_SANDSTORM,
+			arcemu.WEATHER_TYPE_SANDSTORM,
+			arcemu.WEATHER_TYPE_THUNDERSTORM,
+			arcemu.WEATHER_TYPE_BLACK_RAIN,
+		]
 		
-		type = types[ Math.randomUInt( 5 ) ]
-		density = 0
-		
-		if type != 0:
-			density = 1.15
+		type = types[ Math.randomUInt( len( types ) ) - 1 ]
+		density = 2.0
 		
 		player.setZoneWeather( type, density )
 		

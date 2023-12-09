@@ -37,8 +37,11 @@ void WeatherPacketBuilder::setSound()
 	
 	switch( type )
 	{
-		case WEATHER_TYPE_RAIN:
+		case WEATHER_TYPE_LIGHT_RAIN:
+		case WEATHER_TYPE_MEDIUM_RAIN:
 		case WEATHER_TYPE_HEAVY_RAIN:
+		case WEATHER_TYPE_VERY_HEAVY_RAIN:
+		case WEATHER_TYPE_BLACK_RAIN:
 			if( density  < 0.40f )
 				sound = WEATHER_RAINLIGHT;
 			else
@@ -49,7 +52,9 @@ void WeatherPacketBuilder::setSound()
 			
 			break;
 		
-		case WEATHER_TYPE_SNOW:
+		case WEATHER_TYPE_LIGHT_SNOW:
+		case WEATHER_TYPE_MEDIUM_SNOW:
+		case WEATHER_TYPE_HEAVY_SNOW:
 			if( density  < 0.40f )
 				sound = WEATHER_SNOWLIGHT;
 			else
@@ -59,7 +64,8 @@ void WeatherPacketBuilder::setSound()
 					sound = WEATHER_SNOWHEAVY;
 			
 			break;
-		
+
+		case WEATHER_TYPE_LIGHT_SANDSTORM:
 		case WEATHER_TYPE_SANDSTORM:
 			if( density  < 0.40f )
 				sound = WEATHER_SANDSTORMLIGHT;
