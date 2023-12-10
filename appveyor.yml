@@ -21,4 +21,16 @@ build_script:
      
      msbuild Arcemu.sln
      
+     copy world\libcrypto*.dll shared\Debug\
+     
+     copy world\libcurl.dll shared\Debug\
+     
+     copy world\libssl*.dll shared\Debug\
+     
+     copy zlib\Debug\zlib.dll shared\Debug\
+     
+     copy pcre\Debug\pcre.dll world\Debug\
+     
+     copy zlib\Debug\zlib.dll world\Debug\
+     
      ctest -C Debug --verbose
