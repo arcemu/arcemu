@@ -81,5 +81,18 @@ enum WeatherSound
 #define WEATHER_DENSITY_MID 1.15f
 #define WEATHER_DENSITY_MAX 2.0f
 
+
+struct WeatherData
+{
+	WeatherType type;
+	float density;
+
+	WeatherData()
+	{
+		type = WEATHER_TYPE_NORMAL;
+		density = 0.0f;
+	}
+};
+
 #endif
  

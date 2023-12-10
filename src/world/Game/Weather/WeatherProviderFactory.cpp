@@ -23,6 +23,7 @@ WeatherProviderFactory::WeatherProviderFactory()
 {
 	factoryMethods[ "GeneratedWeatherProvider" ] = GeneratedWeatherProvider::create;
 	factoryMethods[ "NullWeatherProvider" ] = NullWeatherProvider::create;
+	factoryMethods[ "OpenWeatherProvider" ] = OpenWeatherProvider::create;
 }
 
 WeatherProviderFactory::~WeatherProviderFactory()

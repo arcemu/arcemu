@@ -134,6 +134,9 @@ SET(sources
 	Chat/WayPoints.cpp
 	Game/Weather/WeatherProviderFactory.cpp
 	Game/Weather/GeneratedWeatherProvider.cpp
+	Game/Weather/OpenWeatherData.cpp
+	Game/Weather/OpenWeatherDataParser.cpp
+	Game/Weather/OpenWeatherProvider.cpp
 	Game/Weather/WeatherInfo.cpp
 	Game/Weather/WeatherMgr.cpp 
 	Game/Network/WeatherPacketBuilder.cpp
@@ -322,6 +325,9 @@ SET( headers
 	Game/Weather/WeatherProviderFactory.h
 	Game/Weather/GeneratedWeatherProvider.h
 	Game/Weather/NullWeatherProvider.h
+	Game/Weather/OpenWeatherData.h
+	Game/Weather/OpenWeatherDataParser.h
+	Game/Weather/OpenWeatherProvider.h
 	Game/Weather/WeatherInfo.h
 	Game/Weather/WeatherMgr.h
 	Game/Network/WeatherPacketBuilder.h
