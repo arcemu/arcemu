@@ -1524,7 +1524,7 @@ typedef std::vector<SpellTargetMod> SpellTargetsList;
 typedef void(Spell::*pSpellEffect)(uint32 i);
 typedef void(Spell::*pSpellTarget)(uint32 i, uint32 j);
 
-#define POWER_TYPE_HEALTH -2
+#define POWER_TYPE_HEALTH (uint32)-2
 
 enum PowerType
 {
