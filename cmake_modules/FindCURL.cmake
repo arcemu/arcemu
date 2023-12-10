@@ -10,7 +10,8 @@ IF(CURL_INCLUDE_DIRS)
 ENDIF (CURL_INCLUDE_DIRS)
 
 FIND_PATH(CURL_INCLUDE_DIR curl.h
-    /usr/include/curl )
+    /usr/include/curl
+    /usr/include/x86_64-linux-gnu/curl )
 
 FIND_LIBRARY(CURL_LIBRARY
     NAMES curl
