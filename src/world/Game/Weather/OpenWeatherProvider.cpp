@@ -67,7 +67,7 @@ void OpenWeatherProvider::setWeather( uint32 zone, uint32 type, float density )
 	Log.Notice( "OpenWeatherProvider", "setWeather is not supported in this provider." );
 }
 
-#define WEATHER_UPDATE_INTERVAL 5*6*1000
+#define WEATHER_UPDATE_INTERVAL 5*60*1000
 
 void OpenWeatherProvider::updateWeather()
 {
