@@ -1728,7 +1728,7 @@ void System::cpuid(CPUIDFunction func, uint32& eax, uint32& ebx, uint32& ecx, ui
                  "cpuid            \n\t"
                  : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
                  : "a"(func));
-#else
+#elif defined(__i386__)
     // AT&T assembler syntax
     asm volatile(
                  "pushl %%ebx      \n\t" /* save ebx */
@@ -1738,6 +1738,11 @@ void System::cpuid(CPUIDFunction func, uint32& eax, uint32& ebx, uint32& ecx, ui
                  "popl %%ebx       \n\t" /* restore the old ebx */
                  : "=a"(eax), "=r"(ebx), "=c"(ecx), "=d"(edx)
                  : "a"(func));
+#else
+    eax = 0;
+    ebx = 0;
+    ecx = 0;
+    edx = 0;
 #endif
 }
 
