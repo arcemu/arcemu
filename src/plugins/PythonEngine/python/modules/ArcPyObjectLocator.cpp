@@ -44,13 +44,13 @@ static int ArcPyObjectLocator_init( ArcPyObjectLocator *self, PyObject *args, Py
 	if( !PyArg_ParseTuple( args, "O", &obj ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an Object parameter" );
-		return NULL;
+		return -1;
 	}
 
 	if( !isArcPyObject( obj ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an Object parameter" );
-		return NULL;
+		return -1;
 	}
 	
 	Object *apo = ((ArcPyObject*)obj)->objectPtr;
