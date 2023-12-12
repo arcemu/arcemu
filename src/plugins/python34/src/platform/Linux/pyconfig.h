@@ -320,11 +320,15 @@
 #define HAVE_GAMMA 1
 
 /* Define if we can use x64 gcc inline assembler */
-#define HAVE_GCC_ASM_FOR_X64 1
+#ifdef __x86_64__
+    #define HAVE_GCC_ASM_FOR_X64 1
+#endif
 
 /* Define if we can use gcc inline assembler to get and set x87 control word
    */
-#define HAVE_GCC_ASM_FOR_X87 1
+#ifdef __i386__
+    #define HAVE_GCC_ASM_FOR_X87 1
+#endif
 
 /* Define if your compiler provides __uint128_t */
 #define HAVE_GCC_UINT128_T 1
@@ -1173,7 +1177,7 @@
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in
    <sysmacros.h>. */
-/* #undef MAJOR_IN_SYSMACROS */
+#define MAJOR_IN_SYSMACROS 1
 
 /* Define if mvwdelch in curses.h is an expression. */
 /* #undef MVWDELCH_IS_EXPRESSION */
