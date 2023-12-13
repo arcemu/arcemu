@@ -162,9 +162,13 @@ enum MsTimeVariables
 #endif
 
 #ifdef X64
-#define ARCH "X64"
+    #ifdef __riscv
+	#define ARCH "riscv64"
+    #else
+	#define ARCH "X64"
+    #endif
 #else
-#define ARCH "X86"
+    #define ARCH "X86"
 #endif
 
 

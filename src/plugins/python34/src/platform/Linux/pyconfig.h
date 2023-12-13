@@ -1333,7 +1333,11 @@
 
 
 /* Define if a va_list is an array of some kind */
-#define VA_LIST_IS_ARRAY 1
+#if defined(__x86_64__) || defined(__i386__)
+    #define VA_LIST_IS_ARRAY 1
+#else
+    #undef VA_LIST_IS_ARRAY
+#endif
 
 /* Define if you want SIGFPE handled (see Include/pyfpe.h). */
 /* #undef WANT_SIGFPE_HANDLER */
