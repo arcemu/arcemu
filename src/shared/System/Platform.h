@@ -46,13 +46,6 @@ enum MsTimeVariables
     MSTIME_DAY	  = MSTIME_HOUR * 24
 };
 
-#ifdef WIN32
-#define ARCEMU_FORCEINLINE __forceinline
-#else
-#define ARCEMU_FORCEINLINE inline
-#endif
-#define ARCEMU_INLINE inline
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -132,6 +125,14 @@ enum MsTimeVariables
 #else
 #  pragma error "FATAL ERROR: Unknown compiler."
 #endif
+
+#if ARCEMU_COMPILER == COMPILER_MICROSOFT
+	#define ARCEMU_FORCEINLINE __forceinline
+#else
+	#define ARCEMU_FORCEINLINE inline
+#endif
+
+#define ARCEMU_INLINE inline
 
 #if ARCEMU_PLATFORM == PLATFORM_UNIX || ARCEMU_PLATFORM == PLATFORM_APPLE
 #ifdef HAVE_DARWIN
