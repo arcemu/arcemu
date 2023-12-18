@@ -124,12 +124,9 @@ enum MsTimeVariables
 
 #define COMPILER_MICROSOFT 0
 #define COMPILER_GNU	   1
-#define COMPILER_BORLAND   2
 
 #ifdef _MSC_VER
 #  define ARCEMU_COMPILER COMPILER_MICROSOFT
-#elif defined( __BORLANDC__ )
-#  define ARCEMU_COMPILER COMPILER_BORLAND
 #elif defined( __GNUC__ )
 #  define ARCEMU_COMPILER COMPILER_GNU
 #else
