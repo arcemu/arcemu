@@ -871,9 +871,9 @@ void WorldSession::FullLogin(Player* plr)
 
 
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s (%s@%s)", MSG_COLOR_WHITE, BUILD_BRANCH, CONFIG, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
+	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s (%s@%s)", MSG_COLOR_WHITE, BUILD_BRANCH, CONFIG, ARCEMU_ARCH_TXT, BUILD_USER_STR, BUILD_HOST_STR);
 #else
-	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s (%s@%s)", MSG_COLOR_WHITE, BUILD_BRANCH, PLATFORM_TEXT, ARCH, BUILD_USER_STR, BUILD_HOST_STR);
+	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s (%s@%s)", MSG_COLOR_WHITE, BUILD_BRANCH, PLATFORM_TEXT, ARCEMU_ARCH_TXT, BUILD_USER_STR, BUILD_HOST_STR);
 #endif
 
 	// Revision

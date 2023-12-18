@@ -101,11 +101,6 @@ enum MsTimeVariables
 #define PLATFORM_UNIX    1
 #define PLATFORM_APPLE   2
 
-#define UNIX_FLAVOUR_LINUX 1
-#define UNIX_FLAVOUR_BSD 2
-#define UNIX_FLAVOUR_OTHER 3
-#define UNIX_FLAVOUR_OSX 4
-
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )
 	#define ARCEMU_PLATFORM PLATFORM_WINDOWS
 #elif defined( __APPLE_CC__ )
@@ -133,6 +128,11 @@ enum MsTimeVariables
 
 #define ARCEMU_INLINE inline
 
+#define UNIX_FLAVOUR_LINUX 1
+#define UNIX_FLAVOUR_BSD 2
+#define UNIX_FLAVOUR_OTHER 3
+#define UNIX_FLAVOUR_OSX 4
+
 #if ARCEMU_PLATFORM == PLATFORM_UNIX || ARCEMU_PLATFORM == PLATFORM_APPLE
 	#ifdef HAVE_DARWIN
 		#define PLATFORM_TEXT "MacOS"
@@ -158,12 +158,12 @@ enum MsTimeVariables
 
 #ifdef X64
     #ifdef __riscv
-	#define ARCH "riscv64"
+		#define ARCEMU_ARCH_TXT "riscv64"
     #else
-	#define ARCH "X64"
+		#define ARCEMU_ARCH_TXT "amd64"
     #endif
 #else
-    #define ARCH "X86"
+    #define ARCEMU_ARCH_TXT "x86"
 #endif
 
 
