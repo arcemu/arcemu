@@ -28,7 +28,7 @@ namespace Arcemu
 		class TLSObject
 		{
 				FastMutex createlock_;	//Lock held during creation and destruction.
-#if ARCEMU_PLATFORM == PLATFORM_WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WINDOWS
 				DWORD key_;
 #elif ARCEMU_PLATFORM == PLATFORM_APPLE || ARCEMU_PLATFORM == PLATFORM_UNIX
 				pthread_key_t key_;
@@ -48,7 +48,7 @@ namespace Arcemu
 					createlock_.Acquire();
 #if ARCEMU_PLATFORM == PLATFORM_APPLE || ARCEMU_PLATFORM == PLATFORM_UNIX
 					pthread_key_create(&key_, NULL);
-#elif ARCEMU_PLATFORM == PLATFORM_WIN32
+#elif ARCEMU_PLATFORM == PLATFORM_WINDOWS
 					key_ = TlsAlloc();
 #endif
 					createlock_.Release();
@@ -63,7 +63,7 @@ namespace Arcemu
 				{
 #if ARCEMU_PLATFORM == PLATFORM_APPLE || ARCEMU_PLATFORM == PLATFORM_UNIX
 					pthread_setspecific(key_, static_cast<const void*>(val));
-#elif ARCEMU_PLATFORM == PLATFORM_WIN32
+#elif ARCEMU_PLATFORM == PLATFORM_WINDOWS
 					TlsSetValue(key_, static_cast<LPVOID>(val));
 #endif
 				}
@@ -76,7 +76,7 @@ namespace Arcemu
 				{
 #if ARCEMU_PLATFORM == PLATFORM_APPLE || ARCEMU_PLATFORM == PLATFORM_UNIX
 					return static_cast<T>(pthread_getspecific(key_));
-#elif ARCEMU_PLATFORM == PLATFORM_WIN32
+#elif ARCEMU_PLATFORM == PLATFORM_WINDOWS
 					return static_cast<T>(TlsGetValue(key_));
 #else
 					return static_cast<T>(NULL);
@@ -92,7 +92,7 @@ namespace Arcemu
 					createlock_.Acquire();
 #if ARCEMU_PLATFORM == PLATFORM_APPLE || ARCEMU_PLATFORM == PLATFORM_UNIX
 					pthread_key_delete(key_);
-#elif ARCEMU_PLATFORM == PLATFORM_WIN32
+#elif ARCEMU_PLATFORM == PLATFORM_WINDOWS
 					TlsFree(key_);
 #endif
 					createlock_.Release();

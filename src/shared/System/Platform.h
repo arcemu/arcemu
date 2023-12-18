@@ -97,10 +97,9 @@ enum MsTimeVariables
 #include <netdb.h>
 #endif
 
-// current platform and compiler
-#define PLATFORM_WIN32 0
-#define PLATFORM_UNIX  1
-#define PLATFORM_APPLE 2
+#define PLATFORM_WINDOWS 0
+#define PLATFORM_UNIX    1
+#define PLATFORM_APPLE   2
 
 #define UNIX_FLAVOUR_LINUX 1
 #define UNIX_FLAVOUR_BSD 2
@@ -108,11 +107,11 @@ enum MsTimeVariables
 #define UNIX_FLAVOUR_OSX 4
 
 #if defined( __WIN32__ ) || defined( WIN32 ) || defined( _WIN32 )
-#  define ARCEMU_PLATFORM PLATFORM_WIN32
+	#define ARCEMU_PLATFORM PLATFORM_WINDOWS
 #elif defined( __APPLE_CC__ )
-#  define ARCEMU_PLATFORM PLATFORM_APPLE
+	#define ARCEMU_PLATFORM PLATFORM_APPLE
 #else
-#  define ARCEMU_PLATFORM PLATFORM_UNIX
+	#define ARCEMU_PLATFORM PLATFORM_UNIX
 #endif
 
 #define COMPILER_MICROSOFT 0
@@ -147,7 +146,7 @@ enum MsTimeVariables
 			#define UNIX_FLAVOUR UNIX_FLAVOUR_LINUX
 		#endif
 	#endif
-#elif ARCEMU_PLATFORM == PLATFORM_WIN32
+#elif ARCEMU_PLATFORM == PLATFORM_WINDOWS
 	#define PLATFORM_TEXT "Windows"
 #endif
 
@@ -168,13 +167,13 @@ enum MsTimeVariables
 #endif
 
 
-#if ARCEMU_PLATFORM == PLATFORM_WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WINDOWS
 #define STRCASECMP stricmp
 #else
 #define STRCASECMP strcasecmp
 #endif
 
-#if ARCEMU_PLATFORM == PLATFORM_WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WINDOWS
 #define ASYNC_NET
 #endif
 
