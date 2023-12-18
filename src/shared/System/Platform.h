@@ -157,13 +157,21 @@ enum MsTimeVariables
 #endif
 
 #ifdef X64
-    #ifdef __riscv
+    #if defined( __riscv )
 		#define ARCEMU_ARCH_TXT "riscv64"
-    #else
+    #elif defined( __x86_64__ ) || defined( _M_X64 )
 		#define ARCEMU_ARCH_TXT "amd64"
+	#else
+		#error "Unknown architecture"
     #endif
 #else
-    #define ARCEMU_ARCH_TXT "x86"
+	#if defined( __riscv )
+		#error "32 bit RISC V architecture is not supported"
+	#elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
+		#error "32 bit x86 architecure is not supported"
+	#else
+		#error "Unsupported unknown architecture"
+	#endif
 #endif
 
 
