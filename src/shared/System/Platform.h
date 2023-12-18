@@ -109,18 +109,18 @@ enum MsTimeVariables
 	#define ARCEMU_PLATFORM PLATFORM_UNIX
 #endif
 
-#define COMPILER_MICROSOFT 0
-#define COMPILER_GNU	   1
+#define COMPILER_MSVC 0
+#define COMPILER_GCC  1
 
 #ifdef _MSC_VER
-#  define ARCEMU_COMPILER COMPILER_MICROSOFT
+	#define ARCEMU_COMPILER COMPILER_MSVC
 #elif defined( __GNUC__ )
-#  define ARCEMU_COMPILER COMPILER_GNU
+	#define ARCEMU_COMPILER COMPILER_GCC
 #else
-#  pragma error "FATAL ERROR: Unknown compiler."
+	#error "Unknown compiler"
 #endif
 
-#if ARCEMU_COMPILER == COMPILER_MICROSOFT
+#if ARCEMU_COMPILER == COMPILER_MSVC
 	#define ARCEMU_FORCEINLINE __forceinline
 #else
 	#define ARCEMU_FORCEINLINE inline
@@ -259,7 +259,7 @@ enum MsTimeVariables
 #endif
 
 #ifndef HAS_CXX0X
-#if ARCEMU_COMPILER == COMPILER_MICROSOFT && _MSC_VER > 1600
+#if ARCEMU_COMPILER == COMPILER_MSVC && _MSC_VER > 1600
 #define HAS_CXX0X
 #endif
 #endif
@@ -273,7 +273,7 @@ enum MsTimeVariables
 #define HM_NAMESPACE ::std
 #define HM_HASH_MAP unordered_map
 #define HM_HASH_SET unordered_set
-#elif ARCEMU_COMPILER == COMPILER_GNU && __GNUC__ >= 3
+#elif ARCEMU_COMPILER == COMPILER_GCC && __GNUC__ >= 3
 #include <ext/hash_map>
 #include <ext/hash_set>
 #define HM_NAMESPACE __gnu_cxx
@@ -308,28 +308,30 @@ namespace __gnu_cxx
 #endif
 
 /* Use correct types for x64 platforms, too */
-#if ARCEMU_COMPILER != COMPILER_GNU
-typedef signed __int64 int64;
-typedef signed __int32 int32;
-typedef signed __int16 int16;
-typedef signed __int8 int8;
+#if ARCEMU_COMPILER == COMPILER_MSVC
+	typedef signed __int64 int64;
+	typedef signed __int32 int32;
+	typedef signed __int16 int16;
+	typedef signed __int8 int8;
+	
+	typedef unsigned __int64 uint64;
+	typedef unsigned __int32 uint32;
+	typedef unsigned __int16 uint16;
+	typedef unsigned __int8 uint8;
 
-typedef unsigned __int64 uint64;
-typedef unsigned __int32 uint32;
-typedef unsigned __int16 uint16;
-typedef unsigned __int8 uint8;
+#elif ARCEMU_COMPILER == COMPILER_GCC
+	typedef int64_t int64;
+	typedef int32_t int32;
+	typedef int16_t int16;
+	typedef int8_t int8;
+	
+	typedef uint64_t uint64;
+	typedef uint32_t uint32;
+	typedef uint16_t uint16;
+	typedef uint8_t uint8;
+	//typedef uint32_t DWORD;
 #else
-
-typedef int64_t int64;
-typedef int32_t int32;
-typedef int16_t int16;
-typedef int8_t int8;
-typedef uint64_t uint64;
-typedef uint32_t uint32;
-typedef uint16_t uint16;
-typedef uint8_t uint8;
-//typedef uint32_t DWORD;
-
+	#error "Unknown compiler"
 #endif
 
 /*
@@ -369,7 +371,7 @@ Scripting system exports/imports
 
 #include "Util/MersenneTwister.h"
 
-#if ARCEMU_COMPILER == COMPILER_MICROSOFT
+#if ARCEMU_COMPILER == COMPILER_MSVC
 
 #define I64FMT "%016I64X"
 #define I64FMTD "%I64u"
@@ -394,12 +396,12 @@ Scripting system exports/imports
 // fix buggy MSVC's for variable scoping to be reliable =S
 #define for if(true) for
 
-#if ARCEMU_COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
+#if ARCEMU_COMPILER == COMPILER_MSVC && _MSC_VER >= 1400
 #pragma float_control(push)
 #pragma float_control(precise, on)
 #endif
 
-#if ARCEMU_COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1400
+#if ARCEMU_COMPILER == COMPILER_MSVC && _MSC_VER >= 1400
 #pragma float_control(pop)
 #endif
 
