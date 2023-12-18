@@ -135,22 +135,20 @@ enum MsTimeVariables
 #define ARCEMU_INLINE inline
 
 #if ARCEMU_PLATFORM == PLATFORM_UNIX || ARCEMU_PLATFORM == PLATFORM_APPLE
-#ifdef HAVE_DARWIN
-#define PLATFORM_TEXT "MacOSX"
-#define UNIX_FLAVOUR UNIX_FLAVOUR_OSX
-#else
-#ifdef USE_KQUEUE
-#define PLATFORM_TEXT "FreeBSD"
-#define UNIX_FLAVOUR UNIX_FLAVOUR_BSD
-#else
-#define PLATFORM_TEXT "Linux"
-#define UNIX_FLAVOUR UNIX_FLAVOUR_LINUX
-#endif
-#endif
-#endif
-
-#if ARCEMU_PLATFORM == PLATFORM_WIN32
-#define PLATFORM_TEXT "Win32"
+	#ifdef HAVE_DARWIN
+		#define PLATFORM_TEXT "MacOS"
+		#define UNIX_FLAVOUR UNIX_FLAVOUR_OSX
+	#else
+		#ifdef USE_KQUEUE
+			#define PLATFORM_TEXT "BSD"
+			#define UNIX_FLAVOUR UNIX_FLAVOUR_BSD
+		#else
+			#define PLATFORM_TEXT "Linux"
+			#define UNIX_FLAVOUR UNIX_FLAVOUR_LINUX
+		#endif
+	#endif
+#elif ARCEMU_PLATFORM == PLATFORM_WIN32
+	#define PLATFORM_TEXT "Windows"
 #endif
 
 #ifdef _DEBUG
