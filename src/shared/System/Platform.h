@@ -226,7 +226,7 @@ enum MsTimeVariables
 #include <cstdlib>
 //#include <iostream>
 
-#if defined ( __GNUC__ )
+#if ARCEMU_COMPILER == COMPILER_GCC
 #	define LIKELY( _x ) \
 		__builtin_expect( ( _x ), 1 )
 #	define UNLIKELY( _x ) \
@@ -238,9 +238,9 @@ enum MsTimeVariables
 		_x
 #endif
 
-#ifndef WIN32
+#if ARCEMU_PLATFORM != PLATFORM_WINDOWS
 #ifndef X64
-#  if defined (__GNUC__)
+#  if ARCEMU_COMPILER == COMPILER_GCC
 #	if ARCEMU_COMPILER_VER >= 30400
 #         ifdef HAVE_DARWIN
 #	      define __fastcall
@@ -405,11 +405,11 @@ Scripting system exports/imports
 #pragma float_control(pop)
 #endif
 
-#ifndef WIN32
+#if ARCEMU_PLATFORM != PLATFORM_WINDOWS
 #include <sys/timeb.h>
 #endif
 
-#ifndef WIN32
+#if ARCEMU_PLATFORM != PLATFORM_WINDOWS
 #define FALSE   0
 #define TRUE	1
 #endif
