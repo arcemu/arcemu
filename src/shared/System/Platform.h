@@ -114,8 +114,15 @@ enum MsTimeVariables
 
 #ifdef _MSC_VER
 	#define ARCEMU_COMPILER COMPILER_MSVC
+	#define ARCEMU_COMPILER_VER _MSC_VER
 #elif defined( __GNUC__ )
 	#define ARCEMU_COMPILER COMPILER_GCC
+
+	#define GCC_VERSION (__GNUC__ * 10000 \
+					   + __GNUC_MINOR__ * 100 \
+					   + __GNUC_PATCHLEVEL__)
+
+	#define ARCEMU_COMPILER_VER GCC_VERSION
 #else
 	#error "Unknown compiler"
 #endif
@@ -231,17 +238,10 @@ enum MsTimeVariables
 		_x
 #endif
 
-#if defined (__GNUC__)
-#  define GCC_VERSION (__GNUC__ * 10000 \
-					   + __GNUC_MINOR__ * 100 \
-					   + __GNUC_PATCHLEVEL__)
-#endif
-
-
 #ifndef WIN32
 #ifndef X64
 #  if defined (__GNUC__)
-#	if GCC_VERSION >= 30400
+#	if ARCEMU_COMPILER_VER >= 30400
 #         ifdef HAVE_DARWIN
 #	      define __fastcall
 #         else
@@ -259,7 +259,7 @@ enum MsTimeVariables
 #endif
 
 #ifndef HAS_CXX0X
-#if ARCEMU_COMPILER == COMPILER_MSVC && _MSC_VER > 1600
+#if ARCEMU_COMPILER == COMPILER_MSVC && ARCEMU_COMPILER_VER > 1600
 #define HAS_CXX0X
 #endif
 #endif
@@ -273,7 +273,7 @@ enum MsTimeVariables
 #define HM_NAMESPACE ::std
 #define HM_HASH_MAP unordered_map
 #define HM_HASH_SET unordered_set
-#elif ARCEMU_COMPILER == COMPILER_GCC && __GNUC__ >= 3
+#elif ARCEMU_COMPILER == COMPILER_GCC && ARCEMU_COMPILER_VER >= 30400
 #include <ext/hash_map>
 #include <ext/hash_set>
 #define HM_NAMESPACE __gnu_cxx
@@ -338,7 +338,7 @@ namespace __gnu_cxx
 Scripting system exports/imports
 */
 
-#ifdef WIN32
+#if ARCEMU_COMPILER == COMPILER_MSVC
 #ifndef SCRIPTLIB
 #define SERVER_DECL __declspec(dllexport)
 #define SCRIPT_DECL __declspec(dllimport)
@@ -347,7 +347,7 @@ Scripting system exports/imports
 #define SCRIPT_DECL __declspec(dllexport)
 #endif
 #define DECL_LOCAL
-#elif defined __GNUC__ && __GNUC__ >= 4
+#elif ARCEMU_COMPILER == COMPILER_GCC && ARCEMU_COMPILER_VER >= 40000
 #define SERVER_DECL __attribute__((visibility ("default")))
 #define SCRIPT_DECL __attribute__((visibility ("default")))
 #define DECL_LOCAL __attribute__((visibility ("hidden")))
@@ -396,12 +396,12 @@ Scripting system exports/imports
 // fix buggy MSVC's for variable scoping to be reliable =S
 #define for if(true) for
 
-#if ARCEMU_COMPILER == COMPILER_MSVC && _MSC_VER >= 1400
+#if ARCEMU_COMPILER == COMPILER_MSVC && ARCEMU_COMPILER_VER >= 1400
 #pragma float_control(push)
 #pragma float_control(precise, on)
 #endif
 
-#if ARCEMU_COMPILER == COMPILER_MSVC && _MSC_VER >= 1400
+#if ARCEMU_COMPILER == COMPILER_MSVC && ARCEMU_COMPILER_VER >= 1400
 #pragma float_control(pop)
 #endif
 
