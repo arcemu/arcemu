@@ -36,7 +36,7 @@ void OutputCrashLogLine(const char* format, ...)
 	va_end(ap);
 }
 
-#ifdef WIN32
+#if ARCEMU_PLATFORM == PLATFORM_WINDOWS
 
 #include "Container/CircularQueue.h"
 Mutex m_crashLock;
@@ -61,30 +61,7 @@ void StartCrashHandler()
 	// just piss us off. :P
 
 	// Check for a debugger.
-#ifndef X64
-	DWORD code;
-
-	__asm
-	{
-		MOV EAX, FS:[0x18]
-		MOV EAX, DWORD PTR [EAX + 0x30]
-		MOV ECX, DWORD PTR [EAX]
-		MOV [DWORD PTR code], ECX
-	}
-
-	if(code & 0x00010000)
-	{
-		// We got a debugger. We'll tell it to not exit on a crash but instead break into debugger.
-		ON_CRASH_BREAK_DEBUGGER = true;
-	}
-	else
-	{
-		// No debugger. On crash, we'll call OnCrash to save etc.
-		ON_CRASH_BREAK_DEBUGGER = false;
-	}
-#else
 	ON_CRASH_BREAK_DEBUGGER = (IsDebuggerPresent() == TRUE) ? true : false;
-#endif
 
 	if(!ON_CRASH_BREAK_DEBUGGER)
 	{

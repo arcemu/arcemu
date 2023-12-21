@@ -163,24 +163,17 @@ enum MsTimeVariables
 #define CONFIG "Release"
 #endif
 
-#ifdef X64
-    #if defined( __riscv )
-		#define ARCEMU_ARCH_TXT "riscv64"
-    #elif defined( __x86_64__ ) || defined( _M_X64 )
-		#define ARCEMU_ARCH_TXT "amd64"
-	#else
-		#error "Unknown architecture"
-    #endif
+#if defined( __riscv ) && __riscv_xlen == 64
+	#define ARCEMU_ARCH_TXT "riscv64"
+#elif defined( __x86_64__ ) || defined( _M_X64 )
+	#define ARCEMU_ARCH_TXT "amd64"
+#elif defined( __riscv ) && __riscv_xlen == 32
+	#error "32 bit RISC V architecture is not supported"
+#elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
+	#error "32 bit x86 architecure is not supported"
 #else
-	#if defined( __riscv )
-		#error "32 bit RISC V architecture is not supported"
-	#elif defined( i386 ) || defined( __i386__ ) || defined( __i386 ) || defined( _M_IX86 )
-		#error "32 bit x86 architecure is not supported"
-	#else
-		#error "Unsupported unknown architecture"
-	#endif
+	#error "Unknown architecture"
 #endif
-
 
 #if ARCEMU_PLATFORM == PLATFORM_WINDOWS
 #define STRCASECMP stricmp
@@ -238,25 +231,7 @@ enum MsTimeVariables
 		_x
 #endif
 
-#if ARCEMU_PLATFORM != PLATFORM_WINDOWS
-#ifndef X64
-#  if ARCEMU_COMPILER == COMPILER_GCC
-#	if ARCEMU_COMPILER_VER >= 30400
-#         ifdef HAVE_DARWIN
-#	      define __fastcall
-#         else
-#    	      define __fastcall __attribute__((__fastcall__))
-#         endif
-#	else
-#	  define __fastcall __attribute__((__regparm__(3)))
-#	endif
-#  else
-#	define __fastcall __attribute__((__fastcall__))
-#  endif
-#else
 #define __fastcall
-#endif
-#endif
 
 #ifndef HAS_CXX0X
 #if ARCEMU_COMPILER == COMPILER_MSVC && ARCEMU_COMPILER_VER > 1600
