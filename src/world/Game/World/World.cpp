@@ -1106,34 +1106,16 @@ void TaskList::spawn()
 	running = true;
 	thread_count.SetVal(0);
 
-	uint32 threadcount;
+	uint32 threadcount = 1;
+
 	if(Config.MainConfig.GetBoolDefault("Startup", "EnableMultithreadedLoading", true))
 	{
-		// get processor count
-#ifndef WIN32
-#if UNIX_FLAVOUR == UNIX_FLAVOUR_LINUX
-#ifdef X64
-		threadcount = 2;
-#else
-		long affmask;
-		sched_getaffinity(0, 4, (cpu_set_t*)&affmask);
-		threadcount = (BitCount8(affmask)) * 2;
-		if(threadcount > 8) threadcount = 8;
-		else if(threadcount <= 0) threadcount = 1;
-#endif
-#else
-		threadcount = 2;
-#endif
-#else
-		SYSTEM_INFO s;
-		GetSystemInfo(&s);
-		threadcount = s.dwNumberOfProcessors * 2;
-		if(threadcount > 8)
+		threadcount = static_cast< uint32 >( Arcemu::SysInfo::GetCPUCount() * 2 );
+		if( threadcount > 8 )
+		{
 			threadcount = 8;
-#endif
+		}
 	}
-	else
-		threadcount = 1;
 
 	Log.Success("World", "Beginning %s server startup with %u threads.", (threadcount == 1) ? "progressive" : "parallel", threadcount);
 
