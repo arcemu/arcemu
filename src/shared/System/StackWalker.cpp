@@ -23,6 +23,8 @@
  *  2005-08-05   v5	- Removed most Lint (http://www.gimpel.com/) errors... thanks to Okko Willeboordse!
  *
  **********************************************************************/
+#if defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64)
+
 #define NOMINMAX
 
 #include <windows.h>
@@ -1233,3 +1235,5 @@ void StackWalker::OnOutput(LPCSTR buffer)
 {
 	OutputDebugStringA(buffer);
 }
+
+#endif

@@ -36,7 +36,7 @@ void OutputCrashLogLine(const char* format, ...)
 	va_end(ap);
 }
 
-#if ARCEMU_PLATFORM == PLATFORM_WINDOWS
+#if (ARCEMU_PLATFORM == PLATFORM_WINDOWS) && (ARCEMU_ARCH == ARCEMU_ARCH_AMD64)
 
 #include "Container/CircularQueue.h"
 Mutex m_crashLock;

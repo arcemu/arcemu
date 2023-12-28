@@ -12,6 +12,8 @@
 // so we need not to check the version (because we only support _MSC_VER >= 1100)!
 #pragma once
 
+#if defined(_M_IX86) || defined(_M_X64) || defined(_M_IA64)
+
 //#include <windows.h>
 
 // special defines for VC5/6 (if no actual PSDK is installed):
@@ -186,4 +188,6 @@ class __declspec(dllexport) StackWalker
 	c.ContextFlags = contextFlags; \
 	RtlCaptureContext(&c); \
 } while(0);
+#endif
+
 #endif

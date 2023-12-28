@@ -31,7 +31,7 @@ void OutputCrashLogLine(const char* format, ...);
 
 #include "System/Platform.h"
 
-#if ARCEMU_PLATFORM == PLATFORM_WINDOWS
+#if (ARCEMU_PLATFORM == PLATFORM_WINDOWS) && (ARCEMU_ARCH == ARCEMU_ARCH_AMD64)
 
 #include <DbgHelp.h>
 #include "StackWalker.h"
