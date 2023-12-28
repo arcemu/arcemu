@@ -83,7 +83,9 @@ int main(int argc, char** argv)
 			printf("setrlimit failed. Server may not save core.dump files.\n");
 	}
 #else
-	setCrashHandlerFunction( OnCrash );
+	#if ARCEMU_ARCH == ARCEMU_ARCH_AMD64
+		setCrashHandlerFunction( OnCrash );
+	#endif
 #endif
 
 	new LogonServer;
