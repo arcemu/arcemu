@@ -163,11 +163,18 @@ enum MsTimeVariables
 #define CONFIG "Release"
 #endif
 
+#define ARCEMU_ARCH_AMD64   0
+#define ARCEMU_ARCH_RISCV64 1
+#define ARCEMU_ARCH_AARCH64 2
+
 #if defined( __riscv ) && __riscv_xlen == 64
+	#define ARCEMU_ARCH ARCEMU_ARCH_RISCV64
 	#define ARCEMU_ARCH_TXT "riscv64"
 #elif defined( __x86_64__ ) || defined( _M_X64 )
+	#define ARCEMU_ARCH ARCEMU_ARCH_AMD64
 	#define ARCEMU_ARCH_TXT "amd64"
 #elif defined( __aarch64__ ) || defined( _M_ARM64 )
+	#define ARCEMU_ARCH ARCEMU_ARCH_AARCH64
 	#define ARCEMU_ARCH_TXT "aarch64"
 #elif defined( __riscv ) && __riscv_xlen == 32
 	#error "32 bit RISC V architecture is not supported"
