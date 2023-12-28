@@ -1678,30 +1678,44 @@ std::string System::currentDateString() {
 // VC on Intel
 void System::cpuid(CPUIDFunction func, uint32& areg, uint32& breg, uint32& creg, uint32& dreg) {
 #if !defined(G3D_64BIT)
-    // Can't copy from assembler direct to a function argument (which is on the stack) in VC.
-    uint32 a,b,c,d;
+	#if defined(_M_IX86)
+		// Can't copy from assembler direct to a function argument (which is on the stack) in VC.
+		uint32 a,b,c,d;
 
-    // Intel assembler syntax
-    __asm {
-        mov	  eax, func      //  eax <- func
-        mov   ecx, 0
-        cpuid              
-        mov   a, eax   
-        mov   b, ebx   
-        mov   c, ecx   
-        mov   d, edx
-    }
-    areg = a;
-    breg = b; 
-    creg = c;
-    dreg = d;
+		// Intel assembler syntax
+		__asm {
+			mov	  eax, func      //  eax <- func
+			mov   ecx, 0
+			cpuid              
+			mov   a, eax   
+			mov   b, ebx   
+			mov   c, ecx   
+			mov   d, edx
+		}
+		areg = a;
+		breg = b; 
+		creg = c;
+		dreg = d;
+	#else
+		areg = 0;
+		breg = 0;
+		creg = 0;
+		dreg = 0;
+	#endif
 #else
-    int CPUInfo[4];
-    __cpuid(CPUInfo, func);
-    memcpy(&areg, &CPUInfo[0], 4);
-    memcpy(&breg, &CPUInfo[1], 4);
-    memcpy(&creg, &CPUInfo[2], 4);
-    memcpy(&dreg, &CPUInfo[3], 4);
+	#if defined(_M_X64)
+		int CPUInfo[4];
+		__cpuid(CPUInfo, func);
+		memcpy(&areg, &CPUInfo[0], 4);
+		memcpy(&breg, &CPUInfo[1], 4);
+		memcpy(&creg, &CPUInfo[2], 4);
+		memcpy(&dreg, &CPUInfo[3], 4);
+	#else
+		areg = 0;
+		breg = 0;
+		creg = 0;
+		dreg = 0;
+	#endif
 #endif
 }
 
