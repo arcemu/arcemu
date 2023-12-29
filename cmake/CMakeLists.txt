@@ -201,11 +201,8 @@ SET( EXTRA_LIBS_PATH)
 
 if(WIN32)
 	SET( EXTRA_LIBS libcrypto64MT.lib libcurl_imp.lib )
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		SET(EXTRA_LIBS ${EXTRA_LIBS} libmysql_debug_x64.lib )
-	else()
-		SET( EXTRA_LIBS ${EXTRA_LIBS} libmysql_release_x64.lib )
-	endif()
+	SET( EXTRA_LIBS ${EXTRA_LIBS} libmysql.lib )
+
 	#Needed for socket stuff and crash handler
 	SET(EXTRA_LIBS ${EXTRA_LIBS} ws2_32.lib dbghelp.lib )
 elseif(APPLE)
