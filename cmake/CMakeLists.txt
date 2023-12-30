@@ -200,7 +200,7 @@ SET( EXTRA_LIBS)
 SET( EXTRA_LIBS_PATH)
 
 if(WIN32)
-	SET( EXTRA_LIBS libcrypto64MT.lib libcurl_imp.lib )
+	SET( EXTRA_LIBS libcrypto.lib libcurl_imp.lib )
 	SET( EXTRA_LIBS ${EXTRA_LIBS} libmysql.lib )
 
 	#Needed for socket stuff and crash handler
