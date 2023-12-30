@@ -129,7 +129,6 @@ foreach(src IN ITEMS ${headers} )
 endforeach(src)
 
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
-link_directories( ${DEPENDENCY_DLLS64} )
 link_directories( ${DEPENDENCY_LIBS} )
 
 ADD_LIBRARY( ${PROJECT_NAME} STATIC ${SRCS} ${HEADERS} )

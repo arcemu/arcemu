@@ -38,7 +38,6 @@ endforeach(src)
 
 include_directories( ${GLOBAL_INCLUDE_DIRS} )
 link_directories( ${EXTRA_LIBS_PATH} ${DEPENDENCY_LIBS} )
-link_directories( ${DEPENDENCY_DLLS64} )
 
 include(PCHSupport)
 
