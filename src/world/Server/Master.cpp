@@ -755,7 +755,7 @@ void OnCrash(bool Terminate)
 
 Master::Master()
 {
-#ifdef WIN32
+#if defined(WIN32) && ARCEMU_ARCH == ARCEMU_ARCH_AMD64
 	setCrashHandlerFunction( OnCrash );
 #endif
 }

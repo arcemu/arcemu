@@ -61,7 +61,9 @@ int win32_main(int argc, char** argv)
 {
 	Arcemu::Shared::Util::SetThreadName("Main Thread");
 
+#if ARCEMU_ARCH == ARCEMU_ARCH_AMD64
 	StartCrashHandler();
+#endif
 
 	//Andy: windows only, helps fight heap allocation on allocations lower then 16KB
 	unsigned long arg = 2;
