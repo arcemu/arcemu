@@ -1,0 +1,70 @@
+This document contains instructions for building Arcemu Windows dependency libs and dlls.
+
+====Preparation====
+
+* Download and install Strawberry Perl from here: https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_5380_5361/strawberry-perl-5.38.0.1-64bit.msi
+* Build Arcemu's zlib project
+
+====OpenSSL 1.1.1w====
+
+* Download source from: https://www.openssl.org/source/openssl-1.1.1w.tar.gz
+* Extract it somewhere
+
+Build for amd64:
+* Open command prompt
+* Run c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat
+* Go to the folder where you extracted
+* Run perl Configure VC-WIN64A
+* Run nmake
+
+Build for aarch64/ARM64:
+* Open command prompt
+* Run c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsamd64_arm64.bat
+* Go to the folder where you extracted
+* Run perl Configure VC-WIN64-ARM
+* Run nmake
+
+The output files will be in the root of the folder.
+
+====cUrl 7.60====
+
+* Download source from: https://curl.se/download/curl-7.60.0.zip
+* Extract somewhere, then create a build and bin directory (usual CMake directories)
+* Open CMake and set the source and build directory
+* Configure
+* Set the following variables based on the examples provided:
+
+LIB_EAY_DEBUG C:/arcemu/src/dep/lib/amd64/libcrypto.lib
+LIB_EAY_RELEASE C:/arcemu/src/dep/lib/amd64/libcrypto.lib
+OPENSSL_INCLUDE_DIR C:/arcemu/src/dep/include
+SSL_EAY_DEBUG C:/arcemu/src/dep/lib/amd64/libssl.lib
+SSL_EAY_RELEASE C:/arcemu/src/dep/lib/amd64/libssl.lib
+ZLIB_INCLUDE_DIR C:/arcemu/src/dep/include/zlib
+ZLIB_LIBRARY_DEBUG C:/arcemu/build/zlib/Release/zlib.lib
+ZLIB_LIBRARY_RELEASE C:/arcemu/build/zlib/Release/zlib.lib
+
+Obviously when building for aarch64/ARM64 the amd64 in the paths should be replaced with aarch64.
+
+* Configure again
+* Generate
+* Open project in the build directory, set to Release version, and build it
+
+The output will be in the build directory: \lib\Release
+
+
+====MySQL Connector 6.1.11.0====
+
+* Download source from: https://downloads.mysql.com/archives/get/p/19/file/mysql-connector-c-6.1.11-src.zip
+* Extract somewhere
+* Open CMake and set the source and build directory
+* Configure and generate
+* Open the solution in the build directory, set to  release version, and build it
+* Build the install project
+* Output will be in the install target directory
+
+Special note for aarch64/ARM64:
+* First build for amd64
+* The extractor will fail to run so you have to get the mysqld_error.h from the amd64 build, and copy to libmysql\build\include in the build directory.
+* Build the libmysql project. The output will be in the build directory.
+
+
