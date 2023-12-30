@@ -139,7 +139,7 @@ WIN32 is still required for the locale module.
    have MS_WINI64 set for those targets, otherwise MS_WINX64
 */
 
-#if defined _M_X64 || defined _M_AMD64 || defined _M_IA64
+#if defined _M_X64 || defined _M_AMD64 || defined _M_IA64 || defined _M_ARM64
 	#ifndef MS_WIN64
 		#define MS_WIN64
 	#endif
@@ -153,6 +153,9 @@ WIN32 is still required for the locale module.
 #elif defined(_M_X64) || defined(_M_AMD64)
 #define COMPILER _Py_PASTE_VERSION("64 bit (AMD64)")
 #define MS_WINX64
+#elif defined(_M_ARM64)
+#define COMPILER _Py_PASTE_VERSION("64 bit (ARM64)")
+#define MS_WINARM64
 #else
 #define COMPILER _Py_PASTE_VERSION("64 bit (Unknown)")
 #endif
