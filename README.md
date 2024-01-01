@@ -5,13 +5,17 @@ This project is mostly abandoned since the end of 2014. It is only developed and
 
 ## Supported platforms
 
-CPU Architecture  | Linux | Windows
+CPU Architecture  | Linux (GCC) | Windows (Visual Studio)
 :-- | :-- | :---
 amd64 | :heavy_check_mark: | :heavy_check_mark:
 riscv64 | :heavy_check_mark: | :x:
 aarch64 | :heavy_check_mark: | :heavy_check_mark:
 
 Note: The project also has code for other platforms like Apple, and BSD, but they may not be up to date, and are not "officially" supported.
+
+Note: The Linux build is officially tested with various versions (16.04 and later) of Ubuntu Server LTS.
+
+Note: The Windows build is officially tested with Windows 7 (VS2010) and Windows 10 (VS2017).
 
 ## Build Status
 
@@ -64,5 +68,4 @@ sudo su - arcemu
 
 * [Docker hub](https://hub.docker.com/u/arcemu)
 * [Community wiki](https://arcemu.fandom.com/wiki/Arcemu_Wiki)
-
 
