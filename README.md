@@ -66,5 +66,5 @@ vagrant ssh
 ## Links
 
 * [Docker hub](https://hub.docker.com/u/arcemu)
-* [Community wiki](https://arcemu.fandom.com/wiki/Arcemu_Wiki)
-
+* [Archived old wiki](https://web.archive.org/web/20180707125944/http://www.arcemu.org:80/wiki/Main_Page)
+* [Work in progress community wiki](https://arcemu.fandom.com/wiki/Arcemu_Wiki)
