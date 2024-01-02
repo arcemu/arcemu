@@ -1047,7 +1047,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket & recv_data)
 
 	// Check death clock before resurrect they must wait for release to complete
 	// cebernic: changes for better logic
-	if(time(NULL) < pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME)
+	if(UNIXTIME < pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME)
 	{
 		WorldPacket data(SMSG_RESURRECT_FAILED, 4);
 		data << uint32(1);
