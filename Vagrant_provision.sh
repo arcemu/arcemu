@@ -1,7 +1,3 @@
-# Create an arcemu user with password arcemu
-useradd -m -s /bin/bash arcemu
-echo "arcemu:arcemu" | chpasswd
-
 # Set up mysql server root password before installing
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
@@ -27,24 +23,24 @@ cat db.sql | mysql -u root --password=root
 rm db.sql
 	 
 # Clone source from github. NOTE: This can take a long time.
-mkdir -p /home/arcemu/arcemu
-mkdir -p /home/arcemu/arcemu/src
-cp -r /vagrant/.git /home/arcemu/arcemu/src/
-cd /home/arcemu/arcemu/src && git reset --hard HEAD
+mkdir -p /home/vagrant/arcemu
+mkdir -p /home/vagrant/arcemu/src
+cp -r /vagrant/.git /home/vagrant/arcemu/src/
+cd /home/vagrant/arcemu/src && git reset --hard HEAD
 
 # Load database schemas
-cat /home/arcemu/arcemu/src/sql/logon_structure.sql | mysql -u arcemu --password=arcemu arcemu_logon
-cat /home/arcemu/arcemu/src/sql/world_structure.sql | mysql -u arcemu --password=arcemu arcemu_world
-cat /home/arcemu/arcemu/src/sql/character_structure.sql | mysql -u arcemu --password=arcemu arcemu_character
+cat /home/vagrant/arcemu/src/sql/logon_structure.sql | mysql -u arcemu --password=arcemu arcemu_logon
+cat /home/vagrant/arcemu/src/sql/world_structure.sql | mysql -u arcemu --password=arcemu arcemu_world
+cat /home/vagrant/arcemu/src/sql/character_structure.sql | mysql -u arcemu --password=arcemu arcemu_character
 
 # Create an admin account, admin:admin
 echo "INSERT INTO accounts VALUES (1,'admin','','8301316d0d8448a34fa6d0c6bf1cbfa2b4a1a93a','az',0,NOW(),'','admin@admin',24,'enUS',0,'');" | mysql -u arcemu --password=arcemu arcemu_logon
 	 
 # Configure build
-mkdir /home/arcemu/arcemu/bin
-mkdir /home/arcemu/arcemu/build
-cd /home/arcemu/arcemu/build
-cmake -DCMAKE_INSTALL_PREFIX=/home/arcemu/arcemu/bin -DCMAKE_BUILD_TYPE=Debug ../src/cmake 2>&1
+mkdir /home/vagrant/arcemu/bin
+mkdir /home/vagrant/arcemu/build
+cd /home/vagrant/arcemu/build
+cmake -DCMAKE_INSTALL_PREFIX=/home/vagrant/arcemu/bin -DCMAKE_BUILD_TYPE=Debug ../src/cmake 2>&1
 
 # Get the number of virtual CPUs
 VCPUS=`cat /proc/cpuinfo | grep -P "^processor" | wc -l`
@@ -56,13 +52,13 @@ make -j$((VCPUS+1))
 make install
 
 # Create some directories
-mkdir -p /home/arcemu/arcemu/bin/DBC
-mkdir -p /home/arcemu/arcemu/bin/maps
-mkdir -p /home/arcemu/arcemu/bin/etc
-mkdir -p /home/arcemu/arcemu/bin/log
+mkdir -p /home/vagrant/arcemu/bin/DBC
+mkdir -p /home/vagrant/arcemu/bin/maps
+mkdir -p /home/vagrant/arcemu/bin/etc
+mkdir -p /home/vagrant/arcemu/bin/log
 
 # Copy config files
-cp -r /home/arcemu/arcemu/src/configs/* /home/arcemu/arcemu/bin/etc
+cp -r /home/vagrant/arcemu/src/configs/* /home/vagrant/arcemu/bin/etc
 
-# Make everything owned by the arcemu user
-chown -R arcemu:arcemu /home/arcemu
+# Make everything owned by the vagrant user
+chown -R vagrant:vagrant /home/vagrant
