@@ -55,11 +55,11 @@ make install
 mkdir -p /home/vagrant/arcemu/bin/DBC
 mkdir -p /home/vagrant/arcemu/bin/maps
 mkdir -p /home/vagrant/arcemu/bin/vmaps
-mkdir -p /home/vagrant/arcemu/bin/etc
+mkdir -p /home/vagrant/arcemu/bin/configs
 mkdir -p /home/vagrant/arcemu/bin/log
 
 # Copy config files
-cp -r /home/vagrant/arcemu/src/configs/* /home/vagrant/arcemu/bin/etc
+cp -r /home/vagrant/arcemu/src/configs/* /home/vagrant/arcemu/bin/configs
 
 # Make everything owned by the vagrant user
 chown -R vagrant:vagrant /home/vagrant
