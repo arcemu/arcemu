@@ -1,6 +1,7 @@
-project(Arcemu)
-
 cmake_minimum_required(VERSION 3.5.1)
+cmake_policy(VERSION 2.8)
+
+project(Arcemu)
 
 MACRO( DETECT_ARCEMU_TARGET_ARCH )
 	SET( IS_64BIT FALSE )
