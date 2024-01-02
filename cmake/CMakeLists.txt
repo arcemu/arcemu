@@ -122,6 +122,17 @@ SET(VISUALSTUDIO_COMPILERHEAPLIMIT 400 CACHE STRING "Visual Studio compiler heap
 
 include(CompilerVersion)
 if( CMAKE_GENERATOR MATCHES Unix* )
+	IF( NOT CMAKE_BUILD_TYPE )
+	    MESSAGE("Setting CMAKE_BUILD_TYPE to Debug.")
+	    SET(CMAKE_BUILD_TYPE "Debug")
+	ENDIF()
+
+	MESSAGE("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+
+	IF( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+	    ADD_DEFINITIONS(-DARCEMU_DEBUG_BUILD)
+	ENDIF()
+
 	add_definitions(-Wno-deprecated)
 	#Extract Revision
 	execute_process(WORKING_DIRECTORY ${ROOT_PATH} COMMAND sh git_version.sh )

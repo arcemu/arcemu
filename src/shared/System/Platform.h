@@ -157,10 +157,10 @@ enum MsTimeVariables
 	#define PLATFORM_TEXT "Windows"
 #endif
 
-#ifdef _DEBUG
-#define CONFIG "Debug"
+#if defined(_DEBUG) || defined(ARCEMU_DEBUG_BUILD)
+    #define CONFIG "Debug"
 #else
-#define CONFIG "Release"
+    #define CONFIG "Release"
 #endif
 
 #define ARCEMU_ARCH_AMD64   0
