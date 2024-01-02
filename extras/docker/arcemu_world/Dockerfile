@@ -23,7 +23,7 @@ FROM ubuntu:bionic
 RUN apt-get update
 RUN apt-get install -y libssl1.0.0 libmysqlclient20
 RUN mkdir -p /srv/arcemu_world
-RUN mkdir -p /srv/arcemu_world/etc
+RUN mkdir -p /srv/arcemu_world/configs
 RUN mkdir -p /srv/arcemu_world/plugins
 RUN mkdir -p /srv/arcemu_world/DBC
 RUN mkdir -p /srv/arcemu_world/maps
