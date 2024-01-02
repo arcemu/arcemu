@@ -54,6 +54,7 @@ make install
 # Create some directories
 mkdir -p /home/vagrant/arcemu/bin/DBC
 mkdir -p /home/vagrant/arcemu/bin/maps
+mkdir -p /home/vagrant/arcemu/bin/vmaps
 mkdir -p /home/vagrant/arcemu/bin/etc
 mkdir -p /home/vagrant/arcemu/bin/log
 
