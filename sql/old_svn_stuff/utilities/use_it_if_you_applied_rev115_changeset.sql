@@ -1,1 +1,0 @@
-alter table `creature_spawns` drop column `mount`;

@@ -1,1 +1,0 @@
-Alter table `ai_threattospellid` add column `modcoef` FLOAT default '1' not null after `mod`;

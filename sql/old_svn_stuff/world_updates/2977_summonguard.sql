@@ -1,1 +1,0 @@
-alter table `creature_proto` add column `summonguard` int UNSIGNED DEFAULT '0' NOT NULL after `guardtype`;

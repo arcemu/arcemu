@@ -1,1 +1,0 @@
-update accounts set encrypted_password = SHA(CONCAT(UPPER(login),":",UPPER(password)));

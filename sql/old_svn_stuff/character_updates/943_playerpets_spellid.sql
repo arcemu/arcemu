@@ -1,1 +1,0 @@
-ALTER TABLE `playerpets` ADD COLUMN `spellid` int4 UNSIGNED NOT NULL DEFAULT 0;

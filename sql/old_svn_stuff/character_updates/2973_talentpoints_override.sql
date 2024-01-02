@@ -1,1 +1,0 @@
-alter table `characters` drop column `available_talent_points`, add column `talentpoint_override` longtext NOT NULL after `currentspec`;
