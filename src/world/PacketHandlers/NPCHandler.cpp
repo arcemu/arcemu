@@ -430,9 +430,16 @@ void WorldSession::HandleGossipHelloOpcode(WorldPacket & recv_data)
 
 		LOG_DEBUG("WORLD: Received CMSG_GOSSIP_HELLO from %u", Arcemu::Util::GUID_LOPART(guid));
 
-		Arcemu::Gossip::Script* script = Arcemu::Gossip::Script::GetInterface(qst_giver);
-		if(script != NULL)
-			script->OnHello(qst_giver, GetPlayer());
+		if( qst_giver->isSpiritHealer() && sWorld.m_hardcoreMode )
+		{
+			_player->BroadcastMessage( MSG_HC_NO_RESURRECT );
+		}
+		else
+		{
+			Arcemu::Gossip::Script* script = Arcemu::Gossip::Script::GetInterface(qst_giver);
+			if(script != NULL)
+				script->OnHello(qst_giver, GetPlayer());
+		}
 	}
 }
 
@@ -490,6 +497,12 @@ void WorldSession::HandleSpiritHealerActivateOpcode(WorldPacket & recv_data)
 
 	if(!_player->IsDead())
 		return;
+
+	if( sWorld.m_hardcoreMode )
+	{
+		_player->BroadcastMessage( MSG_HC_NO_RESURRECT );
+		return;
+	}
 
 	GetPlayer()->DeathDurabilityLoss(0.25);
 	GetPlayer()->ResurrectPlayer();

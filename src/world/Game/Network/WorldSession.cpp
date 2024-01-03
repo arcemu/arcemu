@@ -349,7 +349,7 @@ void WorldSession::LogoutPlayer(bool Save)
 			BattlegroundManager.RemovePlayerFromQueues(_player);
 
 		// Repop or Resurrect and remove from battlegrounds
-		if( ! Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
+		if( !sWorld.m_hardcoreMode )
 		{
 			if(_player->m_bg)
 			{
@@ -387,7 +387,7 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		// _player->SaveAuras();
 
-		if( !Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) && Save)
+		if(Save)
 			_player->SaveToDB(false);
 
 		// Dismounting with RemoveAllAuras may in certain cases add a player
@@ -450,12 +450,6 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		delete _player;
 		_player = NULL;
-
-		/// Hardcore mode: delete dead character
-		if( dead && Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
-		{
-			DeleteCharacter( (uint32)guid );
-		}
 
 		OutPacket(SMSG_LOGOUT_COMPLETE, 0, NULL);
 		LOG_DEBUG("SESSION: Sent SMSG_LOGOUT_COMPLETE Message");

@@ -779,11 +779,14 @@ void WorldSession::FullLogin(Player* plr)
 		Transporter* pTrans = objmgr.GetTransporter(Arcemu::Util::GUID_LOPART(plr->transporter_info.guid));
 		if(pTrans)
 		{
-			if(plr->IsDead())
+			if(plr->IsDead() )
 			{
-				plr->ResurrectPlayer();
-				plr->SetHealth(plr->GetMaxHealth());
-				plr->SetPower(POWER_TYPE_MANA, plr->GetMaxPower(POWER_TYPE_MANA));
+				if( !sWorld.m_hardcoreMode )
+				{
+					plr->ResurrectPlayer();
+					plr->SetHealth(plr->GetMaxHealth());
+					plr->SetPower(POWER_TYPE_MANA, plr->GetMaxPower(POWER_TYPE_MANA));
+				}
 			}
 
 			float c_tposx = pTrans->GetPositionX() + plr->transporter_info.x;
@@ -915,9 +918,9 @@ void WorldSession::FullLogin(Player* plr)
 
 	objmgr.AddPlayer(_player);
 
-	if( Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
+	if( sWorld.m_hardcoreMode )
 	{
-		_player->BroadcastMessage("%sWelcome to the World of Hardcorecraft. If you die your character will be deleted.", MSG_COLOR_RED );
+		_player->BroadcastMessage("%sWelcome to the World of Hardcorecraft. If you die you will not be able to resurrect.", MSG_COLOR_RED );
 	}
 }
 

@@ -1499,6 +1499,12 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
 
+	/// This shouldn't be happening, as we don't even allow casting the spell
+	if( sWorld.m_hardcoreMode )
+	{
+		return;
+	}
+
 	uint32 health = GetProto()->EffectBasePoints[i];
 	uint32 mana = GetProto()->EffectMiscValue[i];
 
@@ -4147,6 +4153,12 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 {
 	if(!p_caster || !unitTarget || playerTarget->isAlive()) return;
 
+	/// This shouldn't be happening, as we don't even allow casting the spell
+	if( sWorld.m_hardcoreMode )
+	{
+		return;
+	}
+
 	uint32 mana;
 	uint32 health;
 	uint32 class_ = unitTarget->getClass();
@@ -4606,6 +4618,13 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 
 	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
+
+	/// This shouldn't be happening, as we don't even allow casting the spell
+	if( sWorld.m_hardcoreMode )
+	{
+		return;
+	}
+
 	//resurrect
 	playerTarget->m_resurrectMapId = p_caster->GetMapId();
 	playerTarget->m_resurrectInstanceID = p_caster->GetInstanceID();

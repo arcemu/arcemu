@@ -1389,6 +1389,7 @@ void World::Rehash(bool load)
 	if(!flood_lines || !flood_seconds)
 		flood_lines = flood_seconds = 0;
 
+	m_hardcoreMode = Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false );
 	m_AdditionalFun = Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun", false);
 	MaxProfs = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "MaxProfessions", 2);
 

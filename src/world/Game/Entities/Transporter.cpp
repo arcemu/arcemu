@@ -438,9 +438,12 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			// Lucky bitch. Do it like on official.
 			if(plr->IsDead())
 			{
-				plr->ResurrectPlayer();
-				plr->SetHealth(plr->GetMaxHealth());
-				plr->SetPower(POWER_TYPE_MANA, plr->GetMaxPower(POWER_TYPE_MANA));
+				if( !sWorld.m_hardcoreMode )
+				{
+					plr->ResurrectPlayer();
+					plr->SetHealth(plr->GetMaxHealth());
+					plr->SetPower(POWER_TYPE_MANA, plr->GetMaxPower(POWER_TYPE_MANA));
+				}
 			}
 		}
 	}

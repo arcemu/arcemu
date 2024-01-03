@@ -4387,7 +4387,7 @@ void Player::RepopRequestedPlayer()
 		Corpse* myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
 		if(myCorpse != NULL)
 			myCorpse->ResetDeathClock();
-		ResurrectPlayer();
+
 		RepopAtGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
 		return;
 	}
@@ -4399,7 +4399,6 @@ void Player::RepopRequestedPlayer()
 		m_CurrentTransporter = NULL;
 		transporter_info.guid = 0;
 
-		//ResurrectPlayer();
 		RepopAtGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
 		return;
 	}
@@ -4445,7 +4444,10 @@ void Player::RepopRequestedPlayer()
 				case 552: // The Arcatraz
 				case 553: // The Botanica
 				case 554: // The Mechanar
-					ResurrectPlayer();
+					if( !sWorld.m_hardcoreMode )
+					{
+						ResurrectPlayer();
+					}
 					return;
 			}
 
@@ -4560,12 +4562,6 @@ void Player::KillPlayer()
 		currentvehicle->EjectPassenger( this );
 
 	sHookInterface.OnDeath(this);
-
-	/// In hardcode mode the player is kicked and deleted on death
-	if( Config.OptionalConfig.GetBoolDefault( "Experimental", "HardcoreMode", false ) )
-	{
-		sEventMgr.AddEvent(this, &Player::_Kick, EVENT_PLAYER_KICK, 1, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	}
 }
 
 void Player::CreateCorpse()
@@ -8979,7 +8975,10 @@ void Player::OnWorldPortAck()
 		{
 			if(pMapinfo->type != INSTANCE_NULL)
 			{
-				ResurrectPlayer();
+				if( !sWorld.m_hardcoreMode )
+				{
+					ResurrectPlayer();
+				}
 			}
 		}
 	}
@@ -11409,7 +11408,15 @@ uint32 Player::GetMaxPersonalRating()
 void Player::FullHPMP()
 {
 	if(IsDead())
+	{
+		if( sWorld.m_hardcoreMode )
+		{
+			return;
+		}
+
 		ResurrectPlayer();
+	}
+
 	SetHealth(GetMaxHealth());
 	SetPower(POWER_TYPE_MANA, GetMaxPower(POWER_TYPE_MANA));
 	SetPower(POWER_TYPE_ENERGY, GetMaxPower(POWER_TYPE_ENERGY));
@@ -12547,7 +12554,12 @@ void Player::Die(Unit* pAttacker, uint32 damage, uint32 spellid)
 			}
 		}
 
-		SetUInt32Value(PLAYER_SELF_RES_SPELL, self_res_spell);
+		/// In hardcore mode resurrection is not allowed, so let's not even offer self-resurrection
+		if( !sWorld.m_hardcoreMode )
+		{
+			SetUInt32Value(PLAYER_SELF_RES_SPELL, self_res_spell);
+		}
+
 		SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , 0);
 	}
 

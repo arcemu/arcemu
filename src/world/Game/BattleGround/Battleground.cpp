@@ -475,7 +475,7 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 	plr->ResetTeam();
 
 	/* revive the player if he is dead */
-	if(!plr->isAlive())
+	if(!plr->isAlive() && !sWorld.m_hardcoreMode )
 	{
 		plr->SetHealth(plr->GetMaxHealth());
 		plr->ResurrectPlayer();
@@ -776,6 +776,11 @@ void CBattleground::RemoveSpiritGuide(Creature* pCreature)
 
 void CBattleground::EventResurrectPlayers()
 {
+	if( sWorld.m_hardcoreMode )
+	{
+		return;
+	}
+
 	m_mainLock.Acquire();
 	Player* plr;
 	set<uint32>::iterator itr;

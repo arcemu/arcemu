@@ -845,6 +845,13 @@ void WorldSession::HandleLogoutRequestOpcode(WorldPacket & recv_data)
 			return;
 		}
 
+		if( pPlayer->getDeathState() == JUST_DIED )
+		{
+			data << uint32(1) << uint8(0);
+			SendPacket(&data);
+			return;
+		}
+
 		if(GetPermissionCount() > 0)
 		{
 			//Logout on NEXT sessionupdate to preserve processing of dead packets (all pending ones should be processed)
@@ -1027,6 +1034,12 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket & recv_data)
 	Corpse* pCorpse = objmgr.GetCorpse((uint32)guid);
 	if(pCorpse == NULL)	return;
 
+	if( sWorld.m_hardcoreMode )
+	{
+		_player->BroadcastMessage( MSG_HC_NO_RESURRECT );
+		return;
+	}
+
 	// Check that we're reviving from a corpse, and that corpse is associated with us.
 	if(GET_LOWGUID_PART(pCorpse->GetOwner()) != _player->GetLowGUID() && pCorpse->GetUInt32Value(CORPSE_FIELD_FLAGS) == 5)
 	{
@@ -1084,6 +1097,12 @@ void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 		_player->m_resurrectHealth = 0;
 		_player->m_resurrectMana = 0;
 		_player->m_resurrecter = 0;
+		return;
+	}
+
+	/// This should not happen as we didn't allow resurrection mechanics
+	if( sWorld.m_hardcoreMode )
+	{
 		return;
 	}
 
@@ -2003,6 +2022,13 @@ void WorldSession::HandleAcknowledgementOpcodes(WorldPacket & recv_data)
 void WorldSession::HandleSelfResurrectOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN
+
+	
+	/// This should not be happening, because in hardcore mode we don't even set the self-resurrect spell for the player
+	if( sWorld.m_hardcoreMode )
+	{
+		return;
+	}
 
 	uint32 self_res_spell = _player->GetUInt32Value(PLAYER_SELF_RES_SPELL);
 	if(self_res_spell)

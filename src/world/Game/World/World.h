@@ -291,6 +291,8 @@ struct WMOAreaTableTripple
 	int32 adtId;
 };
 
+#define MSG_HC_NO_RESURRECT "|cffff6060You cannot resurrect in hardcore mode"
+
 class WorldSocket;
 
 // Slow for remove in middle, oh well, wont get done much.
@@ -722,6 +724,7 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 		bool m_limitedNames;
 		bool m_useAccountData;
 		bool m_AdditionalFun;
+		bool m_hardcoreMode;
 		std::map<WMOAreaTableTripple, WMOAreaTableEntry*> m_WMOAreaTableTripples;
 
 		// Gold Cap
