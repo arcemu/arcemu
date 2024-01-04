@@ -2734,12 +2734,19 @@ void ObjectMgr::RemoveCorpse(Corpse* p)
 
 Corpse* ObjectMgr::GetCorpse(uint32 corpseguid)
 {
-	Corpse* rv;
+	Corpse* corpse = NULL;
+	
 	_corpseslock.Acquire();
+
 	CorpseMap::const_iterator itr = m_corpses.find(corpseguid);
-	rv = (itr != m_corpses.end()) ? itr->second : 0;
+	if( itr != m_corpses.end() )
+	{
+		corpse = itr->second;
+	}
+
 	_corpseslock.Release();
-	return rv;
+
+	return corpse;
 }
 
 Transporter* ObjectMgr::GetTransporter(uint32 guid)

@@ -2712,6 +2712,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 		gameObjTarget = NULL;
 		playerTarget = NULL;
 		itemTarget = NULL;
+		corpseTarget = NULL;
 
 		if(p_caster != NULL)
 		{
@@ -2722,6 +2723,11 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				Player* p_trader = p_caster->GetTradeTarget();
 				if(p_trader != NULL)
 					itemTarget = p_trader->getTradeItem((uint32)m_targets.m_itemTarget);
+			}
+
+			if( ( m_targets.m_targetMask & ( TARGET_FLAG_CORPSE | TARGET_FLAG_CORPSE2 ) ) != 0 )
+			{
+				corpseTarget = objmgr.GetCorpse((uint32)m_targets.m_unitTarget);
 			}
 		}
 	}
