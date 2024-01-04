@@ -366,6 +366,9 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		void onWorldStateUpdate( uint32 zone, uint32 field, uint32 value );
 		void onWorldStatesReinitialization( uint32 zone );
 
+		void castSpellOnPlayers( uint32 team, uint32 spellId );
+		void removeAuraFromPlayers( uint32 team, uint32 spellId );
+
 	protected:
 		InstanceScript* mInstanceScript;
 

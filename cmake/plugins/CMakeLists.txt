@@ -23,6 +23,7 @@ SET( BUILD_MISCSCRIPTS TRUE CACHE BOOL "Build arcMiscScripts." )
 SET( BUILD_SERVERSTATUSPLUGIN TRUE CACHE BOOL "Build ServerStatusPlugin.")
 SET( BUILD_LUAENGINE TRUE CACHE BOOL "Build Arcemu Lua Engine ( ALE ).")
 SET( BUILD_PYTHONENGINE TRUE CACHE BOOL "Build Arcemu Python Engine (APE).")
+SET( BUILD_WORLDPVP TRUE CACHE BOOL "Build World PvP plugin" )
 
 add_subdirectory( eventscripts)
 add_subdirectory( instancescripts )
@@ -33,6 +34,10 @@ add_subdirectory( miscscripts )
 add_subdirectory( serverstatusplugin )
 add_subdirectory( lualib ) #Used by luaengine module.
 add_subdirectory( luaengine )
+
+IF( BUILD_WORLDPVP )
+	add_subdirectory( worldpvp )
+ENDIF()
 
 IF( BUILD_PYTHONENGINE )
 	add_subdirectory( python34 )
