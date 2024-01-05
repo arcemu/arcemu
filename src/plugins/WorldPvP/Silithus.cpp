@@ -90,6 +90,33 @@ void Silithus_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 }
 
+/// Broadcast a message to inform players that one of the teams has won
+void broadcastWinMessage( MapMgr *mapMgr, uint32 maxCollected )
+{
+	stringstream ss;
+	
+	ss << "The ";
+	if( winnerTeam == TEAM_ALLIANCE )
+	{
+		ss << "Alliance";
+	}
+	else
+	{
+		ss << "Horde";
+	}
+	
+	ss << " has collected ";
+	ss << maxCollected;
+	ss << " silithyst!";
+	
+	WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ss.str().c_str(), 0, 0 );
+	if( packet != NULL )
+	{
+		mapMgr->SendPacketToPlayersInZone( SILITHUS_ZONE_ID, packet );
+		delete packet;
+	}
+}
+
 /// Handles turning in Silithyst
 void Silithus_onAreaTrigger( Player *player, uint32 areaTrigger )
 {
@@ -137,6 +164,8 @@ void Silithus_onAreaTrigger( Player *player, uint32 areaTrigger )
 				/// Reset the counters
 				handler.SetWorldStateForZone( SILITHUS_ZONE_ID, collectedStateForTeam[ TEAM_ALLIANCE ], 0 );
 				handler.SetWorldStateForZone( SILITHUS_ZONE_ID, collectedStateForTeam[ TEAM_HORDE ], 0 );
+
+				broadcastWinMessage( mapMgr, maxCollected );
 			}
 			else
 			{
