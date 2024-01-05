@@ -40,6 +40,7 @@
 #define REWARD_REPUTATION_POINTS 20
 
 #define SILITHUS_ZONE_ID 1377
+#define GATES_ZONE_ID 3478
 
 static uint32 collectedStateForTeam[] = { WORLDSTATE_SILITHUS_ALLIANCE_COLLECTED, WORLDSTATE_SILITHUS_HORDE_COLLECTED };
 
@@ -55,13 +56,33 @@ static uint32 questByTeam[] = { QUEST_ALLIANCE, QUEST_HORDE };
 
 static Arcemu::Threading::AtomicULong winnerTeam = static_cast< uint32 >( -1 );
 
-/// Add Cenarion Favor aura when entering the world
+/// Is the map, zone, area triplet considered to be in Silithus?
+static bool isSilithus( uint32 map, uint32 zone, uint32 area )
+{
+	if( ( ( map == MAP_KALIMDOR ) && ( zone == SILITHUS_ZONE_ID ) ) ||
+			( ( map == MAP_KALIMDOR ) && ( zone == GATES_ZONE_ID ) ) ||
+			( map == MAP_RUINS_OF_AHNQIRAJ ) ||
+			( map == MAP_AHNQIRAJ_TEMPLE )
+		)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/// Add Cenarion Favor aura to eligible players when entering the world
 void Silithus_onEnterWorld( Player *player )
 {
 	uint32 winner = static_cast< uint32 >( winnerTeam.GetVal() );
-	if( ( player->GetTeam() == winner ) && ( player->GetZoneId() == SILITHUS_ZONE_ID ) )
+	if( ( player->GetTeam() == winner ) )
 	{
-		player->CastSpell( player, SPELL_CENARION_FAVOR, true );
+		if( isSilithus( player->GetMapId(), player->GetZoneId(), player->GetAreaID() ) )
+		{
+			player->CastSpell( player, SPELL_CENARION_FAVOR, true );
+		}
 	}
 }
 
@@ -79,10 +100,9 @@ void Silithus_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 		return;
 	}
 
-	uint32 team = player->GetTeam();
 	uint32 winner = static_cast< uint32 >( winnerTeam.GetVal() );
 
-	if( ( newZone == SILITHUS_ZONE_ID ) && ( team == winner ) )
+	if( player->GetTeam() == winner && isSilithus( player->GetMapId(), player->GetZoneId(), player->GetAreaID() ) )
 	{
 		player->CastSpell( player, SPELL_CENARION_FAVOR, true );
 	}

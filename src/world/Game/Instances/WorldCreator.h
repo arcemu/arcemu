@@ -25,6 +25,16 @@
 #ifndef __WORLDCREATOR_H
 #define __WORLDCREATOR_H
 
+enum Maps
+{
+	MAP_EASTERN_KINGDOMS      = 0,
+	MAP_KALIMDOR              = 1,
+	MAP_RUINS_OF_AHNQIRAJ     = 509,
+	MAP_OUTLAND               = 530,
+	MAP_AHNQIRAJ_TEMPLE       = 531,
+	MAP_NORTHREND             = 571
+};
+
 enum INSTANCE_TYPE
 {
     INSTANCE_NULL,
