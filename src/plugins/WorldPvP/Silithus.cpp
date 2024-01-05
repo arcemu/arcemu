@@ -53,12 +53,13 @@ static double stationCoords[][3] = {
 
 static uint32 questByTeam[] = { QUEST_ALLIANCE, QUEST_HORDE };
 
-static uint32 winnerTeam = static_cast< uint32 >( -1 );
+static Arcemu::Threading::AtomicULong winnerTeam = static_cast< uint32 >( -1 );
 
 /// Add Cenarion Favor aura when entering the world
 void Silithus_onEnterWorld( Player *player )
 {
-	if( ( player->GetTeam() == winnerTeam ) && ( player->GetZoneId() == SILITHUS_ZONE_ID ) )
+	uint32 winner = static_cast< uint32 >( winnerTeam.GetVal() );
+	if( ( player->GetTeam() == winner ) && ( player->GetZoneId() == SILITHUS_ZONE_ID ) )
 	{
 		player->CastSpell( player, SPELL_CENARION_FAVOR, true );
 	}
@@ -79,8 +80,9 @@ void Silithus_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 
 	uint32 team = player->GetTeam();
+	uint32 winner = static_cast< uint32 >( winnerTeam.GetVal() );
 
-	if( ( newZone == SILITHUS_ZONE_ID ) && ( team == winnerTeam ) )
+	if( ( newZone == SILITHUS_ZONE_ID ) && ( team == winner ) )
 	{
 		player->CastSpell( player, SPELL_CENARION_FAVOR, true );
 	}
@@ -93,10 +95,12 @@ void Silithus_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 /// Broadcast a message to inform players that one of the teams has won
 void broadcastWinMessage( MapMgr *mapMgr, uint32 maxCollected )
 {
+	uint32 winner = static_cast< uint32 >( winnerTeam.GetVal() );
+
 	stringstream ss;
 	
 	ss << "The ";
-	if( winnerTeam == TEAM_ALLIANCE )
+	if( winner == TEAM_ALLIANCE )
 	{
 		ss << "Alliance";
 	}
@@ -148,11 +152,12 @@ void Silithus_onAreaTrigger( Player *player, uint32 areaTrigger )
 			// We're turning in the 200th, we're winning the race!
 			if( currentCollected == maxCollected )
 			{
-				winnerTeam = player->GetTeam();
+				uint32 winner = player->GetTeam();
+				winnerTeam.SetVal( winner );
 
 				/// Add the zone buff to the winner team, and remove it from the losers
-				mapMgr->castSpellOnPlayers( winnerTeam,  SPELL_CENARION_FAVOR );
-				if( winnerTeam == TEAM_ALLIANCE )
+				mapMgr->castSpellOnPlayers( winner,  SPELL_CENARION_FAVOR );
+				if( winner == TEAM_ALLIANCE )
 				{
 					mapMgr->removeAuraFromPlayers( TEAM_HORDE, SPELL_CENARION_FAVOR );
 				}
