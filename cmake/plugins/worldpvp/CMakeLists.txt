@@ -19,10 +19,12 @@ foreach(src IN ITEMS ${headers} )
   SET( HEADERS ${HEADERS} ${prefix}/${src} )
 endforeach(src)
 
+link_directories( ${EXTRA_LIBS_PATH} ${DEPENDENCY_LIBS} )
+
 include_directories( ${include_dirs} ${prefix} )
 add_library( ${PROJECT_NAME} SHARED ${SRCS} ${HEADERS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} )
-target_link_libraries( ${PROJECT_NAME} ${linkages} )
+target_link_libraries( ${PROJECT_NAME} ${linkages} shared )
 
 include(PCHSupport)
 IF( CMAKE_GENERATOR MATCHES Visual*)
