@@ -54,7 +54,7 @@ static double stationCoords[][3] = {
 
 static uint32 questByTeam[] = { QUEST_ALLIANCE, QUEST_HORDE };
 
-static Arcemu::Threading::AtomicULong winnerTeam = static_cast< uint32 >( -1 );
+static Arcemu::Threading::AtomicULong winnerTeam( static_cast< uint32 >( -1 ) );
 
 /// Is the map, zone, area triplet considered to be in Silithus?
 static bool isSilithus( uint32 map, uint32 zone, uint32 area )
