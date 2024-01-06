@@ -100,7 +100,6 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "../shared/Threading/CRefCounter.h"
 #include "Util/arcemu_getopt.h"
 #include "Threading/TLSObject.h"
-#include "Util/Tokenizer.h"
 
 #include "../shared/Server/ServerController.h"
 
