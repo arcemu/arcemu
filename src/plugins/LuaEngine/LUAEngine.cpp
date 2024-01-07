@@ -38,6 +38,12 @@
 ScriptMgr* m_scriptMgr = NULL;
 LuaEngine g_luaMgr;
 
+#include "git_version.h"
+
+extern "C" SCRIPT_DECL const char* _exp_get_version()
+{
+	return BUILD_HASH_STR;
+}
 
 extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 {

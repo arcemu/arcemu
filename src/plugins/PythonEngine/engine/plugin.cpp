@@ -21,6 +21,12 @@
 #include "StdAfx.h"
 #include <Game/Scripting/ScriptSetup.h>
 #include "engine/PythonEngine.hpp"
+#include "git_version.h"
+
+extern "C" SCRIPT_DECL const char* _exp_get_version()
+{
+	return BUILD_HASH_STR;
+}
 
 static PythonEngine *pythonEngine = NULL;
 

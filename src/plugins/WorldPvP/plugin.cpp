@@ -19,9 +19,15 @@
  
 #include "plugin.h"
 #include <Game/Scripting/ScriptSetup.h>
+#include "git_version.h"
 
 void setupEasternPlaguelands( ScriptMgr *mgr );
 void setupSilithus( ScriptMgr *mgr );
+
+extern "C" SCRIPT_DECL const char* _exp_get_version()
+{
+	return BUILD_HASH_STR;
+}
 
 extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 {
