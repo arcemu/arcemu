@@ -90,6 +90,15 @@ static uint32 towerWorldStates[ EP_TOWER_COUNT ][ TOWER_STATES ] = {
 #define TOWER_CAPTURE_TRESHOLD_NEUTRAL_HI 70
 #define TOWER_CAPTURE_TRESHOLD_NEUTRAL_LO 30
 
+static uint32 rewardSpellIds[2][5] = 
+{
+	{ 0, 11413, 11414, 11415, 1386 },
+	{ 0, 30880, 30683, 30682, 29520 }
+};
+
+static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
+static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
+
 class EasternPlaguelandsPvP
 {
 private:
@@ -137,9 +146,51 @@ public:
 		}
 	}
 
+	/// Retrieves the right spell id for the reward spell for the specified team
+	static uint32 getSpellForTeam( uint32 team )
+	{
+		uint32 towerCount;
+
+		if( team == TEAM_ALLIANCE )
+			towerCount = allianceTowersCache.GetVal();
+		else
+			towerCount = hordeTowersCache.GetVal();
+
+		uint32 spell = rewardSpellIds[ team ][ towerCount ];
+		return spell;
+	}
+
 	void onTowerCaptured( uint32 towerId )
 	{
 		broadcastCaptureMessage( towerId );
+
+		/// Find the right spell for both factions, casting it will upgrade / downgrade appropriately
+		uint32 allianceSpell = getSpellForTeam( TEAM_ALLIANCE );
+		uint32 hordeSpell = getSpellForTeam( TEAM_HORDE );
+
+		if( allianceSpell != 0 )
+		{
+			mapMgr->castSpellOnPlayers( TEAM_ALLIANCE, allianceSpell );
+		}
+		else
+		{
+			for( int i = 1; i <= EP_TOWER_COUNT; i++ )
+			{
+				mapMgr->removeAuraFromPlayers( TEAM_ALLIANCE, rewardSpellIds[ TEAM_ALLIANCE ][ i ] );
+			}
+		}
+
+		if( hordeSpell != 0 )
+		{
+			mapMgr->castSpellOnPlayers( TEAM_HORDE, hordeSpell );
+		}
+		else
+		{
+			for( int i = 1; i <= EP_TOWER_COUNT; i++ )
+			{
+				mapMgr->removeAuraFromPlayers( TEAM_HORDE, rewardSpellIds[ TEAM_ALLIANCE ][ i ] );
+			}
+		}
 	}
 
 	void onTowerOwnershipChange( uint32 towerId, int32 lastOwner )
@@ -174,6 +225,15 @@ public:
 		
 		uint32 allianceTowers = handler.GetWorldStateForZone( ZONE_EPL, WORLDSTATE_EPL_TOWERS_ALLIANCE );
 		uint32 hordeTowers = handler.GetWorldStateForZone( ZONE_EPL, WORLDSTATE_EPL_TOWERS_HORDE );
+
+		allianceTowers += allianceDelta;
+		hordeTowers += hordeDelta;
+		
+		handler.SetWorldStateForZone( ZONE_EPL, WORLDSTATE_EPL_TOWERS_ALLIANCE, allianceTowers );
+		handler.SetWorldStateForZone( ZONE_EPL, WORLDSTATE_EPL_TOWERS_HORDE, hordeTowers );
+
+		allianceTowersCache.SetVal( allianceTowers );
+		hordeTowersCache.SetVal( hordeTowers );
 		
 		switch( towerOwner[ towerId ] )
 		{
@@ -199,11 +259,6 @@ public:
 				onTowerCaptured( towerId );
 				break;
 		}
-		
-		allianceTowers += allianceDelta;
-		hordeTowers += hordeDelta;
-		handler.SetWorldStateForZone( ZONE_EPL, WORLDSTATE_EPL_TOWERS_ALLIANCE, allianceTowers );
-		handler.SetWorldStateForZone( ZONE_EPL, WORLDSTATE_EPL_TOWERS_HORDE, hordeTowers );
 	}
 };
 
@@ -382,6 +437,69 @@ public:
 	}
 };
 
+/// Is the specified map, zone, area triplet considered to be in Eastern Plaguelands?
+static bool isEpl( uint32 map, uint32 zone, uint32 area )
+{
+	if( map == 329 )
+	{
+		return true;
+	}
+
+	if( map == 0 && zone == 139 )
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/// Applies the right reward aura on login
+static void Epl_onEnterWorld( Player *player )
+{
+	if( !isEpl( player->GetMapId(), player->GetZoneId(), player->GetAreaID() ) )
+	{
+		return;
+	}
+
+	uint32 spell = pvp.getSpellForTeam( player->GetTeam() );
+	if( spell != 0 )
+	{
+		player->CastSpell( player, spell, true );
+	}
+}
+
+/// Removes the reward aura so that it's not saved in DB
+static void Epl_onLogout( Player *player )
+{
+	uint32 team = player->GetTeam();	
+	for( int i = 1; i <= EP_TOWER_COUNT; i++ )
+	{
+		player->RemoveAura( rewardSpellIds[ team ][ i ] );
+	}
+}
+
+/// Applies / removes the reward aura when entering / leaving the zone
+void Epl_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
+{
+	uint32 team = player->GetTeam();	
+
+	if( isEpl( player->GetMapId(), player->GetZoneId(), player->GetAreaID() ) )
+	{
+		uint32 spell = pvp.getSpellForTeam( team );
+		if( spell != 0 )
+		{
+			player->CastSpell( player, spell, true );
+		}
+	}
+	else
+	{
+		for( int i = 1; i <= EP_TOWER_COUNT; i++ )
+		{
+			player->RemoveAura( rewardSpellIds[ team ][ i ] );
+		}
+	}
+}
+
 void setupEasternPlaguelands( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_EASTERN_KINGDOMS );
@@ -391,4 +509,8 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_CROWNGUARD, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_EASTWALL, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_PLAGUEWOOD, &EPTowerBannerAI::Create );
+
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Epl_onEnterWorld );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Epl_onLogout );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Epl_onZoneChange );
 }
