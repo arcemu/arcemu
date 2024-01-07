@@ -24,6 +24,8 @@
 #define GO_EP_TOWER_BANNER_EASTWALL     182097
 #define GO_EP_TOWER_BANNER_PLAGUEWOOD   182098
 
+#define GO_EP_TOWER_BANNER_MISC         182106
+
 #define EP_TOWER_BANNER_UPDATE_FREQ (2 * 1000)
 #define EP_TOWER_BANNER_RANGE 50.0f
 
@@ -32,6 +34,10 @@
 #define EP_TOWER_EASTWALL    2
 #define EP_TOWER_PLAGUEWOOD  3
 #define EP_TOWER_COUNT       4
+
+#define EP_TOWER_ARTKIT_NEUTRAL  0
+#define EP_TOWER_ARTKIT_HORDE    1
+#define EP_TOWER_ARTKIT_ALLIANCE 2
 
 #define TOWER_ALLIANCE_CONTROL 0
 #define TOWER_HORDE_CONTROL    1
@@ -284,10 +290,51 @@ public:
 		captureProgress = TOWER_CAPTURE_PROGRESS_DEFAULT;
 	}
 
+	/// Sets the artkit for the current owner
+	void setArtkit()
+	{
+		uint8 artkit;
+		switch( towerOwner[ towerId ] )
+		{
+			case -1:
+				artkit = 0;
+				break;
+
+			case TEAM_ALLIANCE:
+				artkit = EP_TOWER_ARTKIT_ALLIANCE;
+				break;
+
+			case TEAM_HORDE:
+				artkit = EP_TOWER_ARTKIT_HORDE;
+				break;
+		}
+
+		_gameobject->SetArtKit( artkit );
+
+		std::set< Object* > &objects = _gameobject->GetInRangeObjects();
+		for( std::set< Object* >::const_iterator itr = objects.begin(); itr != objects.end(); ++itr )
+		{
+			Object *obj = *itr;
+			if( !obj->IsGameObject() )
+			{
+				continue;
+			}
+
+			GameObject *go = TO_GAMEOBJECT( obj );
+			if( go->GetInfo()->ID != GO_EP_TOWER_BANNER_MISC )
+			{
+				continue;
+			}
+
+			go->SetArtKit( artkit );
+		}
+	}
+
 	/// Owner change event handler
 	void onOwnerChange( int32 lastOwner )
 	{
 		pvp.onTowerOwnershipChange( towerId, lastOwner );
+		setArtkit();
 	}
 
 	/// Calculate the current capture progress based on player counts
