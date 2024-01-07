@@ -1,1 +1,5 @@
 .vagrant
+
+bin/
+
+Build/
