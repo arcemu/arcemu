@@ -364,6 +364,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleGOActivate(const char* args, WorldSession* m_session);
 		bool HandleGORotate(const char* args, WorldSession* m_session);
 		bool HandleGOMove(const char* args, WorldSession* m_session);
+		bool HandleGOArtkit(const char* args, WorldSession* m_session);
 		bool HandleAddAIAgentCommand(const char* args, WorldSession* m_session);
 		bool HandleListAIAgentCommand(const char* args, WorldSession* m_session);
 		bool HandleRepairItemsCommand(const char* args, WorldSession* m_session);

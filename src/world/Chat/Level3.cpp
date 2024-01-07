@@ -3503,6 +3503,27 @@ bool ChatHandler::HandleGOMove(const char* args, WorldSession* m_session)
 	return true;
 }
 
+bool ChatHandler::HandleGOArtkit(const char* args, WorldSession* m_session)
+{
+	GameObject* go = m_session->GetPlayer()->GetSelectedGo();
+	if( go == NULL )
+	{
+		RedSystemMessage(m_session, "No selected GameObject...");
+		return true;
+	}
+
+	uint32 artkit;
+	if( sscanf(args, "%u", &artkit) != 1 )
+	{
+		RedSystemMessage(m_session, "You need to specify an artkit as parameter");
+		return true;
+	}
+
+	go->SetArtKit( static_cast< uint8 >( artkit ) );
+
+	return true;
+}
+
 bool ChatHandler::HandleNpcPossessCommand(const char* args, WorldSession* m_session)
 {
 	Unit* pTarget = getSelectedChar(m_session, false);
