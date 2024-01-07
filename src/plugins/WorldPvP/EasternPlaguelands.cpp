@@ -26,6 +26,9 @@
 
 #define GO_EP_TOWER_BANNER_MISC         182106
 
+#define GO_LORDAERON_SHRINE_ALLIANCE 181682
+#define GO_LORDAERON_SHRINE_HORDE    181955
+
 #define EP_TOWER_BANNER_UPDATE_FREQ (2 * 1000)
 #define EP_TOWER_BANNER_RANGE 50.0f
 
@@ -107,6 +110,13 @@ static uint32 rewardSpellIds[2][5] =
 static uint32 questByTeam[] = { 9664, 9665 };
 static uint32 towerToQuestCredit[] = { 2, 0, 1, 3 };
 
+#define FACTION_HUMAN 1
+#define FACTION_ORC   2
+
+static uint32 shrineIds[] = { GO_LORDAERON_SHRINE_ALLIANCE, GO_LORDAERON_SHRINE_HORDE };
+static uint32 shrineFactions[] = { FACTION_HUMAN, FACTION_ORC };
+static float shrineLocation[] = { 3167.417725f, -4356.077148f, 138.797272f, 4.861288f };
+
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
 static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
 
@@ -171,9 +181,76 @@ public:
 		return spell;
 	}
 
+	/// Event handler for when a tower becomes neutral while it is being attacked
+	void onTowerBecomesNeutral( uint32 towerId )
+	{
+		if( towerId == EP_TOWER_NORTHPASS )
+		{
+			GameObject *go = NULL;
+
+			for( int i = 0; i <= 1; i++ )
+			{
+				/// Despawn shrine
+				go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], shrineIds[ i ] );
+				if( go != NULL )
+				{
+					uint32 aura = go->GetInfo()->Unknown3;
+
+					go->Despawn( 1, 0 );
+					
+					// Despawn aura
+					if( aura != 0 )
+					{
+						go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], aura );
+						if( go != NULL )
+						{
+							go->Despawn( 1, 0 );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/// Event handler for when a tower becomes owned by either the Alliance or the Horde
 	void onTowerCaptured( uint32 towerId )
 	{
 		broadcastCaptureMessage( towerId );
+
+		if( towerId == EP_TOWER_NORTHPASS )
+		{
+			/// Spawn the correct shrine
+			GameObject *go = mapMgr->GetInterface()->SpawnGameObject(
+				shrineIds[ towerOwner[ towerId ] ],
+				shrineLocation[ 0 ],
+				shrineLocation[ 1 ],
+				shrineLocation[ 2 ],
+				shrineLocation[ 3 ],
+				true,
+				0,
+				0
+			);
+
+			if( go != NULL )
+			{
+				/// Get the aura id from the go, and then spawn it
+				go->SetFaction( shrineFactions[ towerOwner[ towerId ] ] );
+				uint32 aura = go->GetInfo()->Unknown3;
+				if( aura != 0 )
+				{
+					mapMgr->GetInterface()->SpawnGameObject(
+						aura,
+						shrineLocation[ 0 ],
+						shrineLocation[ 1 ],
+						shrineLocation[ 2 ],
+						shrineLocation[ 3 ],
+						true,
+						0,
+						0
+					);
+				}
+			}
+		}
 
 		/// Find the right spell for both factions, casting it will upgrade / downgrade appropriately
 		uint32 allianceSpell = getSpellForTeam( TEAM_ALLIANCE );
@@ -252,6 +329,8 @@ public:
 				handler.SetWorldStateForZone( ZONE_EPL, towerWorldStates[ towerId ][ TOWER_ALLIANCE_CONTROL ], 0 );
 				handler.SetWorldStateForZone( ZONE_EPL, towerWorldStates[ towerId ][ TOWER_HORDE_CONTROL ], 0 );
 				handler.SetWorldStateForZone( ZONE_EPL, towerWorldStates[ towerId ][ TOWER_NEUTRAL ], 1 );
+
+				onTowerBecomesNeutral( towerId );
 				break;
 			
 			case TEAM_ALLIANCE:
