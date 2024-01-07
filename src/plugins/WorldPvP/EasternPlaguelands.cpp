@@ -96,6 +96,11 @@ static uint32 rewardSpellIds[2][5] =
 	{ 0, 30880, 30683, 30682, 29520 }
 };
 
+#define REWARD_HONOR_POINTS 189
+
+static uint32 questByTeam[] = { 9664, 9665 };
+static uint32 towerToQuestCredit[] = { 2, 0, 1, 3 };
+
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
 static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
 
@@ -347,6 +352,19 @@ public:
 		return ownerChanged;
 	}
 
+	/// Rewards the player for capturing the tower with honor, quest credit, etc
+	void rewardPlayers( std::set< Player* > &players )
+	{
+		for( std::set< Player* >::const_iterator itr = players.begin(); itr != players.end(); ++itr )
+		{
+			Player *player = *itr;
+
+			HonorHandler::AddHonorPointsToPlayer( player, REWARD_HONOR_POINTS );
+
+			player->AddQuestKill( questByTeam[ player->GetTeam() ], towerToQuestCredit[ towerId ] );
+		}
+	}
+
 	void OnSpawn()
 	{
 		/// If we're not on the right map stop here, so we won't have to deal with multiple threads
@@ -431,6 +449,11 @@ public:
 		if( ownerChanged )
 		{
 			onOwnerChange( lastOwner );
+
+			if( lastOwner == -1 )
+			{
+				rewardPlayers( playersInRange );
+			}
 		}
 
 		playersInRange.clear();
