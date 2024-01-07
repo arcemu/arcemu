@@ -120,10 +120,94 @@ static float shrineLocation[] = { 3167.417725f, -4356.077148f, 138.797272f, 4.86
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
 static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
 
+class TowerEventHandler
+{
+public:
+	TowerEventHandler( MapMgr *mapMgr )
+	{
+		this->mapMgr = mapMgr;
+	}
+
+	virtual void onTowerBecomesNeutral() = 0;
+	virtual void onTowerCaptured() = 0;
+
+protected:
+	MapMgr *mapMgr;
+};
+
+class NorthpassTowerEventHandler : public TowerEventHandler
+{
+public:
+	NorthpassTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerBecomesNeutral()
+	{
+		GameObject *go = NULL;
+
+		for( int i = 0; i <= 1; i++ )
+		{
+			/// Despawn shrine
+			go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], shrineIds[ i ] );
+			if( go != NULL )
+			{
+				uint32 aura = go->GetInfo()->Unknown3;
+
+				go->Despawn( 1, 0 );
+					
+				// Despawn aura
+				if( aura != 0 )
+				{
+					go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], aura );
+					if( go != NULL )
+					{
+						go->Despawn( 1, 0 );
+					}
+				}
+			}
+		}
+	}
+
+	void onTowerCaptured()
+	{
+		/// Spawn the correct shrine
+		GameObject *go = mapMgr->GetInterface()->SpawnGameObject(
+			shrineIds[ towerOwner[ EP_TOWER_NORTHPASS ] ],
+			shrineLocation[ 0 ],
+			shrineLocation[ 1 ],
+			shrineLocation[ 2 ],
+			shrineLocation[ 3 ],
+			true,
+			0,
+			0
+		);
+
+		if( go != NULL )
+		{
+			/// Get the aura id from the go, and then spawn it
+			go->SetFaction( shrineFactions[ towerOwner[ EP_TOWER_NORTHPASS ] ] );
+			uint32 aura = go->GetInfo()->Unknown3;
+			if( aura != 0 )
+			{
+				mapMgr->GetInterface()->SpawnGameObject(
+					aura,
+					shrineLocation[ 0 ],
+					shrineLocation[ 1 ],
+					shrineLocation[ 2 ],
+					shrineLocation[ 3 ],
+					true,
+					0,
+					0
+				);
+			}
+		}
+	}
+};
+
 class EasternPlaguelandsPvP
 {
 private:
 	MapMgr *mapMgr;
+	std::map< uint32, TowerEventHandler* > towerEventHandlers;
 
 public:
 	EasternPlaguelandsPvP()
@@ -133,7 +217,20 @@ public:
 
 	~EasternPlaguelandsPvP()
 	{
+		for( std::map< uint32, TowerEventHandler* >::iterator itr = towerEventHandlers.begin(); itr != towerEventHandlers.end(); ++itr )
+		{
+			delete itr->second;
+			itr->second = NULL;
+		}
+
+		towerEventHandlers.clear();
+
 		mapMgr = NULL;
+	}
+
+	void registerTowerEventHandler( uint32 towerId, TowerEventHandler *handler )
+	{
+		towerEventHandlers[ towerId ] = handler;
 	}
 
 	void setMapMgr( MapMgr *mgr )
@@ -184,32 +281,11 @@ public:
 	/// Event handler for when a tower becomes neutral while it is being attacked
 	void onTowerBecomesNeutral( uint32 towerId )
 	{
-		if( towerId == EP_TOWER_NORTHPASS )
-		{
-			GameObject *go = NULL;
+		std::map< uint32, TowerEventHandler* >::const_iterator itr = towerEventHandlers.find( towerId );
+		if( itr == towerEventHandlers.end() )
+			return;
 
-			for( int i = 0; i <= 1; i++ )
-			{
-				/// Despawn shrine
-				go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], shrineIds[ i ] );
-				if( go != NULL )
-				{
-					uint32 aura = go->GetInfo()->Unknown3;
-
-					go->Despawn( 1, 0 );
-					
-					// Despawn aura
-					if( aura != 0 )
-					{
-						go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], aura );
-						if( go != NULL )
-						{
-							go->Despawn( 1, 0 );
-						}
-					}
-				}
-			}
-		}
+		itr->second->onTowerBecomesNeutral();
 	}
 
 	/// Event handler for when a tower becomes owned by either the Alliance or the Horde
@@ -217,39 +293,10 @@ public:
 	{
 		broadcastCaptureMessage( towerId );
 
-		if( towerId == EP_TOWER_NORTHPASS )
+		std::map< uint32, TowerEventHandler* >::const_iterator itr = towerEventHandlers.find( towerId );
+		if( itr != towerEventHandlers.end() )
 		{
-			/// Spawn the correct shrine
-			GameObject *go = mapMgr->GetInterface()->SpawnGameObject(
-				shrineIds[ towerOwner[ towerId ] ],
-				shrineLocation[ 0 ],
-				shrineLocation[ 1 ],
-				shrineLocation[ 2 ],
-				shrineLocation[ 3 ],
-				true,
-				0,
-				0
-			);
-
-			if( go != NULL )
-			{
-				/// Get the aura id from the go, and then spawn it
-				go->SetFaction( shrineFactions[ towerOwner[ towerId ] ] );
-				uint32 aura = go->GetInfo()->Unknown3;
-				if( aura != 0 )
-				{
-					mapMgr->GetInterface()->SpawnGameObject(
-						aura,
-						shrineLocation[ 0 ],
-						shrineLocation[ 1 ],
-						shrineLocation[ 2 ],
-						shrineLocation[ 3 ],
-						true,
-						0,
-						0
-					);
-				}
-			}
+			itr->second->onTowerCaptured();
 		}
 
 		/// Find the right spell for both factions, casting it will upgrade / downgrade appropriately
@@ -653,6 +700,7 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_EASTERN_KINGDOMS );
 	pvp.setMapMgr( mapMgr );
+	pvp.registerTowerEventHandler( EP_TOWER_NORTHPASS, new NorthpassTowerEventHandler( mapMgr ) );
 
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_NORTHPASS, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_CROWNGUARD, &EPTowerBannerAI::Create );
