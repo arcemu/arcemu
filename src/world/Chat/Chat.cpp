@@ -334,6 +334,7 @@ void CommandTableStorage::Init()
 		{ "damageunit", 'd', &ChatHandler::HandleDebugDamageUnitCommand, "Damages the selected unit", NULL, 0, 0, 0 },
 		{ "setweather", 'd', &ChatHandler::HandleDebugSetWeatherCommand, "Sets weather for the current zone", NULL, 0, 0, 0 },
 		{ "auralist", 'd', &ChatHandler::HandleDebugAuraListCommand, "Lists the auras of the selected unit", NULL, 0, 0, 0 },
+		{ "sendfullauraupdate", 'd', &ChatHandler::HandleDebugSendFullAuraUpdateCommand, "Sends a full aura update", NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);

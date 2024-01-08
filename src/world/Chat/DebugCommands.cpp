@@ -1601,3 +1601,23 @@ bool ChatHandler::HandleDebugAuraListCommand( const char *args, WorldSession *se
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugSendFullAuraUpdateCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint64 guid = player->GetSelection();
+
+	if( guid == 0 )
+	{
+		RedSystemMessage( session, "You need to select a target unit" );
+		return true;
+	}
+
+	Unit *target = player->GetMapMgr()->GetUnit( guid );
+
+	SystemMessage( session, "Sending full aura update for the unit." );
+
+	Messenger::SendFullAuraUpdate( target );
+
+	return true;
+}
