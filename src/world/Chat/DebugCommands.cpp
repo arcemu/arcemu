@@ -1596,7 +1596,7 @@ bool ChatHandler::HandleDebugAuraListCommand( const char *args, WorldSession *se
 			continue;
 
 		SpellEntry *spe = aura->GetSpellProto();
-		SystemMessage( session, "%s (%u)", spe->Name, spe->Id );
+		SystemMessage( session, "%d: %s (%u)", i, spe->Name, spe->Id );
 	}
 
 	return true;
