@@ -113,9 +113,17 @@ static uint32 towerToQuestCredit[] = { 2, 0, 1, 3 };
 #define FACTION_HUMAN 1
 #define FACTION_ORC   2
 
+static uint32 entityFactions[] = { FACTION_HUMAN, FACTION_ORC };
+
 static uint32 shrineIds[] = { GO_LORDAERON_SHRINE_ALLIANCE, GO_LORDAERON_SHRINE_HORDE };
-static uint32 shrineFactions[] = { FACTION_HUMAN, FACTION_ORC };
 static float shrineLocation[] = { 3167.417725f, -4356.077148f, 138.797272f, 4.861288f };
+
+#define NPC_WILLIAM_KIELAR 17209
+#define SPELL_FLIGHTMASTER_AURA_BLUE 17327
+#define SPELL_FLIGHTMASTER_AURA_RED  31309
+
+static float flightMasterLocation[] = { 2966.970703f, -3037.198730f, 120.299431f, 6.149474f };
+static float flightMasterAura[] = { SPELL_FLIGHTMASTER_AURA_BLUE, SPELL_FLIGHTMASTER_AURA_RED };
 
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
 static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
@@ -184,7 +192,7 @@ public:
 		if( go != NULL )
 		{
 			/// Get the aura id from the go, and then spawn it
-			go->SetFaction( shrineFactions[ towerOwner[ EP_TOWER_NORTHPASS ] ] );
+			go->SetFaction( entityFactions[ towerOwner[ EP_TOWER_NORTHPASS ] ] );
 			uint32 aura = go->GetInfo()->Unknown3;
 			if( aura != 0 )
 			{
@@ -200,6 +208,49 @@ public:
 				);
 			}
 		}
+	}
+};
+
+class PlagueWoodTowerEventHandler : public TowerEventHandler
+{
+public:
+	PlagueWoodTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerBecomesNeutral()
+	{
+		Creature *flightMaster = mapMgr->GetInterface()->GetCreatureNearestCoords(
+			flightMasterLocation[ 0 ],
+			flightMasterLocation[ 1 ], 
+			flightMasterLocation[ 2 ], 
+			NPC_WILLIAM_KIELAR );
+
+		if( flightMaster != NULL )
+		{
+			flightMaster->Despawn( 1, 0 );
+		}
+	}
+
+	void onTowerCaptured()
+	{
+		Creature *flightMaster = mapMgr->GetInterface()->SpawnCreature(
+			NPC_WILLIAM_KIELAR,
+			flightMasterLocation[ 0 ],
+			flightMasterLocation[ 1 ],
+			flightMasterLocation[ 2 ],
+			flightMasterLocation[ 3 ],
+			false,
+			false,
+			0,
+			0 );
+
+		if( flightMaster != NULL )
+		{
+			flightMaster->SetFaction( entityFactions[ towerOwner[ EP_TOWER_PLAGUEWOOD ] ] );
+			flightMaster->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+			flightMaster->PushToWorld( mapMgr );
+			flightMaster->CastSpell( flightMaster, flightMasterAura[ towerOwner[ EP_TOWER_PLAGUEWOOD ] ], true );
+		}
+
 	}
 };
 
@@ -701,6 +752,7 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_EASTERN_KINGDOMS );
 	pvp.setMapMgr( mapMgr );
 	pvp.registerTowerEventHandler( EP_TOWER_NORTHPASS, new NorthpassTowerEventHandler( mapMgr ) );
+	pvp.registerTowerEventHandler( EP_TOWER_PLAGUEWOOD, new PlagueWoodTowerEventHandler( mapMgr ) );
 
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_NORTHPASS, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_CROWNGUARD, &EPTowerBannerAI::Create );
