@@ -333,6 +333,7 @@ void CommandTableStorage::Init()
 		{ "sendlfgqueuestatus", 'd', &ChatHandler::HandleDebugSendLFGQueueStatusCommand, "Send LFG queue status", NULL, 0, 0, 0 },
 		{ "damageunit", 'd', &ChatHandler::HandleDebugDamageUnitCommand, "Damages the selected unit", NULL, 0, 0, 0 },
 		{ "setweather", 'd', &ChatHandler::HandleDebugSetWeatherCommand, "Sets weather for the current zone", NULL, 0, 0, 0 },
+		{ "auralist", 'd', &ChatHandler::HandleDebugAuraListCommand, "Lists the auras of the selected unit", NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);

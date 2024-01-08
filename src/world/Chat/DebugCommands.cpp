@@ -1572,3 +1572,32 @@ bool ChatHandler::HandleDebugSetWeatherCommand( const char *args, WorldSession *
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugAuraListCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint64 guid = player->GetSelection();
+
+	if( guid == 0 )
+	{
+		RedSystemMessage( session, "You need to select a target unit" );
+		return true;
+	}
+
+	Unit *target = player->GetMapMgr()->GetUnit( guid );
+
+	SystemMessage( session, "Auras of the selected Unit:" );
+
+	target->m_auras;
+	for( int i = 0; i < MAX_TOTAL_AURAS_END; i++ )
+	{
+		Aura *aura = target->m_auras[ i ];
+		if( aura == NULL )
+			continue;
+
+		SpellEntry *spe = aura->GetSpellProto();
+		SystemMessage( session, "%s (%u)", spe->Name, spe->Id );
+	}
+
+	return true;
+}
