@@ -5594,7 +5594,10 @@ bool Unit::HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit* caster)
 uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 {
 	if(Sp == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell", GetGUID() );
 		return SPELL_FAILED_UNKNOWN;
+	}
 
 	Spell* newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	SpellCastTargets targets(0);
@@ -5614,7 +5617,12 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, bool triggered)
 {
 	SpellEntry* ent = dbcSpell.LookupEntryForced(SpellID);
-	if(ent == NULL) return SPELL_FAILED_UNKNOWN;
+
+	if(ent == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell %u", GetGUID(), SpellID );
+		return SPELL_FAILED_UNKNOWN;
+	}
 
 	return CastSpell(Target, ent, triggered);
 }
@@ -5622,7 +5630,10 @@ uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, bool triggered)
 uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 {
 	if(Sp == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell", GetGUID() );
 		return SPELL_FAILED_UNKNOWN;
+	}
 
 	SpellCastTargets targets(targetGuid);
 	Spell* newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
@@ -5632,7 +5643,11 @@ uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 uint8 Unit::CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered)
 {
 	SpellEntry* ent = dbcSpell.LookupEntryForced(SpellID);
-	if(ent == NULL) return SPELL_FAILED_UNKNOWN;
+	if(ent == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell %u", GetGUID(), SpellID );
+		return SPELL_FAILED_UNKNOWN;
+	}
 
 	return CastSpell(targetGuid, ent, triggered);
 }
@@ -5645,7 +5660,10 @@ uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, bo
 uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, bool triggered)
 {
 	if(Sp == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell ", GetGUID() );
 		return SPELL_FAILED_UNKNOWN;
+	}
 
 	Spell* newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	newSpell->forced_basepoints[0] = forced_basepoints;
@@ -5671,7 +5689,10 @@ uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, in
 uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, int32 charges, bool triggered)
 {
 	if(Sp == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell", GetGUID() );
 		return SPELL_FAILED_UNKNOWN;
+	}
 
 	Spell* newSpell = sSpellFactoryMgr.NewSpell(this, Sp, triggered, 0);
 	newSpell->forced_basepoints[0] = forced_basepoints;
@@ -5693,7 +5714,10 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, in
 void Unit::CastSpellAoF(float x, float y, float z, SpellEntry* Sp, bool triggered)
 {
 	if(Sp == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell", GetGUID() );
 		return;
+	}
 
 	SpellCastTargets targets;
 	targets.m_destX = x;
