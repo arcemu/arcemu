@@ -1689,9 +1689,6 @@ void Creature::OnPushToWorld()
 		sEventMgr.AddEvent( this, &Creature::eventRestockVendorItems, EVENT_VENDOR_RESTOCK, VENDOR_RESTOCK_UPDATE_TIME, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 	}
 
-	/// Announce our auras in case we have to cast an aura right after spawning
-	sEventMgr.AddEvent( (Unit*)this, &Unit::SendFullAuraUpdate, EVENT_SEND_AURAS_TO_PLAYER, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-
 	CALL_INSTANCE_SCRIPT_EVENT(m_mapMgr, OnCreaturePushToWorld)(this);
 }
 

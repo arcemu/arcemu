@@ -5876,6 +5876,9 @@ void Unit::OnPushToWorld()
 		GetVehicleComponent()->InstallAccessories();
 
 	z_axisposition = 0.0f;
+
+	/// Announce our auras around after pushing so that auras that are applied on login / spawn can be seen
+	sEventMgr.AddEvent( this, &Unit::SendFullAuraUpdate, EVENT_SEND_AURAS_TO_PLAYER, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
 //! Remove Unit from world
