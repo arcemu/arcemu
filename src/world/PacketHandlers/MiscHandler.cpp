@@ -1696,7 +1696,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
 				if( goinfo->Unknown1 != 0 )
 				{
-					plyr->CastSpell(guid, goinfo->Unknown1, false);
+					plyr->CastSpell(plyr, goinfo->Unknown1, false);
 				}
 
 				// show page

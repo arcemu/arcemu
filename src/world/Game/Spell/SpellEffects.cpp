@@ -2747,7 +2747,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					/// If there's a spell to cast, cast it
 					if( goInfo->Unknown1 != 0 )
 					{
-						p_caster->CastSpell( gameObjTarget->GetGUID(), goInfo->Unknown1, false );
+						p_caster->CastSpell( p_caster, goInfo->Unknown1, false );
 					}
 					
 					/// If there's text to show, show it
