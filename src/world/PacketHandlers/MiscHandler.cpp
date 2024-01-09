@@ -1694,7 +1694,10 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			break;
 		case GAMEOBJECT_TYPE_GOOBER:
 			{
-				plyr->CastSpell(guid, goinfo->Unknown1, false);
+				if( goinfo->Unknown1 != 0 )
+				{
+					plyr->CastSpell(guid, goinfo->Unknown1, false);
+				}
 
 				// show page
 				if(goinfo->sound7 != 0)
