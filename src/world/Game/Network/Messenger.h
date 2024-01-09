@@ -116,6 +116,9 @@ public:
 	/// Send all auras to the client
 	static uint32 SendFullAuraUpdate( Unit* unit );
 
+	/// Send all auras to the specified players' client only
+	static uint32 SendFullAuraUpdateToPlayer( Player* player, Unit* unit, bool delayed = false );
+
 	/// Send an update about just one aura to the client
 	static void SendAuraUpdate( Unit* unit, uint32 AuraSlot, bool remove );
 

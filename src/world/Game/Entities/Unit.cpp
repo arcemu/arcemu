@@ -6088,6 +6088,7 @@ void Unit::SendFullAuraUpdate()
 void Unit::SendAuraUpdate(uint32 AuraSlot, bool remove)
 {
 	Messenger::SendAuraUpdate( this, AuraSlot, remove );
+	LOG_DEBUG("Aura update: GUID: " I64FMT " slot %u", GetGUID(), AuraSlot);
 }
 
 uint32 Unit::ModVisualAuraStackCount(Aura* aur, int32 count)

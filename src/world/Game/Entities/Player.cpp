@@ -3716,7 +3716,7 @@ void Player::OnPushToWorld()
 	}
 
 	m_changingMaps = false;
-	SendFullAuraUpdate();
+	Messenger::SendFullAuraUpdateToPlayer( this, this );
 
 	m_ItemInterface->HandleItemDurations();
 
@@ -5731,6 +5731,11 @@ void Player::AddInRangeObject(Object* pObj)
 	{
 		TO< Creature* >(pObj)->GetAIInterface()->SendCurrentMove(this);
 	}
+
+	if( pObj->IsUnit() )
+	{
+		Messenger::SendFullAuraUpdateToPlayer( this, TO_UNIT(pObj), true );
+	}
 }
 void Player::OnRemoveInRangeObject(Object* pObj)
 {
@@ -7382,6 +7387,7 @@ void Player::ProcessPendingUpdates()
 		if(c < (size_t)sWorld.compression_threshold || !CompressAndSendUpdateBuffer((uint32)c, update_buffer))
 		{
 			// send uncompressed packet -> because we failed
+			///LOG_DEBUG("Sending SMSG_UPDATE_OBJECT");
 			m_session->OutPacket(SMSG_UPDATE_OBJECT, (uint16)c, update_buffer);
 		}
 	}
@@ -7406,6 +7412,7 @@ void Player::ProcessPendingUpdates()
 		if(c < (size_t)sWorld.compression_threshold || !CompressAndSendUpdateBuffer((uint32)c, update_buffer))
 		{
 			// send uncompressed packet -> because we failed
+			///LOG_DEBUG("Sending SMSG_UPDATE_OBJECT");
 			m_session->OutPacket(SMSG_UPDATE_OBJECT, (uint16)c, update_buffer);
 		}
 	}
@@ -7420,6 +7427,7 @@ void Player::ProcessPendingUpdates()
 	{
 		pck = delayedPackets.next();
 		//printf("Delayed packet opcode %u sent.\n", pck->GetOpcode());
+		///LOG_DEBUG( "Sending delayed %s", g_worldOpcodeNames[ pck->GetOpcode() ].name );
 		m_session->SendPacket(pck);
 		delete pck;
 	}
@@ -7491,6 +7499,7 @@ bool Player::CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer
 	*(uint32*)&buffer[0] = size;
 
 	// send it
+	///LOG_DEBUG("Sending SMSG_COMPRESSED_UPDATE_OBJECT");
 	m_session->OutPacket(SMSG_COMPRESSED_UPDATE_OBJECT, (uint16)stream.total_out + 4, buffer);
 
 	// cleanup memory

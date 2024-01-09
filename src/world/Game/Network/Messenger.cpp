@@ -384,13 +384,11 @@ void Messenger::SendPowerUpdate( Unit *unit, uint32 amount, bool self )
 	router.sendMessageToPlayersInRange( &data, self );
 }
 
-uint32 Messenger::SendFullAuraUpdate(Unit *unit)
+uint32 buildFullAuraUpdate( Unit *unit, WorldPacket &data )
 {
-	WorldPacket data(SMSG_AURA_UPDATE_ALL, 200);
+	uint32 updates = 0;
 
 	data << WoWGuid(unit->GetNewGUID());
-
-	uint32 Updates = 0;
 
 	for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i)
 	{
@@ -425,12 +423,39 @@ uint32 Messenger::SendFullAuraUpdate(Unit *unit)
 				data << uint32(aur->GetTimeLeft());
 			}
 
-			++Updates;
+			++updates;
 		}
 	}
-	unit->SendMessageToSet(&data, true);
+
+	return updates;
+}
+
+uint32 Messenger::SendFullAuraUpdate(Unit *unit)
+{
+	WorldPacket data(SMSG_AURA_UPDATE_ALL, 200);
+	uint32 Updates = buildFullAuraUpdate( unit, data );
+
+	MessageRouter router( unit );
+	router.sendMessageToPlayersInRange( &data, true, false );
 
 	return Updates;
+}
+
+uint32 Messenger::SendFullAuraUpdateToPlayer( Player *player, Unit *unit, bool delayed )
+{
+	WorldPacket data(SMSG_AURA_UPDATE_ALL, 200);
+	uint32 updates = buildFullAuraUpdate( unit, data );
+
+	if( !delayed )
+	{
+		PlayerMessenger::sendMessage( player, data );
+	}
+	else
+	{
+		PlayerMessenger::sendDelayedMessage( player, data );
+	}
+
+	return updates;
 }
 
 void Messenger::SendAuraUpdate( Unit *unit, uint32 AuraSlot, bool remove )
@@ -483,7 +508,8 @@ void Messenger::SendAuraUpdate( Unit *unit, uint32 AuraSlot, bool remove )
 		}
 	}
 
-	unit->SendMessageToSet( &data, true );
+	MessageRouter router( unit );
+	router.sendMessageToPlayersInRange( &data, true );
 }
 
 void Messenger::SendEnableFlightMessage(Unit *unit)
