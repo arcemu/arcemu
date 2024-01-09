@@ -684,6 +684,73 @@ public:
 	}
 };
 
+enum TaxiPathIds
+{
+	EP_TAXIPATH_NORTHPASS  = 494,
+	EP_TAXIPATH_EASTWALL   = 495,
+	EP_TAXIPATH_CROWNGUARD = 496
+};
+
+#define MODEL_SPECTRAL_GRYPHON 20070
+#define GOSSIP_TEXT_WILLIAM_KIELAR 8834
+
+//  GossipScript for the spectral gryphon master William Kielar
+class WilliamKielarGossip : public Arcemu::Gossip::Script
+{
+	public:
+		WilliamKielarGossip()
+		{			
+		}
+
+		void OnHello( Object *object, Player* player )
+		{
+			Arcemu::Gossip::Menu menu( object->GetGUID(), GOSSIP_TEXT_WILLIAM_KIELAR );
+
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Take me to Northpass Tower", 1, false );
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Take me to Eastwall Tower", 2, false );
+			menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Take me to Crown Guard Tower", 3, false );
+
+			menu.Send( player );
+		}
+
+		void OnSelectOption( Object *object, Player *player, uint32 selection, const char* code )
+		{
+			Arcemu::Gossip::Menu::Complete( player );
+
+			uint32 taxiPathId = 0;
+
+			switch( selection )
+			{
+				case 1:
+					taxiPathId = EP_TAXIPATH_NORTHPASS;
+					break;
+
+				case 2:
+					taxiPathId = EP_TAXIPATH_EASTWALL;
+					break;
+
+				case 3:
+					taxiPathId = EP_TAXIPATH_CROWNGUARD;
+					break;
+			}
+
+			if( taxiPathId != 0 )
+			{
+				TaxiPath *path = sTaxiMgr.GetTaxiPath( taxiPathId );
+				if( path != NULL )
+				{
+					player->TaxiStart( path, MODEL_SPECTRAL_GRYPHON, 0 );
+				}
+			}
+		}
+
+		void Destroy()
+		{
+			delete this;
+		}
+};
+
+
 /// Is the specified map, zone, area triplet considered to be in Eastern Plaguelands?
 static bool isEpl( uint32 map, uint32 zone, uint32 area )
 {
@@ -762,4 +829,6 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Epl_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Epl_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Epl_onZoneChange );
+
+	mgr->register_creature_gossip( NPC_WILLIAM_KIELAR, new WilliamKielarGossip() );
 }
