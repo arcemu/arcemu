@@ -703,13 +703,17 @@ public:
 			}
 			else
 			{
-				if( player->GetTeam() == TEAM_ALLIANCE )
+				/// Dead, invisible, and stealthed players don't count
+				if( player->isAlive() && !player->IsInvisible() && !player->IsStealth() )
 				{
-					alliancePlayers++;
-				}
-				else
-				{
-					hordePlayers++;
+					if( player->GetTeam() == TEAM_ALLIANCE )
+					{
+						alliancePlayers++;
+					}
+					else
+					{
+						hordePlayers++;
+					}
 				}
 
 				playersInRange.insert( player );
