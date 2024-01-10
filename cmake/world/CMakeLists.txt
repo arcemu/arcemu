@@ -185,6 +185,7 @@ SET(sources
 	Game/Entities/Shaman.cpp
 	Game/Entities/Warlock.cpp
 	Game/Entities/Warrior.cpp
+	Game/Graveyard/GraveyardService.cpp
 	Server/WowCrypt.cpp
 	PacketHandlers/NewHandlers/ItemPacketHandlers.cpp
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.cpp
@@ -344,6 +345,7 @@ SET( headers
 	Server/WowCrypt.h
 	Game/Network/WoWGuid.h
 	Game/WUtil.h
+	Game/Graveyard/GraveyardService.cpp
 	PacketHandlers/NewHandlers/ItemPacketHandlers.h
 	PacketHandlers/NewHandlers/PlayerPacketHandlers.h 
 	PacketHandlers/NewHandlers/PacketHandlerMacros.h

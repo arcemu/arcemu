@@ -437,6 +437,9 @@ bool World::SetInitialWorldSettings()
 
 	// wait for all loading to complete.
 	tl.wait();
+	
+	new GraveyardService();
+
 	sLocalizationMgr.Reload(false);
 
 	CommandTableStorage::getSingleton().Load();

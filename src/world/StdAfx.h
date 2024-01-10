@@ -260,6 +260,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Network/AccountPackets.h"
 #include "Game/Network/ItemPackets.h"
 #include "Game/Network/LFGPackets.h"
+#include "Game/Graveyard/GraveyardService.h"
 #include "PacketHandlers/InventoryListBuilder.h"
 
 #endif

@@ -4729,88 +4729,21 @@ void Player::DeathDurabilityLoss(double percent)
 
 void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 {
-	bool first = true;
-	// float closestX = 0, closestY = 0, closestZ = 0, closestO = 0;
-	StorageContainerIterator<GraveyardTeleport> * itr;
-
-	LocationVector src(ox, oy, oz);
-	LocationVector dest;
-	LocationVector temp;
-	float closest_dist = 999999.0f;
-	float dist;
-
 	if(m_bg && m_bg->HookHandleRepop(this))
 	{
 		return;
 	}
-	else
+
+	LocationVector pos( ox, oy, oz );
+	GraveyardTeleport *grave = sGraveyardService.findClosest( mapid, pos, GetTeam() );
+
+	if( sHookInterface.OnRepop(this) && grave != NULL )
 	{
-		itr = GraveyardStorage.MakeIterator();
-		GraveyardTeleport* pGrave = NULL;
-		while(!itr->AtEnd())
-		{
-			pGrave = itr->Get();
-			if(pGrave->MapId == mapid && (pGrave->FactionID == GetTeam() || pGrave->FactionID == 3))
-			{
-				temp.ChangeCoords(pGrave->X, pGrave->Y, pGrave->Z);
-				dist = src.DistanceSq(temp);
-				if(first || dist < closest_dist)
-				{
-					first = false;
-					closest_dist = dist;
-					dest = temp;
-				}
-			}
-
-			if(!itr->Inc())
-				break;
-		}
-		/* Fix on 3/13/2010, defaults to last graveyard, if none fit the criteria.
-		Keeps the player from hanging out to dry.*/
-		if(first && pGrave != NULL)//crappy Databases with no graveyards.
-		{
-			dest.ChangeCoords(pGrave->X, pGrave->Y, pGrave->Z);
-			first = false;
-		}
-
-		itr->Destruct();
+		pos.ChangeCoords( grave->X, grave->Y, grave->Z );
+		SafeTeleport( mapid, 0, pos );
 	}
-
-	if(sHookInterface.OnRepop(this) && !first)//dest has now always a value != {0,0,0,0}//but there may be DBs with no graveyards
-	{
-		SafeTeleport(mapid, 0, dest);
-	}
-
-	/* Todo: Generate error message here, compensate for failed teleport. */
-
-//	//correct method as it works on official server, and does not require any damn sql
-//	//no factions! no zones! no sqls! 1word: blizz-like
-//	float closestX , closestY , closestZ ;
-//	uint32 entries=sWorldSafeLocsStore.GetNumRows();
-//	GraveyardEntry*g;
-//	uint32 mymapid=mapid
-//	float mx=ox,my=oy;
-//	float last_distance=9e10;
-//
-//	for(uint32 x= 0;x<entries;x++)
-//	{
-//		g=sWorldSafeLocsStore.LookupEntry(x);
-//		if(g->mapid!=mymapid)continue;
-//		float distance=(mx-g->x)*(mx-g->x)+(my-g->y)*(my-g->y);
-//		if(distance<last_distance)
-//		{
-//			closestX=g->x;
-//			closestY=g->y;
-//			closestZ=g->z;
-//			last_distance=distance;
-//		}
-//
-//
-//	}
-//	if(last_distance<1e10)
-//#endif
-
-
+	
+	/* TODO: Generate error message here, compensate for failed teleport. */
 }
 
 void Player::JoinedChannel(Channel* c)
