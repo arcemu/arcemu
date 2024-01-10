@@ -4340,30 +4340,27 @@ void Player::SetSpeeds( uint8 type, float speed )
 	m_speedChangeCounter++;
 }
 
+#define SPELL_GHOST_8326   8326
+#define SPELL_GHOST_WISP1  9036
+#define SPELL_GHOST_WISP2  20584
+
 void Player::BuildPlayerRepop()
 {
 	Messenger::SendPreResurrect( this );
 
 	// Cleanup first
-	uint32 AuraIds[] = {20584, 9036, 8326, 0};
+	uint32 AuraIds[] = {SPELL_GHOST_8326, SPELL_GHOST_WISP1, SPELL_GHOST_WISP2, 0};
 	RemoveAuras(AuraIds); // Cebernic: Removeaura just remove once(bug?).
 
 	SetHealth(1);
 
-	SpellCastTargets tgt;
-	tgt.m_unitTarget = this->GetGUID();
-
-	if(getRace() == RACE_NIGHTELF)
+	if( getRace() == RACE_NIGHTELF )
 	{
-		SpellEntry* inf = dbcSpell.LookupEntry(9036);
-		Spell* sp = sSpellFactoryMgr.NewSpell(this, inf, true, NULL);
-		sp->prepare(&tgt);
+		CastSpell( this, SPELL_GHOST_WISP1, true );
 	}
 	else
 	{
-		SpellEntry* inf = dbcSpell.LookupEntry(8326);
-		Spell* sp = sSpellFactoryMgr.NewSpell(this, inf, true, NULL);
-		sp->prepare(&tgt);
+		CastSpell( this, SPELL_GHOST_8326, true );
 	}
 
 	StopMirrorTimer(0);
