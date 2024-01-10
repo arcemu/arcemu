@@ -1076,6 +1076,8 @@ bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 		SystemMessage(m_session, "%s HP:%s%u/%u", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetHP(), GObj->GetMaxHP() );
 	}
 
+	SystemMessage(m_session, "%sLocation:%s %f, %f, %f", MSG_COLOR_GREEN, MSG_COLOR_LIGHTBLUE, GObj->GetPositionX(), GObj->GetPositionY(), GObj->GetPositionZ() );
+
 	return true;
 }
 
