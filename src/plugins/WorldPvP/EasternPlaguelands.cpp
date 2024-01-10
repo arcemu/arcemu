@@ -29,8 +29,8 @@
 #define GO_LORDAERON_SHRINE_ALLIANCE 181682
 #define GO_LORDAERON_SHRINE_HORDE    181955
 
-#define EP_TOWER_BANNER_UPDATE_FREQ (2 * 1000)
-#define EP_TOWER_BANNER_RANGE 50.0f
+#define EP_TOWER_SCAN_UPDATE_FREQ (2 * 1000)
+#define EP_TOWER_SCAN_RANGE 50.0f
 
 #define EP_TOWER_NORTHPASS   0
 #define EP_TOWER_CROWNGUARD  1
@@ -46,6 +46,13 @@
 #define TOWER_HORDE_CONTROL    1
 #define TOWER_NEUTRAL          2
 #define TOWER_STATES           3
+
+static float towerCoords[ EP_TOWER_COUNT ][3] = {
+	{ 3170.212646f, -4374.623535f, 139.630493f },
+	{ 1854.023926f, -3722.084229f, 162.223434f },
+	{ 2563.455811f, -4796.467258f, 110.211266f },
+	{ 2973.139893f, -3036.209961f, 120.296402f }
+};
 
 static const char* towerNames[] = 
 {
@@ -677,7 +684,7 @@ public:
 				break;
 		}
 
-		RegisterAIUpdateEvent( EP_TOWER_BANNER_UPDATE_FREQ );
+		RegisterAIUpdateEvent( EP_TOWER_SCAN_UPDATE_FREQ );
 	}
 
 	void AIUpdate()
@@ -694,9 +701,10 @@ public:
 			Player *player = static_cast< Player* >( *itr );
 			player->GetDisplayId();
 
-			float d = player->CalcDistance( _gameobject );
+			/// Calculate the player's distance from the center of the tower
+			float d = player->CalcDistance( towerCoords[ towerId ][ 0 ], towerCoords[ towerId ][ 1 ], towerCoords[ towerId ][ 2 ] );
 
-			if( d > EP_TOWER_BANNER_RANGE )
+			if( d > EP_TOWER_SCAN_RANGE )
 			{
 				/// No progress bar for players out of range
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS_UI, 0 );
@@ -816,7 +824,6 @@ class WilliamKielarGossip : public Arcemu::Gossip::Script
 /// Is the specified map, zone, area triplet considered to be in Eastern Plaguelands?
 static bool isEpl( uint32 map, uint32 zone, uint32 area )
 {
-	MAP_EASTERN_KINGDOMS;
 	if( map == MAP_STRATHOLME )
 	{
 		return true;
