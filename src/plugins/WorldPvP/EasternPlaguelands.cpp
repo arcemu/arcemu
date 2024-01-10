@@ -59,7 +59,7 @@ static const char* towerNames[] =
 	"Northpass Tower",
 	"Crown Guard Tower",
 	"Eastwall Tower",
-	"Plaugewood Tower"
+	"Plaguewood Tower"
 };
 
 static int32 towerOwner[] = {
