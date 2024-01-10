@@ -2345,7 +2345,18 @@ bool ChatHandler::HandleNpcFollowCommand(const char* args, WorldSession* m_sessi
 	Creature* creature = getSelectedCreature(m_session, true);
 	if(!creature) return true;
 
-	creature->GetAIInterface()->SetUnitToFollow(m_session->GetPlayer());
+	float angle;
+	float distance;
+
+	AIInterface *ai = creature->GetAIInterface();
+
+	if( sscanf( args, "%f %f", &angle, &distance ) == 2 )
+	{
+		ai->SetUnitToFollowAngle( angle );
+		ai->SetFollowDistance( distance );
+	}
+
+	ai->SetUnitToFollow(m_session->GetPlayer());
 
 	sGMLog.writefromsession(m_session, "used npc follow command on %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id());
 	return true;
