@@ -21,8 +21,12 @@
 
 initialiseSingleton( GraveyardService );
 
+#define MAX_DISTANCE_VARIANCE 5.0f
+
 GraveyardTeleport* GraveyardService::findClosest( uint32 mapId, LocationVector &location, uint32 team )
 {
+	Guard guard( lock );
+
 	GraveyardTeleport *closestGrave = NULL;
 	LocationVector temp;
 	float closest = std::numeric_limits< float >::max();
@@ -53,4 +57,46 @@ GraveyardTeleport* GraveyardService::findClosest( uint32 mapId, LocationVector &
 	itr->Destruct();
 
 	return closestGrave;
+}
+
+bool GraveyardService::setGraveyardOwner( uint32 mapId, LocationVector &location, uint32 newOwner )
+{
+	Guard guard( lock );
+
+	GraveyardTeleport *closestGrave = NULL;
+	LocationVector temp;
+	float closest = std::numeric_limits< float >::max();
+	
+	StorageContainerIterator< GraveyardTeleport > *itr = GraveyardStorage.MakeIterator();
+	while( !itr->AtEnd() )
+	{
+		GraveyardTeleport *grave = itr->Get();
+		
+		if( grave->MapId == mapId )
+		{
+			temp.ChangeCoords( grave->X, grave->Y, grave->Z );
+			float d = location.DistanceSq( temp );
+			if( d < closest )
+			{
+				closest = d;
+				closestGrave = grave;
+			}
+		}
+		
+		if( !itr->Inc() )
+		{
+			break;
+		}
+	
+	}
+	
+	itr->Destruct();
+
+	if( closest < MAX_DISTANCE_VARIANCE )
+	{
+		closestGrave->FactionID = newOwner;
+		return true;
+	}
+
+	return false;
 }

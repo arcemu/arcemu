@@ -125,6 +125,13 @@ static float shrineLocation[] = { 3167.417725f, -4356.077148f, 138.797272f, 4.86
 static float flightMasterLocation[] = { 2966.970703f, -3037.198730f, 120.299431f, 6.149474f };
 static float flightMasterAura[] = { SPELL_FLIGHTMASTER_AURA_BLUE, SPELL_FLIGHTMASTER_AURA_RED };
 
+#define GO_BANNER_AURAL_ALLIANCE 180421
+#define GO_BANNER_AURAL_HORDE    180422
+
+static float graveyardLocation[] = { 1978.47f, -3655.89f, 119.795f };
+static float graveyardAuraLocation[] = { 1985.469971f, -3653.879883f, 120.169998f };
+static float graveyardAuraObjects[] = { 180421, 180422 };
+
 #define SPELL_LORDAERONS_BLESSING 30238
 
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
@@ -256,6 +263,52 @@ public:
 	}
 };
 
+class CrownGuardTowerEventHandler : public TowerEventHandler
+{
+public:
+	CrownGuardTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerBecomesNeutral()
+	{
+		/// Crownguard Tower graveyard belongs to no one by default
+		sGraveyardService.setGraveyardOwner(
+			MAP_EASTERN_KINGDOMS,
+			LocationVector( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] ),
+			std::numeric_limits<uint32>::max()
+		);
+
+		/// Remove banner aura from the graveyard
+		for( int i = 0; i < 2; i++ )
+		{
+			GameObject *go = mapMgr->GetInterface()->GetGameObjectNearestCoords(
+				graveyardAuraLocation[ 0 ], graveyardAuraLocation[ 1 ], graveyardAuraLocation[ 2 ],
+				graveyardAuraObjects[ i ]
+			);
+
+			if( go != NULL )
+			{
+				go->Despawn( 1, 0 );
+			}
+		}
+	}
+
+	void onTowerCaptured()
+	{
+		/// Crownguard Tower graveyard given to the faction who owns the tower
+		sGraveyardService.setGraveyardOwner(
+			MAP_EASTERN_KINGDOMS,
+			LocationVector( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] ),
+			towerOwner[ EP_TOWER_CROWNGUARD ]
+		);
+
+		/// Spawn the banner aura in the graveyard
+		GameObject *go = mapMgr->GetInterface()->SpawnGameObject(
+			graveyardAuraObjects[ towerOwner[ EP_TOWER_CROWNGUARD ] ],
+			graveyardAuraLocation[ 0 ], graveyardAuraLocation[ 1 ], graveyardAuraLocation[ 2 ], 0.0f,
+			true, 0, 0 );
+	}
+};
+
 class EasternPlaguelandsPvP
 {
 private:
@@ -350,6 +403,13 @@ public:
 		if( itr != towerEventHandlers.end() )
 		{
 			itr->second->onTowerCaptured();
+		}
+		else
+		{
+			if( towerId == EP_TOWER_CROWNGUARD )
+			{
+				sGraveyardService.setGraveyardOwner( 0, LocationVector( 1978.47f, -3655.89f, 119.795f ), towerOwner[ towerId ] );
+			}
 		}
 
 		/// Find the right spell for both factions, casting it will upgrade / downgrade appropriately
@@ -831,6 +891,7 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	pvp.setMapMgr( mapMgr );
 	pvp.registerTowerEventHandler( EP_TOWER_NORTHPASS, new NorthpassTowerEventHandler( mapMgr ) );
 	pvp.registerTowerEventHandler( EP_TOWER_PLAGUEWOOD, new PlagueWoodTowerEventHandler( mapMgr ) );
+	pvp.registerTowerEventHandler( EP_TOWER_CROWNGUARD, new CrownGuardTowerEventHandler( mapMgr ) );
 
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_NORTHPASS, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_CROWNGUARD, &EPTowerBannerAI::Create );
@@ -850,4 +911,11 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	{
 		spe->EffectApplyAuraName[ 1 ] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
 	}
+
+	/// Crownguard Tower graveyard belongs to no one by default
+	sGraveyardService.setGraveyardOwner(
+		MAP_EASTERN_KINGDOMS,
+		LocationVector( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] ),
+		std::numeric_limits<uint32>::max()
+	);
 }

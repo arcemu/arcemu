@@ -25,6 +25,14 @@ class SERVER_DECL GraveyardService : public Singleton<GraveyardService>
 public:
 	/// Finds the closest graveyard
 	GraveyardTeleport* findClosest( uint32 mapId, LocationVector &location, uint32 team );
+
+	/// Sets the owner of the specified graveyard.
+	/// Returns true on success.
+	/// Returns false if there's no graveyard close to the specified location.
+	bool setGraveyardOwner( uint32 mapId, LocationVector &location, uint32 newTeam );
+
+private:
+	Mutex lock;
 };
 
 #define sGraveyardService GraveyardService::getSingleton()
