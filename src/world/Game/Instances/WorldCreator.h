@@ -29,6 +29,8 @@ enum Maps
 {
 	MAP_EASTERN_KINGDOMS      = 0,
 	MAP_KALIMDOR              = 1,
+	MAP_SCHOLOMANCE           = 289,
+	MAP_STRATHOLME            = 329,
 	MAP_RUINS_OF_AHNQIRAJ     = 509,
 	MAP_OUTLAND               = 530,
 	MAP_AHNQIRAJ_TEMPLE       = 531,

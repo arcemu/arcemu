@@ -125,6 +125,8 @@ static float shrineLocation[] = { 3167.417725f, -4356.077148f, 138.797272f, 4.86
 static float flightMasterLocation[] = { 2966.970703f, -3037.198730f, 120.299431f, 6.149474f };
 static float flightMasterAura[] = { SPELL_FLIGHTMASTER_AURA_BLUE, SPELL_FLIGHTMASTER_AURA_RED };
 
+#define SPELL_LORDAERONS_BLESSING 30238
+
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
 static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
 
@@ -750,16 +752,16 @@ class WilliamKielarGossip : public Arcemu::Gossip::Script
 		}
 };
 
-
 /// Is the specified map, zone, area triplet considered to be in Eastern Plaguelands?
 static bool isEpl( uint32 map, uint32 zone, uint32 area )
 {
-	if( map == 329 )
+	MAP_EASTERN_KINGDOMS;
+	if( map == MAP_STRATHOLME )
 	{
 		return true;
 	}
 
-	if( map == 0 && zone == 139 )
+	if( ( map == MAP_EASTERN_KINGDOMS ) && ( ( zone == 139 ) || ( zone == 2017 ) ) )
 	{
 		return true;
 	}
@@ -772,6 +774,10 @@ static void Epl_onEnterWorld( Player *player )
 {
 	if( !isEpl( player->GetMapId(), player->GetZoneId(), player->GetAreaID() ) )
 	{
+		if( player->GetMapId() != MAP_SCHOLOMANCE )
+		{
+			player->RemoveAura( SPELL_LORDAERONS_BLESSING );
+		}
 		return;
 	}
 
@@ -807,6 +813,11 @@ void Epl_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 	else
 	{
+		if( player->GetMapId() != MAP_SCHOLOMANCE )
+		{
+			player->RemoveAura( SPELL_LORDAERONS_BLESSING );
+		}
+
 		for( int i = 1; i <= EP_TOWER_COUNT; i++ )
 		{
 			player->RemoveAura( rewardSpellIds[ team ][ i ] );
@@ -831,4 +842,12 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Epl_onZoneChange );
 
 	mgr->register_creature_gossip( NPC_WILLIAM_KIELAR, new WilliamKielarGossip() );
+
+
+	/// Haxx! TODO: Improve this
+	SpellEntry *spe = dbcSpell.LookupEntryForced( SPELL_LORDAERONS_BLESSING );
+	if( spe != NULL )
+	{
+		spe->EffectApplyAuraName[ 1 ] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
+	}
 }
