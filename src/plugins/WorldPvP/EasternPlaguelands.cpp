@@ -271,9 +271,11 @@ public:
 	void onTowerBecomesNeutral()
 	{
 		/// Crownguard Tower graveyard belongs to no one by default
+		LocationVector location( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] );
+
 		sGraveyardService.setGraveyardOwner(
 			MAP_EASTERN_KINGDOMS,
-			LocationVector( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] ),
+			location,
 			std::numeric_limits<uint32>::max()
 		);
 
@@ -295,9 +297,11 @@ public:
 	void onTowerCaptured()
 	{
 		/// Crownguard Tower graveyard given to the faction who owns the tower
+		LocationVector location( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] );
+
 		sGraveyardService.setGraveyardOwner(
 			MAP_EASTERN_KINGDOMS,
-			LocationVector( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] ),
+			location,
 			towerOwner[ EP_TOWER_CROWNGUARD ]
 		);
 
@@ -403,13 +407,6 @@ public:
 		if( itr != towerEventHandlers.end() )
 		{
 			itr->second->onTowerCaptured();
-		}
-		else
-		{
-			if( towerId == EP_TOWER_CROWNGUARD )
-			{
-				sGraveyardService.setGraveyardOwner( 0, LocationVector( 1978.47f, -3655.89f, 119.795f ), towerOwner[ towerId ] );
-			}
 		}
 
 		/// Find the right spell for both factions, casting it will upgrade / downgrade appropriately
@@ -913,9 +910,10 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	}
 
 	/// Crownguard Tower graveyard belongs to no one by default
+	LocationVector location( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] );
 	sGraveyardService.setGraveyardOwner(
 		MAP_EASTERN_KINGDOMS,
-		LocationVector( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] ),
+		location,
 		std::numeric_limits<uint32>::max()
 	);
 }
