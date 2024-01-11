@@ -173,7 +173,7 @@ public:
 		this->mapMgr = mapMgr;
 	}
 
-	virtual void onTowerBecomesNeutral() = 0;
+	virtual void onTowerBecomesNeutral(){};
 	virtual void onTowerCaptured() = 0;
 
 protected:
@@ -295,10 +295,6 @@ class EastwallTowerEventHandler : public TowerEventHandler
 {
 public:
 	EastwallTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
-
-	void onTowerBecomesNeutral()
-	{
-	}
 
 	void onTowerCaptured()
 	{
