@@ -331,7 +331,6 @@ public:
 			return;
 		}
 
-		//commander->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
 		commander->CastSpell( commander, spectralAura[ team ], true );
 
 		/// Spawn the 4 soldiers that follow him
