@@ -126,11 +126,12 @@ static uint32 shrineIds[] = { GO_LORDAERON_SHRINE_ALLIANCE, GO_LORDAERON_SHRINE_
 static float shrineLocation[] = { 3167.417725f, -4356.077148f, 138.797272f, 4.861288f };
 
 #define NPC_WILLIAM_KIELAR 17209
-#define SPELL_FLIGHTMASTER_AURA_BLUE 17327
-#define SPELL_FLIGHTMASTER_AURA_RED  31309
+#define SPELL_SPIRITPARTCILES_BLUE 17327
+#define SPELL_SPIRITPARTICLES_RED  31309
 
 static float flightMasterLocation[] = { 2966.970703f, -3037.198730f, 120.299431f, 6.149474f };
-static float flightMasterAura[] = { SPELL_FLIGHTMASTER_AURA_BLUE, SPELL_FLIGHTMASTER_AURA_RED };
+
+static float spectralAura[] = { SPELL_SPIRITPARTCILES_BLUE, SPELL_SPIRITPARTICLES_RED };
 
 #define GO_BANNER_AURAL_ALLIANCE 180421
 #define GO_BANNER_AURAL_HORDE    180422
@@ -140,6 +141,42 @@ static float graveyardAuraLocation[] = { 1985.469971f, -3653.879883f, 120.169998
 static float graveyardAuraObjects[] = { 180421, 180422 };
 
 #define SPELL_LORDAERONS_BLESSING 30238
+
+#define NPC_LORDAERON_COMMANDER 17635
+#define NPC_LORDAERON_SOLDIER   17647
+#define NPC_LORDAERON_VETERAN   17995
+#define NPC_LORDAERON_FIGHTER   17996
+#define LORDAERON_SOLDIER_COUNT 4
+
+static uint32 commanderIds[] = { NPC_LORDAERON_COMMANDER, NPC_LORDAERON_VETERAN };
+static uint32 soldierIds[] = { NPC_LORDAERON_SOLDIER, NPC_LORDAERON_FIGHTER };
+
+static float commanderLocation[] = { 2547.371582f, -4778.284668f, 108.583450f, 2.341261f };
+static float soldierLocation[ LORDAERON_SOLDIER_COUNT ][ 4 ] = {
+	{ 2548.851074f, -4778.349609f, 108.879448f, 2.404879f },
+	{ 2549.718994f, -4779.288086f, 109.062050f, 2.404879f },
+	{ 2547.245361f, -4779.898438f, 108.677017f, 2.404879f },
+	{ 2548.307861f, -4780.843750f, 108.893883f, 2.404879f }
+};
+
+
+#define ATTACKWAYPOINT_COUNT 13
+
+static float attackWaypoints[ ATTACKWAYPOINT_COUNT ][ 4 ] = {
+	{ 2511.72f, -4749.557f, 97.0630f, 1.9033f },
+	{ 2485.5344f, -4702.3164f, 83.0896f, 0.8610f },
+	{ 2481.94f, -4665.74f, 75.67f, 0.2422f },
+	{ 2570.5356f, -4646.5737f, 79.6280f, 0.2120f },
+	{ 2627.7416f, -4611.056f, 84.6658f, 0.549f },
+	{ 2756.706f, -4530.61f, 89.08f, 1.1522f },
+	{ 2855.3122f, -4424.8042f, 89.8929f, 0.8543f },
+	{ 2889.6323f, -4332.642f, 90.689f, 0.2417f },
+	{ 2911.6372f, -4166.3696f, 93.9438f, 5.7659f },
+	{ 2988.9245f, -4220.51f, 96.9036f, 5.4035f },
+	{ 3090.0373f, -4260.4512f, 99.17f, 2.28f },
+	{ 3149.7045f, -4319.3281f, 130.9011f, 5.4286f },
+	{ 3163.5659f, -4337.4936f, 134.3381f, 4.7336f }
+};
 
 static Arcemu::Threading::AtomicULong allianceTowersCache( 0 );
 static Arcemu::Threading::AtomicULong hordeTowersCache( 0 );
@@ -264,9 +301,62 @@ public:
 			flightMaster->SetFaction( entityFactions[ towerOwner[ EP_TOWER_PLAGUEWOOD ] ] );
 			flightMaster->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
 			flightMaster->PushToWorld( mapMgr );
-			flightMaster->CastSpell( flightMaster, flightMasterAura[ towerOwner[ EP_TOWER_PLAGUEWOOD ] ], true );
+			flightMaster->CastSpell( flightMaster, spectralAura[ towerOwner[ EP_TOWER_PLAGUEWOOD ] ], true );
 		}
 
+	}
+};
+
+class EastwallTowerEventHandler : public TowerEventHandler
+{
+public:
+	EastwallTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerBecomesNeutral()
+	{
+	}
+
+	void onTowerCaptured()
+	{
+		uint32 team = towerOwner[ EP_TOWER_EASTWALL ];
+
+		/// Spawn a commander
+		Creature *commander = mapMgr->GetInterface()->SpawnCreature(
+			commanderIds[ team ],
+			commanderLocation[ 0 ], commanderLocation[ 1 ], commanderLocation[ 2 ], commanderLocation[ 3 ],
+			true, false, 0, 0
+		);
+		if( commander == NULL )
+		{
+			return;
+		}
+
+		//commander->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+		commander->CastSpell( commander, spectralAura[ team ], true );
+
+		/// Spawn the 4 soldiers that follow him
+		for( int i = 0; i < LORDAERON_SOLDIER_COUNT; i++ )
+		{
+			Creature *soldier = mapMgr->GetInterface()->SpawnCreature(
+				soldierIds[ team ],
+				soldierLocation[ i ][ 0 ], soldierLocation[ i ][ 1 ], soldierLocation[ i ][ 2 ], soldierLocation[ i ][ 3 ],
+				true, false, 0, 0
+			);
+
+			if( soldier == NULL )
+			{
+				break;
+			}
+
+			soldier->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+			soldier->GetAIInterface()->SetUnitToFollow( commander );
+			
+			float angle = -1.0f * ( M_PI_FLOAT / 5.0f ) * ( i + 1 );
+			soldier->GetAIInterface()->SetUnitToFollowAngle( angle );
+			
+			soldier->GetAIInterface()->SetFollowDistance( 2.0f );
+			soldier->CastSpell( soldier, spectralAura[ team ], true );
+		}
 	}
 };
 
@@ -711,8 +801,8 @@ public:
 			}
 			else
 			{
-				/// Dead, invisible, and stealthed players don't count
-				if( player->isAlive() && !player->IsInvisible() && !player->IsStealth() )
+				/// Dead, invisible, and stealthed, and not PvP flagged players don't count
+				if( player->isAlive() && !player->IsInvisible() && !player->IsStealth() && player->IsPvPFlagged() )
 				{
 					if( player->GetTeam() == TEAM_ALLIANCE )
 					{
@@ -821,6 +911,65 @@ class WilliamKielarGossip : public Arcemu::Gossip::Script
 		}
 };
 
+class TowerCommanderAI : public CreatureAIScript
+{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION(TowerCommanderAI);
+
+	TowerCommanderAI( Creature *creature ) : CreatureAIScript( creature )
+	{
+		_unit->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+		loadWaypoints();
+	}
+
+	void OnLoad()
+	{
+		_unit->GetAIInterface()->setMoveType( MOVEMENTTYPE_FORWARDTHANSTOP );
+		_unit->GetAIInterface()->StopMovement( 2 * 1000 );
+		_unit->GetAIInterface()->setWaypointToMove( 0 );
+	}
+
+	void OnDespawn()
+	{
+	}
+
+private:
+
+	void loadWaypoints()
+	{
+		WayPointMap *waypoints = new WayPointMap;
+
+		for( uint32 i = 0; i < ATTACKWAYPOINT_COUNT; i++ )
+		{
+			waypoints->push_back( createWaypoint( i ) );
+		}
+
+		_unit->setCustomWayPoints( waypoints );
+		_unit->GetAIInterface()->SetWaypointMap(_unit->getCustomWayPoints());
+	}
+
+	WayPoint* createWaypoint( uint32 i )
+	{
+		WayPoint *wp = _unit->CreateWaypointStruct();
+		
+		wp->id = i + 1;
+		wp->x = attackWaypoints[ i ][ 0 ];
+		wp->y = attackWaypoints[ i ][ 1 ];
+		wp->z = attackWaypoints[ i ][ 2 ];
+		wp->o = attackWaypoints[ i ][ 3 ];
+		wp->waittime = 500;
+		wp->flags = 256;
+		wp->forwardemoteoneshot = false;
+		wp->forwardemoteid = 0;
+		wp->backwardemoteoneshot = false;
+		wp->backwardemoteid = 0;
+		wp->forwardskinid = 0;
+		wp->backwardskinid = 0;
+
+		return wp;
+	}
+};
+
 /// Is the specified map, zone, area triplet considered to be in Eastern Plaguelands?
 static bool isEpl( uint32 map, uint32 zone, uint32 area )
 {
@@ -900,6 +1049,7 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	pvp.registerTowerEventHandler( EP_TOWER_NORTHPASS, new NorthpassTowerEventHandler( mapMgr ) );
 	pvp.registerTowerEventHandler( EP_TOWER_PLAGUEWOOD, new PlagueWoodTowerEventHandler( mapMgr ) );
 	pvp.registerTowerEventHandler( EP_TOWER_CROWNGUARD, new CrownGuardTowerEventHandler( mapMgr ) );
+	pvp.registerTowerEventHandler( EP_TOWER_EASTWALL, new EastwallTowerEventHandler( mapMgr ) );
 
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_NORTHPASS, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_CROWNGUARD, &EPTowerBannerAI::Create );
@@ -912,6 +1062,8 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 
 	mgr->register_creature_gossip( NPC_WILLIAM_KIELAR, new WilliamKielarGossip() );
 
+	mgr->register_creature_script( NPC_LORDAERON_COMMANDER, &TowerCommanderAI::Create );
+	mgr->register_creature_script( NPC_LORDAERON_VETERAN, &TowerCommanderAI::Create );
 
 	/// Haxx! TODO: Improve this
 	SpellEntry *spe = dbcSpell.LookupEntryForced( SPELL_LORDAERONS_BLESSING );
