@@ -260,6 +260,17 @@ public:
 	}
 };
 
+static void setupSpells()
+{
+	// 29519 - Silithyst
+	// Interrupt aura on damage, so that we can drop the mound
+	SpellEntry *spe = dbcSpell.LookupEntryForced( SPELL_SILITHYST );
+	if( spe != NULL )
+	{
+		spe->AuraInterruptFlags |= AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN;
+	}
+}
+
 void setupSilithus( ScriptMgr *mgr )
 {
 	mgr->register_gameobject_script( GO_SILITHYST_MOUND, &SilithystGOAI::Create );
@@ -271,4 +282,6 @@ void setupSilithus( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_AURA_REMOVE, (void*)&Silithus_onAuraRemoved );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Silithus_onZoneChange );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_AREATRIGGER, (void*)&Silithus_onAreaTrigger );
+
+	setupSpells();
 }

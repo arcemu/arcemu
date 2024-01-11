@@ -7038,12 +7038,4 @@ void ApplyNormalFixes()
 	{
 		sp->Effect[ 1 ] = SPELL_EFFECT_NULL;
 	}
-
-	// 29519 - Silithyst
-	// Interrupt aura on damage, so that we can drop the mound
-	sp = CheckAndReturnSpellEntry(29519);
-	if( sp != NULL )
-	{
-		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN;
-	}
 }
