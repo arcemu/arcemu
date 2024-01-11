@@ -69,6 +69,15 @@ static int32 towerOwner[] = {
 	-1
 };
 
+#define TOWER_CAPTURE_PROGRESS_DEFAULT    50
+
+static uint32 towerCaptureProgress[ EP_TOWER_COUNT ] = {
+	TOWER_CAPTURE_PROGRESS_DEFAULT,
+	TOWER_CAPTURE_PROGRESS_DEFAULT,
+	TOWER_CAPTURE_PROGRESS_DEFAULT,
+	TOWER_CAPTURE_PROGRESS_DEFAULT
+};
+
 static uint32 towerWorldStates[ EP_TOWER_COUNT ][ TOWER_STATES ] = {
 	{ WORLDSTATE_EPL_NORTHPASS_ALLIANCE, WORLDSTATE_EPL_NORTHPASS_HORDE, WORLDSTATE_EPL_NORTHPASS_NEUTRAL },
 	{ WORLDSTATE_EPL_CROWNGUARD_ALLIANCE, WORLDSTATE_EPL_CROWNGUARD_HORDE, WORLDSTATE_EPL_CROWNGUARD_NEUTRAL },
@@ -79,7 +88,6 @@ static uint32 towerWorldStates[ EP_TOWER_COUNT ][ TOWER_STATES ] = {
 #define ZONE_EPL 139
 
 #define TOWER_CAPTURE_PROGRESS_TICK       5
-#define TOWER_CAPTURE_PROGRESS_DEFAULT    50
 
 #define TOWER_CAPTURE_TRESHOLD_ALLIANCE   100
 #define TOWER_CAPTURE_TRESHOLD_HORDE      0
@@ -173,6 +181,7 @@ public:
 		this->mapMgr = mapMgr;
 	}
 
+	virtual void onTowerSpawns(){}
 	virtual void onTowerBecomesNeutral(){};
 	virtual void onTowerCaptured() = 0;
 
@@ -184,6 +193,14 @@ class NorthpassTowerEventHandler : public TowerEventHandler
 {
 public:
 	NorthpassTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerSpawns()
+	{
+		if( towerOwner[ EP_TOWER_NORTHPASS ] != -1 )
+		{
+			onTowerCaptured();
+		}
+	}
 
 	void onTowerBecomesNeutral()
 	{
@@ -252,6 +269,14 @@ class PlagueWoodTowerEventHandler : public TowerEventHandler
 {
 public:
 	PlagueWoodTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerSpawns()
+	{
+		if( towerOwner[ EP_TOWER_NORTHPASS ] != -1 )
+		{
+			onTowerCaptured();
+		}
+	}
 
 	void onTowerBecomesNeutral()
 	{
@@ -346,6 +371,18 @@ class CrownGuardTowerEventHandler : public TowerEventHandler
 {
 public:
 	CrownGuardTowerEventHandler( MapMgr *mgr ) : TowerEventHandler( mgr ){}
+
+	void onTowerSpawns()
+	{
+		if( towerOwner[ EP_TOWER_NORTHPASS ] != -1 )
+		{
+			onTowerCaptured();
+		}
+		else
+		{
+			onTowerBecomesNeutral();
+		}
+	}
 
 	void onTowerBecomesNeutral()
 	{
@@ -465,6 +502,15 @@ public:
 
 		uint32 spell = rewardSpellIds[ team ][ towerCount ];
 		return spell;
+	}
+
+	void onTowerSpawns( uint32 towerId )
+	{
+		std::map< uint32, TowerEventHandler* >::const_iterator itr = towerEventHandlers.find( towerId );
+		if( itr == towerEventHandlers.end() )
+			return;
+
+		itr->second->onTowerSpawns();
 	}
 
 	/// Event handler for when a tower becomes neutral while it is being attacked
@@ -588,13 +634,69 @@ public:
 	}
 };
 
+static uint8 getArtkitForTeam( int32 team )
+{
+	uint8 artkit;
+	switch( team )
+	{
+		case -1:
+			artkit = 0;
+			break;
+		
+		case TEAM_ALLIANCE:
+			artkit = EP_TOWER_ARTKIT_ALLIANCE;
+			break;
+		
+		case TEAM_HORDE:
+			artkit = EP_TOWER_ARTKIT_HORDE;
+			break;
+	}
+
+	return artkit;
+}
+
 static EasternPlaguelandsPvP pvp;
+
+class EPTowerBannerMiscAI : public GameObjectAIScript
+{
+public:
+	ADD_GAMEOBJECT_FACTORY_FUNCTION( EPTowerBannerMiscAI );
+
+	EPTowerBannerMiscAI( GameObject *go ) : GameObjectAIScript( go ){}
+
+	void OnSpawn()
+	{
+		/// We are not in Epl
+		if( _gameobject->GetMapId() != MAP_EASTERN_KINGDOMS && _gameobject->GetZoneId() != ZONE_EPL )
+		{
+			return;
+		}
+
+		/// Try to find which tower we belong to
+		int i;
+		for( i = 0; i < EP_TOWER_COUNT; i++ )
+		{
+			float d = _gameobject->CalcDistance( towerCoords[ i ][ 0 ], towerCoords[ i ][ 1 ], towerCoords[ i ][ 2 ] );
+			if( d < EP_TOWER_SCAN_RANGE )
+			{
+				break;
+			}
+		}
+
+		/// We didn't find ourselves :(
+		if( i == EP_TOWER_COUNT )
+		{
+			return;
+		}
+
+		_gameobject->SetArtKit( getArtkitForTeam( towerOwner[ i ] ) );
+	}
+};
 
 class EPTowerBannerAI : public GameObjectAIScript
 {
 private:
 	uint32 towerId;
-	uint32 captureProgress;
 
 public:
 	ADD_GAMEOBJECT_FACTORY_FUNCTION( EPTowerBannerAI );
@@ -602,29 +704,18 @@ public:
 	EPTowerBannerAI( GameObject *go ) : GameObjectAIScript( go )
 	{
 		towerId = 0;
-		captureProgress = TOWER_CAPTURE_PROGRESS_DEFAULT;
 	}
 
 	/// Sets the artkit for the current owner
-	void setArtkit()
+	void setArtkit( bool distribute = true )
 	{
-		uint8 artkit;
-		switch( towerOwner[ towerId ] )
-		{
-			case -1:
-				artkit = 0;
-				break;
-
-			case TEAM_ALLIANCE:
-				artkit = EP_TOWER_ARTKIT_ALLIANCE;
-				break;
-
-			case TEAM_HORDE:
-				artkit = EP_TOWER_ARTKIT_HORDE;
-				break;
-		}
-
+		uint8 artkit = getArtkitForTeam( towerOwner[ towerId ] );
 		_gameobject->SetArtKit( artkit );
+
+		if( !distribute )
+		{
+			return;
+		}
 
 		std::set< Object* > &objects = _gameobject->GetInRangeObjects();
 		for( std::set< Object* >::const_iterator itr = objects.begin(); itr != objects.end(); ++itr )
@@ -668,14 +759,14 @@ public:
 
 		delta *= TOWER_CAPTURE_PROGRESS_TICK;
 
-		int32 progress = captureProgress;
+		int32 progress = towerCaptureProgress[ towerId ];
 
 		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
 			( ( progress > 0 ) && ( delta < 0 ) ) )
 		{
 			progress += delta;
 			progress = Math::clamp< int32 >( progress, 0, 100 );
-			captureProgress = progress;
+			towerCaptureProgress[ towerId ] = progress;
 		}
 	}
 
@@ -684,7 +775,7 @@ public:
 	bool calculateOwner()
 	{
 		bool ownerChanged = false;
-		if( captureProgress == TOWER_CAPTURE_TRESHOLD_ALLIANCE )
+		if( towerCaptureProgress[ towerId ] == TOWER_CAPTURE_TRESHOLD_ALLIANCE )
 		{
 			if( towerOwner[ towerId ] != TEAM_ALLIANCE )
 			{
@@ -693,7 +784,7 @@ public:
 			}
 		}
 		else
-		if( captureProgress <= TOWER_CAPTURE_TRESHOLD_HORDE )
+		if( towerCaptureProgress[ towerId ] <= TOWER_CAPTURE_TRESHOLD_HORDE )
 		{
 			if( towerOwner[ towerId ] != TEAM_HORDE )
 			{
@@ -702,7 +793,7 @@ public:
 			}
 		}
 		else
-		if( ( captureProgress <= TOWER_CAPTURE_TRESHOLD_NEUTRAL_HI ) && ( captureProgress >= TOWER_CAPTURE_TRESHOLD_NEUTRAL_LO ) )
+		if( ( towerCaptureProgress[ towerId ] <= TOWER_CAPTURE_TRESHOLD_NEUTRAL_HI ) && ( towerCaptureProgress[ towerId ] >= TOWER_CAPTURE_TRESHOLD_NEUTRAL_LO ) )
 		{
 			if( towerOwner[ towerId ] != -1 )
 			{
@@ -755,6 +846,9 @@ public:
 				return;
 				break;
 		}
+
+		setArtkit( false );
+		pvp.onTowerSpawns( towerId );
 
 		RegisterAIUpdateEvent( EP_TOWER_SCAN_UPDATE_FREQ );
 	}
@@ -810,7 +904,7 @@ public:
 			Player *player = *itr;
 
 			Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS_UI, 1 );
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS, captureProgress );
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS, towerCaptureProgress[ towerId ] );
 		}
 
 		if( ownerChanged )
@@ -1037,6 +1131,8 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_CROWNGUARD, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_EASTWALL, &EPTowerBannerAI::Create );
 	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_PLAGUEWOOD, &EPTowerBannerAI::Create );
+
+	mgr->register_gameobject_script( GO_EP_TOWER_BANNER_MISC, &EPTowerBannerMiscAI::Create );
 
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Epl_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Epl_onLogout );
