@@ -148,6 +148,10 @@ static float graveyardAuraObjects[] = { 180421, 180422 };
 #define NPC_LORDAERON_FIGHTER   17996
 #define LORDAERON_SOLDIER_COUNT 4
 
+#define DISPLAYID_COMMANDER_MELEE 13160
+#define DISPLAYID_SOLDIER_MELEE   12890
+#define DISPLAYID_SOLDIER_OFFHAND 1984
+
 static uint32 commanderIds[] = { NPC_LORDAERON_COMMANDER, NPC_LORDAERON_VETERAN };
 static uint32 soldierIds[] = { NPC_LORDAERON_SOLDIER, NPC_LORDAERON_FIGHTER };
 
@@ -331,6 +335,7 @@ public:
 			return;
 		}
 
+		commander->SetEquippedItem( MELEE, DISPLAYID_COMMANDER_MELEE );
 		commander->CastSpell( commander, spectralAura[ team ], true );
 
 		/// Spawn the 4 soldiers that follow him
@@ -354,6 +359,8 @@ public:
 			soldier->GetAIInterface()->SetUnitToFollowAngle( angle );
 			
 			soldier->GetAIInterface()->SetFollowDistance( 2.0f );
+			soldier->SetEquippedItem( MELEE, DISPLAYID_SOLDIER_MELEE );
+			soldier->SetEquippedItem( OFFHAND, DISPLAYID_SOLDIER_OFFHAND );
 			soldier->CastSpell( soldier, spectralAura[ team ], true );
 		}
 	}
