@@ -1118,6 +1118,17 @@ void Epl_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 }
 
+
+static void setupSpells()
+{
+	/// Haxx! TODO: Improve this
+	SpellEntry *spe = dbcSpell.LookupEntryForced( SPELL_LORDAERONS_BLESSING );
+	if( spe != NULL )
+	{
+		spe->EffectApplyAuraName[ 1 ] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
+	}
+}
+
 void setupEasternPlaguelands( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_EASTERN_KINGDOMS );
@@ -1143,13 +1154,6 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 	mgr->register_creature_script( NPC_LORDAERON_COMMANDER, &TowerCommanderAI::Create );
 	mgr->register_creature_script( NPC_LORDAERON_VETERAN, &TowerCommanderAI::Create );
 
-	/// Haxx! TODO: Improve this
-	SpellEntry *spe = dbcSpell.LookupEntryForced( SPELL_LORDAERONS_BLESSING );
-	if( spe != NULL )
-	{
-		spe->EffectApplyAuraName[ 1 ] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
-	}
-
 	/// Crownguard Tower graveyard belongs to no one by default
 	LocationVector location( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] );
 	sGraveyardService.setGraveyardOwner(
@@ -1157,4 +1161,6 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 		location,
 		std::numeric_limits<uint32>::max()
 	);
+
+	setupSpells();
 }
