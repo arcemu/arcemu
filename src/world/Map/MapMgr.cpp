@@ -1959,18 +1959,6 @@ void MapMgr::onWorldStatesReinitialization( uint32 zone )
 	}
 }
 
-void MapMgr::castSpellOnPlayers( uint32 team, uint32 spellId )
-{
-	for( PlayerStorageMap::const_iterator itr = m_PlayerStorage.begin(); itr != m_PlayerStorage.end(); ++itr )
-	{
-		Player *p = itr->second;
-		if( p->GetTeam() == team )
-		{
-			p->CastSpell( p, spellId, true );
-		}
-	}
-}
-
 void MapMgr::removeAuraFromPlayers( uint32 team, uint32 spellId )
 {
 	for( PlayerStorageMap::const_iterator itr = m_PlayerStorage.begin(); itr != m_PlayerStorage.end(); ++itr )
@@ -1979,6 +1967,35 @@ void MapMgr::removeAuraFromPlayers( uint32 team, uint32 spellId )
 		if( p->GetTeam() == team )
 		{
 			p->RemoveAura( spellId );
+		}
+	}
+}
+
+void MapMgr::visitPlayers( PlayerVisitor *visitor, PlayerMatcher *matcher )
+{
+	PlayerStorageMap::iterator itr = m_PlayerStorage.begin();
+
+	if( matcher != NULL )
+	{
+		while( itr != m_PlayerStorage.end() )
+		{
+			Player *player = itr->second;
+
+			if( matcher->match( player ) )
+			{
+				visitor->visit( player );
+			}
+
+			++itr;
+		}
+	}
+	else
+	{
+		while( itr != m_PlayerStorage.end() )
+		{
+			Player *player = itr->second;
+			visitor->visit( player );
+			++itr;
 		}
 	}
 }

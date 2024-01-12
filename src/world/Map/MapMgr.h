@@ -47,6 +47,8 @@ class WorldSession;
 class GameObject;
 class Creature;
 class Player;
+class PlayerMatcher;
+class PlayerVisitor;
 class Pet;
 class Transporter;
 class Corpse;
@@ -192,6 +194,9 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 			PlayerStorageMap::iterator itr = m_PlayerStorage.find(guid);
 			return (itr != m_PlayerStorage.end()) ? itr->second : NULL;
 		}
+
+		/// Visits all players or all players that match the matcher's conditions
+		void visitPlayers( PlayerVisitor *visitor, PlayerMatcher *matcher );
 
 //////////////////////////////////////////////////////////
 // Local (mapmgr) storage of combats in progress
@@ -366,7 +371,6 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		void onWorldStateUpdate( uint32 zone, uint32 field, uint32 value );
 		void onWorldStatesReinitialization( uint32 zone );
 
-		void castSpellOnPlayers( uint32 team, uint32 spellId );
 		void removeAuraFromPlayers( uint32 team, uint32 spellId );
 
 	protected:

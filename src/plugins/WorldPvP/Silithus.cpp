@@ -176,7 +176,10 @@ void Silithus_onAreaTrigger( Player *player, uint32 areaTrigger )
 				winnerTeam.SetVal( winner );
 
 				/// Add the zone buff to the winner team, and remove it from the losers
-				mapMgr->castSpellOnPlayers( winner,  SPELL_CENARION_FAVOR );
+				TeamAndZoneMatcher matcher( SILITHUS_ZONE_ID, winner );
+				CastSpellOnPlayers caster( SPELL_CENARION_FAVOR, true );
+				mapMgr->visitPlayers( &caster, &matcher );
+
 				if( winner == TEAM_ALLIANCE )
 				{
 					mapMgr->removeAuraFromPlayers( TEAM_HORDE, SPELL_CENARION_FAVOR );

@@ -262,5 +262,7 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "Game/Network/LFGPackets.h"
 #include "Game/Graveyard/GraveyardService.h"
 #include "PacketHandlers/InventoryListBuilder.h"
+#include "Game/Entities/Player/PlayerMatcher.h"
+#include "Game/Entities/Player/PlayerVisitor.h"
 
 #endif

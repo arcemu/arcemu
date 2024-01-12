@@ -193,6 +193,8 @@ SET(sources
 	PacketHandlers/NewHandlers/MiscPacketHandlers.cpp
 	PacketHandlers/InventoryListBuilder.cpp
 	Math/Math.cpp
+	Game/Entities/Player/PlayerMatcher.cpp
+	Game/Entities/Player/PlayerVisitor.cpp
 )
 
 SET( headers
@@ -353,6 +355,8 @@ SET( headers
 	PacketHandlers/NewHandlers/MiscPacketHandlers.h
 	Math/Math.h
 	PacketHandlers/InventoryListBuilder.h
+	Game/Entities/Player/PlayerMatcher.h
+	Game/Entities/Player/PlayerVisitor.h
 )
 
 foreach(src IN ITEMS ${sources} )

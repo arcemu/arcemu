@@ -540,7 +540,9 @@ public:
 
 		if( allianceSpell != 0 )
 		{
-			mapMgr->castSpellOnPlayers( TEAM_ALLIANCE, allianceSpell );
+			TeamAndZoneMatcher matcher( ZONE_EPL, TEAM_ALLIANCE );
+			CastSpellOnPlayers caster( allianceSpell, true );
+			mapMgr->visitPlayers( &caster, &matcher );
 		}
 		else
 		{
@@ -552,7 +554,9 @@ public:
 
 		if( hordeSpell != 0 )
 		{
-			mapMgr->castSpellOnPlayers( TEAM_HORDE, hordeSpell );
+			TeamAndZoneMatcher matcher( ZONE_EPL, TEAM_HORDE );
+			CastSpellOnPlayers caster( hordeSpell, true );
+			mapMgr->visitPlayers( &caster, &matcher );
 		}
 		else
 		{
