@@ -546,9 +546,12 @@ public:
 		}
 		else
 		{
+			TeamAndZoneMatcher matcher( ZONE_EPL, TEAM_ALLIANCE );
+			
 			for( int i = 1; i <= EP_TOWER_COUNT; i++ )
 			{
-				mapMgr->removeAuraFromPlayers( TEAM_ALLIANCE, rewardSpellIds[ TEAM_ALLIANCE ][ i ] );
+				RemoveAura removeAura( rewardSpellIds[ TEAM_ALLIANCE ][ i ] );
+				mapMgr->visitPlayers( &removeAura, &matcher );
 			}
 		}
 
@@ -560,9 +563,12 @@ public:
 		}
 		else
 		{
+			TeamAndZoneMatcher matcher( ZONE_EPL, TEAM_HORDE );
+
 			for( int i = 1; i <= EP_TOWER_COUNT; i++ )
 			{
-				mapMgr->removeAuraFromPlayers( TEAM_HORDE, rewardSpellIds[ TEAM_ALLIANCE ][ i ] );
+				RemoveAura removeAura( rewardSpellIds[ TEAM_HORDE ][ i ] );
+				mapMgr->visitPlayers( &removeAura, &matcher );
 			}
 		}
 	}

@@ -182,11 +182,15 @@ void Silithus_onAreaTrigger( Player *player, uint32 areaTrigger )
 
 				if( winner == TEAM_ALLIANCE )
 				{
-					mapMgr->removeAuraFromPlayers( TEAM_HORDE, SPELL_CENARION_FAVOR );
+					TeamAndZoneMatcher matcher( SILITHUS_ZONE_ID, TEAM_HORDE );
+					RemoveAura removeAura( SPELL_CENARION_FAVOR );
+					mapMgr->visitPlayers( &removeAura, &matcher );
 				}
 				else
 				{
-					mapMgr->removeAuraFromPlayers( TEAM_ALLIANCE, SPELL_CENARION_FAVOR );
+					TeamAndZoneMatcher matcher( SILITHUS_ZONE_ID, TEAM_ALLIANCE );
+					RemoveAura removeAura( SPELL_CENARION_FAVOR );
+					mapMgr->visitPlayers( &removeAura, &matcher );
 				}
 
 				/// Reset the counters

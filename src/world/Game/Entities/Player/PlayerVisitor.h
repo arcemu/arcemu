@@ -39,5 +39,15 @@ public:
 	void visit( Player *player );
 };
 
+class SERVER_DECL RemoveAura : public PlayerVisitor
+{
+private:
+	uint32 spellId;
+
+public:
+	RemoveAura( uint32 spellId );
+	void visit( Player *player );
+};
+
 
 #endif
