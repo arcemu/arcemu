@@ -163,10 +163,41 @@ public:
 				break;
 		}
 
-		//handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, 
-
-
+		
 		/// Set worldstate for fort counts
+		int32 allianceDelta = 0;
+		int32 hordeDelta = 0;
+
+		switch( lastOwner )
+		{
+			case TEAM_ALLIANCE:
+				allianceDelta = -1;
+				break;
+
+			case TEAM_HORDE:
+				hordeDelta = -1;
+				break;
+
+			case HP_FORT_OWNER_NEUTRAL:
+				if( fortOwner[ fortId ] == TEAM_ALLIANCE )
+				{
+					allianceDelta = 1;
+				}
+				else
+				{
+					hordeDelta = 1;
+				}
+				break;
+		}
+
+		uint32 allianceForts = handler.GetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_ALLIANCE_FORTS );
+		uint32 hordeForts = handler.GetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_HORDE_FORTS );
+
+		allianceForts += allianceDelta;
+		hordeForts += hordeDelta;
+
+		handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_ALLIANCE_FORTS, allianceForts );
+		handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_HORDE_FORTS, hordeForts );
 	}
 };
 
