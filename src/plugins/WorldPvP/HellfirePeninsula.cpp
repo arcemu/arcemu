@@ -132,6 +132,16 @@ enum SuperioritySpells
 
 static uint32 superioritySpells[] = { HELLFIRE_SUPERIORITY_ALLIANCE, HELLFIRE_SUPERIORITY_HORDE };
 
+enum HellfirePvPQuests
+{
+	HELLFIRE_PVP_QUEST_ALLIANCE    = 10106,
+	HELLFIRE_PVP_QUEST_HORDE       = 13409
+};
+
+static uint32 hellfirePvPQuests[] = { HELLFIRE_PVP_QUEST_ALLIANCE, HELLFIRE_PVP_QUEST_HORDE };
+
+static uint32 fortToQuestCredit[] = { 0, 2, 1 };
+
 class HellfirePeninsulaPvP
 {
 private:
@@ -318,6 +328,15 @@ public:
 		pvp.onFortOwnerChange( fortId, lastOwner );
 	}
 
+	void rewardPlayers( std::set< Player* > players )
+	{
+		for( std::set< Player* >::const_iterator itr = players.begin(); itr != players.end(); ++itr )
+		{
+			Player *player = *itr;
+			player->AddQuestKill( hellfirePvPQuests[ player->GetTeam() ], fortToQuestCredit[ fortId ] );
+		}
+	}
+
 	/// Calculate the current capture progress based on player counts
 	void calculateProgress( uint32 alliancePlayers, uint32 hordePlayers )
 	{
@@ -482,7 +501,7 @@ public:
 
 			if( lastOwner == HP_FORT_OWNER_NEUTRAL )
 			{
-				///rewardPlayers( playersInRange );
+				rewardPlayers( playersInRange );
 			}
 		}
 
