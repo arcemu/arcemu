@@ -19,6 +19,8 @@
 
 #include "plugin.h"
 
+#define ZONE_HELLFIRE_PENINSULA 3483
+
 #define HP_BANNER_SCAN_UPDATE_FREQ (2 * 1000)
 #define HP_BANNER_CAPTURE_RANGE 50.0f
 #define HP_BANNER_SCAN_RANGE 80.0f
@@ -87,6 +89,13 @@ enum HPForts
 	HP_FORT_COUNT      = 3
 };
 
+static uint32 fortWorldStates[ HP_FORT_COUNT ][ 3 ] = 
+{
+	{ WORLDSTATE_HP_OVERLOOK_ALLIANCE, WORLDSTATE_HP_OVERLOOK_HORDE, WORLDSTATE_HP_OVERLOOK_NEUTRAL },
+	{ WORLDSTATE_HP_BROKENHILL_ALLIANCE, WORLDSTATE_HP_BROKENHILL_HORDE, WORLDSTATE_HP_BROKENHILL_NEUTRAL },
+	{ WORLDSTATE_HP_STADIUM_ALLIANCE, WORLDSTATE_HP_STADIUM_HORDE, WORLDSTATE_HP_STADIUM_NEUTRAL }
+};
+
 static uint8 fortMiscBannerArtkit[ HP_FORT_COUNT ][ 3 ] =
 {
 	{ ARTKIT_HP_OVERLOOK_ALLIANCE, ARTKIT_HP_OVERLOOK_HORDE, ARTKIT_HP_OVERLOOK_NEUTRAL },
@@ -111,6 +120,57 @@ static uint8 fortBannerArtkit[ HP_FORT_COUNT ] =
 static uint32 fortOwner[ HP_FORT_COUNT ] = { HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNER_NEUTRAL };
 
 static uint32 fortCaptureProgress[ HP_FORT_COUNT ] = { 50, 50, 50 };
+
+class HellfirePeninsulaPvP
+{
+private:
+	MapMgr *mgr;
+
+public:
+	HellfirePeninsulaPvP()
+	{
+		mgr = NULL;
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void onFortOwnerChange( uint32 fortId, uint32 lastOwner )
+	{
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+		
+		/// Set worldstate for forts
+		switch( fortOwner[ fortId ] )
+		{
+			case TEAM_ALLIANCE:
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ TEAM_ALLIANCE ], 1 );
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ HP_FORT_OWNER_NEUTRAL ], 0 );
+				break;
+
+			case TEAM_HORDE:
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ TEAM_ALLIANCE ], 0 );
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ TEAM_HORDE ], 1 );
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ HP_FORT_OWNER_NEUTRAL ], 0 );
+				break;
+
+			case HP_FORT_OWNER_NEUTRAL:
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ TEAM_ALLIANCE ], 0 );
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, fortWorldStates[ fortId ][ HP_FORT_OWNER_NEUTRAL ], 1 );
+				break;
+		}
+
+		//handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, 
+
+
+		/// Set worldstate for fort counts
+	}
+};
+
+static HellfirePeninsulaPvP pvp;
 
 class HPBannerAI : public GameObjectAIScript
 {
@@ -172,9 +232,11 @@ public:
 		}
 	}
 
-	void onOwnerChange()
+	void onOwnerChange( uint32 lastOwner )
 	{
 		setArtKit( true );
+
+		pvp.onFortOwnerChange( fortId, lastOwner );
 	}
 
 	/// Calculate the current capture progress based on player counts
@@ -337,11 +399,11 @@ public:
 
 		if( ownerChanged )
 		{
-			onOwnerChange();
+			onOwnerChange( lastOwner );
 
 			if( lastOwner == HP_FORT_OWNER_NEUTRAL )
 			{
-				//rewardPlayers( playersInRange );
+				///rewardPlayers( playersInRange );
 			}
 		}
 
@@ -397,6 +459,9 @@ public:
 
 void setupHellfirePeninsula( ScriptMgr *mgr )
 {
+	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
+	pvp.setMapMgr( mapMgr );
+
 	static uint32 bannerIds[] = { GO_HP_BANNER_STADIUM, GO_HP_BANNER_OVERLOOK, GO_HP_BANNER_BROKENHILL, 0 };
 	static uint32 miscBannerIds[] = { GO_HP_BANNER_MISC_OVERLOOK, GO_HP_BANNER_MISC_STADIUM, GO_HP_BANNER_MISC_BROKENHILL, 0 };
 	
