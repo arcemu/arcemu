@@ -5,6 +5,7 @@ SET( prefix ${SCRIPTS_PATH}/WorldPvP )
 set(sources
 plugin.cpp
 EasternPlaguelands.cpp
+HellfirePeninsula.cpp
 Silithus.cpp
 )
 
