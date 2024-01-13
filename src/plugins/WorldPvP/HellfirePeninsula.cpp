@@ -121,6 +121,17 @@ static uint32 fortOwner[ HP_FORT_COUNT ] = { HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNE
 
 static uint32 fortCaptureProgress[ HP_FORT_COUNT ] = { 50, 50, 50 };
 
+static Arcemu::Threading::AtomicULong allianceFortsCache( 0 );
+static Arcemu::Threading::AtomicULong hordeFortsCache( 0 );
+
+enum SuperioritySpells
+{
+	HELLFIRE_SUPERIORITY_ALLIANCE   = 32071,
+	HELLFIRE_SUPERIORITY_HORDE      = 32049
+};
+
+static uint32 superioritySpells[] = { HELLFIRE_SUPERIORITY_ALLIANCE, HELLFIRE_SUPERIORITY_HORDE };
+
 class HellfirePeninsulaPvP
 {
 private:
@@ -135,6 +146,38 @@ public:
 	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
+	}
+
+	/// Applies of removes the reward buff for controlling all forts
+	void handleBuff()
+	{
+		uint32 allianceForts = allianceFortsCache.GetVal();
+		uint32 hordeForts = hordeFortsCache.GetVal();
+
+		if( allianceForts == HP_FORT_COUNT )
+		{
+			TeamAndZoneMatcher matcher( ZONE_HELLFIRE_PENINSULA, TEAM_ALLIANCE );
+			CastSpellOnPlayers caster( HELLFIRE_SUPERIORITY_ALLIANCE, true );
+			mgr->visitPlayers( &caster, &matcher );
+		}
+		else
+		if( hordeForts == HP_FORT_COUNT )
+		{
+			TeamAndZoneMatcher matcher( ZONE_HELLFIRE_PENINSULA, TEAM_HORDE );
+			CastSpellOnPlayers caster( HELLFIRE_SUPERIORITY_HORDE, true );
+			mgr->visitPlayers( &caster, &matcher );
+		}
+		else
+		{
+			TeamAndZoneMatcher allianceMatcher( ZONE_HELLFIRE_PENINSULA, TEAM_ALLIANCE );
+			RemoveAura allianceRemover( HELLFIRE_SUPERIORITY_ALLIANCE );
+			mgr->visitPlayers( &allianceRemover, &allianceMatcher );
+						
+			
+			TeamAndZoneMatcher hordeMatcher( ZONE_HELLFIRE_PENINSULA, TEAM_HORDE );
+			RemoveAura hordeRemover( HELLFIRE_SUPERIORITY_HORDE );
+			mgr->visitPlayers( &hordeRemover, &hordeMatcher );
+		}
 	}
 
 	void onFortOwnerChange( uint32 fortId, uint32 lastOwner )
@@ -198,6 +241,11 @@ public:
 
 		handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_ALLIANCE_FORTS, allianceForts );
 		handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_HORDE_FORTS, hordeForts );
+
+		allianceFortsCache.SetVal( allianceForts );
+		hordeFortsCache.SetVal( hordeForts );
+
+		handleBuff();
 	}
 };
 
@@ -488,6 +536,63 @@ public:
 	}
 };
 
+bool isHellfirePeninsula( uint32 mapId, uint32 zone )
+{
+	if( mapId == MAP_OUTLAND && zone == ZONE_HELLFIRE_PENINSULA )
+		return true;
+
+	if( mapId == MAP_SHATTERED_HALLS || mapId == MAP_BLOOD_FURNACE || mapId == MAP_RAMPARTS || mapId == MAP_MAGTHERIDONS_LAIR )
+		return true;
+
+	return false;
+}
+
+bool isTeamSuperior( uint32 team )
+{
+	uint32 fortsControlled = 0;
+
+	if( team == TEAM_ALLIANCE )
+	{
+		fortsControlled = allianceFortsCache.GetVal();
+	}
+	else
+	{
+		fortsControlled = hordeFortsCache.GetVal();
+	}
+
+	if( fortsControlled == HP_FORT_COUNT )
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void HP_onEnterWorld( Player *player )
+{
+	if( isHellfirePeninsula( player->GetMapId(), player->GetZoneId() ) && isTeamSuperior( player->GetTeam() ) )
+	{
+		player->CastSpell( player, superioritySpells[ player->GetTeam() ], true );
+	}
+}
+
+void HP_onLogout( Player *player )
+{
+	player->RemoveAura( superioritySpells[ player->GetTeam() ] );
+}
+
+void HP_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
+{
+	if( isHellfirePeninsula( player->GetMapId(), player->GetZoneId() ) && isTeamSuperior( player->GetTeam() ) )
+	{
+		player->CastSpell( player, superioritySpells[ player->GetTeam() ], true );
+	}
+	else
+	{
+		player->RemoveAura( superioritySpells[ player->GetTeam() ] );
+	}
+}
+
 void setupHellfirePeninsula( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -498,4 +603,8 @@ void setupHellfirePeninsula( ScriptMgr *mgr )
 	
 	mgr->register_gameobject_script( bannerIds, &HPBannerAI::Create );
 	mgr->register_gameobject_script( miscBannerIds, &HPMiscBannerAI::Create );
+
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&HP_onEnterWorld );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&HP_onLogout );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&HP_onZoneChange );
 }

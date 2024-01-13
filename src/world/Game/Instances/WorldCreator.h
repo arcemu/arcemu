@@ -34,6 +34,10 @@ enum Maps
 	MAP_RUINS_OF_AHNQIRAJ     = 509,
 	MAP_OUTLAND               = 530,
 	MAP_AHNQIRAJ_TEMPLE       = 531,
+	MAP_SHATTERED_HALLS       = 540,
+	MAP_BLOOD_FURNACE         = 542,
+	MAP_RAMPARTS              = 543,
+	MAP_MAGTHERIDONS_LAIR     = 544,
 	MAP_NORTHREND             = 571
 };
 
