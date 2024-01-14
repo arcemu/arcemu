@@ -89,6 +89,13 @@ enum HPForts
 	HP_FORT_COUNT      = 3
 };
 
+static const char *fortNames[ HP_FORT_COUNT ] = 
+{
+	"The Overlook",
+	"Broken Hill",
+	"The Stadium"
+};
+
 static uint32 fortWorldStates[ HP_FORT_COUNT ][ 3 ] = 
 {
 	{ WORLDSTATE_HP_OVERLOOK_ALLIANCE, WORLDSTATE_HP_OVERLOOK_HORDE, WORLDSTATE_HP_OVERLOOK_NEUTRAL },
@@ -156,6 +163,36 @@ public:
 	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
+	}
+
+	/// Broadcast a message to everyone that says the tower has been captured by the faction
+	void broadcastCaptureMessage( uint32 fortId )
+	{
+		std::string faction;
+		if( fortOwner[ fortId ] == TEAM_ALLIANCE )
+		{
+			faction.assign( "The alliance" );
+		}
+		else
+		{
+			faction.assign( "The horde" );
+		}
+		
+		std::stringstream ss;
+		ss << faction;
+		ss << " has captured " << fortNames[ fortId ] << "!";
+		
+		WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ss.str().c_str(), 0, 0 );
+		if( packet != NULL )
+		{
+			mgr->SendPacketToPlayersInZone( ZONE_HELLFIRE_PENINSULA, packet );
+			delete packet;
+		}
+	}
+
+	void onFortCaptured( uint32 fortId )
+	{
+		broadcastCaptureMessage( fortId );
 	}
 
 	/// Applies of removes the reward buff for controlling all forts
@@ -241,6 +278,11 @@ public:
 					hordeDelta = 1;
 				}
 				break;
+		}
+
+		if( ( allianceDelta == 1 ) || ( hordeDelta == 1 ) )
+		{
+			onFortCaptured( fortId );
 		}
 
 		uint32 allianceForts = handler.GetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_ALLIANCE_FORTS );
