@@ -121,8 +121,8 @@ static uint8 fortBannerArtkit[ HP_FORT_COUNT ] =
 
 #define HP_FORT_CAPTURE_THRESHOLD_ALLIANCE    100
 #define HP_FORT_CAPTURE_THRESHOLD_HORDE       0
-#define HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_HI  70
-#define HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_LO  30
+#define HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_HI  65
+#define HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_LO  35
 
 static uint32 fortOwner[ HP_FORT_COUNT ] = { HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNER_NEUTRAL };
 
@@ -658,6 +658,10 @@ void setupHellfirePeninsula( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
 	pvp.setMapMgr( mapMgr );
+
+	WorldStatesHandler &handler = mapMgr->GetWorldStatesHandler();
+	handler.SetWorldStateForZone( ZONE_HELLFIRE_PENINSULA, WORLDSTATE_HP_PROGRESS_NEUTRAL, 30 );
+
 
 	static uint32 bannerIds[] = { GO_HP_BANNER_STADIUM, GO_HP_BANNER_OVERLOOK, GO_HP_BANNER_BROKENHILL, 0 };
 	static uint32 miscBannerIds[] = { GO_HP_BANNER_MISC_OVERLOOK, GO_HP_BANNER_MISC_STADIUM, GO_HP_BANNER_MISC_BROKENHILL, 0 };
