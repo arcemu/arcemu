@@ -92,8 +92,8 @@ enum ZMWorldStates
 
 	WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_ACTIVE   = 2655,
 	WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_INACTIVE = 2656,
-	WORLDSTATE_ZM_FIELD_SCOUT_HORDE_ACTIVE      = 2657,
-	WORLDSTATE_ZM_FIELD_SCOUT_HORDE_INACTIVE    = 2658
+	WORLDSTATE_ZM_FIELD_SCOUT_HORDE_INACTIVE    = 2657,
+	WORLDSTATE_ZM_FIELD_SCOUT_HORDE_ACTIVE      = 2658
 };
 
 static uint32 beaconTopWorldStates[ ZM_BEACON_COUNT ][ 3 ] = 
@@ -107,6 +107,32 @@ static uint32 beaconMapWorldStates[ ZM_BEACON_COUNT ][ 3 ] =
 	{ WORLDSTATE_ZM_BEACON_WEST_MAP_ALLIANCE, WORLDSTATE_ZM_BEACON_WEST_MAP_HORDE, WORLDSTATE_ZM_BEACON_WEST_MAP_NEUTRAL },
 	{ WORLDSTATE_ZM_BEACON_EAST_MAP_ALLIANCE, WORLDSTATE_ZM_BEACON_EAST_MAP_HORDE, WORLDSTATE_ZM_BEACON_EAST_MAP_NEUTRAL }
 };
+
+enum FieldScouts
+{
+	NPC_FIELD_SCOUT_ALLIANCE = 18581,
+	NPC_FIELD_SCOUT_HORDE    = 18564
+};
+
+enum ZMBattleStandardSpells
+{
+	SPELL_BATTLE_STANDARD_ALLIANCE = 32430,
+	SPELL_BATTLE_STANDARD_HORDE    = 32431
+};
+
+uint32 battleStandardSpells[] = { SPELL_BATTLE_STANDARD_ALLIANCE, SPELL_BATTLE_STANDARD_HORDE };
+
+static uint32 getSuperiorTeam()
+{
+	if( beaconOwners[ ZM_BEACON_WEST ] == beaconOwners[ ZM_BEACON_EAST ] )
+	{
+		return beaconOwners[ ZM_BEACON_WEST ];
+	}
+	else
+	{
+		return ZM_BEACON_OWNER_NEUTRAL;
+	}
+}
 
 class ZangarmarshPvP
 {
@@ -193,6 +219,33 @@ public:
 		if( beaconOwners[ beaconId ] < ZM_BEACON_OWNER_NEUTRAL )
 		{
 			onBeaconCaptured( beaconId );
+		}
+
+		/// Set field scout icon on map
+		uint32 superiorTeam = getSuperiorTeam();
+		if( superiorTeam < ZM_BEACON_OWNER_NEUTRAL )
+		{
+			/// One of the teams has captured both beacons
+			switch( superiorTeam )
+			{
+				case TEAM_ALLIANCE:
+					handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_INACTIVE, 0 );
+					handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_ACTIVE, 1 );
+					break;
+				
+				case TEAM_HORDE:
+					handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_HORDE_INACTIVE, 0 );
+					handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_HORDE_ACTIVE, 1 );
+					break;
+			}
+		}
+		else
+		{
+			/// One of the beacons has become neutral
+			handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_INACTIVE, 1 );
+			handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_ACTIVE, 0 );
+			handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_HORDE_INACTIVE, 1 );
+			handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_HORDE_ACTIVE, 0 );
 		}
 	}
 };
@@ -378,6 +431,76 @@ public:
 
 };
 
+enum ZMTextIds
+{
+	TEXTID_SCOUT_INSECURE    = 9431,
+	TEXTID_SCOUT_SECURE      = 9432
+};
+
+class FieldScoutGossip : public Arcemu::Gossip::Script
+{
+	public:
+		FieldScoutGossip()
+		{
+		}
+
+		void OnHello( Object *object, Player* player )
+		{
+			Creature *creature = TO_CREATURE( object );
+			uint32 superiorTeam = getSuperiorTeam();
+			uint32 text;
+
+			if( superiorTeam == player->GetTeam() )
+			{
+				text = TEXTID_SCOUT_SECURE;
+			}
+			else
+			{
+				text = TEXTID_SCOUT_INSECURE;
+			}			
+
+			if( NpcTextStorage.LookupEntry( text ) == NULL )
+				text = Arcemu::Gossip::DEFAULT_TXTINDEX;
+
+			Arcemu::Gossip::Menu menu( object->GetGUID(), text );
+
+			if( superiorTeam == player->GetTeam() )
+			{
+				menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Give me a battle standard. I will take control of Twin Spire Ruins.", 1, false );
+			}
+
+			menu.AddItem( Arcemu::Gossip::ICON_VENDOR, player->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::VENDOR), 2, false);
+
+			sQuestMgr.FillQuestMenu( creature, player, menu);
+			
+			menu.Send( player );
+		}
+
+		void OnSelectOption( Object *object, Player *player, uint32 selection, const char* code )
+		{
+			Arcemu::Gossip::Menu::Complete( player );
+
+			switch( selection )
+			{
+				case 1:
+					if( getSuperiorTeam() == player->GetTeam() )
+					{
+						player->CastSpell( player, battleStandardSpells[ player->GetTeam() ], true );
+					}
+					break;
+
+				case 2:
+					player->GetSession()->SendInventoryList( TO_CREATURE( object ) );
+					break;
+			}
+		}
+
+		void Destroy()
+		{
+			delete this;
+		}
+};
+
 void setupZangarmarsh( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -385,4 +508,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 
 	mgr->register_gameobject_script( GO_ZM_BANNER_BEACON_WEST, &ZangarmarshBeaconBannerAI::Create );
 	mgr->register_gameobject_script( GO_ZM_BANNER_BEACON_EAST, &ZangarmarshBeaconBannerAI::Create );
+
+	mgr->register_creature_gossip( NPC_FIELD_SCOUT_ALLIANCE, new FieldScoutGossip() );
+	mgr->register_creature_gossip( NPC_FIELD_SCOUT_HORDE, new FieldScoutGossip() );
 }
