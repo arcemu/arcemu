@@ -168,6 +168,30 @@ public:
 		this->mgr = mgr;
 	}
 
+	void broadcastGraveyardCaptureMessage()
+	{
+		std::string faction;
+		if( graveyardOwner.GetVal() == TEAM_ALLIANCE )
+		{
+			faction.assign( "The alliance" );
+		}
+		else
+		{
+			faction.assign( "The horde" );
+		}
+		
+		std::stringstream ss;
+		ss << faction;
+		ss << " has captured Twinspire Graveyard!";
+		
+		WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ss.str().c_str(), 0, 0 );
+		if( packet != NULL )
+		{
+			mgr->SendPacketToPlayersInZone( ZONE_ZANGARMARSH, packet );
+			delete packet;
+		}
+	}
+
 	void onGraveyardCaptured( uint32 team )
 	{
 		GameObject *go = NULL;
@@ -215,6 +239,8 @@ public:
 		TeamAndZoneMatcher matcher( ZONE_ZANGARMARSH, team );
 		CastSpellOnPlayers caster( SPELL_TWIN_SPIRE_BLESSING, true );
 		mgr->visitPlayers( &caster, &matcher );
+
+		broadcastGraveyardCaptureMessage();
 	}
 
 	void broadcastBeaconCaptureMessage( uint32 beaconId )
