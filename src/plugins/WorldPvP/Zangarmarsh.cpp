@@ -130,6 +130,12 @@ static float graveyardBannerLocation[] = { 253.5299f, 7083.7998f, 36.99f, -0.02f
 
 static uint32 graveyardBannerFaction[] = { ZM_GY_BANNER_FACTION_ALLIANCE, ZM_GY_BANNER_FACTION_HORDE, ZM_GY_BANNER_FACTION_NEUTRAL };
 
+static uint32 graveyardBannerGoIds[] = { GO_ZM_BANNER_GRAVEYARD_ALLIANCE, GO_ZM_BANNER_GRAVEYARD_HORDE, GO_ZM_BANNER_GRAVEYARD_NEUTRAL };
+
+static uint32 graveyardWorldStates[] = { WORLDSTATE_ZM_GRAVEYARD_ALLIANCE, WORLDSTATE_ZM_GRAVEYARD_HORDE, WORLDSTATE_ZM_GRAVEYARD_NEUTRAL };
+
+static uint32 graveyardOwner = ZM_BEACON_OWNER_NEUTRAL;
+
 static uint32 getSuperiorTeam()
 {
 	if( beaconOwners[ ZM_BEACON_WEST ] == beaconOwners[ ZM_BEACON_EAST ] )
@@ -156,6 +162,41 @@ public:
 	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
+	}
+
+	void onGraveyardCaptured( uint32 team )
+	{
+		GameObject *go = NULL;
+
+		/// Remove old graveyard banner
+		go = mgr->GetInterface()->GetGameObjectNearestCoords( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerGoIds[ graveyardOwner ] );
+		if( go != NULL )
+		{
+			go->Despawn( 1, 0 );
+		}
+
+
+		/// Push new graveyard banner
+		go = mgr->GetInterface()->SpawnGameObject(
+			graveyardBannerGoIds[ team ],
+			graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerLocation[ 3 ], 
+			false, 0, 0 );
+		
+		if( go != NULL )
+		{
+			go->SetFaction( graveyardBannerFaction[ team ] );
+			go->PushToWorld( mgr );
+		}
+
+
+		/// Change graveyard owner
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ graveyardOwner ], 0 );
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ team ], 1 );
+		graveyardOwner = team;
+
+		LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
+		sGraveyardService.setGraveyardOwner( 530, location, team );
 	}
 
 	void broadcastBeaconCaptureMessage( uint32 beaconId )
@@ -259,6 +300,22 @@ public:
 };
 
 ZangarmarshPvP pvp;
+
+class RuinsGraveyardBannerAI : public GameObjectAIScript
+{
+public:
+	RuinsGraveyardBannerAI( GameObject *go ) : GameObjectAIScript( go )
+	{
+	}
+
+	ADD_GAMEOBJECT_FACTORY_FUNCTION( RuinsGraveyardBannerAI );
+
+	void OnActivate( Player *player )
+	{
+		player->RemoveAura( battleStandardSpells[ player->GetTeam() ] );
+		pvp.onGraveyardCaptured( player->GetTeam() );
+	}
+};
 
 class ZangarmarshBeaconBannerAI : public GameObjectAIScript
 {
@@ -517,6 +574,10 @@ void setupZangarmarsh( ScriptMgr *mgr )
 	mgr->register_gameobject_script( GO_ZM_BANNER_BEACON_WEST, &ZangarmarshBeaconBannerAI::Create );
 	mgr->register_gameobject_script( GO_ZM_BANNER_BEACON_EAST, &ZangarmarshBeaconBannerAI::Create );
 
+	mgr->register_gameobject_script( GO_ZM_BANNER_GRAVEYARD_ALLIANCE, &RuinsGraveyardBannerAI::Create );
+	mgr->register_gameobject_script( GO_ZM_BANNER_GRAVEYARD_HORDE, &RuinsGraveyardBannerAI::Create );
+	mgr->register_gameobject_script( GO_ZM_BANNER_GRAVEYARD_NEUTRAL, &RuinsGraveyardBannerAI::Create );
+
 	mgr->register_creature_gossip( NPC_FIELD_SCOUT_ALLIANCE, new FieldScoutGossip() );
 	mgr->register_creature_gossip( NPC_FIELD_SCOUT_HORDE, new FieldScoutGossip() );
 
@@ -530,4 +591,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 		graveyardBanner->SetFaction( graveyardBannerFaction[ ZM_BEACON_OWNER_NEUTRAL ] );
 		graveyardBanner->AddToWorld( mapMgr );
 	}
+
+	LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
+	sGraveyardService.setGraveyardOwner( 530, location, ZM_BEACON_OWNER_NEUTRAL );
 }
