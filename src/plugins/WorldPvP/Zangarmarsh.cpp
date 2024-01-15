@@ -134,7 +134,9 @@ static uint32 graveyardBannerGoIds[] = { GO_ZM_BANNER_GRAVEYARD_ALLIANCE, GO_ZM_
 
 static uint32 graveyardWorldStates[] = { WORLDSTATE_ZM_GRAVEYARD_ALLIANCE, WORLDSTATE_ZM_GRAVEYARD_HORDE, WORLDSTATE_ZM_GRAVEYARD_NEUTRAL };
 
-static uint32 graveyardOwner = ZM_BEACON_OWNER_NEUTRAL;
+/// The current owner of the graveyard
+/// NOTE: Multiple MapMgr threads can access this via the enter world and zone change server hooks
+static Arcemu::Threading::AtomicULong graveyardOwner( ZM_BEACON_OWNER_NEUTRAL );
 
 #define SPELL_TWIN_SPIRE_BLESSING 33779
 
@@ -170,8 +172,10 @@ public:
 	{
 		GameObject *go = NULL;
 
+		uint32 oldTeam = graveyardOwner.GetVal();
+
 		/// Remove old graveyard banner
-		go = mgr->GetInterface()->GetGameObjectNearestCoords( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerGoIds[ graveyardOwner ] );
+		go = mgr->GetInterface()->GetGameObjectNearestCoords( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerGoIds[ oldTeam ] );
 		if( go != NULL )
 		{
 			go->Despawn( 1, 0 );
@@ -193,10 +197,9 @@ public:
 
 		/// Change graveyard owner
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
-		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ graveyardOwner ], 0 );
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ oldTeam ], 0 );
 		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ team ], 1 );
-		uint32 oldTeam = graveyardOwner;
-		graveyardOwner = team;
+		graveyardOwner.SetVal( team );
 
 		LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
 		sGraveyardService.setGraveyardOwner( 530, location, team );
@@ -588,12 +591,18 @@ bool isZangarmarsh( uint32 mapId, uint32 zoneId )
 		return true;
 	}
 
+	if( mapId == MAP_STEAMVAULT || mapId == MAP_UNDERBOG ||
+		mapId == MAP_SLAVE_PENS || mapId == MAP_SERPENTSHRINE_CAVERN )
+	{
+		return true;
+	}
+
 	return false;
 }
 
 void ZM_onEnterWorld( Player *player )
 {
-	if( isZangarmarsh( player->GetMapId(), player->GetZoneId() ) && ( graveyardOwner == player->GetTeam() ) )
+	if( isZangarmarsh( player->GetMapId(), player->GetZoneId() ) && ( graveyardOwner.GetVal() == player->GetTeam() ) )
 	{
 		player->CastSpell( player, SPELL_TWIN_SPIRE_BLESSING, true );
 	}
@@ -606,12 +615,7 @@ void ZM_onLogout( Player *player )
 
 void ZM_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 {
-	if( player->GetMapId() != MAP_OUTLAND )
-	{
-		return;
-	}
-
-	if( isZangarmarsh( player->GetMapId(), player->GetZoneId() ) && ( graveyardOwner == player->GetTeam() ) )
+	if( isZangarmarsh( player->GetMapId(), player->GetZoneId() ) && ( graveyardOwner.GetVal() == player->GetTeam() ) )
 	{
 		player->CastSpell( player, SPELL_TWIN_SPIRE_BLESSING, true );
 	}

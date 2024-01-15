@@ -38,6 +38,10 @@ enum Maps
 	MAP_BLOOD_FURNACE         = 542,
 	MAP_RAMPARTS              = 543,
 	MAP_MAGTHERIDONS_LAIR     = 544,
+	MAP_STEAMVAULT            = 545,
+	MAP_UNDERBOG              = 546,
+	MAP_SLAVE_PENS            = 547,
+	MAP_SERPENTSHRINE_CAVERN  = 548,
 	MAP_NORTHREND             = 571
 };
 
