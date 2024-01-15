@@ -477,7 +477,7 @@ class FieldScoutGossip : public Arcemu::Gossip::Script
 				menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Give me a battle standard. I will take control of Twin Spire Ruins.", 1, false );
 			}
 
-			menu.AddItem( Arcemu::Gossip::ICON_VENDOR, player->GetSession()->LocalizedWorldSrv(Arcemu::Gossip::VENDOR), 2, false);
+			menu.AddItem( Arcemu::Gossip::ICON_VENDOR, "I have marks to redeem!", 2, false);
 
 			sQuestMgr.FillQuestMenu( creature, player, menu);
 			
