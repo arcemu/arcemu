@@ -140,38 +140,21 @@ static Arcemu::Threading::AtomicULong graveyardOwner( ZM_BEACON_OWNER_NEUTRAL );
 
 #define SPELL_TWIN_SPIRE_BLESSING 33779
 
-static uint32 getSuperiorTeam()
-{
-	if( beaconOwners[ ZM_BEACON_WEST ] == beaconOwners[ ZM_BEACON_EAST ] )
-	{
-		return beaconOwners[ ZM_BEACON_WEST ];
-	}
-	else
-	{
-		return ZM_BEACON_OWNER_NEUTRAL;
-	}
-}
-
-class ZangarmarshPvP
+class ZangarmarshBroadcaster
 {
 private:
 	MapMgr *mgr;
 
 public:
-	ZangarmarshPvP()
-	{
-		mgr = NULL;
-	}
-
-	void setMapMgr( MapMgr *mgr )
+	ZangarmarshBroadcaster( MapMgr *mgr )
 	{
 		this->mgr = mgr;
 	}
 
-	void broadcastGraveyardCaptureMessage()
+	void broadcastGraveyardCaptureMessage( uint32 team )
 	{
 		std::string faction;
-		if( graveyardOwner.GetVal() == TEAM_ALLIANCE )
+		if( team == TEAM_ALLIANCE )
 		{
 			faction.assign( "The alliance" );
 		}
@@ -190,6 +173,62 @@ public:
 			mgr->SendPacketToPlayersInZone( ZONE_ZANGARMARSH, packet );
 			delete packet;
 		}
+	}
+
+	void broadcastBeaconCaptureMessage( uint32 team, uint32 beaconId )
+	{
+		std::string faction;
+		if( team == TEAM_ALLIANCE )
+		{
+			faction.assign( "The alliance" );
+		}
+		else
+		{
+			faction.assign( "The horde" );
+		}
+		
+		std::stringstream ss;
+		ss << faction;
+		ss << " has captured the " << beaconNames[ beaconId ] << "!";
+		
+		WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ss.str().c_str(), 0, 0 );
+		if( packet != NULL )
+		{
+			mgr->SendPacketToPlayersInZone( ZONE_ZANGARMARSH, packet );
+			delete packet;
+		}
+	}
+};
+
+static uint32 getSuperiorTeam()
+{
+	if( beaconOwners[ ZM_BEACON_WEST ] == beaconOwners[ ZM_BEACON_EAST ] )
+	{
+		return beaconOwners[ ZM_BEACON_WEST ];
+	}
+	else
+	{
+		return ZM_BEACON_OWNER_NEUTRAL;
+	}
+}
+
+class ZangarmarshPvP
+{
+private:
+	MapMgr *mgr;
+	ZangarmarshBroadcaster *broadcaster;
+
+public:
+	ZangarmarshPvP()
+	{
+		mgr = NULL;
+		broadcaster = NULL;
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+		broadcaster = new ZangarmarshBroadcaster( mgr );
 	}
 
 	void onGraveyardCaptured( uint32 team )
@@ -240,36 +279,12 @@ public:
 		CastSpellOnPlayers caster( SPELL_TWIN_SPIRE_BLESSING, true );
 		mgr->visitPlayers( &caster, &matcher );
 
-		broadcastGraveyardCaptureMessage();
-	}
-
-	void broadcastBeaconCaptureMessage( uint32 beaconId )
-	{
-		std::string faction;
-		if( beaconOwners[ beaconId ] == TEAM_ALLIANCE )
-		{
-			faction.assign( "The alliance" );
-		}
-		else
-		{
-			faction.assign( "The horde" );
-		}
-		
-		std::stringstream ss;
-		ss << faction;
-		ss << " has captured the " << beaconNames[ beaconId ] << "!";
-		
-		WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, ss.str().c_str(), 0, 0 );
-		if( packet != NULL )
-		{
-			mgr->SendPacketToPlayersInZone( ZONE_ZANGARMARSH, packet );
-			delete packet;
-		}
+		broadcaster->broadcastGraveyardCaptureMessage( graveyardOwner.GetVal() );
 	}
 
 	void onBeaconCaptured( uint32 beaconId )
 	{
-		broadcastBeaconCaptureMessage( beaconId );
+		broadcaster->broadcastBeaconCaptureMessage( beaconOwners[ beaconId ], beaconId );
 	}
 
 	void onBeaconOwnerChange( uint32 beaconId, uint32 lastOwner )
