@@ -124,7 +124,7 @@ static uint32 battleStandardSpells[] = { SPELL_BATTLE_STANDARD_ALLIANCE, SPELL_B
 
 #define ZM_GY_BANNER_FACTION_ALLIANCE 1739
 #define ZM_GY_BANNER_FACTION_HORDE 1740
-#define ZM_GY_BANNER_FACTION_NEUTRAL 1740
+#define ZM_GY_BANNER_FACTION_NEUTRAL 1742
 
 static float graveyardBannerLocation[] = { 253.5299f, 7083.7998f, 36.99f, -0.02f };
 
