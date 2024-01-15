@@ -120,7 +120,15 @@ enum ZMBattleStandardSpells
 	SPELL_BATTLE_STANDARD_HORDE    = 32431
 };
 
-uint32 battleStandardSpells[] = { SPELL_BATTLE_STANDARD_ALLIANCE, SPELL_BATTLE_STANDARD_HORDE };
+static uint32 battleStandardSpells[] = { SPELL_BATTLE_STANDARD_ALLIANCE, SPELL_BATTLE_STANDARD_HORDE };
+
+#define ZM_GY_BANNER_FACTION_ALLIANCE 1739
+#define ZM_GY_BANNER_FACTION_HORDE 1740
+#define ZM_GY_BANNER_FACTION_NEUTRAL 1740
+
+static float graveyardBannerLocation[] = { 253.5299f, 7083.7998f, 36.99f, -0.02f };
+
+static uint32 graveyardBannerFaction[] = { ZM_GY_BANNER_FACTION_ALLIANCE, ZM_GY_BANNER_FACTION_HORDE, ZM_GY_BANNER_FACTION_NEUTRAL };
 
 static uint32 getSuperiorTeam()
 {
@@ -511,4 +519,15 @@ void setupZangarmarsh( ScriptMgr *mgr )
 
 	mgr->register_creature_gossip( NPC_FIELD_SCOUT_ALLIANCE, new FieldScoutGossip() );
 	mgr->register_creature_gossip( NPC_FIELD_SCOUT_HORDE, new FieldScoutGossip() );
+
+	GameObject *graveyardBanner = mapMgr->GetInterface()->SpawnGameObject(
+		GO_ZM_BANNER_GRAVEYARD_NEUTRAL,
+		graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerLocation[ 3 ], 
+		false, 0, 0 );
+	
+	if( graveyardBanner != NULL )
+	{
+		graveyardBanner->SetFaction( graveyardBannerFaction[ ZM_BEACON_OWNER_NEUTRAL ] );
+		graveyardBanner->AddToWorld( mapMgr );
+	}
 }
