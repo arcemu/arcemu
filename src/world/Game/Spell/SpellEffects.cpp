@@ -2699,11 +2699,18 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 						return;
 
 				uint32 spellid = !gameObjTarget->GetInfo()->Unknown1 ? 23932 : gameObjTarget->GetInfo()->Unknown1;
-				SpellEntry* en = dbcSpell.LookupEntry(spellid);
-				Spell* sp = sSpellFactoryMgr.NewSpell(p_caster, en, true, NULL);
-				SpellCastTargets tgt;
-				tgt.m_unitTarget = gameObjTarget->GetGUID();
-				sp->prepare(&tgt);
+				SpellEntry* en = dbcSpell.LookupEntryForced(spellid);
+				if( en != NULL )
+				{
+					Spell* sp = sSpellFactoryMgr.NewSpell(p_caster, en, true, NULL);
+					SpellCastTargets tgt;
+					tgt.m_unitTarget = gameObjTarget->GetGUID();
+					sp->prepare(&tgt);
+				}
+				else
+				{
+					LOG_DEBUG( "Spell %u not found while slow opening gameobject '%s' (%u)", spellid, gameObjTarget->GetInfo()->Name, gameObjTarget->GetInfo()->ID );
+				}
 				return;
 			}
 			break;
