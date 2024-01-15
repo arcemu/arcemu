@@ -24,6 +24,7 @@
 void setupEasternPlaguelands( ScriptMgr *mgr );
 void setupHellfirePeninsula( ScriptMgr *mgr );
 void setupSilithus( ScriptMgr *mgr );
+void setupZangarmarsh( ScriptMgr *mgr );
 
 extern "C" SCRIPT_DECL const char* _exp_get_version()
 {
@@ -40,4 +41,5 @@ extern "C" SCRIPT_DECL void _exp_script_register( ScriptMgr *mgr )
 	setupEasternPlaguelands( mgr );
 	setupHellfirePeninsula( mgr );
 	setupSilithus( mgr );
+	setupZangarmarsh( mgr );
 }

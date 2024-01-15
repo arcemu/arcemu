@@ -7,6 +7,7 @@ plugin.cpp
 EasternPlaguelands.cpp
 HellfirePeninsula.cpp
 Silithus.cpp
+Zangarmarsh.cpp
 )
 
 SET( headers
