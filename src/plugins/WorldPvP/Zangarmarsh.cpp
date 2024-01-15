@@ -136,6 +136,8 @@ static uint32 graveyardWorldStates[] = { WORLDSTATE_ZM_GRAVEYARD_ALLIANCE, WORLD
 
 static uint32 graveyardOwner = ZM_BEACON_OWNER_NEUTRAL;
 
+#define SPELL_TWIN_SPIRE_BLESSING 33779
+
 static uint32 getSuperiorTeam()
 {
 	if( beaconOwners[ ZM_BEACON_WEST ] == beaconOwners[ ZM_BEACON_EAST ] )
@@ -193,10 +195,23 @@ public:
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
 		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ graveyardOwner ], 0 );
 		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, graveyardWorldStates[ team ], 1 );
+		uint32 oldTeam = graveyardOwner;
 		graveyardOwner = team;
 
 		LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
 		sGraveyardService.setGraveyardOwner( 530, location, team );
+
+		/// Apply / remove buff
+		if( oldTeam < ZM_BEACON_OWNER_NEUTRAL )
+		{
+			TeamAndZoneMatcher oldMatcher( ZONE_ZANGARMARSH, oldTeam );
+			RemoveAura remover( SPELL_TWIN_SPIRE_BLESSING );
+			mgr->visitPlayers( &remover, &oldMatcher );
+		}
+
+		TeamAndZoneMatcher matcher( ZONE_ZANGARMARSH, team );
+		CastSpellOnPlayers caster( SPELL_TWIN_SPIRE_BLESSING, true );
+		mgr->visitPlayers( &caster, &matcher );
 	}
 
 	void broadcastBeaconCaptureMessage( uint32 beaconId )
@@ -566,6 +581,46 @@ class FieldScoutGossip : public Arcemu::Gossip::Script
 		}
 };
 
+bool isZangarmarsh( uint32 mapId, uint32 zoneId )
+{
+	if( mapId == MAP_OUTLAND && zoneId == ZONE_ZANGARMARSH )
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void ZM_onEnterWorld( Player *player )
+{
+	if( isZangarmarsh( player->GetMapId(), player->GetZoneId() ) && ( graveyardOwner == player->GetTeam() ) )
+	{
+		player->CastSpell( player, SPELL_TWIN_SPIRE_BLESSING, true );
+	}
+}
+
+void ZM_onLogout( Player *player )
+{
+	player->RemoveAura( SPELL_TWIN_SPIRE_BLESSING );
+}
+
+void ZM_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
+{
+	if( player->GetMapId() != MAP_OUTLAND )
+	{
+		return;
+	}
+
+	if( isZangarmarsh( player->GetMapId(), player->GetZoneId() ) && ( graveyardOwner == player->GetTeam() ) )
+	{
+		player->CastSpell( player, SPELL_TWIN_SPIRE_BLESSING, true );
+	}
+	else
+	{
+		player->RemoveAura( SPELL_TWIN_SPIRE_BLESSING );
+	}
+}
+
 void setupZangarmarsh( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -580,6 +635,10 @@ void setupZangarmarsh( ScriptMgr *mgr )
 
 	mgr->register_creature_gossip( NPC_FIELD_SCOUT_ALLIANCE, new FieldScoutGossip() );
 	mgr->register_creature_gossip( NPC_FIELD_SCOUT_HORDE, new FieldScoutGossip() );
+
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&ZM_onEnterWorld );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&ZM_onLogout );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&ZM_onZoneChange );
 
 	GameObject *graveyardBanner = mapMgr->GetInterface()->SpawnGameObject(
 		GO_ZM_BANNER_GRAVEYARD_NEUTRAL,
