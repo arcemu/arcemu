@@ -2711,6 +2711,8 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				{
 					LOG_DEBUG( "Spell %u not found while slow opening gameobject '%s' (%u)", spellid, gameObjTarget->GetInfo()->Name, gameObjTarget->GetInfo()->ID );
 				}
+
+				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(p_caster);
 				return;
 			}
 			break;
