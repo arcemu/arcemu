@@ -1043,6 +1043,49 @@ void MapMgr::_UpdateObjects()
 			plyr->ProcessPendingUpdates();
 	}
 }
+
+void MapMgr::loadCell( uint32 x, uint32 y )
+{
+	MapCell *cell = GetCell( x, y );
+	if( cell == NULL )
+	{
+		cell = Create( x, y );
+		cell->Init( x, y, this );
+		
+		LOG_DETAIL( "Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID );
+		
+		cell->SetActivity( true );
+		_map->CellGoneActive( x, y );
+		
+		ARCEMU_ASSERT( !cell->IsLoaded() );
+
+		CellSpawns *spawns = _map->GetSpawnsList( x, y );
+		if( spawns != NULL )
+		{
+			cell->LoadObjects( spawns );
+		}
+	}
+	else
+	{
+		if( !cell->IsActive() )
+		{
+			LOG_DETAIL( "Activated cell [%u,%u] on map %u (instance %u).", x, y, _mapId, m_instanceID );
+			
+			_map->CellGoneActive( x, y );
+			cell->SetActivity( true );
+
+			if( !cell->IsLoaded() )
+			{
+				CellSpawns *spawns = _map->GetSpawnsList( x, y );
+				if( spawns != NULL )
+				{
+					cell->LoadObjects( spawns );
+				}
+			}
+		}
+	}
+}
+
 void MapMgr::LoadAllCells()
 {
 	// eek
@@ -1053,42 +1096,7 @@ void MapMgr::LoadAllCells()
 	{
 		for(uint32 y = 0 ; y < _sizeY ; y ++)
 		{
-			cellInfo = GetCell(x , y);
-
-			if(!cellInfo)
-			{
-				// Cell doesn't exist, create it.
-				// There is no spoon. Err... cell.
-				cellInfo = Create(x , y);
-				cellInfo->Init(x , y , this);
-				LOG_DETAIL("Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID);
-				cellInfo->SetActivity(true);
-				_map->CellGoneActive(x , y);
-				ARCEMU_ASSERT(!cellInfo->IsLoaded());
-
-				spawns = _map->GetSpawnsList(x , y);
-				if(spawns)
-					cellInfo->LoadObjects(spawns);
-			}
-			else
-			{
-				// Cell exists, but is inactive
-				if(!cellInfo->IsActive())
-				{
-					LOG_DETAIL("Activated cell [%u,%u] on map %u (instance %u).", x, y, _mapId, m_instanceID);
-					_map->CellGoneActive(x , y);
-					cellInfo->SetActivity(true);
-
-					if(!cellInfo->IsLoaded())
-					{
-						//LOG_DETAIL("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
-						//	posX, posY, this->_mapId, m_instanceID);
-						spawns = _map->GetSpawnsList(x , y);
-						if(spawns)
-							cellInfo->LoadObjects(spawns);
-					}
-				}
-			}
+			loadCell( x, y );
 		}
 	}
 }

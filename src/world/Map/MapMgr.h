@@ -259,6 +259,7 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		MapScriptInterface* GetInterface() { return ScriptInterface; }
 		virtual int32 event_GetInstanceID() { return m_instanceID; }
 
+		void loadCell( uint32 x, uint32 y );
 		void LoadAllCells();
 		size_t GetPlayerCount() { return m_PlayerStorage.size(); }
 		uint32 GetTeamPlayersCount(uint32 teamId);
