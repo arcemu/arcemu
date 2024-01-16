@@ -1128,3 +1128,12 @@ void HookInterface::onTransportArrived(GameObject *go, uint32 route)
 		((tOnTransportArrived)*itr)(go, route);
 	}
 }
+
+void HookInterface::onMapStarted(MapMgr *mgr)
+{
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_MAP_STARTED];
+	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
+	{
+		((tOnMapStarted)*itr)(mgr);
+	}
+}

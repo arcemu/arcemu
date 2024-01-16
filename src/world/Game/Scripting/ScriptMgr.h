@@ -65,6 +65,7 @@ enum ServerHookEvents
     SERVER_HOOK_EVENT_ON_AURA_REMOVE		= 31,
     SERVER_HOOK_EVENT_ON_RESURRECT		= 32,
 	SERVER_HOOK_EVENT_ON_TRANSPORT_ARRIVED = 33,
+	SERVER_HOOK_EVENT_ON_MAP_STARTED       =  34,
 
     NUM_SERVER_HOOKS,
 };
@@ -111,6 +112,7 @@ typedef void(*tOnDuelFinished)(Player* Winner, Player* Looser);
 typedef void(*tOnAuraRemove)(Aura* aura);
 typedef bool(*tOnResurrect)(Player* pPlayer);
 typedef void(*tOnTransportArrived)(GameObject *go, uint32 route);
+typedef void(*tOnMapStarted)(MapMgr *mgr);
 
 class Spell;
 class Aura;
@@ -610,6 +612,7 @@ class SERVER_DECL HookInterface : public Singleton<HookInterface>
 		void OnAuraRemove(Aura* aura);
 		bool OnResurrect(Player* pPlayer);
 		void onTransportArrived(GameObject* go, uint32 route);
+		void onMapStarted(MapMgr *mgr);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

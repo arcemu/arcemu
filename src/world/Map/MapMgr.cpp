@@ -1269,6 +1269,12 @@ bool MapMgr::Do()
 	worldstateshandler.InitWorldStates( objmgr.GetWorldStatesForMap( _mapId ) );
 	worldstateshandler.setObserver( this );
 
+	HookInterface *hookInterface = HookInterface::getSingletonPtr();
+	if( hookInterface != NULL )
+	{
+		hookInterface->onMapStarted( this );
+	}
+
 	// always declare local variables outside of the loop!
 	// otherwise there's a lot of sub esp; going on.
 
