@@ -231,6 +231,12 @@ public:
 		LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
 		sGraveyardService.setGraveyardOwner( 530, location, team );
 
+		// Remove active field scout icon
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_INACTIVE, 1 );
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_ALLIANCE_ACTIVE, 0 );
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_HORDE_INACTIVE, 1 );
+		handler.SetWorldStateForZone( ZONE_ZANGARMARSH, WORLDSTATE_ZM_FIELD_SCOUT_HORDE_ACTIVE, 0 );
+
 		/// Apply / remove buff
 		if( oldTeam < ZM_BEACON_OWNER_NEUTRAL )
 		{
@@ -552,7 +558,7 @@ class FieldScoutGossip : public Arcemu::Gossip::Script
 
 			Arcemu::Gossip::Menu menu( object->GetGUID(), text );
 
-			if( superiorTeam == player->GetTeam() )
+			if( ( getSuperiorTeam() == player->GetTeam() ) && ( graveyardOwner.GetVal() != player->GetTeam() ) )
 			{
 				menu.AddItem( Arcemu::Gossip::ICON_CHAT, "Give me a battle standard. I will take control of Twin Spire Ruins.", 1, false );
 			}
@@ -571,7 +577,7 @@ class FieldScoutGossip : public Arcemu::Gossip::Script
 			switch( selection )
 			{
 				case 1:
-					if( getSuperiorTeam() == player->GetTeam() )
+					if( ( getSuperiorTeam() == player->GetTeam() ) && ( graveyardOwner.GetVal() != player->GetTeam() ) )
 					{
 						player->CastSpell( player, battleStandardSpells[ player->GetTeam() ], true );
 					}
