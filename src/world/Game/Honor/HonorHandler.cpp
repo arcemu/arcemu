@@ -25,7 +25,7 @@ void HonorHandler::AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount)
 	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
 	pPlayer->m_procCounter = 0;
 
-	if(pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
+	if(pPlayer->GetMapId() == MAP_ARENA_NAGRAND || pPlayer->GetMapId() == MAP_ARENA_BLADES_EDGE || pPlayer->GetMapId() == MAP_ARENA_RUINS_OF_LORDAERON)
 		return;
 	pPlayer->m_honorPoints += uAmount;
 	pPlayer->m_honorToday += uAmount;
