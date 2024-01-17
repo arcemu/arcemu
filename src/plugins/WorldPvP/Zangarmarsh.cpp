@@ -690,7 +690,7 @@ void ZM_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 }
 
 
-void ZM_onKillPlayer( Player *killer, Player *victim )
+void ZM_onHonorableKill( Player *killer, Player *victim )
 {
 	if( ( killer->GetMapId() != MAP_OUTLAND ) && ( killer->GetZoneId() != ZONE_ZANGARMARSH ) )
 	{
@@ -745,7 +745,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&ZM_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&ZM_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&ZM_onZoneChange );
-	mgr->register_hook( SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)&ZM_onKillPlayer );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)&ZM_onHonorableKill );
 
 	GraveyardBannerSpawner gySpawner( mapMgr );
 	gySpawner.spawnBanner( ZM_BEACON_OWNER_NEUTRAL, false );

@@ -637,7 +637,7 @@ void HP_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 }
 
-void HP_onKillPlayer( Player *killer, Player *victim )
+void HP_onHonorableKill( Player *killer, Player *victim )
 {
 	if( ( killer->GetMapId() != MAP_OUTLAND ) && ( killer->GetZoneId() != ZONE_HELLFIRE_PENINSULA ) )
 	{
@@ -687,5 +687,5 @@ void setupHellfirePeninsula( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&HP_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&HP_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&HP_onZoneChange );
-	mgr->register_hook( SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)&HP_onKillPlayer );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)&HP_onHonorableKill );
 }
