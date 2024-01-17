@@ -208,22 +208,6 @@ void HonorHandler::OnPlayerKilled(Player* pPlayer, Player* pVictim)
 					SpellEntry* pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 33004 : 33005);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
 				}
-				// If we are in Hellfire Peninsula <http://www.wowwiki.com/Hellfire_Peninsula#World_PvP_-_Hellfire_Fortifications>
-				if(pAffectedPlayer->GetZoneId() == 3483)
-				{
-					// Hellfire Horde Controlled Towers
-					/*if(pAffectedPlayer->GetMapMgr()->GetWorldState(2478) != 3 && pAffectedPlayer->GetTeam() == 1)
-						return;
-
-					// Hellfire Alliance Controlled Towers
-					if(pAffectedPlayer->GetMapMgr()->GetWorldState(2476) != 3 && pAffectedPlayer->GetTeam() == 0)
-						return;
-					*/
-
-					// Add Mark of Thrallmar/Honor Hold
-					SpellEntry* pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 32158 : 32155);
-					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
-				}
 			}
 		}
 	}

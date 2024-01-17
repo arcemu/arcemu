@@ -64,6 +64,12 @@ enum HPForts
 	HP_FORT_COUNT      = 3
 };
 
+static float fortLocations[ HP_FORT_COUNT ][3] = {
+	{ -184.89f, 3476.93f, 38.21f },
+	{ -471.46f, 3451.09f, 34.63f },
+	{ -290.02f, 3702.42f, 56.67f }
+};
+
 static const char *fortNames[ HP_FORT_COUNT ] = 
 {
 	"The Overlook",
@@ -123,6 +129,8 @@ enum HellfirePvPQuests
 static uint32 hellfirePvPQuests[] = { HELLFIRE_PVP_QUEST_ALLIANCE, HELLFIRE_PVP_QUEST_HORDE };
 
 static uint32 fortToQuestCredit[] = { 0, 2, 1 };
+
+static uint32 markSpells[] = { 32155, 32158 };
 
 class HellfirePeninsulaPvP
 {
@@ -629,6 +637,38 @@ void HP_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 }
 
+void HP_onKillPlayer( Player *killer, Player *victim )
+{
+	if( ( killer->GetMapId() != MAP_OUTLAND ) && ( killer->GetZoneId() != ZONE_HELLFIRE_PENINSULA ) )
+	{
+		return;
+	}
+	
+	int32 points = HonorHandler::CalculateHonorPointsForKill( killer->getLevel(), victim->getLevel() );
+	if( points <= 0 )
+	{
+		return;
+	}
+
+	/// Are we close enough to one of the forts?
+	uint32 i;
+	for( i = HP_FORT_OVERLOOK; i < HP_FORT_COUNT; i++ )
+	{
+		float d = killer->CalcDistance( fortLocations[ i ][ 0 ], fortLocations[ i ][ 1 ], fortLocations[ i ][ 2 ] );
+		if( d < HP_BANNER_CAPTURE_RANGE )
+		{
+			break;
+		}
+	}
+
+	if( i >= HP_FORT_COUNT )
+	{
+		return;
+	}
+
+	killer->CastSpell( killer, markSpells[ killer->GetTeam() ], false );
+}
+
 void setupHellfirePeninsula( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -647,4 +687,5 @@ void setupHellfirePeninsula( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&HP_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&HP_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&HP_onZoneChange );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)&HP_onKillPlayer );
 }
