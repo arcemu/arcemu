@@ -40,6 +40,12 @@ enum Beacons
 	ZM_BEACON_COUNT = 2
 };
 
+static float beaconLocations[ ZM_BEACON_COUNT ][ 3 ] =
+{
+	{ 336.47f, 7340.26f, 41.5f },
+	{ 303.24f, 6841.36f, 40.12f }
+};
+
 static const char* beaconNames[ ZM_BEACON_COUNT ] = 
 {
 	"West Beacon",
@@ -103,6 +109,8 @@ static uint32 graveyardWorldStates[] = { WORLDSTATE_ZM_GRAVEYARD_ALLIANCE, WORLD
 static Arcemu::Threading::AtomicULong graveyardOwner( ZM_BEACON_OWNER_NEUTRAL );
 
 #define SPELL_TWIN_SPIRE_BLESSING 33779
+
+static uint32 markSpells[] = { 32155, 32158 };
 
 /// We want to keep this banner respawning when the cell gets reloaded, so we have to handle it specially...
 /// TODO: Refactor! There should be a generic solutions for spawning like this
@@ -681,6 +689,44 @@ void ZM_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 }
 
+
+void ZM_onKillPlayer( Player *killer, Player *victim )
+{
+	if( ( killer->GetMapId() != MAP_OUTLAND ) && ( killer->GetZoneId() != ZONE_ZANGARMARSH ) )
+	{
+		return;
+	}
+
+	int32 points = HonorHandler::CalculateHonorPointsForKill( killer->getLevel(), victim->getLevel() );
+	if( points <= 0 )
+	{
+		return;
+	}
+
+	/// Are we close enough to one of the beacons?
+	uint32 i;
+	for( i = ZM_BEACON_WEST; i < ZM_BEACON_COUNT; i++ )
+	{
+		float d = killer->CalcDistance( beaconLocations[ i ][ 0 ], beaconLocations[ i ][ 1 ], beaconLocations[ i ][ 2 ] );
+		if( d < ZM_BEACON_CAPTURE_RANGE )
+		{
+			break;
+		}
+	}
+
+	if( i >= ZM_BEACON_COUNT )
+	{
+		/// Are we close enough to the graveyard banner?
+		float d = killer->CalcDistance( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
+		if( d > ZM_BEACON_CAPTURE_RANGE )
+		{
+			return;
+		}
+	}
+
+	killer->CastSpell( killer, markSpells[ killer->GetTeam() ], false );
+}
+
 void setupZangarmarsh( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -699,6 +745,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&ZM_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&ZM_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&ZM_onZoneChange );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)&ZM_onKillPlayer );
 
 	GraveyardBannerSpawner gySpawner( mapMgr );
 	gySpawner.spawnBanner( ZM_BEACON_OWNER_NEUTRAL, false );
