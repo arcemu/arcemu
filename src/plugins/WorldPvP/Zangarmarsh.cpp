@@ -104,6 +104,69 @@ static Arcemu::Threading::AtomicULong graveyardOwner( ZM_BEACON_OWNER_NEUTRAL );
 
 #define SPELL_TWIN_SPIRE_BLESSING 33779
 
+/// We want to keep this banner respawning when the cell gets reloaded, so we have to handle it specially...
+/// TODO: Refactor! There should be a generic solutions for spawning like this
+class GraveyardBannerSpawner
+{
+private:
+	MapMgr *mgr;
+
+public:
+	GraveyardBannerSpawner( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	/// Add a banne spawn to the map cell's spawn list and OPTIONALLY push it to the world
+	/// There's no point in pushing when there can be no players around for example (on startup)
+	void spawnBanner( uint32 team, bool push = false )
+	{
+		/// Remove previous banner if there's one
+		GameObject *go = mgr->GetInterface()->GetGameObjectNearestCoords(
+			graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerGoIds[ graveyardOwner.GetVal() ] );
+
+		if( go != NULL )
+		{
+			if( go->m_spawn != NULL )
+			{
+				mgr->GetInterface()->RemoveGameObjectSpawn( go->m_spawn );
+			}
+
+			go->Despawn( 1, 0 );
+		}
+
+		/// Set up properties of the banner
+		GOSpawn *gs = new GOSpawn();
+		gs->id = 0;
+		gs->entry = graveyardBannerGoIds[ team ];
+		gs->x = graveyardBannerLocation[ 0 ];
+		gs->y = graveyardBannerLocation[ 1 ];
+		gs->z = graveyardBannerLocation[ 2 ];
+		gs->facing = graveyardBannerLocation[ 3 ];
+		gs->o = 0.0f;
+		gs->o1 = 0.0f;
+		gs->o2 = 0.0f;
+		gs->o3 = 0.0f;
+		gs->faction = graveyardBannerFaction[ team ];
+		gs->flags = 0;
+		gs->scale = 2.0f;
+		gs->state = 1;
+		gs->overrides = 0;
+		gs->phase = 0xFFFFFFF;
+
+		/// Spawn away!
+		mgr->GetInterface()->AddGameObjectSpawn( gs );
+		if( push )
+		{
+			GameObject *newBanner = mgr->GetInterface()->SpawnGameObject( gs, true );
+			if( newBanner != NULL )
+			{
+				newBanner->m_spawn = gs;
+			}
+		}
+	}
+};
+
 class ZangarmarshBroadcaster
 {
 private:
@@ -201,26 +264,8 @@ public:
 
 		uint32 oldTeam = graveyardOwner.GetVal();
 
-		/// Remove old graveyard banner
-		go = mgr->GetInterface()->GetGameObjectNearestCoords( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerGoIds[ oldTeam ] );
-		if( go != NULL )
-		{
-			go->Despawn( 1, 0 );
-		}
-
-
-		/// Push new graveyard banner
-		go = mgr->GetInterface()->SpawnGameObject(
-			graveyardBannerGoIds[ team ],
-			graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerLocation[ 3 ], 
-			false, 0, 0 );
-		
-		if( go != NULL )
-		{
-			go->SetFaction( graveyardBannerFaction[ team ] );
-			go->PushToWorld( mgr );
-		}
-
+		GraveyardBannerSpawner spawner( mgr );
+		spawner.spawnBanner( team, true );
 
 		/// Change graveyard owner
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
@@ -655,16 +700,8 @@ void setupZangarmarsh( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&ZM_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&ZM_onZoneChange );
 
-	GameObject *graveyardBanner = mapMgr->GetInterface()->SpawnGameObject(
-		GO_ZM_BANNER_GRAVEYARD_NEUTRAL,
-		graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerLocation[ 3 ], 
-		false, 0, 0 );
-	
-	if( graveyardBanner != NULL )
-	{
-		graveyardBanner->SetFaction( graveyardBannerFaction[ ZM_BEACON_OWNER_NEUTRAL ] );
-		graveyardBanner->AddToWorld( mapMgr );
-	}
+	GraveyardBannerSpawner gySpawner( mapMgr );
+	gySpawner.spawnBanner( ZM_BEACON_OWNER_NEUTRAL, false );
 
 	LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
 	sGraveyardService.setGraveyardOwner( 530, location, ZM_BEACON_OWNER_NEUTRAL );

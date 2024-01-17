@@ -76,6 +76,45 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 	return PlayerCount;
 }
 
+void MapScriptInterface::AddGameObjectSpawn( GOSpawn *gs )
+{
+	uint32 cx = mapMgr.GetPosX( gs->x );
+	uint32 cy = mapMgr.GetPosY( gs->y );
+
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->GetSpawnsListAndCreate( cx, cy );
+	GOSpawnList &spawns = cellSpawns->GOSpawns;
+
+	GOSpawnList::iterator itr = std::find( spawns.begin(), spawns.end(), gs );
+	if( itr != spawns.end() )
+	{
+		return;
+	}
+
+	spawns.push_back( gs );
+}
+
+void MapScriptInterface::RemoveGameObjectSpawn( GOSpawn *gs )
+{
+	uint32 cx = mapMgr.GetPosX( gs->x );
+	uint32 cy = mapMgr.GetPosY( gs->y );
+
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->GetSpawnsList( cx, cy );
+	if( cellSpawns == NULL )
+	{
+		return;
+	}
+
+	GOSpawnList &spawns = cellSpawns->GOSpawns;
+
+	GOSpawnList::iterator itr = std::find( spawns.begin(), spawns.end(), gs );
+	if( itr == spawns.end() )
+	{
+		return;
+	}
+
+	spawns.erase( itr );
+}
+
 GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
 
