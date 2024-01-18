@@ -397,6 +397,7 @@ void CommandTableStorage::Init()
 	{
 		{ "select",       'o', &ChatHandler::HandleGOSelect,       "Selects the nearest GameObject to you",    NULL, 0, 0, 0 },
 		{ "delete",       'o', &ChatHandler::HandleGODelete,       "Deletes selected GameObject",              NULL, 0, 0, 0 },
+		{ "distance",     'o', &ChatHandler::HandleGODistance,     "Calculates distance between the player and the GameObject", NULL, 0, 0, 0 },
 		{ "spawn",        'o', &ChatHandler::HandleGOSpawn,        "Spawns a GameObject by ID",                NULL, 0, 0, 0 },
 		{ "phase",        'o', &ChatHandler::HandleGOPhaseCommand, "<phase> <save> - Phase selected GameObject", NULL, 0, 0, 0 },
 		{ "info",         'o', &ChatHandler::HandleGOInfo,         "Gives you information about selected GO", NULL, 0, 0, 0 },

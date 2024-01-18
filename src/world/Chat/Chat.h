@@ -358,6 +358,7 @@ class SERVER_DECL ChatHandler : public Singleton<ChatHandler>
 		bool HandleKillCommand(const char* args, WorldSession* m_session);
 		bool HandleKillByPlrCommand(const char* args , WorldSession* m_session);
 		bool HandleGOSelect(const char* args, WorldSession* m_session);
+		bool HandleGODistance(const char* args, WorldSession* m_session);
 		bool HandleGODelete(const char* args, WorldSession* m_session);
 		bool HandleGOSpawn(const char* args, WorldSession* m_session);
 		bool HandleGOPhaseCommand(const char* args, WorldSession* m_session);

@@ -767,6 +767,26 @@ bool ChatHandler::HandleGOSelect(const char* args, WorldSession* m_session)
 	return true;
 }
 
+bool ChatHandler::HandleGODistance(const char* args, WorldSession* m_session)
+{
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if( go == NULL )
+	{
+		RedSystemMessage( m_session, "No selected GameObject..." );
+		return true;
+	}
+
+	GameObjectInfo *info = go->GetInfo();
+
+	Player *player = m_session->GetPlayer();
+
+	float d = player->CalcDistance( go );
+
+	SystemMessage( m_session, "Distance to '%s' (%u) is %f", info->Name, info->ID, d );
+
+	return true;
+}
+
 bool ChatHandler::HandleGODelete(const char* args, WorldSession* m_session)
 {
 	GameObject* GObj = m_session->GetPlayer()->GetSelectedGo();
