@@ -34,8 +34,21 @@ private:
 	uint32 team;
 
 public:
-	TeamAndZoneMatcher( uint32 zoneId, uint32 team );
-	bool match( Player *player );
+	TeamAndZoneMatcher( uint32 zoneId, uint32 team )
+	{
+		this->zoneId = zoneId;
+		this->team = team;
+	}
+
+	bool match( Player *player )
+	{
+		if( ( player->GetZoneId() == zoneId ) && ( player->GetTeam() == team ) )
+		{
+			return true;
+		}
+		
+		return false;
+	}
 };
 
 #endif

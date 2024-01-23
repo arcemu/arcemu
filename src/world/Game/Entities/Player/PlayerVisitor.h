@@ -35,8 +35,16 @@ private:
 	uint32 spellId;
 
 public:
-	CastSpellOnPlayers( uint32 spellId, bool triggered );
-	void visit( Player *player );
+	CastSpellOnPlayers( uint32 spellId, bool triggered )
+	{
+		this->spellId = spellId;
+		this->triggered = triggered;
+	}
+
+	void visit( Player *player )
+	{
+		player->CastSpell( player, spellId, triggered );
+	}
 };
 
 class SERVER_DECL RemoveAura : public PlayerVisitor
@@ -45,8 +53,15 @@ private:
 	uint32 spellId;
 
 public:
-	RemoveAura( uint32 spellId );
-	void visit( Player *player );
+	RemoveAura( uint32 spellId )
+	{
+		this->spellId = spellId;
+	}
+
+	void visit( Player *player )
+	{
+		player->RemoveAura( spellId );
+	}
 };
 
 

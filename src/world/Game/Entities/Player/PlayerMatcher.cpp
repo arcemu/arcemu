@@ -19,18 +19,3 @@
 
 #include "StdAfx.h"
 
-TeamAndZoneMatcher::TeamAndZoneMatcher( uint32 zoneId, uint32 team )
-{
-	this->zoneId = zoneId;
-	this->team = team;
-}
-
-bool TeamAndZoneMatcher::match( Player *player )
-{
-	if( ( player->GetZoneId() == zoneId ) && ( player->GetTeam() == team ) )
-	{
-		return true;
-	}
-	
-	return false;
-}

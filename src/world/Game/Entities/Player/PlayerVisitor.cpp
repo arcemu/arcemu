@@ -19,24 +19,3 @@
 
 #include "StdAfx.h"
 
-CastSpellOnPlayers::CastSpellOnPlayers( uint32 spellId, bool triggered )
-{
-	this->spellId = spellId;
-	this->triggered = triggered;
-}
-
-void CastSpellOnPlayers::visit( Player *player )
-{
-	player->CastSpell( player, spellId, triggered );
-}
-
-RemoveAura::RemoveAura( uint32 spellId )
-{
-	this->spellId = spellId;
-}
-
-void RemoveAura::visit( Player *player )
-{
-	player->RemoveAura( spellId );
-}
-
