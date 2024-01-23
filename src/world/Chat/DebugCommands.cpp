@@ -1621,3 +1621,30 @@ bool ChatHandler::HandleDebugSendFullAuraUpdateCommand( const char *args, WorldS
 
 	return true;
 }
+
+bool ChatHandler::HandleDebugRemoveAuraCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+	uint64 guid = player->GetSelection();
+
+	if( guid == 0 )
+	{
+		RedSystemMessage( session, "You need to select a target unit" );
+		return true;
+	}
+
+	Unit *target = player->GetMapMgr()->GetUnit( guid );
+
+	uint32 auraId;
+
+	if( sscanf( args, "%u",&auraId ) != 1 )
+	{
+		RedSystemMessage( session, "You need to provide an Aura Id" );
+		return false;
+	}
+
+	target->RemoveAura( auraId );
+
+	return true;
+}
+
