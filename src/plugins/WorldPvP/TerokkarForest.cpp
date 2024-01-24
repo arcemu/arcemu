@@ -22,6 +22,14 @@
 #define ZONE_TEROKKAR_FOREST 3519
 
 #define TF_TOWER_SCAN_UPDATE_FREQ (2*1000)
+#define TF_TOWER_SCAN_RANGE 150.0f
+#define TF_TOWER_CAPTURE_RANGE 50.0f
+#define TF_TOWER_CAPTURE_PROGRESS_TICK 10
+
+#define TF_TOWER_CAPTURE_THRESHOLD_ALLIANCE   100
+#define TF_TOWER_CAPTURE_THRESHOLD_HORDE      0
+#define TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_HI 50
+#define TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_LO 50
 
 enum SpiritTowers
 {
@@ -97,11 +105,99 @@ static uint32 towerOwners[ TF_TOWER_COUNT ] =
 	TF_TOWER_OWNER_NEUTRAL
 };
 
+static uint32 towerCaptureProgress[ TF_TOWER_COUNT ] = 
+{
+	50,
+	50,
+	50,
+	50,
+	50
+};
+
 static uint8 towerArtkits[] = {
 	ARTKIT_BANNER_ALLIANCE,
 	ARTKIT_BANNER_HORDE,
 	ARTKIT_BANNER_NEUTRAL
 };
+
+static uint32 towerOwnerWorldStates[ TF_TOWER_COUNT ][ 3 ] =
+{
+	{ WORLDSTATE_TF_TOWER_NW_ALLIANCE, WORLDSTATE_TF_TOWER_NW_HORDE, WORLDSTATE_TF_TOWER_NW_NEUTRAL },
+	{ WORLDSTATE_TF_TOWER_N_ALLIANCE, WORLDSTATE_TF_TOWER_N_HORDE, WORLDSTATE_TF_TOWER_N_NEUTRAL },
+	{ WORLDSTATE_TF_TOWER_NE_ALLIANCE, WORLDSTATE_TF_TOWER_NE_HORDE, WORLDSTATE_TF_TOWER_NE_NEUTRAL },
+	{ WORLDSTATE_TF_TOWER_SE_ALLIANCE, WORLDSTATE_TF_TOWER_SE_HORDE, WORLDSTATE_TF_TOWER_SE_NEUTRAL },
+	{ WORLDSTATE_TF_TOWER_S_ALLIANCE, WORLDSTATE_TF_TOWER_S_HORDE, WORLDSTATE_TF_TOWER_S_NEUTRAL },
+};
+
+class TerokkarForestPvP
+{
+private:
+	MapMgr *mgr;
+
+public:
+	TerokkarForestPvP( MapMgr *mgr = NULL )
+	{
+		mgr = NULL;
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void onTowerOwnerChange( uint32 towerId, uint32 lastOwner )
+	{
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+
+		int32 allianceDelta = 0;
+		int32 hordeDelta = 0;
+
+		switch( towerOwners[ towerId ] )
+		{
+			case TEAM_ALLIANCE:
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TEAM_ALLIANCE ], 1 );
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TF_TOWER_OWNER_NEUTRAL ], 0 );
+
+				allianceDelta++;
+				break;
+
+			case TEAM_HORDE:
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TEAM_ALLIANCE ], 0 );
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TEAM_HORDE ], 1 );
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TF_TOWER_OWNER_NEUTRAL ], 0 );
+
+				hordeDelta++;
+				break;
+
+			case TF_TOWER_OWNER_NEUTRAL:
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TEAM_ALLIANCE ], 0 );
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ towerId ][ TF_TOWER_OWNER_NEUTRAL ], 1 );
+
+				if( lastOwner == TEAM_ALLIANCE )
+				{
+					allianceDelta--;
+				}
+				else
+				{
+					hordeDelta--;
+				}
+				break;
+		}
+
+		uint32 allianceTowers = handler.GetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_ALLIANCE );
+		uint32 hordeTowers    = handler.GetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_HORDE );
+
+		allianceTowers += allianceDelta;
+		hordeTowers += hordeDelta;
+
+		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_ALLIANCE, allianceTowers );
+		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_HORDE, hordeTowers );
+	}
+};
+
+static TerokkarForestPvP pvp;
 
 class TerokkarSpiritTowerAI : public GameObjectAIScript
 {
@@ -115,6 +211,73 @@ public:
 	}
 
 	ADD_GAMEOBJECT_FACTORY_FUNCTION( TerokkarSpiritTowerAI );
+
+	/// Calculate the current capture progress based on player counts
+	void calculateProgress( uint32 alliancePlayers, uint32 hordePlayers )
+	{
+		int32 delta = 0;
+		if( alliancePlayers > hordePlayers )
+		{
+			delta = 1;
+		}
+		else
+		if( hordePlayers > alliancePlayers )
+		{
+			delta = -1;
+		}
+
+		delta *= TF_TOWER_CAPTURE_PROGRESS_TICK;
+
+		int32 progress = towerCaptureProgress[ towerId ];
+
+		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
+			( ( progress > 0 ) && ( delta < 0 ) ) )
+		{
+			progress += delta;
+			progress = Math::clamp< int32 >( progress, 0, 100 );
+			towerCaptureProgress[ towerId ] = progress;
+		}
+	}
+
+	/// Calculate the current owner based on the current progress
+	/// Returns true on owner change
+	bool calculateOwner()
+	{
+		bool ownerChanged = false;
+		if( towerCaptureProgress[ towerId ] == TF_TOWER_CAPTURE_THRESHOLD_ALLIANCE )
+		{
+			if( towerOwners[ towerId ] != TEAM_ALLIANCE )
+			{
+				ownerChanged = true;
+				towerOwners[ towerId ] = TEAM_ALLIANCE;
+			}
+		}
+		else
+		if( towerCaptureProgress[ towerId ] <= TF_TOWER_CAPTURE_THRESHOLD_HORDE )
+		{
+			if( towerOwners[ towerId ] != TEAM_HORDE )
+			{
+				ownerChanged = true;
+				towerOwners[ towerId ] = TEAM_HORDE;
+			}
+		}
+		else
+		if( ( towerCaptureProgress[ towerId ] <= TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( towerCaptureProgress[ towerId ] >= TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
+		{
+			if( towerOwners[ towerId ] != TF_TOWER_OWNER_NEUTRAL )
+			{
+				ownerChanged = true;
+				towerOwners[ towerId ] = TF_TOWER_OWNER_NEUTRAL;
+			}
+		}
+
+		return ownerChanged;
+	}
+
+	void onOwnerChange( uint32 lastOwner )
+	{
+		pvp.onTowerOwnerChange( towerId, lastOwner );
+	}
 
 	void setArtkit()
 	{
@@ -167,11 +330,82 @@ public:
 		{
 			return;
 		}
+
+		std::set< Player* > playersInRange;
+
+		uint32 alliancePlayers = 0;
+		uint32 hordePlayers = 0;
+
+		/// Find and count players in range
+		std::set< Object* > players = _gameobject->GetInRangePlayers();
+		for( std::set< Object* >::const_iterator itr = players.begin(); itr != players.end(); ++itr )
+		{
+			Player *player = static_cast< Player* >( *itr );
+
+			float d = _gameobject->CalcDistance( player );
+
+			if( d > TF_TOWER_SCAN_RANGE )
+			{
+				continue;
+			}
+
+			if( d > TF_TOWER_CAPTURE_RANGE )
+			{
+				/// If player is outside the capture range, turn off the capture UI
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_UI, 0 );
+			}
+			else
+			{
+				if( player->isAlive() && !player->IsInvisible() && !player->IsStealth() && player->IsPvPFlagged() )
+				{
+					if( player->GetTeam() == TEAM_ALLIANCE )
+					{
+						alliancePlayers++;
+					}
+					else
+					{
+						hordePlayers++;
+					}
+				}
+
+				playersInRange.insert( player );
+			}
+
+			if( playersInRange.empty() )
+			{
+				/// No player in range, no point in calculating
+				return;
+			}
+
+			calculateProgress( alliancePlayers, hordePlayers );
+			uint32 lastOwner = towerOwners[ towerId ];
+
+			bool ownerChanged = calculateOwner();
+			
+			/// Send progress to players fighting for control
+			for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
+			{
+				Player *player = *itr;
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_UI, 1 );
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_PROGRESS, towerCaptureProgress[ towerId ] );
+			}
+			
+			if( ownerChanged )
+			{
+				setArtkit();
+				onOwnerChange( lastOwner );
+			}
+			
+			playersInRange.clear();
+		}
 	}
 };
 
 void setupTerokkarForest( ScriptMgr *mgr )
 {
+	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
+	pvp.setMapMgr( mapMgr );
+
 	mgr->register_gameobject_script( GO_TEROKKAR_BANNER_NW, &TerokkarSpiritTowerAI::Create );
 	mgr->register_gameobject_script( GO_TEROKKAR_BANNER_N, &TerokkarSpiritTowerAI::Create );
 	mgr->register_gameobject_script( GO_TEROKKAR_BANNER_NE, &TerokkarSpiritTowerAI::Create );
