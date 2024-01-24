@@ -412,8 +412,6 @@ public:
 
 	void onBeaconCaptured( uint32 beaconId )
 	{
-		handleBeaconBeam( beaconId );	
-
 		broadcaster->broadcastBeaconCaptureMessage( beaconOwners[ beaconId ], beaconId );
 	}
 
@@ -453,6 +451,8 @@ public:
 				handler.SetWorldStateForZone( ZONE_ZANGARMARSH, beaconMapWorldStates[ beaconId ][ ZM_BEACON_OWNER_NEUTRAL ], 1 );
 				break;
 		}
+
+		handleBeaconBeam( beaconId );
 
 		if( beaconOwners[ beaconId ] < ZM_BEACON_OWNER_NEUTRAL )
 		{
