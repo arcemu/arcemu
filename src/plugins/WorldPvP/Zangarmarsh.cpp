@@ -336,41 +336,44 @@ public:
 
 	void handleGraveyardBeam()
 	{
+
+		/// First remove old beams if there's any
+		for( int i = 0; i < ZM_BEACON_COUNT; i++ )
+		{
+			Creature *beam = mgr->GetInterface()->GetCreatureNearestCoords(
+				gyBeamLocation[ 0 ],gyBeamLocation[ 1 ],gyBeamLocation[ 2 ],
+				pvpBeamNpcs[ i ] );
+			
+			if( beam != NULL )
+			{
+				beam->Despawn( 1, 0 );
+			}
+		}
+
 		uint32 owner = graveyardOwner.GetVal();
 
 		if( owner == ZM_BEACON_OWNER_NEUTRAL )
 		{
-			/// Neutral case - remove beams
-			for( int i = 0; i < ZM_BEACON_COUNT; i++ )
-			{
-				Creature *beam = mgr->GetInterface()->GetCreatureNearestCoords(
-					gyBeamLocation[ 0 ],gyBeamLocation[ 1 ],gyBeamLocation[ 2 ],
-					pvpBeamNpcs[ i ] );
-				
-				if( beam != NULL )
-				{
-					beam->Despawn( 1, 0 );
-				}
-			}			
+			/// Neutral case don't need to spawn a new one			
+			return;
 		}
-		else
-		{
-			/// Captured case - Spawn the appropriate beam
-			Creature *beam = mgr->GetInterface()->SpawnCreature(
-				pvpBeamNpcs[ owner ],
-				gyBeamLocation[ 0 ],gyBeamLocation[ 1 ],gyBeamLocation[ 2 ], gyBeamLocation[ 3 ], 
-				false,
-				false, 0, 0 );
 
-			if( beam != NULL )
-			{
-				beam->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_NOT_SELECTABLE );
-				beam->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
-				beam->SetDisplayId( NPC_ZM_PVP_BEAM_DISPLAYID );
-				beam->PushToWorld( mgr );
-				beam->CastSpell( beam, pvpBeamAuras[ owner ], false );
-			}
+		/// Captured case - Spawn the appropriate beam
+		Creature *beam = mgr->GetInterface()->SpawnCreature(
+			pvpBeamNpcs[ owner ],
+			gyBeamLocation[ 0 ],gyBeamLocation[ 1 ],gyBeamLocation[ 2 ], gyBeamLocation[ 3 ],
+			false,
+			false, 0, 0 );
+		
+		if( beam != NULL )
+		{
+			beam->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_NOT_SELECTABLE );
+			beam->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+			beam->SetDisplayId( NPC_ZM_PVP_BEAM_DISPLAYID );
+			beam->PushToWorld( mgr );
+			beam->CastSpell( beam, pvpBeamAuras[ owner ], false );
 		}
+
 	}
 
 	void handleBeaconBeam( uint32 beaconId )
