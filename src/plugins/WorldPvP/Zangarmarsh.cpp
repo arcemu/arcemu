@@ -112,6 +112,33 @@ static Arcemu::Threading::AtomicULong graveyardOwner( ZM_BEACON_OWNER_NEUTRAL );
 
 static uint32 markSpells[] = { 32155, 32158 };
 
+#define NPC_ZM_PVP_BEAM_DISPLAYID 11686
+
+#define NPC_ZM_PVP_BEAM_RED   18757
+#define NPC_ZM_PVP_BEAM_BLUE  18759
+#define AURA_ZM_PVP_BEAM_RED  32839
+#define AURA_ZM_PVP_BEAM_BLUE 32840
+
+static float pvpBeamLocations[ ZM_BEACON_COUNT ][ 4 ] = 
+{
+	{ 375.81f, 7332.96f, 63.11f, 2.95f },
+	{ 340.45f, 6833.10f, 61.80f, 3.02f }
+};
+
+static uint32 pvpBeamNpcs[] = 
+{
+	NPC_ZM_PVP_BEAM_BLUE,
+	NPC_ZM_PVP_BEAM_RED
+};
+
+static uint32 pvpBeamAuras[] = 
+{
+	AURA_ZM_PVP_BEAM_BLUE,
+	AURA_ZM_PVP_BEAM_RED
+};
+
+static float gyBeamLocation[ 4 ] = { 273.87f, 7082.68f, 87.06f, 3.02f };
+
 /// We want to keep this banner respawning when the cell gets reloaded, so we have to handle it specially...
 /// TODO: Refactor! There should be a generic solutions for spawning like this
 class GraveyardBannerSpawner
@@ -302,11 +329,91 @@ public:
 		CastSpellOnPlayers caster( SPELL_TWIN_SPIRE_BLESSING, true );
 		mgr->visitPlayers( &caster, &matcher );
 
+		handleGraveyardBeam();
+
 		broadcaster->broadcastGraveyardCaptureMessage( graveyardOwner.GetVal() );
+	}
+
+	void handleGraveyardBeam()
+	{
+		uint32 owner = graveyardOwner.GetVal();
+
+		if( owner == ZM_BEACON_OWNER_NEUTRAL )
+		{
+			/// Neutral case - remove beams
+			for( int i = 0; i < ZM_BEACON_COUNT; i++ )
+			{
+				Creature *beam = mgr->GetInterface()->GetCreatureNearestCoords(
+					gyBeamLocation[ 0 ],gyBeamLocation[ 1 ],gyBeamLocation[ 2 ],
+					pvpBeamNpcs[ i ] );
+				
+				if( beam != NULL )
+				{
+					beam->Despawn( 1, 0 );
+				}
+			}			
+		}
+		else
+		{
+			/// Captured case - Spawn the appropriate beam
+			Creature *beam = mgr->GetInterface()->SpawnCreature(
+				pvpBeamNpcs[ owner ],
+				gyBeamLocation[ 0 ],gyBeamLocation[ 1 ],gyBeamLocation[ 2 ], gyBeamLocation[ 3 ], 
+				false,
+				false, 0, 0 );
+
+			if( beam != NULL )
+			{
+				beam->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_NOT_SELECTABLE );
+				beam->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+				beam->SetDisplayId( NPC_ZM_PVP_BEAM_DISPLAYID );
+				beam->PushToWorld( mgr );
+				beam->CastSpell( beam, pvpBeamAuras[ owner ], false );
+			}
+		}
+	}
+
+	void handleBeaconBeam( uint32 beaconId )
+	{
+		if( beaconOwners[ beaconId ] == ZM_BEACON_OWNER_NEUTRAL )
+		{
+			/// Neutral case - remove beams
+			for( int i = 0; i < ZM_BEACON_COUNT; i++ )
+			{
+				Creature *beam = mgr->GetInterface()->GetCreatureNearestCoords(
+					pvpBeamLocations[ beaconId ][ 0 ], pvpBeamLocations[ beaconId ][ 1 ], pvpBeamLocations[ beaconId ][ 2 ],
+					pvpBeamNpcs[ i ] );
+				
+				if( beam != NULL )
+				{
+					beam->Despawn( 1, 0 );
+				}
+			}			
+		}
+		else
+		{
+			/// Captured case - Spawn the appropriate beam
+			Creature *beam = mgr->GetInterface()->SpawnCreature(
+				pvpBeamNpcs[ beaconOwners[ beaconId ] ],
+				pvpBeamLocations[ beaconId ][ 0 ], pvpBeamLocations[ beaconId ][ 1 ], pvpBeamLocations[ beaconId ][ 2 ], pvpBeamLocations[ beaconId ][ 3 ],
+				false,
+				false, 0, 0 );
+
+			if( beam != NULL )
+			{
+				beam->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_NOT_SELECTABLE );
+				beam->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+				beam->SetDisplayId( NPC_ZM_PVP_BEAM_DISPLAYID );
+				beam->PushToWorld( mgr );
+				beam->CastSpell( beam, pvpBeamAuras[ beaconOwners[ beaconId ] ], false );
+			}
+		}
 	}
 
 	void onBeaconCaptured( uint32 beaconId )
 	{
+		handleBeaconBeam( beaconId );	
+
 		broadcaster->broadcastBeaconCaptureMessage( beaconOwners[ beaconId ], beaconId );
 	}
 
@@ -391,6 +498,11 @@ public:
 	}
 
 	ADD_GAMEOBJECT_FACTORY_FUNCTION( RuinsGraveyardBannerAI );
+
+	void OnSpawn()
+	{
+		pvp.handleGraveyardBeam();
+	}
 
 	void OnActivate( Player *player )
 	{
@@ -500,6 +612,8 @@ public:
 		{
 			return;
 		}
+
+		pvp.handleBeaconBeam( beaconId );
 
 		RegisterAIUpdateEvent( ZM_BEACON_SCAN_UPDATE_FREQ );
 	}
