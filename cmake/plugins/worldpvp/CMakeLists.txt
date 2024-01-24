@@ -7,6 +7,7 @@ plugin.cpp
 EasternPlaguelands.cpp
 HellfirePeninsula.cpp
 Silithus.cpp
+TerokkarForest.cpp
 Zangarmarsh.cpp
 )
 
