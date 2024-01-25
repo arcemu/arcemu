@@ -557,6 +557,11 @@ bool isTerokkar( uint32 mapId, uint32 zoneId )
 		return true;
 	}
 
+	if( ( mapId == MAP_SHADOW_LABYRINTH ) || ( mapId == MAP_SETHEK_HALLS ) || ( mapId == MAP_MANA_TOMBS ) || ( mapId == MAP_AUCHENAI_CRYPTS ) )
+	{
+		return true;
+	}
+
 	return false;
 }
 
