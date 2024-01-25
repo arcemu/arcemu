@@ -129,6 +129,48 @@ static uint32 towerOwnerWorldStates[ TF_TOWER_COUNT ][ 3 ] =
 	{ WORLDSTATE_TF_TOWER_S_ALLIANCE, WORLDSTATE_TF_TOWER_S_HORDE, WORLDSTATE_TF_TOWER_S_NEUTRAL },
 };
 
+#define SPELL_BLESSING_OF_AUCHINDOUN 33377
+
+/// Multiple threads can access these because of the server hooks that's why they are atomic
+Arcemu::Threading::AtomicULong allianceTowersCache;
+Arcemu::Threading::AtomicULong hordeTowersCache;
+
+uint32 isTeamSuperior( uint32 team )
+{
+	if( team == TEAM_ALLIANCE )
+	{
+		if( allianceTowersCache.GetVal() == TF_TOWER_COUNT )
+		{
+			return true;
+		}
+	}
+	else
+	if( team == TEAM_HORDE )
+	{
+		if( hordeTowersCache.GetVal() == TF_TOWER_COUNT )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+uint32 getOwnedTowersCount( uint32 team )
+{
+	uint32 count = 0;
+
+	for( int i = 0; i < TF_TOWER_COUNT; i++ )
+	{
+		if( towerOwners[ i ] == team )
+		{
+			count++;
+		}
+	}
+
+	return count;
+}
+
 class TerokkarForestBroadcaster
 {
 private:
@@ -211,6 +253,35 @@ public:
 		broadcaster.setMapMgr( mgr );
 	}
 
+	void onTowerCaptured( uint32 towerId )
+	{
+		uint32 team =  towerOwners[ towerId ];
+
+		broadcaster.broadcastFactionTakesControl( team );
+
+		if( isTeamSuperior( team ) )
+		{
+			/// Just gained superiority
+			TeamAndZoneMatcher matcher( ZONE_TEROKKAR_FOREST, team );
+			CastSpellOnPlayers caster( SPELL_BLESSING_OF_AUCHINDOUN, false );
+			mgr->visitPlayers( &caster, &matcher );
+		}
+	}
+
+	void onTowerLost( uint32 towerId, uint32 lastOwner )
+	{
+		broadcaster.broadcastFactionLosesControl( lastOwner );
+
+		uint32 count = getOwnedTowersCount( lastOwner );
+		if( count == ( TF_TOWER_COUNT - 1 ) )
+		{
+			/// Just lost superiority
+			TeamAndZoneMatcher matcher( ZONE_TEROKKAR_FOREST, lastOwner );
+			RemoveAura remover( SPELL_BLESSING_OF_AUCHINDOUN );
+			mgr->visitPlayers( &remover, &matcher );
+		}
+	}
+
 	void onTowerOwnerChange( uint32 towerId, uint32 lastOwner )
 	{
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
@@ -261,13 +332,16 @@ public:
 		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_ALLIANCE, allianceTowers );
 		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_HORDE, hordeTowers );
 
+		allianceTowersCache.SetVal( allianceTowers );
+		hordeTowersCache.SetVal( hordeTowers );
+
 		if( lastOwner == TF_TOWER_OWNER_NEUTRAL )
 		{
-			broadcaster.broadcastFactionTakesControl( towerOwners[ towerId ] );
+			onTowerCaptured( towerId );
 		}
 		else
 		{
-			broadcaster.broadcastFactionLosesControl( lastOwner );
+			onTowerLost( towerId, lastOwner );
 		}
 	}
 };
@@ -476,6 +550,46 @@ public:
 	}
 };
 
+bool isTerokkar( uint32 mapId, uint32 zoneId )
+{
+	if( ( mapId == MAP_OUTLAND ) && ( zoneId == ZONE_TEROKKAR_FOREST ) )
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void TF_onEnterWorld( Player *player )
+{
+	if( !isTerokkar( player->GetMapId(), player->GetZoneId() ) )
+	{
+		return;
+	}
+
+	if( isTeamSuperior( player->GetTeam() ) )
+	{
+		player->CastSpell( player, SPELL_BLESSING_OF_AUCHINDOUN, false );
+	}
+}
+
+void TF_onLogout( Player *player )
+{
+	player->RemoveAura( SPELL_BLESSING_OF_AUCHINDOUN );
+}
+
+void TF_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
+{
+	if( isTerokkar( player->GetMapId(), player->GetZoneId() ) && isTeamSuperior( player->GetTeam() ) )
+	{
+		player->CastSpell( player, SPELL_BLESSING_OF_AUCHINDOUN, false );
+	}
+	else
+	{
+		player->RemoveAura( SPELL_BLESSING_OF_AUCHINDOUN );
+	}
+}
+
 void setupTerokkarForest( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -486,4 +600,8 @@ void setupTerokkarForest( ScriptMgr *mgr )
 	mgr->register_gameobject_script( GO_TEROKKAR_BANNER_NE, &TerokkarSpiritTowerAI::Create );
 	mgr->register_gameobject_script( GO_TEROKKAR_BANNER_SE, &TerokkarSpiritTowerAI::Create );
 	mgr->register_gameobject_script( GO_TEROKKAR_BANNER_S, &TerokkarSpiritTowerAI::Create );
+
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&TF_onEnterWorld );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&TF_onLogout );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&TF_onZoneChange );
 }
