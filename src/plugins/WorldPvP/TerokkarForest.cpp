@@ -135,7 +135,7 @@ static uint32 towerOwnerWorldStates[ TF_TOWER_COUNT ][ 3 ] =
 Arcemu::Threading::AtomicULong allianceTowersCache;
 Arcemu::Threading::AtomicULong hordeTowersCache;
 
-uint32 isTeamSuperior( uint32 team )
+static uint32 isTeamSuperior( uint32 team )
 {
 	if( team == TEAM_ALLIANCE )
 	{

@@ -591,7 +591,7 @@ bool isHellfirePeninsula( uint32 mapId, uint32 zone )
 	return false;
 }
 
-bool isTeamSuperior( uint32 team )
+static bool isTeamSuperior( uint32 team )
 {
 	uint32 fortsControlled = 0;
 
