@@ -129,10 +129,75 @@ static uint32 towerOwnerWorldStates[ TF_TOWER_COUNT ][ 3 ] =
 	{ WORLDSTATE_TF_TOWER_S_ALLIANCE, WORLDSTATE_TF_TOWER_S_HORDE, WORLDSTATE_TF_TOWER_S_NEUTRAL },
 };
 
+class TerokkarForestBroadcaster
+{
+private:
+	MapMgr *mgr;
+
+public:
+	TerokkarForestBroadcaster( MapMgr *mgr = NULL )
+	{
+		this->mgr = mgr;
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void broadcastMessage( const char *message )
+	{
+		WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, message, 0, 0 );
+		if( packet != NULL )
+		{
+			mgr->SendPacketToPlayersInZone( ZONE_TEROKKAR_FOREST, packet );
+			delete packet;
+		}
+	}
+
+	void broadcastFactionTakesControl( uint32 faction )
+	{
+		std::stringstream ss;
+
+		if( faction == TEAM_ALLIANCE )
+		{
+			ss << "The alliance ";
+		}
+		else
+		{
+			ss << "The horde ";
+		}
+
+		ss << "has taken control of a Spirit Tower!";
+		
+		broadcastMessage( ss.str().c_str() );
+	}
+
+	void broadcastFactionLosesControl( uint32 faction )
+	{
+		std::stringstream ss;
+
+		if( faction == TEAM_ALLIANCE )
+		{
+			ss << "The alliance ";
+		}
+		else
+		{
+			ss << "The horde ";
+		}
+
+		ss << "has lost control of a Spirit Tower!";
+		
+		broadcastMessage( ss.str().c_str() );
+	}
+};
+
 class TerokkarForestPvP
 {
 private:
 	MapMgr *mgr;
+
+	TerokkarForestBroadcaster broadcaster;
 
 public:
 	TerokkarForestPvP( MapMgr *mgr = NULL )
@@ -143,6 +208,7 @@ public:
 	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
+		broadcaster.setMapMgr( mgr );
 	}
 
 	void onTowerOwnerChange( uint32 towerId, uint32 lastOwner )
@@ -194,6 +260,15 @@ public:
 
 		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_ALLIANCE, allianceTowers );
 		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROOLED_HORDE, hordeTowers );
+
+		if( lastOwner == TF_TOWER_OWNER_NEUTRAL )
+		{
+			broadcaster.broadcastFactionTakesControl( towerOwners[ towerId ] );
+		}
+		else
+		{
+			broadcaster.broadcastFactionLosesControl( lastOwner );
+		}
 	}
 };
 
