@@ -114,6 +114,17 @@ static uint32 towerCaptureProgress[ TF_TOWER_COUNT ] =
 	50
 };
 
+/// The capture points are intentionally lower than the tower banner GOs, as the banners are on top of the towers
+/// We calculate the players' distance from this lowered point
+static float capturePointLocations[ TF_TOWER_COUNT ][ 3 ] =
+{
+	{ -3081.6499f, 5335.0297f, -19.1525f },
+	{ -2939.8999f, 4788.7299f, -17.6051f },
+	{ -3174.9399f, 4440.9702f, -20.2437f },
+	{ -3603.3100f, 4529.1499f, -15.4779f },
+	{ -3812.3701f, 4899.2998f, -18.7724f }
+};
+
 static uint8 towerArtkits[] = {
 	ARTKIT_BANNER_ALLIANCE,
 	ARTKIT_BANNER_HORDE,
@@ -134,6 +145,7 @@ static uint32 towerOwnerWorldStates[ TF_TOWER_COUNT ][ 3 ] =
 /// Multiple threads can access these because of the server hooks that's why they are atomic
 Arcemu::Threading::AtomicULong allianceTowersCache;
 Arcemu::Threading::AtomicULong hordeTowersCache;
+
 
 static uint32 isTeamSuperior( uint32 team )
 {
@@ -491,7 +503,7 @@ public:
 		{
 			Player *player = static_cast< Player* >( *itr );
 
-			float d = _gameobject->CalcDistance( player );
+			float d = player->CalcDistance( capturePointLocations[ towerId ][ 0 ], capturePointLocations[ towerId ][ 1 ], capturePointLocations[ towerId ][ 2 ] );
 
 			if( d > TF_TOWER_SCAN_RANGE )
 			{
