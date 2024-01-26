@@ -103,6 +103,15 @@ static uint32 towerOwnerWorldStates[ TF_TOWER_COUNT ][ 3 ] =
 	{ WORLDSTATE_TF_TOWER_S_ALLIANCE, WORLDSTATE_TF_TOWER_S_HORDE, WORLDSTATE_TF_TOWER_S_NEUTRAL },
 };
 
+static uint32 timerWorldStates[] = {
+	WORLDSTATE_TF_TIMER_ALLIANCE,
+	WORLDSTATE_TF_TIMER_HORDE,
+	WORLDSTATE_TF_TIMER_NEUTRAL
+};
+
+#define TF_TIMER_MINUTES (6 * 60)
+#define TF_TIMER_UPDATE_FREQUENCY (1 * 1000)
+
 #define SPELL_BLESSING_OF_AUCHINDOUN 33377
 
 /// Multiple threads can access these because of the server hooks that's why they are atomic
@@ -129,6 +138,23 @@ static uint32 isTeamSuperior( uint32 team )
 	}
 
 	return false;
+}
+
+static uint32 getSuperiorTeam()
+{
+	if( allianceTowersCache.GetVal() == TF_TOWER_COUNT )
+	{
+		return TEAM_ALLIANCE;
+	}
+	else
+	if( hordeTowersCache.GetVal() == TF_TOWER_COUNT )
+	{
+		return TEAM_HORDE;
+	}
+	else
+	{
+		return TF_TOWER_OWNER_NEUTRAL;
+	}
 }
 
 uint32 getOwnedTowersCount( uint32 team )
@@ -209,12 +235,82 @@ public:
 	}
 };
 
-class TerokkarForestPvP
+class TerokkarPvPTimer
+{
+private:
+	uint32 minutesLeft;
+
+	MapMgr *mgr;
+
+	void updateWorldStates()
+	{
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+
+		if( minutesLeft > 0 )
+		{
+			/// Calculate hours and minutes
+			uint32 hours = minutesLeft / 60;
+			uint32 minutes = minutesLeft - ( hours * 60 );
+			uint32 tens = minutes / 10;
+			uint32 ones = minutes - ( tens * 10 );
+
+			uint32 superiorTeam = getSuperiorTeam();
+
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, timerWorldStates[ superiorTeam ], 1 );
+			
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TIMER_HOURS, hours );
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TIMER_MINUTES_1, tens );
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TIMER_MINUTES_2, ones );
+		}
+		else
+		{
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, timerWorldStates[ getSuperiorTeam() ], 0 );
+
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TIMER_HOURS, 0 );
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TIMER_MINUTES_1, 0 );
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TIMER_MINUTES_2, 0 );
+		}
+	}
+
+public:
+	TerokkarPvPTimer()
+	{
+		minutesLeft = 0;
+		mgr = NULL;
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	uint32 getMinutesLeft() const
+	{
+		return minutesLeft;
+	}
+
+	void reset()
+	{
+		minutesLeft = TF_TIMER_MINUTES;
+
+		updateWorldStates();
+	}
+
+	void countdown()
+	{
+		minutesLeft--;
+
+		updateWorldStates();
+	}
+};
+
+class TerokkarForestPvP : public EventableObject
 {
 private:
 	MapMgr *mgr;
 
 	TerokkarForestBroadcaster broadcaster;
+	TerokkarPvPTimer pvpTimer;
 
 public:
 	TerokkarForestPvP( MapMgr *mgr = NULL )
@@ -226,6 +322,70 @@ public:
 	{
 		this->mgr = mgr;
 		broadcaster.setMapMgr( mgr );
+		pvpTimer.setMapMgr( mgr );
+	}
+
+	int32 event_GetInstanceID()
+	{
+		return mgr->GetInstanceID();
+	}
+
+	void updateTimer()
+	{
+		if( pvpTimer.getMinutesLeft() > 0 )
+		{
+			pvpTimer.countdown();
+		}
+		else
+		{
+			/// Disable timer ticks
+			sEventMgr.RemoveEvents( this, EVENT_ZONE_PVP_TIMER_UPDATE );
+
+			/// Enable capture UI
+			switchCaptureUi( true );
+		}
+	}
+
+	bool isCountdownInProgress()
+	{
+		if( pvpTimer.getMinutesLeft() > 0 )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	void switchCaptureUi( bool on )
+	{
+		uint32 value;
+		if( on )
+		{
+			value = 1;
+		}
+		else
+		{
+			 value = 0;
+		}
+
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+
+		/// Towers
+		for( int i = 0; i < TF_TOWER_COUNT; i++ )
+		{
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, towerOwnerWorldStates[ i ][ towerOwners[ i ] ], value );
+		}
+
+		// Controlled towers count UI
+		handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_TOWERS_CONTROLLED_UI, value );
+
+		if( !on )
+		{
+			/// Turn off progress bar UI for everyone when switching the capture UI off
+			handler.SetWorldStateForZone( ZONE_TEROKKAR_FOREST, WORLDSTATE_TF_PROGRESS_BAR_UI, 0 );
+		}
 	}
 
 	void onTowerCaptured( uint32 towerId )
@@ -240,6 +400,13 @@ public:
 			TeamAndZoneMatcher matcher( ZONE_TEROKKAR_FOREST, team );
 			CastSpellOnPlayers caster( SPELL_BLESSING_OF_AUCHINDOUN, false );
 			mgr->visitPlayers( &caster, &matcher );
+
+			/// Switch off capture UI
+			switchCaptureUi( false );
+
+			/// Star the timer, which in turn disables capturing
+			pvpTimer.reset();
+			sEventMgr.AddEvent( this, &TerokkarForestPvP::updateTimer, EVENT_ZONE_PVP_TIMER_UPDATE, TF_TIMER_UPDATE_FREQUENCY, 0, 0 );
 		}
 	}
 
@@ -451,6 +618,11 @@ public:
 	void AIUpdate()
 	{
 		if( _gameobject->GetMapId() != MAP_OUTLAND )
+		{
+			return;
+		}
+
+		if( pvp.isCountdownInProgress() )
 		{
 			return;
 		}
