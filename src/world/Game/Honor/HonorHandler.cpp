@@ -202,12 +202,6 @@ void HonorHandler::OnPlayerKilled(Player* pPlayer, Player* pVictim)
 						}
 					}
 				}
-				if(pAffectedPlayer->GetZoneId() == 3518)
-				{
-					// Add Halaa Battle Token
-					SpellEntry* pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->IsTeamHorde() ? 33004 : 33005);
-					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
-				}
 			}
 		}
 	}

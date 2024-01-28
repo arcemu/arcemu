@@ -27,6 +27,8 @@
 #define HALAA_CAPTURE_MAX_ZDIFF 5.0f
 #define HALAA_CAPTURE_PROGRESS_TICK 10
 
+#define HALAA_PVP_DISTANCE 300.0f
+
 #define HALAA_CAPTURE_THRESHOLD_ALLIANCE 100
 #define HALAA_CAPTURE_THRESHOLD_HORDE 0
 #define HALAA_CAPTURE_THRESHOLD_NEUTRAL_HI 50
@@ -79,6 +81,16 @@ static uint32 halaaGuardsWorldStates[] =
 {
 	WORLDSTATE_HALAA_GUARDS_UI_ALLIANCE,
 	WORLDSTATE_HALAA_GUARDS_UI_HORDE
+};
+
+float halaaBannerLocation[] = { -1572.5699f, 7945.2998f, -22.4800f };
+
+#define SPELL_HALAA_TOKEN_ALLIANCE 33005
+#define SPELL_HALAA_TOKEN_HORDE    33004
+
+uint32 halaaTokenSpells[] = {
+	SPELL_HALAA_TOKEN_ALLIANCE,
+	SPELL_HALAA_TOKEN_HORDE
 };
 
 class NagrandPvP
@@ -371,6 +383,29 @@ void Nagrand_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 	}
 }
 
+void Nagrand_onHonorableKill( Player *killer, Player *victim )
+{
+	if( ( killer->GetMapId() != MAP_OUTLAND ) && ( killer->GetZoneId() != ZONE_NAGRAND ) )
+	{
+		return;
+	}
+
+	int32 points = HonorHandler::CalculateHonorPointsForKill( killer->getLevel(), victim->getLevel() );
+	if( points <= 0 )
+	{
+		return;
+	}
+
+	// Are we close enough to Halaa
+	float d = killer->CalcDistance( halaaBannerLocation[ 0 ], halaaBannerLocation[ 1 ], halaaBannerLocation[ 2 ] );
+	if( d > HALAA_PVP_DISTANCE )
+	{
+		return;
+	}
+
+	killer->CastSpell( killer, halaaTokenSpells[ killer->GetTeam() ], false );
+}
+
 void setupNagrand( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
@@ -381,4 +416,5 @@ void setupNagrand( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Nagrand_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Nagrand_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Nagrand_onZoneChange );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)&Nagrand_onHonorableKill );
 }
