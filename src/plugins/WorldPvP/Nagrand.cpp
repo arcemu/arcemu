@@ -305,33 +305,34 @@ public:
 				playersInRange.insert( player );
 			}
 
-			if( playersInRange.empty() )
-			{
-				/// No player in range, no point in calculating
-				return;
-			}
-
-			calculateProgress( alliancePlayers, hordePlayers );
-			uint32 lastOwner = halaaOwner;
-
-			bool ownerChanged = calculateOwner();
-			
-			/// Send progress to players fighting for control
-			for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
-			{
-				Player *player = *itr;
-				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 1 );
-				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS, halaaProgress );
-			}
-			
-			if( ownerChanged )
-			{
-				setArtkit();
-				onOwnerChange( lastOwner );
-			}
-			
-			playersInRange.clear();
 		}
+
+		if( playersInRange.empty() )
+		{
+			/// No player in range, no point in calculating
+			return;
+		}
+
+		calculateProgress( alliancePlayers, hordePlayers );
+		uint32 lastOwner = halaaOwner;
+
+		bool ownerChanged = calculateOwner();
+			
+		/// Send progress to players fighting for control
+		for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
+		{
+			Player *player = *itr;
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 1 );
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS, halaaProgress );
+		}
+			
+		if( ownerChanged )
+		{
+			setArtkit();
+			onOwnerChange( lastOwner );
+		}
+			
+		playersInRange.clear();
 	}
 };
 
