@@ -55,6 +55,8 @@ enum HalaaBannerArtkits
 	HALAA_BANNER_ARTKIT_NEUTRAL  = 21
 };
 
+#define SPELL_HALAANI_BUFF 33795
+
 static uint8 halaaBannerArtkits[ 3 ] = 
 {
 	HALAA_BANNER_ARTKIT_ALLIANCE,
@@ -134,9 +136,37 @@ public:
 		updateHalaaWorldstate();
 	}
 
+	void onHalaaCaptured()
+	{
+		uint32 otherTeam;
+		if( halaaOwner == TEAM_ALLIANCE )
+		{
+			otherTeam = TEAM_HORDE;
+		}
+		else
+		{
+			otherTeam = TEAM_ALLIANCE;
+		}
+
+		/// Remove the buff from the other team
+		TeamAndZoneMatcher removeMatcher( ZONE_NAGRAND, otherTeam );
+		RemoveAura remove( SPELL_HALAANI_BUFF );
+		mgr->visitPlayers( &remove, &removeMatcher );
+
+		/// Add the buff to the halaa owner team
+		TeamAndZoneMatcher addMatcher( ZONE_NAGRAND, halaaOwner );
+		CastSpellOnPlayers caster( SPELL_HALAANI_BUFF, false );
+		mgr->visitPlayers( &caster, &addMatcher );
+	}
+
 	void onHalaaOwnerChanged( uint32 lastOwner )
 	{
 		updateHalaaWorldstate();
+
+		if( lastOwner == NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			onHalaaCaptured();
+		}
 	}
 };
 
@@ -305,10 +335,49 @@ public:
 	}
 };
 
+void Nagrand_onEnterWorld( Player *player )
+{
+	if( player->GetMapId() != MAP_OUTLAND )
+	{
+		return;
+	}
+
+	if( player->GetZoneId() != ZONE_NAGRAND )
+	{
+		return;
+	}
+
+	if( player->GetTeam() == halaaOwner )
+	{
+		player->CastSpell( player, SPELL_HALAANI_BUFF, false );
+	}
+}
+
+void Nagrand_onLogout( Player *player )
+{
+	player->RemoveAura( SPELL_HALAANI_BUFF );
+}
+
+void Nagrand_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
+{
+	if( ( player->GetMapId() == MAP_OUTLAND ) && ( player->GetZoneId() == ZONE_NAGRAND ) && ( player->GetTeam() == halaaOwner ) )
+	{
+		player->CastSpell( player, SPELL_HALAANI_BUFF, false );
+	}
+	else
+	{
+		player->RemoveAura( SPELL_HALAANI_BUFF );
+	}
+}
+
 void setupNagrand( ScriptMgr *mgr )
 {
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
 	pvp.setMapMgr( mapMgr );
 
 	mgr->register_gameobject_script( GO_HALAA_BANNER, &HalaaBannerAI::Create );
+
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Nagrand_onEnterWorld );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Nagrand_onLogout );
+	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Nagrand_onZoneChange );
 }
