@@ -23,6 +23,7 @@
 
 void setupEasternPlaguelands( ScriptMgr *mgr );
 void setupHellfirePeninsula( ScriptMgr *mgr );
+void setupNagrand( ScriptMgr *mgr );
 void setupSilithus( ScriptMgr *mgr );
 void setupTerokkarForest( ScriptMgr *mgr );
 void setupZangarmarsh( ScriptMgr *mgr );
@@ -41,6 +42,7 @@ extern "C" SCRIPT_DECL void _exp_script_register( ScriptMgr *mgr )
 {
 	setupEasternPlaguelands( mgr );
 	setupHellfirePeninsula( mgr );
+	setupNagrand( mgr );
 	setupSilithus( mgr );
 	setupTerokkarForest( mgr );
 	setupZangarmarsh( mgr );

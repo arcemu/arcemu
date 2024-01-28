@@ -6,6 +6,7 @@ set(sources
 plugin.cpp
 EasternPlaguelands.cpp
 HellfirePeninsula.cpp
+Nagrand.cpp
 Silithus.cpp
 TerokkarForest.cpp
 Zangarmarsh.cpp
