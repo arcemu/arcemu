@@ -408,6 +408,12 @@ public:
 
 	void AIUpdate()
 	{
+		/// Only allow capturing when there are no guards left alive
+		if( halaaGuards > 0 )
+		{
+			return;
+		}
+
 		std::set< Player* > playersInRange;
 
 		uint32 alliancePlayers = 0;
@@ -456,19 +462,31 @@ public:
 		uint32 lastOwner = halaaOwner;
 
 		bool ownerChanged = calculateOwner();
-
-		/// Send progress to players fighting for control
-		for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
-		{
-			Player *player = *itr;
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 1 );
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS, halaaProgress );
-		}
 			
 		if( ownerChanged )
 		{
 			setArtkit();
 			onOwnerChange( lastOwner );
+		}
+
+		if( ownerChanged && ( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL ) )
+		{
+			/// If we'just captured Halaa, turn off the capture UI
+			for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
+			{
+				Player *player = *itr;
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 0 );
+			}
+		}
+		else
+		{
+			/// Send progress to players fighting for control
+			for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
+			{
+				Player *player = *itr;
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 1 );
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS, halaaProgress );
+			}
 		}
 
 		playersInRange.clear();
