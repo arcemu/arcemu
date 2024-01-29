@@ -93,8 +93,25 @@ uint32 halaaTokenSpells[] = {
 	SPELL_HALAA_TOKEN_HORDE
 };
 
-#define NPC_HALAA_GUARD_ALLIANCE 18256
-#define NPC_HALAA_GUARD_HORDE    18192
+enum HalaaCreatures
+{
+	NPC_HALAA_GUARD_HORDE             = 18192,
+	NPC_HALAA_GUARD_ALLIANCE          = 18256,
+
+	NPC_HALAA_RESEARCHER_HORDE        = 18816,
+	NPC_HALAA_RESEARCHER_ALLIANCE     = 18817,
+
+	NPC_HALAA_QUARTERMASTER_HORDE     = 18821,
+	NPC_HALAA_QUARTERMASTER_ALLIANCE  = 18822,
+
+	NPC_HALAA_BLADE_MERCHANT_HORDE    = 21474,
+	NPC_HALAA_AMMO_VENDOR_HORDE       = 21483,
+	NPC_HALAA_FOOD_VENDOR_HORDE       = 21484,
+	NPC_HALAA_BLADE_MERCHANT_ALLIANCE = 21485,
+	NPC_HALAA_FOOD_VENDOR_ALLIANCE    = 21487,
+	NPC_HALAA_AMMO_VENDOR_ALLIANCE    = 21488
+};
+
 
 static uint32 halaaGuardNpcs[] = {
 	NPC_HALAA_GUARD_ALLIANCE,
@@ -132,6 +149,27 @@ static float halaaGuardLocations[ HALAA_GUARD_COUNT ][ 4 ] =
 	{ -1551.8194f, 7964.2597f, -21.5000f, 0.5731f, },
 	{ -1579.6700f, 7942.6601f, -23.0800f, -0.5723f },
 	{ -1565.7572f, 7947.8593f, -22.6417f, 4.9197f }
+};
+
+
+#define HALAA_NPC_COUNT 5
+
+static uint32 halaaNpcs[ HALAA_NPC_COUNT ][ 2 ] = 
+{
+	{ NPC_HALAA_RESEARCHER_ALLIANCE, NPC_HALAA_RESEARCHER_HORDE },
+	{ NPC_HALAA_QUARTERMASTER_ALLIANCE, NPC_HALAA_QUARTERMASTER_HORDE },
+	{ NPC_HALAA_FOOD_VENDOR_ALLIANCE, NPC_HALAA_FOOD_VENDOR_HORDE },
+	{ NPC_HALAA_BLADE_MERCHANT_ALLIANCE, NPC_HALAA_BLADE_MERCHANT_HORDE },
+	{ NPC_HALAA_AMMO_VENDOR_ALLIANCE, NPC_HALAA_AMMO_VENDOR_HORDE }
+};
+
+static float halaaNpcLocations[ HALAA_NPC_COUNT ][ 4 ] = 
+{
+	{ -1591.1800f, 8020.3901f, -22.20f, 4.59f },
+	{ -1588.0000f, 8019.0000f, -22.20f, 4.07f },
+	{ -1524.8399f, 7930.3398f, -20.18f, 3.64f },
+	{ -1520.1400f, 7927.1098f, -20.25f, 3.39f },
+	{ -1570.0100f, 7993.7998f, -22.45f, 5.03f }
 };
 
 static uint32 halaaGuards = 0;
@@ -219,6 +257,43 @@ public:
 		handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
 	}
 
+	void handleNpcs( uint32 lastOwner )
+	{
+		/// Remove old NPCs if applicable
+		if( lastOwner != NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			for( int i = 0; i < HALAA_NPC_COUNT; i++ )
+			{
+				Creature *creature = mgr->GetInterface()->GetCreatureNearestCoords(
+					halaaNpcLocations[ i ][ 0 ], halaaNpcLocations[ i ][ 1 ], halaaNpcLocations[ i ][ 2 ],
+					halaaNpcs[ i ][ lastOwner ] );
+
+				if( creature != NULL )
+				{
+					creature->Despawn( 1, 0 );
+				}
+			}
+		}
+
+		/// Spawn new NPCs if applicable
+		if( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			for( int i = 0; i < HALAA_NPC_COUNT; i++ )
+			{
+				Creature *creature = mgr->GetInterface()->SpawnCreature( 
+					halaaNpcs[ i ][ halaaOwner ],
+					halaaNpcLocations[ i ][ 0 ], halaaNpcLocations[ i ][ 1 ], halaaNpcLocations[ i ][ 2 ], halaaNpcLocations[ i ][ 3 ],
+					false, false, 0, 0 );
+
+				if( creature != NULL )
+				{
+					creature->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+					creature->PushToWorld( mgr );
+				}
+			}
+		}
+	}
+
 	void respawnGuards()
 	{
 		halaaGuards = HALAA_GUARD_COUNT;
@@ -249,6 +324,8 @@ public:
 		{
 			respawnGuards();
 		}
+
+		handleNpcs( NAGRAND_PVP_OWNER_NEUTRAL );
 
 		updateHalaaWorldstate();
 	}
@@ -284,6 +361,8 @@ public:
 		{
 			onHalaaCaptured();
 		}
+
+		handleNpcs( lastOwner );
 
 		updateHalaaWorldstate();
 	}
