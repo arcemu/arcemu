@@ -206,6 +206,42 @@ public:
 	{
 		broadcastMessage( "Halaa is now defenseless!" );
 	}
+
+	void broadcastHalaaCaptured( uint32 team )
+	{
+		std::stringstream ss;
+		
+		if( team == TEAM_ALLIANCE )
+		{
+			ss << "The alliance";
+		}
+		else
+		{
+			ss << "The horde";
+		}
+
+		ss << " has taken control of Halaa!";
+
+		broadcastMessage( ss.str().c_str() );
+	}
+
+	void broadcastHalaaLost( uint32 team )
+	{
+		std::stringstream ss;
+		
+		if( team == TEAM_ALLIANCE )
+		{
+			ss << "The alliance";
+		}
+		else
+		{
+			ss << "The horde";
+		}
+
+		ss << " has lost control of Halaa!";
+
+		broadcastMessage( ss.str().c_str() );
+	}
 };
 
 class NagrandPvP
@@ -394,6 +430,8 @@ public:
 		mgr->visitPlayers( &caster, &addMatcher );
 
 		respawnGuards();
+
+		broadcaster.broadcastHalaaCaptured( halaaOwner );
 	}
 
 	void updateGraveyard()
@@ -414,11 +452,13 @@ public:
 
 	void onHalaaOwnerChanged( uint32 lastOwner )
 	{
-		uint32 graveyardOwner;
-		
 		if( lastOwner == NAGRAND_PVP_OWNER_NEUTRAL )
 		{
 			onHalaaCaptured();
+		}
+		else
+		{
+			broadcaster.broadcastHalaaLost( lastOwner );
 		}
 
 		handleNpcs( lastOwner );
