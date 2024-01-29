@@ -176,10 +176,44 @@ static uint32 halaaGuards = 0;
 
 static float graveyardLocation[] = { -1654.3730f, 7938.9941f, -46.2350f };
 
+class NagrandBroadcaster
+{
+private:
+	MapMgr *mgr;
+
+public:
+	NagrandBroadcaster( MapMgr *mgr = NULL )
+	{
+		this->mgr = mgr;
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void broadcastMessage( const char *message )
+	{
+		WorldPacket *packet = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL, message, 0, 0 );
+		if( packet != NULL )
+		{
+			mgr->SendPacketToPlayersInZone( ZONE_NAGRAND, packet );
+			delete packet;
+		}
+	}
+
+	void broadcastHalaaDefenseless()
+	{
+		broadcastMessage( "Halaa is now defenseless!" );
+	}
+};
+
 class NagrandPvP
 {
 private:
 	MapMgr *mgr;
+	NagrandBroadcaster broadcaster;
+
 public:
 	NagrandPvP( MapMgr *mgr = NULL )
 	{
@@ -189,6 +223,7 @@ public:
 	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
+		broadcaster.setMapMgr( mgr );
 	}
 
 	void updateHalaaWorldstate()
@@ -244,6 +279,10 @@ public:
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
 		handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
 
+		if( halaaGuards == 0 )
+		{
+			broadcaster.broadcastHalaaDefenseless();
+		}
 	}
 
 	void onGuardSpawned()
