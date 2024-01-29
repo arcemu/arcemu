@@ -174,6 +174,8 @@ static float halaaNpcLocations[ HALAA_NPC_COUNT ][ 4 ] =
 
 static uint32 halaaGuards = 0;
 
+static float graveyardLocation[] = { -1654.3730f, 7938.9941f, -46.2350f };
+
 class NagrandPvP
 {
 private:
@@ -355,14 +357,34 @@ public:
 		respawnGuards();
 	}
 
+	void updateGraveyard()
+	{
+		uint32 graveyardOwner;
+		if( halaaOwner == NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			graveyardOwner = std::numeric_limits< uint32 >::max();
+		}
+		else
+		{
+			graveyardOwner = halaaOwner;
+		}
+
+		LocationVector location( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] );
+		sGraveyardService.setGraveyardOwner( MAP_OUTLAND, location, graveyardOwner );
+	}
+
 	void onHalaaOwnerChanged( uint32 lastOwner )
 	{
+		uint32 graveyardOwner;
+		
 		if( lastOwner == NAGRAND_PVP_OWNER_NEUTRAL )
 		{
 			onHalaaCaptured();
 		}
 
 		handleNpcs( lastOwner );
+
+		updateGraveyard();
 
 		updateHalaaWorldstate();
 	}
@@ -644,4 +666,8 @@ void setupNagrand( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Nagrand_onLogout );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ZONE, (void*)&Nagrand_onZoneChange );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)&Nagrand_onHonorableKill );
+
+	/// No one should be able to use the graveyard unless the city is captured
+	LocationVector location( graveyardLocation[ 0 ], graveyardLocation[ 1 ], graveyardLocation[ 2 ] );
+	sGraveyardService.setGraveyardOwner( MAP_OUTLAND, location, std::numeric_limits< uint32 >::max() );
 }
