@@ -93,6 +93,49 @@ uint32 halaaTokenSpells[] = {
 	SPELL_HALAA_TOKEN_HORDE
 };
 
+#define NPC_HALAA_GUARD_ALLIANCE 18256
+#define NPC_HALAA_GUARD_HORDE    18192
+
+static uint32 halaaGuardNpcs[] = {
+	NPC_HALAA_GUARD_ALLIANCE,
+	NPC_HALAA_GUARD_HORDE
+};
+
+static uint32 halaaGuardFactions[] = 
+{
+	1802,
+	1801
+};
+
+static uint32 halaaGuardEquipments[ 2 ][ 3 ] = 
+{
+	{ 27407, 24331, 2551 },
+	{ 27405, 27406, 5259 }
+};
+
+#define HALAA_GUARD_COUNT 15
+
+static float halaaGuardLocations[ HALAA_GUARD_COUNT ][ 4 ] =
+{
+	{ -1594.1223f, 7861.5952f, -21.3226f, 4.4689f },
+	{ -1603.1256f, 7869.5727f, -22.3387f, 4.9331f },
+	{ -1590.9753f, 7875.2685f, -22.4529f, 4.3213f },
+	{ -1546.7951f, 7998.5595f, -20.6859f, 0.8168f },
+	{ -1540.9602f, 7994.7895f, -20.3795f, 0.9173f },
+	{ -1544.4096f, 7996.3603f, -20.6171f, 0.7634f },
+	{ -1485.6400f, 7899.5898f, -19.7800f, 0.8500f },
+	{ -1479.8800f, 7908.3500f, -19.2800f, 4.2100f },
+	{ -1652.6800f, 8000.4399f, -26.4000f, 5.2400f },
+	{ -1652.0100f, 7988.3300f, -26.5599f, 3.0200f },
+	{ -1584.3800f, 7996.0600f, -23.2500f, -0.1631f },
+	{ -1605.6300f, 7973.7099f, -24.2400f, -0.4330f },
+	{ -1551.8194f, 7964.2597f, -21.5000f, 0.5731f, },
+	{ -1579.6700f, 7942.6601f, -23.0800f, -0.5723f },
+	{ -1565.7572f, 7947.8593f, -22.6417f, 4.9197f }
+};
+
+static uint32 halaaGuards = 0;
+
 class NagrandPvP
 {
 private:
@@ -111,6 +154,12 @@ public:
 	void updateHalaaWorldstate()
 	{
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+
+		if( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
+			handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_TOTAL, HALAA_GUARD_COUNT );
+		}
 
 		switch( halaaOwner )
 		{
@@ -143,8 +192,64 @@ public:
 		}
 	}
 
+	void onGuardDied()
+	{
+		if( halaaGuards == 0 )
+		{
+			return;
+		}
+
+		halaaGuards--;
+
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+		handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
+
+	}
+
+	void onGuardSpawned()
+	{
+		if( halaaGuards >= HALAA_GUARD_COUNT )
+		{
+			return;
+		}
+
+		halaaGuards++;
+
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+		handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
+	}
+
+	void respawnGuards()
+	{
+		halaaGuards = HALAA_GUARD_COUNT;
+
+		/// Spawn guards
+		for( int i = 0; i < HALAA_GUARD_COUNT; i++ )
+		{
+			Creature *guard = mgr->GetInterface()->SpawnCreature(
+				halaaGuardNpcs[ halaaOwner ],
+				halaaGuardLocations[ i ][ 0 ], halaaGuardLocations[ i ][ 1 ], halaaGuardLocations[ i ][ 2 ], halaaGuardLocations[ i ][ 3 ],
+				false, false, 0, 0
+			);
+
+			if( guard != NULL )
+			{
+				guard->SetEquippedItem( 0, halaaGuardEquipments[ halaaOwner ][ 0 ] );
+				guard->SetEquippedItem( 1, halaaGuardEquipments[ halaaOwner ][ 1 ] );
+				guard->SetEquippedItem( 2, halaaGuardEquipments[ halaaOwner ][ 2 ] );
+				guard->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
+				guard->PushToWorld( mgr );
+			}
+		}
+	}
+
 	void onHalaaBannerSpawned()
 	{
+		if( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			respawnGuards();
+		}
+
 		updateHalaaWorldstate();
 	}
 
@@ -169,20 +274,42 @@ public:
 		TeamAndZoneMatcher addMatcher( ZONE_NAGRAND, halaaOwner );
 		CastSpellOnPlayers caster( SPELL_HALAANI_BUFF, false );
 		mgr->visitPlayers( &caster, &addMatcher );
+
+		respawnGuards();
 	}
 
 	void onHalaaOwnerChanged( uint32 lastOwner )
 	{
-		updateHalaaWorldstate();
-
 		if( lastOwner == NAGRAND_PVP_OWNER_NEUTRAL )
 		{
 			onHalaaCaptured();
 		}
+
+		updateHalaaWorldstate();
 	}
 };
 
 static NagrandPvP pvp;
+
+class HalaaGuardAI : public CreatureAIScript
+{
+public:
+	HalaaGuardAI( Creature *creature ) : CreatureAIScript( creature )
+	{
+	}
+
+	ADD_CREATURE_FACTORY_FUNCTION( HalaaGuardAI );
+
+	void OnLoad()
+	{
+		pvp.onGuardSpawned();
+	}
+
+	void OnDied( Unit *killer )
+	{
+		pvp.onGuardDied();
+	}
+};
 
 class HalaaBannerAI : public GameObjectAIScript
 {
@@ -329,7 +456,7 @@ public:
 		uint32 lastOwner = halaaOwner;
 
 		bool ownerChanged = calculateOwner();
-			
+
 		/// Send progress to players fighting for control
 		for( std::set< Player* >::const_iterator itr = playersInRange.begin(); itr != playersInRange.end(); ++itr )
 		{
@@ -343,7 +470,7 @@ public:
 			setArtkit();
 			onOwnerChange( lastOwner );
 		}
-			
+
 		playersInRange.clear();
 	}
 };
@@ -412,6 +539,9 @@ void setupNagrand( ScriptMgr *mgr )
 	pvp.setMapMgr( mapMgr );
 
 	mgr->register_gameobject_script( GO_HALAA_BANNER, &HalaaBannerAI::Create );
+
+	mgr->register_creature_script( NPC_HALAA_GUARD_ALLIANCE, &HalaaGuardAI::Create );
+	mgr->register_creature_script( NPC_HALAA_GUARD_HORDE, &HalaaGuardAI::Create );
 
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Nagrand_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Nagrand_onLogout );
