@@ -208,7 +208,12 @@ private:
 	MapMgr *mgr;
 
 public:
-	ZangarmarshBroadcaster( MapMgr *mgr )
+	ZangarmarshBroadcaster( MapMgr *mgr = NULL )
+	{
+		setMapMgr( mgr );
+	}
+
+	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
 	}
@@ -278,19 +283,18 @@ class ZangarmarshPvP
 {
 private:
 	MapMgr *mgr;
-	ZangarmarshBroadcaster *broadcaster;
+	ZangarmarshBroadcaster broadcaster;
 
 public:
 	ZangarmarshPvP()
 	{
 		mgr = NULL;
-		broadcaster = NULL;
 	}
 
 	void setMapMgr( MapMgr *mgr )
 	{
 		this->mgr = mgr;
-		broadcaster = new ZangarmarshBroadcaster( mgr );
+		broadcaster.setMapMgr( mgr );
 	}
 
 	void onGraveyardCaptured( uint32 team )
@@ -331,7 +335,7 @@ public:
 
 		handleGraveyardBeam();
 
-		broadcaster->broadcastGraveyardCaptureMessage( graveyardOwner.GetVal() );
+		broadcaster.broadcastGraveyardCaptureMessage( graveyardOwner.GetVal() );
 	}
 
 	void handleGraveyardBeam()
@@ -415,7 +419,7 @@ public:
 
 	void onBeaconCaptured( uint32 beaconId )
 	{
-		broadcaster->broadcastBeaconCaptureMessage( beaconOwners[ beaconId ], beaconId );
+		broadcaster.broadcastBeaconCaptureMessage( beaconOwners[ beaconId ], beaconId );
 	}
 
 	void onBeaconOwnerChange( uint32 beaconId, uint32 lastOwner )
