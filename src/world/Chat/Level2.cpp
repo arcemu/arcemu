@@ -761,9 +761,17 @@ bool ChatHandler::HandleGOSelect(const char* args, WorldSession* m_session)
 
 	 GameObjectInfo *info = GameObjectNameStorage.LookupEntry(GObj->GetEntry());
 
-	GreenSystemMessage(m_session, "Selected GameObject '%s' (%u) which is %.3f meters away from you.",
-		info->Name, info->ID, m_session->GetPlayer()->CalcDistance(GObj));
-
+	if( GObj->m_spawn != NULL )
+	{
+		GreenSystemMessage(m_session, "Selected GameObject '%s' (id: %u) (spawnid: %u). Distance: %.3f",
+			info->Name, info->ID, GObj->m_spawn->id, m_session->GetPlayer()->CalcDistance(GObj));
+	}
+	else
+	{
+		GreenSystemMessage(m_session, "Selected GameObject '%s' (id: %u). Distance: %.3f",
+			info->Name, info->ID, m_session->GetPlayer()->CalcDistance(GObj));
+	}
+	
 	return true;
 }
 
