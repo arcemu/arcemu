@@ -336,6 +336,7 @@ void CommandTableStorage::Init()
 		{ "auralist", 'd', &ChatHandler::HandleDebugAuraListCommand, "Lists the auras of the selected unit", NULL, 0, 0, 0 },
 		{ "sendfullauraupdate", 'd', &ChatHandler::HandleDebugSendFullAuraUpdateCommand, "Sends a full aura update", NULL, 0, 0, 0 },
 		{ "removeAura", 'd', &ChatHandler::HandleDebugRemoveAuraCommand, "Removes the specified aura from the selected Unit", NULL, 0, 0, 0 },
+		{ "taxiStart", 'd', &ChatHandler::HandleDebugTaxiStartCommand, "Puts the player on the specified taxi path", NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);

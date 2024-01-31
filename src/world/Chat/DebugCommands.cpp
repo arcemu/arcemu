@@ -1648,3 +1648,41 @@ bool ChatHandler::HandleDebugRemoveAuraCommand( const char *args, WorldSession *
 	return true;
 }
 
+bool ChatHandler::HandleDebugTaxiStartCommand( const char *args, WorldSession *session )
+{
+	Player *player = session->GetPlayer();
+
+	uint32 taxiPathId;
+	uint32 mountId = 0;
+
+	if( sscanf( args, "%u %u", &taxiPathId, &mountId ) < 1 )
+	{
+		RedSystemMessage( session, "You need to provide the taxi path Id, and optionally the mount id" );
+		return true;
+	}
+
+	TaxiPath *path = sTaxiMgr.GetTaxiPath( taxiPathId );
+	if( path == NULL )
+	{
+		RedSystemMessage( session, "Taxi path %u not found!", taxiPathId );
+		return true;
+	}
+
+	TaxiPathNode *startNode = path->GetPathNode( 0 );
+	if( startNode->mapid != player->GetMapId() )
+	{
+		RedSystemMessage( session, "Starting node of the specified Taxi path is on another map" );
+		return true;
+	}
+
+	float d = player->CalcDistance( startNode->x, startNode->y, startNode->z );
+	if( d > 50.0f )
+	{
+		RedSystemMessage( session, "Starting node of the specified Taxi path is over 50 meters away" );
+		return true;
+	}
+
+	player->TaxiStart( path, mountId, 0 );
+
+	return true;
+}
