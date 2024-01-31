@@ -314,6 +314,17 @@ static float bombwagonLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 
 static uint32 bombwagonFactions[ 2 ] = { 1802, 1801 };
 
+static uint32 wyvernCampTaxiPaths[ HALAA_WYVERN_CAMP_COUNT ] = 
+{
+	522,
+	524,
+	520,
+	523
+};
+
+#define MODEL_RIDING_WYVERN_PVP 17675
+#define ITEM_FIRE_BOMB          24538
+
 class WyvernCampHandler
 {
 	MapMgr *mgr;
@@ -1096,6 +1107,61 @@ public:
 	}
 };
 
+class WyvernRoostAI : public GameObjectAIScript
+{
+private:
+	uint32 campId;
+
+public:
+	WyvernRoostAI( GameObject *go ) : GameObjectAIScript( go )
+	{
+	}
+
+	ADD_GAMEOBJECT_FACTORY_FUNCTION( WyvernRoostAI );
+
+	void OnSpawn()
+	{
+		switch( _gameobject->GetInfo()->ID )
+		{
+			case GO_WYVERN_ROOST_NE_A:
+			case GO_WYVERN_ROOST_NE_H:
+				campId = HALAA_WYVERN_CAMP_NE;
+				break;
+
+			case GO_WYVERN_ROOST_SE_A:
+			case GO_WYVERN_ROOST_SE_H:
+				campId = HALAA_WYVERN_CAMP_SE;
+				break;
+
+			case GO_WYVERN_ROOST_SW_A:
+			case GO_WYVERN_ROOST_SW_H:
+				campId = HALAA_WYVERN_CAMP_SW;
+				break;
+
+			case GO_WYVERN_ROOST_NW_A:
+			case GO_WYVERN_ROOST_NW_H:
+				campId = HALAA_WYVERN_CAMP_NW;
+				break;
+		}
+	}
+
+	void OnActivate( Player *player )
+	{
+		uint32 taxiPathId = wyvernCampTaxiPaths[ campId ];
+		
+		TaxiPath *path = sTaxiMgr.GetTaxiPath( taxiPathId );
+		if( path != NULL )
+		{
+			if( player->GetItemInterface()->GetItemCount( ITEM_FIRE_BOMB ) == 0 )
+			{
+				player->GetItemInterface()->AddItemById( ITEM_FIRE_BOMB, 10, 0 );
+			}
+
+			player->TaxiStart( path, MODEL_RIDING_WYVERN_PVP, 0 );
+		}
+	}
+};
+
 class BombWagonAI : public GameObjectAIScript
 {
 private:
@@ -1213,13 +1279,7 @@ void setupNagrand( ScriptMgr *mgr )
 		for( uint32 j = 0; j < NAGRAND_PVP_OWNER_NEUTRAL; j++ )
 		{
 			mgr->register_gameobject_script( destroyedRoostIds[ i ][ j ], &DestroyedWyvernRoostAI::Create );
-		}
-	}
-
-	for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
-	{
-		for( uint32 j = 0; j < NAGRAND_PVP_OWNER_NEUTRAL; j++ )
-		{
+			mgr->register_gameobject_script( wyvernRoostIds[ i ][ j ], &WyvernRoostAI::Create );
 			mgr->register_gameobject_script( bombwagonIds[ i ][ j ], &BombWagonAI::Create );
 		}
 	}
