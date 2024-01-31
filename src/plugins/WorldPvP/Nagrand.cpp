@@ -215,7 +215,7 @@ static uint32 wyvernCampOwners[ HALAA_WYVERN_CAMP_COUNT ] =
 	NAGRAND_PVP_OWNER_NEUTRAL
 };
 
-enum RoostGOIds
+enum DestroyedRoostGOIds
 {
 	GO_DESTROYED_WYVERN_ROOST_NE_A     = 182276,
 	GO_DESTROYED_WYVERN_ROOST_NE_H     = 182299,
@@ -230,7 +230,7 @@ enum RoostGOIds
 	GO_DESTROYED_WYVERN_ROOST_NW_H     = 182298
 };
 
-static uint32 roostIds[ HALAA_WYVERN_CAMP_COUNT ][ 2 ] = 
+static uint32 destroyedRoostIds[ HALAA_WYVERN_CAMP_COUNT ][ 2 ] = 
 {
 	{ GO_DESTROYED_WYVERN_ROOST_NE_A, GO_DESTROYED_WYVERN_ROOST_NE_H },
 	{ GO_DESTROYED_WYVERN_ROOST_SE_A, GO_DESTROYED_WYVERN_ROOST_SE_H },
@@ -238,7 +238,7 @@ static uint32 roostIds[ HALAA_WYVERN_CAMP_COUNT ][ 2 ] =
 	{ GO_DESTROYED_WYVERN_ROOST_NW_A, GO_DESTROYED_WYVERN_ROOST_NW_H },
 };
 
-static float roostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
+static float destroyedRoostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 {
 	{ -1384.53f, 7779.4f, -11.17f, -0.58f },
 	{ -1650.28f, 7732.19f, -15.44f, -2.81f },
@@ -246,7 +246,8 @@ static float roostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 	{ -1507.9f, 8132.11f, -19.55f, -1.34f }
 };
 
-static uint32 roostFactions[ 2 ] = { 84, 83 };
+static uint32 destroyedRoostFactions[ 2 ] = { 84, 83 };
+
 
 class WyvernCampHandler
 {
@@ -272,8 +273,8 @@ public:
 			for( uint32 team = TEAM_ALLIANCE; team < NAGRAND_PVP_OWNER_NEUTRAL; team++ )
 			{
 				go = mgr->GetInterface()->GetGameObjectNearestCoords(
-					roostLocations[ i ][ 0 ], roostLocations[ i ][ 1 ], roostLocations[ i ][ 2 ],
-					roostIds[ i ][ team ] );
+					destroyedRoostLocations[ i ][ 0 ], destroyedRoostLocations[ i ][ 1 ], destroyedRoostLocations[ i ][ 2 ],
+					destroyedRoostIds[ i ][ team ] );
 				
 				if( go != NULL )
 				{
@@ -298,11 +299,11 @@ public:
 		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
 		{
 			GameObject *go = mgr->GetInterface()->SpawnGameObject(
-				roostIds[ i ][ roostTeam ],
-				roostLocations[ i ][ 0 ], roostLocations[ i ][ 1 ], roostLocations[ i ][ 2 ], roostLocations[ i ][ 3 ],
+				destroyedRoostIds[ i ][ roostTeam ],
+				destroyedRoostLocations[ i ][ 0 ], destroyedRoostLocations[ i ][ 1 ], destroyedRoostLocations[ i ][ 2 ], destroyedRoostLocations[ i ][ 3 ],
 				false, 0, 0 );
 
-			go->SetFaction( roostFactions[ roostTeam ] );
+			go->SetFaction( destroyedRoostFactions[ roostTeam ] );
 
 			go->PushToWorld( mgr );
 		}
@@ -873,6 +874,7 @@ public:
 		playersInRange.clear();
 	}
 };
+
 
 void Nagrand_onEnterWorld( Player *player )
 {
