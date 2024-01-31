@@ -45,6 +45,19 @@ enum NagrandWorldStates
 	WORLDSTATE_HALAA_GUARDS_UI_ALLIANCE       = 2502,
 	WORLDSTATE_HALAA_GUARDS_UI_HORDE          = 2503,
 
+	WORLDSTATE_HALAA_WYVERN_CAMP_SE_NEUTRAL   = 2659,
+	WORLDSTATE_HALAA_WYVERN_CAMP_SE_HORDE     = 2660,
+	WORLDSTATE_HALAA_WYVERN_CAMP_SE_ALLIANCE  = 2661,
+	WORLDSTATE_HALAA_WYVERN_CAMP_NE_NEUTRAL   = 2662,
+	WORLDSTATE_HALAA_WYVERN_CAMP_NE_HORDE     = 2663,
+	WORLDSTATE_HALAA_WYVERN_CAMP_NE_ALLIANCE  = 2664,
+	WORLDSTATE_HALAA_WYVERN_CAMP_NW_HORDE     = 2665,
+	WORLDSTATE_HALAA_WYVERN_CAMP_NW_ALLIANCE  = 2666,
+	WORLDSTATE_HALAA_WYVERN_CAMP_NW_NEUTRAL   = 2667,
+	WORLDSTATE_HALAA_WYVERN_CAMP_SW_HORDE     = 2668,
+	WORLDSTATE_HALAA_WYVERN_CAMP_SW_ALLIANCE  = 2669,
+	WORLDSTATE_HALAA_WYVERN_CAMP_SW_NEUTRAL   = 2670,
+
 	WORLDSTATE_HALAA_NEUTRAL                  = 2671,
 	WORLDSTATE_HALAA_HORDE                    = 2672,
 	WORLDSTATE_HALAA_ALLIANCE                 = 2673
@@ -176,6 +189,32 @@ static uint32 halaaGuards = 0;
 
 static float graveyardLocation[] = { -1654.3730f, 7938.9941f, -46.2350f };
 
+enum WyvernCamps
+{
+	HALAA_WYVERN_CAMP_NE    = 0,
+	HALAA_WYVERN_CAMP_SE    = 1,
+	HALAA_WYVERN_CAMP_SW    = 2,
+	HALAA_WYVERN_CAMP_NW    = 3,
+
+	HALAA_WYVERN_CAMP_COUNT = 4
+};
+
+static uint32 wyvernCampWorldStates[ HALAA_WYVERN_CAMP_COUNT ][ 3 ] =
+{
+	{ WORLDSTATE_HALAA_WYVERN_CAMP_NE_ALLIANCE, WORLDSTATE_HALAA_WYVERN_CAMP_NE_HORDE, WORLDSTATE_HALAA_WYVERN_CAMP_NE_NEUTRAL },
+	{ WORLDSTATE_HALAA_WYVERN_CAMP_SE_ALLIANCE, WORLDSTATE_HALAA_WYVERN_CAMP_SE_HORDE, WORLDSTATE_HALAA_WYVERN_CAMP_SE_NEUTRAL },
+	{ WORLDSTATE_HALAA_WYVERN_CAMP_SW_ALLIANCE, WORLDSTATE_HALAA_WYVERN_CAMP_SW_HORDE, WORLDSTATE_HALAA_WYVERN_CAMP_SW_NEUTRAL },
+	{ WORLDSTATE_HALAA_WYVERN_CAMP_NW_ALLIANCE, WORLDSTATE_HALAA_WYVERN_CAMP_NW_HORDE, WORLDSTATE_HALAA_WYVERN_CAMP_NW_NEUTRAL }
+};
+
+static uint32 wyvernCampOwners[ HALAA_WYVERN_CAMP_COUNT ] = 
+{
+	NAGRAND_PVP_OWNER_NEUTRAL,
+	NAGRAND_PVP_OWNER_NEUTRAL,
+	NAGRAND_PVP_OWNER_NEUTRAL,
+	NAGRAND_PVP_OWNER_NEUTRAL
+};
+
 class NagrandBroadcaster
 {
 private:
@@ -262,7 +301,58 @@ public:
 		broadcaster.setMapMgr( mgr );
 	}
 
-	void updateHalaaWorldstate()
+	void updateWyvernCampWorldStates()
+	{
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+
+		if( halaaOwner == NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+			{
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_ALLIANCE ], 0 );				
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ NAGRAND_PVP_OWNER_NEUTRAL ], 0 );
+			}
+		}
+		else
+		{
+			for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+			{
+				switch( wyvernCampOwners[ i ] )
+				{
+					case TEAM_ALLIANCE:
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_ALLIANCE ], 1 );
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_HORDE ], 0 );
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ NAGRAND_PVP_OWNER_NEUTRAL ], 0 );
+						break;
+
+					case TEAM_HORDE:
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_ALLIANCE ], 0 );
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_HORDE ], 1 );
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ NAGRAND_PVP_OWNER_NEUTRAL ], 0 );
+						break;
+
+					case NAGRAND_PVP_OWNER_NEUTRAL:
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_ALLIANCE ], 0 );
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ TEAM_HORDE ], 0 );
+						handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ i ][ NAGRAND_PVP_OWNER_NEUTRAL ], 1 );
+						break;
+				}
+			}			
+		}
+	}
+
+	void updateWyvernCamps()
+	{
+		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+		{
+			wyvernCampOwners[ i ] = NAGRAND_PVP_OWNER_NEUTRAL;
+		}
+
+		updateWyvernCampWorldStates();
+	}
+
+	void updateHalaaWorldstates()
 	{
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
 
@@ -404,7 +494,7 @@ public:
 
 		handleNpcs( NAGRAND_PVP_OWNER_NEUTRAL );
 
-		updateHalaaWorldstate();
+		updateHalaaWorldstates();
 	}
 
 	void onHalaaCaptured()
@@ -465,7 +555,8 @@ public:
 
 		updateGraveyard();
 
-		updateHalaaWorldstate();
+		updateHalaaWorldstates();
+		updateWyvernCamps();
 	}
 };
 
