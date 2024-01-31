@@ -1055,6 +1055,7 @@ class SERVER_DECL Unit : public Object
 		uint8 CastSpell(Unit* Target, uint32 SpellID, uint32 forced_basepoints, int32 charges, bool triggered);
 		uint8 CastSpell(Unit* Target, SpellEntry* Sp, uint32 forced_basepoints, int32 charges, bool triggered);
 		void CastSpellAoF(float x, float y, float z, SpellEntry* Sp, bool triggered);
+		void CastSpellAoF(float x, float y, float z, uint32 spellId, bool triggered);
 		void EventCastSpell(Unit* Target, SpellEntry* Sp);
 
 		bool IsCasting();

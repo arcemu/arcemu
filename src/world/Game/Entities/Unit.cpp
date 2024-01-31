@@ -5728,6 +5728,18 @@ void Unit::CastSpellAoF(float x, float y, float z, SpellEntry* Sp, bool triggere
 	newSpell->prepare(&targets);
 }
 
+void Unit::CastSpellAoF(float x, float y, float z, uint32 spellId, bool triggered)
+{
+	SpellEntry* spe = dbcSpell.LookupEntryForced(spellId);
+	if(spe == NULL)
+	{
+		LOG_DEBUG( "Unit " I64FMT " tried to cast unknown spell %u", GetGUID(), spellId );
+		return;
+	}
+
+	CastSpellAoF(x, y, z, spe, triggered);
+}
+
 void Unit::Root()
 {
 	m_special_state |= UNIT_STATE_ROOT;
