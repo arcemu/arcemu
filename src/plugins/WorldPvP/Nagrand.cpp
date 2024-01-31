@@ -329,48 +329,53 @@ public:
 		this->mgr = mgr;
 	}
 
-	void despawnCamps()
+	void despawnCamp( uint32 campId )
 	{
-		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+		GameObject *go;
+
+		for( uint32 team = TEAM_ALLIANCE; team < NAGRAND_PVP_OWNER_NEUTRAL; team++ )
 		{
-			GameObject *go;
-
-			for( uint32 team = TEAM_ALLIANCE; team < NAGRAND_PVP_OWNER_NEUTRAL; team++ )
+			/// Destroyed Wyvern Roost
+			go = mgr->GetInterface()->GetGameObjectNearestCoords(
+				destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ],
+				destroyedRoostIds[ campId ][ team ] );
+				
+			if( go != NULL )
 			{
-				/// Destroyed Wyvern Roost
-				go = mgr->GetInterface()->GetGameObjectNearestCoords(
-					destroyedRoostLocations[ i ][ 0 ], destroyedRoostLocations[ i ][ 1 ], destroyedRoostLocations[ i ][ 2 ],
-					destroyedRoostIds[ i ][ team ] );
-				
-				if( go != NULL )
-				{
-					go->Despawn( 1, 0 );
-				}
+				go->Despawn( 1, 0 );
+			}
 
-				/// Wyvern Roost
-				go = mgr->GetInterface()->GetGameObjectNearestCoords(
-					wyvernRoostLocations[ i ][ 0 ], wyvernRoostLocations[ i ][ 1 ], wyvernRoostLocations[ i ][ 2 ],
-					wyvernRoostIds[ i ][ team ] );
+			/// Wyvern Roost
+			go = mgr->GetInterface()->GetGameObjectNearestCoords(
+				wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ],
+				wyvernRoostIds[ campId ][ team ] );
 				
-				if( go != NULL )
-				{
-					go->Despawn( 1, 0 );
-				}
+			if( go != NULL )
+			{
+				go->Despawn( 1, 0 );
+			}
 
-				/// Bomb wagon
-				go = mgr->GetInterface()->GetGameObjectNearestCoords(
-					bombwagonLocations[ i ][ 0 ], bombwagonLocations[ i ][ 1 ], bombwagonLocations[ i ][ 2 ],
-					bombwagonIds[ i ][ team ] );
+			/// Bomb wagon
+			go = mgr->GetInterface()->GetGameObjectNearestCoords(
+				bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ],
+				bombwagonIds[ campId ][ team ] );
 				
-				if( go != NULL )
-				{
-					go->Despawn( 1, 0 );
-				}
+			if( go != NULL )
+			{
+				go->Despawn( 1, 0 );
 			}
 		}
 	}
 
-	void spawnCamps()
+	void despawnCamps()
+	{
+		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+		{
+			despawnCamp( i );
+		}
+	}
+
+	void spawnCamp( uint32 campId )
 	{
 		uint32 roostTeam;
 		if( halaaOwner == TEAM_ALLIANCE )
@@ -382,16 +387,20 @@ public:
 			roostTeam = TEAM_ALLIANCE;
 		}
 
-		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+		GameObject *go = mgr->GetInterface()->SpawnGameObject(
+			destroyedRoostIds[ campId ][ roostTeam ],
+			destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ], destroyedRoostLocations[ campId ][ 3 ],
+			false, 0, 0 );
+		
+		go->SetFaction( destroyedRoostFactions[ roostTeam ] );
+		go->PushToWorld( mgr );
+	}
+
+	void spawnCamps()
+	{
+		for( uint32 camp = 0; camp < HALAA_WYVERN_CAMP_COUNT; camp++ )
 		{
-			GameObject *go = mgr->GetInterface()->SpawnGameObject(
-				destroyedRoostIds[ i ][ roostTeam ],
-				destroyedRoostLocations[ i ][ 0 ], destroyedRoostLocations[ i ][ 1 ], destroyedRoostLocations[ i ][ 2 ], destroyedRoostLocations[ i ][ 3 ],
-				false, 0, 0 );
-
-			go->SetFaction( destroyedRoostFactions[ roostTeam ] );
-
-			go->PushToWorld( mgr );
+			spawnCamp( camp );
 		}
 	}
 
@@ -621,6 +630,17 @@ public:
 	{
 		wyvernCampOwners[ campId ] = team;
 		
+		updateWyvernCampWorldState( campId );
+	}
+
+	void onWyvernCampDestroyed( uint32 campId )
+	{
+		wyvernCampOwners[ campId ] = NAGRAND_PVP_OWNER_NEUTRAL;
+
+		campHandler.despawnCamp( campId );
+		
+		campHandler.spawnCamp( campId );
+
 		updateWyvernCampWorldState( campId );
 	}
 
@@ -1076,6 +1096,50 @@ public:
 	}
 };
 
+class BombWagonAI : public GameObjectAIScript
+{
+private:
+	uint32 campId;
+
+public:
+	BombWagonAI( GameObject *go ) : GameObjectAIScript( go )
+	{
+	}
+
+	ADD_GAMEOBJECT_FACTORY_FUNCTION( BombWagonAI );
+
+	void OnSpawn()
+	{
+		switch( _gameobject->GetInfo()->ID )
+		{
+			case GO_BOMB_WAGON_NE_A:
+			case GO_BOMB_WAGON_NE_H:
+				campId = HALAA_WYVERN_CAMP_NE;
+				break;
+
+			case GO_BOMB_WAGON_SE_A:
+			case GO_BOMB_WAGON_SE_H:
+				campId = HALAA_WYVERN_CAMP_SE;
+				break;
+
+			case GO_BOMB_WAGON_SW_A:
+			case GO_BOMB_WAGON_SW_H:
+				campId = HALAA_WYVERN_CAMP_SW;
+				break;
+
+			case GO_BOMB_WAGON_NW_A:
+			case GO_BOMB_WAGON_NW_H:
+				campId = HALAA_WYVERN_CAMP_NW;
+				break;
+		}
+	}
+
+	void OnActivate( Player *player )
+	{
+		pvp.onWyvernCampDestroyed( campId );
+	}
+};
+
 void Nagrand_onEnterWorld( Player *player )
 {
 	if( player->GetMapId() != MAP_OUTLAND )
@@ -1149,6 +1213,14 @@ void setupNagrand( ScriptMgr *mgr )
 		for( uint32 j = 0; j < NAGRAND_PVP_OWNER_NEUTRAL; j++ )
 		{
 			mgr->register_gameobject_script( destroyedRoostIds[ i ][ j ], &DestroyedWyvernRoostAI::Create );
+		}
+	}
+
+	for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+	{
+		for( uint32 j = 0; j < NAGRAND_PVP_OWNER_NEUTRAL; j++ )
+		{
+			mgr->register_gameobject_script( bombwagonIds[ i ][ j ], &BombWagonAI::Create );
 		}
 	}
 
