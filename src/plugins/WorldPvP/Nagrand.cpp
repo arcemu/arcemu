@@ -248,6 +248,38 @@ static float destroyedRoostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 
 static uint32 destroyedRoostFactions[ 2 ] = { 84, 83 };
 
+enum WyvernRoostGOIds
+{
+	GO_WYVERN_ROOST_NE_A  = 182281,
+	GO_WYVERN_ROOST_NE_H  = 182303,
+
+	GO_WYVERN_ROOST_SE_A  = 182282,
+	GO_WYVERN_ROOST_SE_H  = 182304,
+
+	GO_WYVERN_ROOST_SW_A  = 182267,
+	GO_WYVERN_ROOST_SW_H  = 182301,
+
+	GO_WYVERN_ROOST_NW_A  = 182280,
+	GO_WYVERN_ROOST_NW_H  = 182302,
+};
+
+static uint32 wyvernRoostIds[ HALAA_WYVERN_CAMP_COUNT ][ 2 ] = 
+{
+	{ GO_WYVERN_ROOST_NE_A, GO_WYVERN_ROOST_NE_H },
+	{ GO_WYVERN_ROOST_SE_A, GO_WYVERN_ROOST_SE_H },
+	{ GO_WYVERN_ROOST_SW_A, GO_WYVERN_ROOST_SW_H },
+	{ GO_WYVERN_ROOST_NW_A, GO_WYVERN_ROOST_NW_H },
+};
+
+static float wyvernRoostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
+{
+	{ -1385.07f, 7779.34f, -11.21f, 0.79f },
+	{ -1649.99, 7732.57f, -15.45f, -2.41f },
+	{ -1815.65f, 8036.62f, -26.24f, -2.29f },
+	{ -1508.3f, 8132.84f, -19.58f, 1.45f }
+};
+
+static uint32 wyvernRoostFactions[ 2 ] = { 1802, 1801 };
 
 class WyvernCampHandler
 {
@@ -272,9 +304,20 @@ public:
 
 			for( uint32 team = TEAM_ALLIANCE; team < NAGRAND_PVP_OWNER_NEUTRAL; team++ )
 			{
+				/// Destroyed Wyvern Roost
 				go = mgr->GetInterface()->GetGameObjectNearestCoords(
 					destroyedRoostLocations[ i ][ 0 ], destroyedRoostLocations[ i ][ 1 ], destroyedRoostLocations[ i ][ 2 ],
 					destroyedRoostIds[ i ][ team ] );
+				
+				if( go != NULL )
+				{
+					go->Despawn( 1, 0 );
+				}
+
+				/// Wyvern Roost
+				go = mgr->GetInterface()->GetGameObjectNearestCoords(
+					wyvernRoostLocations[ i ][ 0 ], wyvernRoostLocations[ i ][ 1 ], wyvernRoostLocations[ i ][ 2 ],
+					wyvernRoostIds[ i ][ team ] );
 				
 				if( go != NULL )
 				{
@@ -410,6 +453,33 @@ public:
 		campHandler.setMapMgr( mgr );
 	}
 
+	void updateWyvernCampWorldState( uint32 campId )
+	{
+		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+
+		switch( wyvernCampOwners[ campId ] )
+		{
+			case TEAM_ALLIANCE:
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ TEAM_ALLIANCE ], 1 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ NAGRAND_PVP_OWNER_NEUTRAL ], 0 );
+				break;
+
+			case TEAM_HORDE:
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ TEAM_ALLIANCE ], 0 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ TEAM_HORDE ], 1 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ NAGRAND_PVP_OWNER_NEUTRAL ], 0 );
+				break;
+
+			case NAGRAND_PVP_OWNER_NEUTRAL:
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ TEAM_ALLIANCE ], 0 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ TEAM_HORDE ], 0 );
+				handler.SetWorldStateForZone( ZONE_NAGRAND, wyvernCampWorldStates[ campId ][ NAGRAND_PVP_OWNER_NEUTRAL ], 1 );
+				break;
+		}
+
+	}
+
 	void updateWyvernCampWorldStates()
 	{
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
@@ -502,6 +572,12 @@ public:
 				handler.SetWorldStateForZone( ZONE_NAGRAND, halaaGuardsWorldStates[ TEAM_HORDE ], 0 );
 				break;
 		}
+	}
+
+	void onWyvernCampCaptured( uint32 campId, uint32 team )
+	{
+		wyvernCampOwners[ campId ] = team;
+		updateWyvernCampWorldState( campId );
 	}
 
 	void onGuardDied()
@@ -876,6 +952,67 @@ public:
 };
 
 
+class DestroyedWyvernRoostAI : public GameObjectAIScript
+{
+private:
+	uint32 campId;
+
+public:
+	DestroyedWyvernRoostAI( GameObject *go ) : GameObjectAIScript( go )
+	{
+	}
+
+	ADD_GAMEOBJECT_FACTORY_FUNCTION( DestroyedWyvernRoostAI );
+
+	void OnSpawn()
+	{
+		switch( _gameobject->GetInfo()->ID )
+		{
+			case GO_DESTROYED_WYVERN_ROOST_NE_A:
+			case GO_DESTROYED_WYVERN_ROOST_NE_H:
+				campId = HALAA_WYVERN_CAMP_NE;
+				break;
+
+			case GO_DESTROYED_WYVERN_ROOST_SE_A:
+			case GO_DESTROYED_WYVERN_ROOST_SE_H:
+				campId = HALAA_WYVERN_CAMP_SE;
+				break;
+
+			case GO_DESTROYED_WYVERN_ROOST_SW_A:
+			case GO_DESTROYED_WYVERN_ROOST_SW_H:
+				campId = HALAA_WYVERN_CAMP_SW;
+				break;
+
+			case GO_DESTROYED_WYVERN_ROOST_NW_A:
+			case GO_DESTROYED_WYVERN_ROOST_NW_H:
+				campId = HALAA_WYVERN_CAMP_NW;
+				break;
+		}
+	}
+
+	void OnActivate( Player* player )
+	{
+		MapMgr *mgr = _gameobject->GetMapMgr();
+		uint32 team = player->GetTeam();
+
+		/// Spawn the real roost
+
+		GameObject *go = mgr->GetInterface()->SpawnGameObject(
+			wyvernRoostIds[ campId ][ team ],
+			wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ], wyvernRoostLocations[ campId ][ 3 ],
+			false, 0, 0 );
+
+		go->SetFaction( wyvernRoostFactions[ team ] );
+		go->PushToWorld( mgr );
+
+		/// Despawn us
+		_gameobject->Despawn( 1, 0 );
+
+
+		pvp.onWyvernCampCaptured( campId, team );
+	}
+};
+
 void Nagrand_onEnterWorld( Player *player )
 {
 	if( player->GetMapId() != MAP_OUTLAND )
@@ -943,6 +1080,14 @@ void setupNagrand( ScriptMgr *mgr )
 
 	mgr->register_creature_script( NPC_HALAA_GUARD_ALLIANCE, &HalaaGuardAI::Create );
 	mgr->register_creature_script( NPC_HALAA_GUARD_HORDE, &HalaaGuardAI::Create );
+
+	for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+	{
+		for( uint32 j = 0; j < NAGRAND_PVP_OWNER_NEUTRAL; j++ )
+		{
+			mgr->register_gameobject_script( destroyedRoostIds[ i ][ j ], &DestroyedWyvernRoostAI::Create );
+		}
+	}
 
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_ENTER_WORLD, (void*)&Nagrand_onEnterWorld );
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_LOGOUT, (void*)&Nagrand_onLogout );
