@@ -281,6 +281,39 @@ static float wyvernRoostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 
 static uint32 wyvernRoostFactions[ 2 ] = { 1802, 1801 };
 
+enum BombWagonGOIds
+{
+	GO_BOMB_WAGON_NE_A  = 182307,
+	GO_BOMB_WAGON_NE_H  = 182273,
+
+	GO_BOMB_WAGON_SE_A  = 182308,
+	GO_BOMB_WAGON_SE_H  = 182274,
+
+	GO_BOMB_WAGON_SW_A  = 182305,
+	GO_BOMB_WAGON_SW_H  = 182222,
+
+	GO_BOMB_WAGON_NW_A  = 182306,
+	GO_BOMB_WAGON_NW_H  = 182272,
+};
+
+static uint32 bombwagonIds[ HALAA_WYVERN_CAMP_COUNT ][ 2 ] = 
+{
+	{ GO_BOMB_WAGON_NE_A, GO_BOMB_WAGON_NE_H },
+	{ GO_BOMB_WAGON_SE_A, GO_BOMB_WAGON_SE_H },
+	{ GO_BOMB_WAGON_SW_A, GO_BOMB_WAGON_SW_H },
+	{ GO_BOMB_WAGON_NW_A, GO_BOMB_WAGON_NW_H },	
+};
+
+static float bombwagonLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] = 
+{
+	{ -1389.53f, 7782.51f, -11.63f, -1.52f },
+	{ -1662.28f, 7735.0f, -15.97f, 1.88f   },
+	{ -1818.48f, 8040.24f, -26.67f, 1.26f  },
+	{ -1517.45f, 8140.24f, -20.18f, -2.81f }
+};
+
+static uint32 bombwagonFactions[ 2 ] = { 1802, 1801 };
+
 class WyvernCampHandler
 {
 	MapMgr *mgr;
@@ -318,6 +351,16 @@ public:
 				go = mgr->GetInterface()->GetGameObjectNearestCoords(
 					wyvernRoostLocations[ i ][ 0 ], wyvernRoostLocations[ i ][ 1 ], wyvernRoostLocations[ i ][ 2 ],
 					wyvernRoostIds[ i ][ team ] );
+				
+				if( go != NULL )
+				{
+					go->Despawn( 1, 0 );
+				}
+
+				/// Bomb wagon
+				go = mgr->GetInterface()->GetGameObjectNearestCoords(
+					bombwagonLocations[ i ][ 0 ], bombwagonLocations[ i ][ 1 ], bombwagonLocations[ i ][ 2 ],
+					bombwagonIds[ i ][ team ] );
 				
 				if( go != NULL )
 				{
@@ -577,6 +620,7 @@ public:
 	void onWyvernCampCaptured( uint32 campId, uint32 team )
 	{
 		wyvernCampOwners[ campId ] = team;
+		
 		updateWyvernCampWorldState( campId );
 	}
 
@@ -995,14 +1039,33 @@ public:
 		MapMgr *mgr = _gameobject->GetMapMgr();
 		uint32 team = player->GetTeam();
 
-		/// Spawn the real roost
+		uint32 enemyTeam;
+		if( team == TEAM_ALLIANCE )
+		{
+			enemyTeam = TEAM_HORDE;
+		}
+		else
+		{
+			enemyTeam = TEAM_ALLIANCE;
+		}
 
-		GameObject *go = mgr->GetInterface()->SpawnGameObject(
+		/// Spawn the real roost
+		GameObject *go;
+		go = mgr->GetInterface()->SpawnGameObject(
 			wyvernRoostIds[ campId ][ team ],
 			wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ], wyvernRoostLocations[ campId ][ 3 ],
 			false, 0, 0 );
 
 		go->SetFaction( wyvernRoostFactions[ team ] );
+		go->PushToWorld( mgr );
+
+		/// Spawn the bomb wagon
+		go = mgr->GetInterface()->SpawnGameObject(
+			bombwagonIds[ campId ][ team ],
+			bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ], bombwagonLocations[ campId ][ 3 ],
+			false, 0, 0 );
+
+		go->SetFaction( bombwagonFactions[ enemyTeam ] );
 		go->PushToWorld( mgr );
 
 		/// Despawn us
