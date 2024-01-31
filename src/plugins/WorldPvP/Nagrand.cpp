@@ -215,6 +215,112 @@ static uint32 wyvernCampOwners[ HALAA_WYVERN_CAMP_COUNT ] =
 	NAGRAND_PVP_OWNER_NEUTRAL
 };
 
+enum RoostGOIds
+{
+	GO_DESTROYED_WYVERN_ROOST_NE_A     = 182276,
+	GO_DESTROYED_WYVERN_ROOST_NE_H     = 182299,
+
+	GO_DESTROYED_WYVERN_ROOST_SE_A     = 182277,
+	GO_DESTROYED_WYVERN_ROOST_SE_H     = 182300,
+
+	GO_DESTROYED_WYVERN_ROOST_SW_A     = 182266,
+	GO_DESTROYED_WYVERN_ROOST_SW_H     = 182297,
+
+	GO_DESTROYED_WYVERN_ROOST_NW_A     = 182275,
+	GO_DESTROYED_WYVERN_ROOST_NW_H     = 182298
+};
+
+static uint32 roostIds[ HALAA_WYVERN_CAMP_COUNT ][ 2 ] = 
+{
+	{ GO_DESTROYED_WYVERN_ROOST_NE_A, GO_DESTROYED_WYVERN_ROOST_NE_H },
+	{ GO_DESTROYED_WYVERN_ROOST_SE_A, GO_DESTROYED_WYVERN_ROOST_SE_H },
+	{ GO_DESTROYED_WYVERN_ROOST_SW_A, GO_DESTROYED_WYVERN_ROOST_SW_H },
+	{ GO_DESTROYED_WYVERN_ROOST_NW_A, GO_DESTROYED_WYVERN_ROOST_NW_H },
+};
+
+static float roostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
+{
+	{ -1384.53f, 7779.4f, -11.17f, -0.58f },
+	{ -1650.28f, 7732.19f, -15.44f, -2.81f },
+	{ -1815.8f, 8036.51f, -26.24f, -2.9f },
+	{ -1507.9f, 8132.11f, -19.55f, -1.34f }
+};
+
+static uint32 roostFactions[ 2 ] = { 84, 83 };
+
+class WyvernCampHandler
+{
+	MapMgr *mgr;
+
+public:
+	WyvernCampHandler( MapMgr *mgr = NULL )
+	{
+		setMapMgr( mgr );
+	}
+
+	void setMapMgr( MapMgr *mgr )
+	{
+		this->mgr = mgr;
+	}
+
+	void despawnCamps()
+	{
+		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+		{
+			GameObject *go;
+
+			for( uint32 team = TEAM_ALLIANCE; team < NAGRAND_PVP_OWNER_NEUTRAL; team++ )
+			{
+				go = mgr->GetInterface()->GetGameObjectNearestCoords(
+					roostLocations[ i ][ 0 ], roostLocations[ i ][ 1 ], roostLocations[ i ][ 2 ],
+					roostIds[ i ][ team ] );
+				
+				if( go != NULL )
+				{
+					go->Despawn( 1, 0 );
+				}
+			}
+		}
+	}
+
+	void spawnCamps()
+	{
+		uint32 roostTeam;
+		if( halaaOwner == TEAM_ALLIANCE )
+		{
+			roostTeam = TEAM_HORDE;
+		}
+		else
+		{
+			roostTeam = TEAM_ALLIANCE;
+		}
+
+		for( uint32 i = 0; i < HALAA_WYVERN_CAMP_COUNT; i++ )
+		{
+			GameObject *go = mgr->GetInterface()->SpawnGameObject(
+				roostIds[ i ][ roostTeam ],
+				roostLocations[ i ][ 0 ], roostLocations[ i ][ 1 ], roostLocations[ i ][ 2 ], roostLocations[ i ][ 3 ],
+				false, 0, 0 );
+
+			go->SetFaction( roostFactions[ roostTeam ] );
+
+			go->PushToWorld( mgr );
+		}
+	}
+
+	void updateCamps()
+	{
+		if( halaaOwner == NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			despawnCamps();
+		}
+		else
+		{
+			spawnCamps();
+		}
+	}
+};
+
 class NagrandBroadcaster
 {
 private:
@@ -288,6 +394,7 @@ class NagrandPvP
 private:
 	MapMgr *mgr;
 	NagrandBroadcaster broadcaster;
+	WyvernCampHandler campHandler;
 
 public:
 	NagrandPvP( MapMgr *mgr = NULL )
@@ -299,6 +406,7 @@ public:
 	{
 		this->mgr = mgr;
 		broadcaster.setMapMgr( mgr );
+		campHandler.setMapMgr( mgr );
 	}
 
 	void updateWyvernCampWorldStates()
@@ -348,6 +456,8 @@ public:
 		{
 			wyvernCampOwners[ i ] = NAGRAND_PVP_OWNER_NEUTRAL;
 		}
+
+		campHandler.updateCamps();
 
 		updateWyvernCampWorldStates();
 	}
