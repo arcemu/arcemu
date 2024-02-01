@@ -286,7 +286,7 @@ void GameObject::SaveToDB()
 		uint32 cx = GetMapMgr()->GetPosX(GetPositionX());
 		uint32 cy = GetMapMgr()->GetPosY(GetPositionY());
 
-		GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cx, cy)->GOSpawns.push_back(m_spawn);
+		GetMapMgr()->GetBaseMap()->CreateAndGetSpawnsList(cx, cy)->GOSpawns.push_back(m_spawn);
 	}
 	std::stringstream ss;
 

@@ -1823,7 +1823,7 @@ GameObject* MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, f
 	uint32 cx = GetPosX(x);
 	uint32 cy = GetPosY(y);
 
-	GetBaseMap()->GetSpawnsListAndCreate(cx, cy)->GOSpawns.push_back(gs);
+	GetBaseMap()->CreateAndGetSpawnsList(cx, cy)->GOSpawns.push_back(gs);
 	go->m_spawn = gs;
 
 	MapCell* mCell = GetCell(cx, cy);

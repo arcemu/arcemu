@@ -127,7 +127,8 @@ class SERVER_DECL Map
 
 			return spawns[cellx][celly];
 		}
-		ARCEMU_INLINE CellSpawns* GetSpawnsListAndCreate(uint32 cellx, uint32 celly)
+
+		ARCEMU_INLINE CellSpawns* CreateAndGetSpawnsList(uint32 cellx, uint32 celly)
 		{
 			ARCEMU_ASSERT(cellx < _sizeX);
 			ARCEMU_ASSERT(celly < _sizeY);
@@ -137,7 +138,7 @@ class SERVER_DECL Map
 				memset(spawns[cellx], 0, sizeof(CellSpawns*)*_sizeY);
 			}
 
-			if(spawns[cellx][celly] == 0)
+			if(spawns[cellx][celly] == NULL)
 				spawns[cellx][celly] = new CellSpawns;
 			return spawns[cellx][celly];
 		}

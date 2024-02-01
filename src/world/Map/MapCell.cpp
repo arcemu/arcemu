@@ -257,6 +257,8 @@ void MapCell::LoadObjects(CellSpawns* sp)
 			if(c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()) && c->CanAddToWorld())
 			{
 				c->PushToWorld(_mapmgr);
+				CreatureSpawn* spawn = (*i);
+				Log.Debug("MapCell", "Spawned Creature %u with spawnId %u MapId %u", spawn->entry, spawn->id, _mapmgr->GetMapId());
 			}
 			else
 			{

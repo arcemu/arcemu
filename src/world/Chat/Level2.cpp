@@ -904,7 +904,7 @@ bool ChatHandler::HandleGOSpawn(const char* args, WorldSession* m_session)
 	uint32 cx = chr->GetMapMgr()->GetPosX(chr->GetPositionX());
 	uint32 cy = chr->GetMapMgr()->GetPosY(chr->GetPositionY());
 
-	chr->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cx, cy)->GOSpawns.push_back(gs);
+	chr->GetMapMgr()->GetBaseMap()->CreateAndGetSpawnsList(cx, cy)->GOSpawns.push_back(gs);
 	go->m_spawn = gs;
 
 	MapCell* mCell = chr->GetMapMgr()->GetCell(cx, cy);

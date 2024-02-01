@@ -552,7 +552,7 @@ void Creature::SaveToDB()
 		uint32 y = GetMapMgr()->GetPosY(GetPositionY());
 
 		// Add spawn to map
-		GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(x, y)->CreatureSpawns.push_back(m_spawn);
+		GetMapMgr()->GetBaseMap()->CreateAndGetSpawnsList(x, y)->CreatureSpawns.push_back(m_spawn);
 	}
 
 	std::stringstream ss;

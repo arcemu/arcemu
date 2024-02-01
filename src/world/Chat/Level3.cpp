@@ -2838,7 +2838,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 	uint32 y = m_session->GetPlayer()->GetMapMgr()->GetPosY(m_session->GetPlayer()->GetPositionY());
 
 	// Add spawn to map
-	m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(
+	m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->CreateAndGetSpawnsList(
 	    x,
 	    y)->CreatureSpawns.push_back(sp);
 

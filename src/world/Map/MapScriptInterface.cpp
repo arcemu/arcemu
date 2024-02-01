@@ -81,7 +81,7 @@ void MapScriptInterface::AddGameObjectSpawn( GOSpawn *gs )
 	uint32 cx = mapMgr.GetPosX( gs->x );
 	uint32 cy = mapMgr.GetPosY( gs->y );
 
-	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->GetSpawnsListAndCreate( cx, cy );
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->CreateAndGetSpawnsList( cx, cy );
 	GOSpawnList &spawns = cellSpawns->GOSpawns;
 
 	GOSpawnList::iterator itr = std::find( spawns.begin(), spawns.end(), gs );
