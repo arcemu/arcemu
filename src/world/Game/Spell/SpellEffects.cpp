@@ -2122,9 +2122,12 @@ void Spell::SpellEffectSummonWild(uint32 i, SummonPropertiesEntry* spe, Creature
 
 	for(int32 j = 0; j < damage; j++)
 	{
-		float followangle = -1 * M_PI_FLOAT / 2 * j;
-		v.x = v.x + (GetRadius(i) * (cosf(followangle + v.o)));
-		v.y = v.y + (GetRadius(i) * (sinf(followangle + v.o)));
+		if( ( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION ) == 0 )
+		{
+			float followangle = -1 * M_PI_FLOAT / 2 * j;
+			v.x = v.x + (GetRadius(i) * (cosf(followangle + v.o)));
+			v.y = v.y + (GetRadius(i) * (sinf(followangle + v.o)));
+		}
 
 		Summon* s = u_caster->GetMapMgr()->CreateSummon(proto->Id, SUMMONTYPE_WILD);
 		if(s == NULL)
