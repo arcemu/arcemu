@@ -1020,6 +1020,42 @@ bool X53Mount( uint32 i, Aura *a, bool apply ){
 	return true;
 }
 
+#define GO_FIRE_BOMB_EFFECT 182167
+#define NPC_FIRE_BOMB_TARGET 18225
+#define DISPLAYID_INVISIBLE_CREATURE 11686
+#define SPELL_FIRE_BOMB 31961
+
+class FireBombTargetAI : public CreatureAIScript
+{
+public:
+	FireBombTargetAI( Creature *creature ) : CreatureAIScript( creature )
+	{
+	}
+
+	ADD_CREATURE_FACTORY_FUNCTION( FireBombTargetAI );
+
+	void OnLoad()
+	{
+		MapMgr *mgr = _unit->GetMapMgr();
+
+		/// Make us invisible
+		_unit->GetAIInterface()->m_canMove = false;
+		_unit->GetAIInterface()->disable_combat = true;
+		_unit->SetDisplayId( DISPLAYID_INVISIBLE_CREATURE );
+
+		/// Cast the actual fire bomb spell
+		_unit->CastSpellAoF( _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), SPELL_FIRE_BOMB, false );		
+		
+		/// Spawn bomb visual
+		GameObject *go = mgr->GetInterface()->SpawnGameObject(
+			GO_FIRE_BOMB_EFFECT,
+			_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(),
+			true, 0, 0 );
+
+		go->Despawn( 6 * 1000, 0 );
+	}
+};
+
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -1104,6 +1140,8 @@ void SetupItemSpells_1(ScriptMgr* mgr)
 	mgr->register_dummy_aura(DrinkDummySpellIDs, &DrinkDummyAura);
 	mgr->register_dummy_aura(75973, &X53Mount);
     mgr->register_dummy_spell(21050, &MelodiousRapture);
+
+	mgr->register_creature_script( NPC_FIRE_BOMB_TARGET, &FireBombTargetAI::Create );
 
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
