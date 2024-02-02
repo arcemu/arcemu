@@ -3207,7 +3207,7 @@ bool ChatHandler::HandleLookupObjectCommand(const char* args, WorldSession* m_se
 	string x = string(args);
 	Arcemu::Shared::Util::arcemu_TOLOWER(x);
 
-	StorageContainerIterator<GameObjectInfo> * itr = GameObjectNameStorage.MakeIterator();
+	StorageContainerIterator<GameObjectInfo> * itr = GameObjectProtoStorage.MakeIterator();
 
 	GreenSystemMessage(m_session, "Starting search of object `%s`...", x.c_str());
 	uint32 t = Arcemu::Shared::Util::getMSTime();

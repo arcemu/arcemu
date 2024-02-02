@@ -52,7 +52,7 @@ const char* gTotemDisplayIDsFormat                     = "uuuu";
 SERVER_DECL SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >				ItemPrototypeStorage;
 SERVER_DECL SQLStorage<ItemName, ArrayStorageContainer<ItemName> >							ItemNameStorage;
 SERVER_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >				CreatureNameStorage;
-SERVER_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >			GameObjectNameStorage;
+SERVER_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >			GameObjectProtoStorage;
 SERVER_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >				CreatureProtoStorage;
 SERVER_DECL SQLStorage<DisplayBounding, HashMapStorageContainer<DisplayBounding> >				DisplayBoundingStorage;
 SERVER_DECL SQLStorage<VendorRestrictionEntry, ArrayStorageContainer<VendorRestrictionEntry> > VendorRestrictionEntryStorage;
@@ -521,7 +521,7 @@ void ObjectMgr::LoadExtraItemStuff()
 
 void ObjectMgr::LoadExtraGameObjectStuff()
 {
-	StorageContainerIterator<GameObjectInfo> * itr = GameObjectNameStorage.MakeIterator();
+	StorageContainerIterator<GameObjectInfo> * itr = GameObjectProtoStorage.MakeIterator();
 	GameObjectInfo* goi;
 	while(!itr->AtEnd())
 	{
@@ -542,7 +542,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(ItemPrototypeStorage, ItemPrototype, ArrayStorageContainer, "items", gItemPrototypeFormat);
 	make_task(ItemNameStorage, ItemName, ArrayStorageContainer, "itemnames", gItemNameFormat);
 	make_task(CreatureNameStorage, CreatureInfo, HashMapStorageContainer, "creature_names", gCreatureNameFormat);
-	make_task(GameObjectNameStorage, GameObjectInfo, HashMapStorageContainer, "gameobject_names", gGameObjectNameFormat);
+	make_task(GameObjectProtoStorage, GameObjectInfo, HashMapStorageContainer, "gameobject_names", gGameObjectNameFormat);
 	make_task(CreatureProtoStorage, CreatureProto, HashMapStorageContainer, "creature_proto", gCreatureProtoFormat);
 	make_task(DisplayBoundingStorage, DisplayBounding, HashMapStorageContainer, "display_bounding_boxes", gDisplayBoundingFormat);
 	make_task(VendorRestrictionEntryStorage, VendorRestrictionEntry, ArrayStorageContainer, "vendor_restrictions", gVendorRestrictionEntryFormat);
@@ -588,7 +588,7 @@ void Storage_Cleanup()
 	ItemPrototypeStorage.Cleanup();
 	ItemNameStorage.Cleanup();
 	CreatureNameStorage.Cleanup();
-	GameObjectNameStorage.Cleanup();
+	GameObjectProtoStorage.Cleanup();
 	CreatureProtoStorage.Cleanup();
 	VendorRestrictionEntryStorage.Cleanup();
 	AreaTriggerStorage.Cleanup();
@@ -629,7 +629,7 @@ bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool fir
 	else if(firstLoad && !stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.LoadAdditionalData(SecondName, gCreatureNameFormat);
 	else if(firstLoad && !stricmp(TableName, "gameobject_names"))	// GO Names
-		GameObjectNameStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);
+		GameObjectProtoStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);
 	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.LoadAdditionalData(SecondName, gAreaTriggerFormat);
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
@@ -670,7 +670,7 @@ bool Storage_ReloadTable(const char* TableName)
 	else if(!stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.Reload();
 	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
-		GameObjectNameStorage.Reload();*/
+		GameObjectProtoStorage.Reload();*/
 	if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.Reload();
 	else if(!stricmp(TableName, "itempages"))			// Item Pages

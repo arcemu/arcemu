@@ -143,7 +143,7 @@ static PyObject* ArcPyMapMgr_spawnGameObject( ArcPyMapMgr *self, PyObject *args 
 		return NULL;
 	}
 
-	GameObjectInfo *info = GameObjectNameStorage.LookupEntry( id );
+	GameObjectInfo *info = GameObjectProtoStorage.LookupEntry( id );
 	if( info == NULL )
 	{
 		Py_RETURN_NONE;

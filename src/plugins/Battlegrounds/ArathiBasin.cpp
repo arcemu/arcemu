@@ -154,7 +154,7 @@ static uint32 resourcesToGainBR = 160;
 void ArathiBasin::SpawnBuff(uint32 x)
 {
 	uint32 chosen_buffid = buffentries[RandomUInt(2)];
-	GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(chosen_buffid);
+	GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(chosen_buffid);
 	if(goi == NULL)
 		return;
 
@@ -190,11 +190,11 @@ void ArathiBasin::SpawnBuff(uint32 x)
 void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 {
 	GameObjectInfo* gi, * gi_aura;
-	gi = GameObjectNameStorage.LookupEntry(ControlPointGoIds[Id][Type]);
+	gi = GameObjectProtoStorage.LookupEntry(ControlPointGoIds[Id][Type]);
 	if(gi == NULL)
 		return;
 
-	gi_aura = gi->sound3 ? GameObjectNameStorage.LookupEntry(gi->sound3) : NULL;
+	gi_aura = gi->sound3 ? GameObjectProtoStorage.LookupEntry(gi->sound3) : NULL;
 
 	if(m_controlPoints[Id] == NULL)
 	{

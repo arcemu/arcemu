@@ -79,7 +79,7 @@ namespace luaGlobalFunctions
 			}
 			else if(spawntype == 2)  //GO
 			{
-				GameObjectInfo* n = GameObjectNameStorage.LookupEntry(entry);
+				GameObjectInfo* n = GameObjectProtoStorage.LookupEntry(entry);
 				if(n == NULL)
 					return 0;
 				MapMgr* mapMgr = sInstanceMgr.GetMapMgr(map);
@@ -227,7 +227,7 @@ namespace luaGlobalFunctions
 			else if (!stricmp(TableName, "creature_names"))		// Creature Names
 				CreatureNameStorage.Reload();
 			else if (!stricmp(TableName, "gameobject_names"))	// GO Names
-				GameObjectNameStorage.Reload();*/
+				GameObjectProtoStorage.Reload();*/
 			if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 				AreaTriggerStorage.Reload();
 			else if(!stricmp(TableName, "itempages"))			// Item Pages

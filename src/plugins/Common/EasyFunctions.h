@@ -200,7 +200,7 @@ class SCRIPT_DECL EasyFunctions
 			if(plr == NULL)
 				return NULL;
 
-			GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(entry_id);
+			GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(entry_id);
 			if(goi == NULL)
 				return NULL;
 

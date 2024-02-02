@@ -492,7 +492,7 @@ void IsleOfConquest::SpawnControlPoint(uint32 Id, uint32 Type)
 		return;
 
         GameObjectInfo * gi, * gi_aura;
-        gi = GameObjectNameStorage.LookupEntry(ControlPointGoIds[Id][Type]);
+        gi = GameObjectProtoStorage.LookupEntry(ControlPointGoIds[Id][Type]);
         if(gi == NULL)
                 return;
 
@@ -501,7 +501,7 @@ void IsleOfConquest::SpawnControlPoint(uint32 Id, uint32 Type)
 		if( controlpoint[ Id ].worldstate != 0 )
 			SetWorldState( controlpoint[ Id ].worldstate, 0 );
 
-        gi_aura = gi->sound3 ? GameObjectNameStorage.LookupEntry(gi->sound3) : NULL;
+        gi_aura = gi->sound3 ? GameObjectProtoStorage.LookupEntry(gi->sound3) : NULL;
 
 		if( controlpoint[ Id ].banner == NULL)
         {

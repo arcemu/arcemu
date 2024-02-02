@@ -555,7 +555,7 @@ void EyeOfTheStorm::OnCreate()
 	/* create gameobjects */
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
-		goi = GameObjectNameStorage.LookupEntry(EOTSTowerIds[i]);
+		goi = GameObjectProtoStorage.LookupEntry(EOTSTowerIds[i]);
 		if(goi == NULL)
 		{
 			Log.LargeErrorMessage("EOTS is being created and you are missing gameobjects. Terminating.", NULL);
@@ -567,7 +567,7 @@ void EyeOfTheStorm::OnCreate()
 		m_CPStatusGO[i]->CreateFromProto(goi->ID, m_mapMgr->GetMapId(), EOTSTCLocations[i][0], EOTSTCLocations[i][1], EOTSTCLocations[i][2], 0);
 		m_CPStatusGO[i]->PushToWorld(m_mapMgr);
 
-		goi = GameObjectNameStorage.LookupEntry(EOTS_BANNER_NEUTRAL);
+		goi = GameObjectProtoStorage.LookupEntry(EOTS_BANNER_NEUTRAL);
 		if(goi == NULL)
 		{
 			Log.LargeErrorMessage("EOTS is being created and you are missing gameobjects. Terminating.", NULL);
@@ -910,7 +910,7 @@ void EyeOfTheStorm::HookOnHK(Player* plr)
 void EyeOfTheStorm::SpawnBuff(uint32 x)
 {
 	uint32 chosen_buffid = EOTSbuffentrys[RandomUInt(3)];
-	GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(chosen_buffid);
+	GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(chosen_buffid);
 	if(goi == NULL)
 		return;
 

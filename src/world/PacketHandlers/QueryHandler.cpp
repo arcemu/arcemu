@@ -164,7 +164,7 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPacket & recv_data)
 
 	LOG_DETAIL("WORLD: CMSG_GAMEOBJECT_QUERY '%u'", entryID);
 
-	goinfo = GameObjectNameStorage.LookupEntry(entryID);
+	goinfo = GameObjectProtoStorage.LookupEntry(entryID);
 	if(goinfo == NULL)
 		return;
 

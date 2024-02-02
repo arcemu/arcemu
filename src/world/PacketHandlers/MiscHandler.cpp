@@ -1721,7 +1721,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				if(!pPlayer || _player->GetGroup() != pPlayer->GetGroup() || !_player->GetGroup())
 					return;
 
-				GameObjectInfo* info = GameObjectNameStorage.LookupEntry(179944);
+				GameObjectInfo* info = GameObjectProtoStorage.LookupEntry(179944);
 				if(!info)
 					return;
 

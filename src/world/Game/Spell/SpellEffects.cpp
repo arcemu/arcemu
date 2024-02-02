@@ -3296,7 +3296,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 	{
 		posx = px;
 		posy = py;
-		GameObjectInfo* goI = GameObjectNameStorage.LookupEntry(entry);
+		GameObjectInfo* goI = GameObjectProtoStorage.LookupEntry(entry);
 		if(!goI)
 		{
 			if(p_caster)

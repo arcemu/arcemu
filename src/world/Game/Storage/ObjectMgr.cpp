@@ -1222,7 +1222,7 @@ void ObjectMgr::ProcessGameobjectQuests()
 		do
 		{
 			Field* fields = result->Fetch();
-			gon = GameObjectNameStorage.LookupEntry(fields[0].GetUInt32());
+			gon = GameObjectProtoStorage.LookupEntry(fields[0].GetUInt32());
 			qst = QuestStorage.LookupEntry(fields[1].GetUInt32());
 			if(gon && qst)
 				gon->itemMap[qst].insert(make_pair(fields[2].GetUInt32(), fields[3].GetUInt32()));
@@ -1238,7 +1238,7 @@ void ObjectMgr::ProcessGameobjectQuests()
 		do
 		{
 			Field* fields = result2->Fetch();
-			gon = GameObjectNameStorage.LookupEntry(fields[0].GetUInt32());
+			gon = GameObjectProtoStorage.LookupEntry(fields[0].GetUInt32());
 			qst = QuestStorage.LookupEntry(fields[1].GetUInt32());
 			if(gon && qst)
 				gon->goMap.insert(make_pair(qst, fields[2].GetUInt32()));

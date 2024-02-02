@@ -97,7 +97,7 @@ GameObject::~GameObject()
 
 bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)
 {
-	pInfo = GameObjectNameStorage.LookupEntry(entry);
+	pInfo = GameObjectProtoStorage.LookupEntry(entry);
 	if(pInfo == NULL)
 	{
 		LOG_ERROR("Something tried to create a GameObject with invalid entry %u", entry);
@@ -384,7 +384,7 @@ void GameObject::InitAI()
 		if(pInfo->sound2 != 0)
 		{
 
-			GameObjectInfo* gi = GameObjectNameStorage.LookupEntry(pInfo->sound2);
+			GameObjectInfo* gi = GameObjectProtoStorage.LookupEntry(pInfo->sound2);
 			if(gi == NULL)
 			{
 				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);
