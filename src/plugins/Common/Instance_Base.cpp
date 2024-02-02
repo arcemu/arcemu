@@ -365,40 +365,6 @@ uint32 MoonInstanceScript::GetUpdateEventFreq()
 	return mUpdateFrequency;
 };
 
-void MoonInstanceScript::SetCellForcedStates(float pMinX, float pMaxX, float pMinY, float pMaxY, bool pActivate)
-{
-	if(pMinX == pMaxX || pMinY == pMaxY)
-		return;
-
-	float Y = pMinY;
-	while(pMinX < pMaxX)
-	{
-		while(pMinY < pMaxY)
-		{
-			MapCell* CurrentCell = mInstance->GetCellByCoords(pMinX, pMinY);
-			if(pActivate && CurrentCell == NULL)
-			{
-				CurrentCell = mInstance->CreateByCoords(pMinX, pMinY);
-				if(CurrentCell != NULL)
-					CurrentCell->Init(mInstance->GetPosX(pMinX), mInstance->GetPosY(pMinY), mInstance);
-			};
-
-			if(CurrentCell != NULL)
-			{
-				if(pActivate)
-					mInstance->AddForcedCell(CurrentCell);
-				else
-					mInstance->RemoveForcedCell(CurrentCell);
-			};
-
-			pMinY += 40.0f;
-		};
-
-		pMinY = Y;
-		pMinX += 40.0f;
-	};
-};
-
 void MoonInstanceScript::OnPlayerDeath(Player* pVictim, Unit* pKiller)
 {
 };

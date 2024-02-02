@@ -73,7 +73,6 @@ worldstateshandler( mapId )
 	thread_kill_only = false;
 	thread_running = false;
 
-	m_forcedcells.clear();
 	m_PlayerStorage.clear();
 	m_PetStorage.clear();
 	m_DynamicObjectStorage.clear();
@@ -1187,7 +1186,7 @@ bool MapMgr::_CellActive(uint32 x, uint32 y)
 
 			if(objCell)
 			{
-				if(objCell->HasPlayers() || objCell->hasFarsightBound() || objCell->hasDynObjects() || m_forcedcells.find(objCell) != m_forcedcells.end())
+				if(objCell->HasPlayers() || objCell->hasFarsightBound() || objCell->hasDynObjects())
 				{
 					return true;
 				}
@@ -1851,17 +1850,6 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 DynamicObject* MapMgr::CreateDynamicObject()
 {
 	return new DynamicObject(HIGHGUID_TYPE_DYNAMICOBJECT, (++m_DynamicObjectHighGuid));
-}
-
-void MapMgr::AddForcedCell(MapCell* c)
-{
-	m_forcedcells.insert(c);
-	UpdateCellActivity(c->GetPositionX(), c->GetPositionY(), 1);
-}
-void MapMgr::RemoveForcedCell(MapCell* c)
-{
-	m_forcedcells.erase(c);
-	UpdateCellActivity(c->GetPositionX(), c->GetPositionY(), 1);
 }
 
 float MapMgr::GetFirstZWithCPZ(float x, float y, float z)

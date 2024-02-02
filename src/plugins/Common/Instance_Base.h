@@ -158,9 +158,6 @@ class MoonInstanceScript : public InstanceScript
 		void						SetUpdateEventFreq(uint32 pUpdateFreq);
 		uint32						GetUpdateEventFreq();
 
-		// Cells
-		void						SetCellForcedStates(float pMinX, float pMaxX, float pMinY, float pMaxY, bool pActivate = true);
-
 		// Player
 		virtual void				OnPlayerDeath(Player* pVictim, Unit* pKiller);
 
