@@ -175,7 +175,7 @@ class SERVER_DECL GameObject : public Object
 		~GameObject();
 
 		GameObjectProto* GetInfo() { return proto; }
-		void SetInfo(GameObjectProto* goi) { proto = goi; }
+		void setProto(GameObjectProto* proto) { this->proto = proto; }
 
 		bool CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0 = 0.0f, float r1 = 0.0f, float r2 = 0.0f, float r3 = 0.0f, uint32 overrides = 0);
 

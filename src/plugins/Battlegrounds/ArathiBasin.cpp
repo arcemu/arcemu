@@ -180,7 +180,7 @@ void ArathiBasin::SpawnBuff(uint32 x)
 		{
 			m_buffs[x]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 			m_buffs[x]->SetEntry(chosen_buffid);
-			m_buffs[x]->SetInfo(goi);
+			m_buffs[x]->setProto(goi);
 		}
 
 		m_buffs[x]->PushToWorld(m_mapMgr);
@@ -257,7 +257,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 				break;
 		}
 
-		m_controlPoints[Id]->SetInfo(gi);
+		m_controlPoints[Id]->setProto(gi);
 		m_controlPoints[Id]->PushToWorld(m_mapMgr);
 	}
 
@@ -292,7 +292,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPointAuras[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 		m_controlPointAuras[Id]->SetEntry(gi_aura->ID);
 		m_controlPointAuras[Id]->SetDisplayId(gi_aura->DisplayID);
-		m_controlPointAuras[Id]->SetInfo(gi_aura);
+		m_controlPointAuras[Id]->setProto(gi_aura);
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);
 	}
 }

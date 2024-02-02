@@ -934,7 +934,7 @@ void EyeOfTheStorm::SpawnBuff(uint32 x)
 		{
 			EOTSm_buffs[x]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 			EOTSm_buffs[x]->SetEntry(chosen_buffid);
-			EOTSm_buffs[x]->SetInfo(goi);
+			EOTSm_buffs[x]->setProto(goi);
 		}
 
 		EOTSm_buffs[x]->PushToWorld(m_mapMgr);

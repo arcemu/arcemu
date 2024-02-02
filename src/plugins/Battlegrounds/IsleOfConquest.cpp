@@ -562,7 +562,7 @@ void IsleOfConquest::SpawnControlPoint(uint32 Id, uint32 Type)
                         break;
                 }
 
-                controlpoint[ Id ].banner->SetInfo(gi);
+                controlpoint[ Id ].banner->setProto(gi);
                 controlpoint[ Id ].banner->PushToWorld(m_mapMgr);
         }
 
@@ -622,7 +622,7 @@ void IsleOfConquest::SpawnControlPoint(uint32 Id, uint32 Type)
                 controlpoint[ Id ].aura->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
                 controlpoint[ Id ].aura->SetUInt32Value(OBJECT_FIELD_ENTRY, gi_aura->ID);
                 controlpoint[ Id ].aura->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi_aura->DisplayID);
-                controlpoint[ Id ].aura->SetInfo(gi_aura);
+                controlpoint[ Id ].aura->setProto(gi_aura);
                 controlpoint[ Id ].aura->PushToWorld(m_mapMgr);
         }       
 }

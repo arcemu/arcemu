@@ -1145,7 +1145,7 @@ void AlteracValley::AVNode::Spawn()
 				m_flag->RemoveFromWorld(false);
 				m_flag->SetEntry(g->id[m_state]);
 				m_flag->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
-				m_flag->SetInfo(goi);
+				m_flag->setProto(goi);
 				m_flag->SetDisplayId(goi->DisplayID);
 				m_flag->SetType(static_cast<uint8>(goi->Type));
 				m_flag->SetFaction(g_gameObjectFactions[m_state]);
@@ -1191,7 +1191,7 @@ void AlteracValley::AVNode::Spawn()
 				m_aura->RemoveFromWorld(false);
 				m_aura->SetEntry(g->id[m_state]);
 				m_aura->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
-				m_aura->SetInfo(goi);
+				m_aura->setProto(goi);
 				m_aura->SetDisplayId(goi->DisplayID);
 				m_aura->SetType(static_cast<uint8>(goi->Type));
 				m_aura->SetFaction(g_gameObjectFactions[m_state]);
@@ -1242,7 +1242,7 @@ void AlteracValley::AVNode::Spawn()
 				m_glow->RemoveFromWorld(false);
 				m_glow->SetEntry(g->id[m_state]);
 				m_glow->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
-				m_glow->SetInfo(goi);
+				m_glow->setProto(goi);
 				m_glow->SetDisplayId(goi->DisplayID);
 				m_glow->SetType(static_cast<uint8>(goi->Type));
 				m_glow->SetFaction(g_gameObjectFactions[m_state]);
