@@ -2876,7 +2876,7 @@ CREATE TABLE `world_db_version` (
 
 LOCK TABLES `world_db_version` WRITE;
 /*!40000 ALTER TABLE `world_db_version` DISABLE KEYS */;
-INSERT INTO `world_db_version` VALUES ('20230611-1927_event_objective');
+INSERT INTO `world_db_version` VALUES ('20240202-2225_gameobject_proto');
 /*!40000 ALTER TABLE `world_db_version` ENABLE KEYS */;
 UNLOCK TABLES;
 
