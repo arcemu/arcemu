@@ -1088,10 +1088,6 @@ void MapMgr::loadCell( uint32 x, uint32 y )
 
 void MapMgr::LoadAllCells()
 {
-	// eek
-	MapCell* cellInfo;
-	CellSpawns* spawns;
-
 	for(uint32 x = 0 ; x < _sizeX ; x ++)
 	{
 		for(uint32 y = 0 ; y < _sizeY ; y ++)
