@@ -542,7 +542,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(ItemPrototypeStorage, ItemPrototype, ArrayStorageContainer, "items", gItemPrototypeFormat);
 	make_task(ItemNameStorage, ItemName, ArrayStorageContainer, "itemnames", gItemNameFormat);
 	make_task(CreatureNameStorage, CreatureInfo, HashMapStorageContainer, "creature_names", gCreatureNameFormat);
-	make_task(GameObjectProtoStorage, GameObjectProto, HashMapStorageContainer, "gameobject_names", gGameObjectNameFormat);
+	make_task(GameObjectProtoStorage, GameObjectProto, HashMapStorageContainer, "gameobject_proto", gGameObjectNameFormat);
 	make_task(CreatureProtoStorage, CreatureProto, HashMapStorageContainer, "creature_proto", gCreatureProtoFormat);
 	make_task(DisplayBoundingStorage, DisplayBounding, HashMapStorageContainer, "display_bounding_boxes", gDisplayBoundingFormat);
 	make_task(VendorRestrictionEntryStorage, VendorRestrictionEntry, ArrayStorageContainer, "vendor_restrictions", gVendorRestrictionEntryFormat);
@@ -628,7 +628,7 @@ bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool fir
 		CreatureProtoStorage.LoadAdditionalData(SecondName, gCreatureProtoFormat);
 	else if(firstLoad && !stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.LoadAdditionalData(SecondName, gCreatureNameFormat);
-	else if(firstLoad && !stricmp(TableName, "gameobject_names"))	// GO Names
+	else if(firstLoad && !stricmp(TableName, "gameobject_proto"))	// GO proto
 		GameObjectProtoStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);
 	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.LoadAdditionalData(SecondName, gAreaTriggerFormat);
@@ -669,7 +669,7 @@ bool Storage_ReloadTable(const char* TableName)
 		CreatureProtoStorage.Reload();
 	else if(!stricmp(TableName, "creature_names"))		// Creature Names
 		CreatureNameStorage.Reload();
-	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
+	else if(!stricmp(TableName, "gameobject_proto"))	// GO Names
 		GameObjectProtoStorage.Reload();*/
 	if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.Reload();

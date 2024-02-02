@@ -619,13 +619,13 @@ LOCK TABLES `fishing` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `gameobject_names`
+-- Table structure for table `gameobject_proto`
 --
 
-DROP TABLE IF EXISTS `gameobject_names`;
+DROP TABLE IF EXISTS `gameobject_proto`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gameobject_names` (
+CREATE TABLE `gameobject_proto` (
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `Type` int(10) unsigned NOT NULL DEFAULT '0',
   `DisplayID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -669,12 +669,12 @@ CREATE TABLE `gameobject_names` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `gameobject_names`
+-- Dumping data for table `gameobject_proto`
 --
 
-LOCK TABLES `gameobject_names` WRITE;
-/*!40000 ALTER TABLE `gameobject_names` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gameobject_names` ENABLE KEYS */;
+LOCK TABLES `gameobject_proto` WRITE;
+/*!40000 ALTER TABLE `gameobject_proto` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gameobject_proto` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
