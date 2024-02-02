@@ -491,7 +491,7 @@ void IsleOfConquest::SpawnControlPoint(uint32 Id, uint32 Type)
 	if( Id >= IOC_NUM_CONTROL_POINTS )
 		return;
 
-        GameObjectInfo * gi, * gi_aura;
+        GameObjectProto * gi, * gi_aura;
         gi = GameObjectProtoStorage.LookupEntry(ControlPointGoIds[Id][Type]);
         if(gi == NULL)
                 return;

@@ -74,7 +74,7 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 	{
 	    GameObject* go = TO_GAMEOBJECT(object);
 	    QuestLogEntry* qle;
-	    GameObjectInfo* info;
+	    GameObjectProto* info;
 	    if(go->HasQuests())
 	    {
 		std::list<QuestRelation*>::iterator itr;

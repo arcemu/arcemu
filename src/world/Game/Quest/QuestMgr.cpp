@@ -1957,7 +1957,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			{
 				if(qst->required_mob[i] < 0)
 				{
-					GameObjectInfo* go_info = GameObjectProtoStorage.LookupEntry(qst->required_mob[i] * -1);
+					GameObjectProto* go_info = GameObjectProtoStorage.LookupEntry(qst->required_mob[i] * -1);
 					if(go_info)
 					{
 						qst->required_mobtype[i] = QUEST_MOB_TYPE_GAMEOBJECT;

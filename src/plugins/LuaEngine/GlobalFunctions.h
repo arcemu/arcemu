@@ -79,7 +79,7 @@ namespace luaGlobalFunctions
 			}
 			else if(spawntype == 2)  //GO
 			{
-				GameObjectInfo* n = GameObjectProtoStorage.LookupEntry(entry);
+				GameObjectProto* n = GameObjectProtoStorage.LookupEntry(entry);
 				if(n == NULL)
 					return 0;
 				MapMgr* mapMgr = sInstanceMgr.GetMapMgr(map);

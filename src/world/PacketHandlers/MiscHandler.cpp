@@ -1463,7 +1463,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 	GameObject* obj = _player->GetMapMgr()->GetGameObject((uint32)guid);
 	if(!obj) return;
-	GameObjectInfo* goinfo = obj->GetInfo();
+	GameObjectProto* goinfo = obj->GetInfo();
 	if(!goinfo) return;
 
 	Player* plyr = GetPlayer();
@@ -1721,7 +1721,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				if(!pPlayer || _player->GetGroup() != pPlayer->GetGroup() || !_player->GetGroup())
 					return;
 
-				GameObjectInfo* info = GameObjectProtoStorage.LookupEntry(179944);
+				GameObjectProto* info = GameObjectProtoStorage.LookupEntry(179944);
 				if(!info)
 					return;
 

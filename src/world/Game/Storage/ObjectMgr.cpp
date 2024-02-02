@@ -1214,7 +1214,7 @@ void ObjectMgr::ProcessGameobjectQuests()
 	QueryResult* result  = WorldDatabase.Query("SELECT * FROM gameobject_quest_item_binding");
 	QueryResult* result2 = WorldDatabase.Query("SELECT * FROM gameobject_quest_pickup_binding");
 
-	GameObjectInfo* gon;
+	GameObjectProto* gon;
 	Quest* qst;
 
 	if(result)

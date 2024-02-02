@@ -2588,7 +2588,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				}
 				else if(gameObjTarget)
 				{
-					GameObjectInfo* info = gameObjTarget->GetInfo();
+					GameObjectProto* info = gameObjTarget->GetInfo();
 					if(gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
 						return;
 
@@ -2754,7 +2754,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 				if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER )
 				{
-					GameObjectInfo *goInfo = gameObjTarget->GetInfo();
+					GameObjectProto *goInfo = gameObjTarget->GetInfo();
 
 					/// If there's a spell to cast, cast it
 					if( goInfo->Unknown1 != 0 )
@@ -3296,7 +3296,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 	{
 		posx = px;
 		posy = py;
-		GameObjectInfo* goI = GameObjectProtoStorage.LookupEntry(entry);
+		GameObjectProto* goI = GameObjectProtoStorage.LookupEntry(entry);
 		if(!goI)
 		{
 			if(p_caster)

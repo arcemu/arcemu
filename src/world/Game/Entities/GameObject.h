@@ -73,7 +73,7 @@ typedef HM_NAMESPACE::HM_HASH_MAP<Quest*, uint32 > GameObjectGOMap;
 typedef HM_NAMESPACE::HM_HASH_MAP<Quest*, std::map<uint32, uint32> > GameObjectItemMap;
 
 #pragma pack(push,1)
-struct GameObjectInfo
+struct GameObjectProto
 {
 	uint32 ID;
 	uint32 Type;
@@ -174,8 +174,8 @@ class SERVER_DECL GameObject : public Object
 		GameObject(uint64 guid);
 		~GameObject();
 
-		GameObjectInfo* GetInfo() { return pInfo; }
-		void SetInfo(GameObjectInfo* goi) { pInfo = goi; }
+		GameObjectProto* GetInfo() { return pInfo; }
+		void SetInfo(GameObjectProto* goi) { pInfo = goi; }
 
 		bool CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0 = 0.0f, float r1 = 0.0f, float r2 = 0.0f, float r3 = 0.0f, uint32 overrides = 0);
 
@@ -408,7 +408,7 @@ class SERVER_DECL GameObject : public Object
 
 		bool m_summonedGo;
 		bool m_deleted;
-		GameObjectInfo* pInfo;
+		GameObjectProto* pInfo;
 		GameObjectAIScript* myScript;
 		uint32 _fields[GAMEOBJECT_END];
 		uint32 usage_remaining; //used for mining to mark times it can be mined

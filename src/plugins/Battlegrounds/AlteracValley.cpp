@@ -1141,7 +1141,7 @@ void AlteracValley::AVNode::Spawn()
 			// change entry, but to do this change guid
 			if(m_flag->GetEntry() != g->id[m_state] || !m_flag->IsInWorld())
 			{
-				GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(g->id[m_state]);
+				GameObjectProto* goi = GameObjectProtoStorage.LookupEntry(g->id[m_state]);
 				m_flag->RemoveFromWorld(false);
 				m_flag->SetEntry(g->id[m_state]);
 				m_flag->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
@@ -1187,7 +1187,7 @@ void AlteracValley::AVNode::Spawn()
 			// change entry, but to do this change guid
 			if(m_aura->GetEntry() != g->id[m_state] || !m_aura->IsInWorld())
 			{
-				GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(g->id[m_state]);
+				GameObjectProto* goi = GameObjectProtoStorage.LookupEntry(g->id[m_state]);
 				m_aura->RemoveFromWorld(false);
 				m_aura->SetEntry(g->id[m_state]);
 				m_aura->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());
@@ -1238,7 +1238,7 @@ void AlteracValley::AVNode::Spawn()
 			// change entry, but to do this change guid
 			if(m_glow->GetEntry() != g->id[m_state] || !m_glow->IsInWorld())
 			{
-				GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(g->id[m_state]);
+				GameObjectProto* goi = GameObjectProtoStorage.LookupEntry(g->id[m_state]);
 				m_glow->RemoveFromWorld(false);
 				m_glow->SetEntry(g->id[m_state]);
 				m_glow->SetNewGuid(m_bg->GetMapMgr()->GenerateGameobjectGuid());

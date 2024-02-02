@@ -52,7 +52,7 @@ const char* gTotemDisplayIDsFormat                     = "uuuu";
 SERVER_DECL SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >				ItemPrototypeStorage;
 SERVER_DECL SQLStorage<ItemName, ArrayStorageContainer<ItemName> >							ItemNameStorage;
 SERVER_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >				CreatureNameStorage;
-SERVER_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >			GameObjectProtoStorage;
+SERVER_DECL SQLStorage<GameObjectProto, HashMapStorageContainer<GameObjectProto> >			GameObjectProtoStorage;
 SERVER_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >				CreatureProtoStorage;
 SERVER_DECL SQLStorage<DisplayBounding, HashMapStorageContainer<DisplayBounding> >				DisplayBoundingStorage;
 SERVER_DECL SQLStorage<VendorRestrictionEntry, ArrayStorageContainer<VendorRestrictionEntry> > VendorRestrictionEntryStorage;
@@ -521,8 +521,8 @@ void ObjectMgr::LoadExtraItemStuff()
 
 void ObjectMgr::LoadExtraGameObjectStuff()
 {
-	StorageContainerIterator<GameObjectInfo> * itr = GameObjectProtoStorage.MakeIterator();
-	GameObjectInfo* goi;
+	StorageContainerIterator<GameObjectProto> * itr = GameObjectProtoStorage.MakeIterator();
+	GameObjectProto* goi;
 	while(!itr->AtEnd())
 	{
 		goi = itr->Get();
@@ -542,7 +542,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(ItemPrototypeStorage, ItemPrototype, ArrayStorageContainer, "items", gItemPrototypeFormat);
 	make_task(ItemNameStorage, ItemName, ArrayStorageContainer, "itemnames", gItemNameFormat);
 	make_task(CreatureNameStorage, CreatureInfo, HashMapStorageContainer, "creature_names", gCreatureNameFormat);
-	make_task(GameObjectProtoStorage, GameObjectInfo, HashMapStorageContainer, "gameobject_names", gGameObjectNameFormat);
+	make_task(GameObjectProtoStorage, GameObjectProto, HashMapStorageContainer, "gameobject_names", gGameObjectNameFormat);
 	make_task(CreatureProtoStorage, CreatureProto, HashMapStorageContainer, "creature_proto", gCreatureProtoFormat);
 	make_task(DisplayBoundingStorage, DisplayBounding, HashMapStorageContainer, "display_bounding_boxes", gDisplayBoundingFormat);
 	make_task(VendorRestrictionEntryStorage, VendorRestrictionEntry, ArrayStorageContainer, "vendor_restrictions", gVendorRestrictionEntryFormat);

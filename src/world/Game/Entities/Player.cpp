@@ -6401,7 +6401,7 @@ void Player::UpdateNearbyGameObjects()
 		{
 			GameObject* go = TO_GAMEOBJECT(obj);
 			QuestLogEntry* qle = NULL;
-			GameObjectInfo* info = go->GetInfo();
+			GameObjectProto* info = go->GetInfo();
 
 			if(info &&
 			        (info->goMap.size() || info->itemMap.size()))

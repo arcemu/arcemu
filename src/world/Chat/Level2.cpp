@@ -759,7 +759,7 @@ bool ChatHandler::HandleGOSelect(const char* args, WorldSession* m_session)
 
 	m_session->GetPlayer()->m_GM_SelectedGO = GObj->GetGUID();
 
-	 GameObjectInfo *info = GameObjectProtoStorage.LookupEntry(GObj->GetEntry());
+	 GameObjectProto *info = GameObjectProtoStorage.LookupEntry(GObj->GetEntry());
 
 	if( GObj->m_spawn != NULL )
 	{
@@ -784,7 +784,7 @@ bool ChatHandler::HandleGODistance(const char* args, WorldSession* m_session)
 		return true;
 	}
 
-	GameObjectInfo *info = go->GetInfo();
+	GameObjectProto *info = go->GetInfo();
 
 	Player *player = m_session->GetPlayer();
 
@@ -855,7 +855,7 @@ bool ChatHandler::HandleGOSpawn(const char* args, WorldSession* m_session)
 	if(pSave)
 		Save = (atoi(pSave) > 0 ? true : false);
 
-	GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(EntryID);
+	GameObjectProto* goi = GameObjectProtoStorage.LookupEntry(EntryID);
 	if(!goi)
 	{
 		sstext << "GameObject Info '" << EntryID << "' Not Found" << '\0';
@@ -975,7 +975,7 @@ bool ChatHandler::HandleGOPhaseCommand(const char* args, WorldSession* m_session
 
 bool ChatHandler::HandleGOInfo(const char* args, WorldSession* m_session)
 {
-	GameObjectInfo* GOInfo = NULL;
+	GameObjectProto* GOInfo = NULL;
 	GameObject* GObj = m_session->GetPlayer()->GetSelectedGo();
 	if(!GObj)
 	{

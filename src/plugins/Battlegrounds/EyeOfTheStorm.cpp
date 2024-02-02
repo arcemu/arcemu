@@ -549,7 +549,7 @@ void EyeOfTheStorm::EventResetFlag()
 
 void EyeOfTheStorm::OnCreate()
 {
-	GameObjectInfo* goi;
+	GameObjectProto* goi;
 	uint32 i;
 
 	/* create gameobjects */
@@ -910,7 +910,7 @@ void EyeOfTheStorm::HookOnHK(Player* plr)
 void EyeOfTheStorm::SpawnBuff(uint32 x)
 {
 	uint32 chosen_buffid = EOTSbuffentrys[RandomUInt(3)];
-	GameObjectInfo* goi = GameObjectProtoStorage.LookupEntry(chosen_buffid);
+	GameObjectProto* goi = GameObjectProtoStorage.LookupEntry(chosen_buffid);
 	if(goi == NULL)
 		return;
 

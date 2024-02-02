@@ -384,7 +384,7 @@ void GameObject::InitAI()
 		if(pInfo->sound2 != 0)
 		{
 
-			GameObjectInfo* gi = GameObjectProtoStorage.LookupEntry(pInfo->sound2);
+			GameObjectProto* gi = GameObjectProtoStorage.LookupEntry(pInfo->sound2);
 			if(gi == NULL)
 			{
 				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);

@@ -156,7 +156,7 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPacket & recv_data)
 
 	uint32 entryID;
 	uint64 guid;
-	GameObjectInfo* goinfo;
+	GameObjectProto* goinfo;
 
 
 	recv_data >> entryID;

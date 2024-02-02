@@ -581,7 +581,7 @@ class LuaUnit
 			bool save = luaL_optint(L, 9, 0) ? true : false;
 			if(entry_id)
 			{
-				GameObjectInfo *info = GameObjectProtoStorage.LookupEntry( entry_id );
+				GameObjectProto *info = GameObjectProtoStorage.LookupEntry( entry_id );
 				if( info == NULL ){
 					LOG_ERROR( "Lua script tried to spawn a gameobject that doesn't exist ( %u ). Aborting.", entry_id );
 					lua_pushnil( L );
