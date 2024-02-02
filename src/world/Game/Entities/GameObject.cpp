@@ -47,7 +47,7 @@ GameObject::GameObject(uint64 guid)
 	m_ritualmembers = NULL;
 	m_ritualspell = 0;
 	m_quests = NULL;
-	pInfo = NULL;
+	proto = NULL;
 	myScript = NULL;
 	m_spawn = 0;
 	loot.gold = 0;
@@ -97,8 +97,8 @@ GameObject::~GameObject()
 
 bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)
 {
-	pInfo = GameObjectProtoStorage.LookupEntry(entry);
-	if(pInfo == NULL)
+	proto = GameObjectProtoStorage.LookupEntry(entry);
+	if(proto == NULL)
 	{
 		LOG_ERROR("Something tried to create a GameObject with invalid entry %u", entry);
 		return false;
@@ -112,7 +112,7 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 //	SetFloatValue( GAMEOBJECT_POS_Y, y );
 //	SetFloatValue( GAMEOBJECT_POS_Z, z );
 //	SetFloatValue( GAMEOBJECT_FACING, ang );
-	SetScale( pInfo->Size );
+	SetScale( proto->Size );
 	SetPosition(x, y, z, ang);
 	SetParentRotation(0, r0);
 	SetParentRotation(1, r1);
@@ -121,8 +121,8 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 	UpdateRotation();
 	SetByte(GAMEOBJECT_BYTES_1, 3, 0);
 	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-	SetDisplayId(pInfo->DisplayID);
-	SetType(static_cast<uint8>(pInfo->Type));
+	SetDisplayId(proto->DisplayID);
+	SetType(static_cast<uint8>(proto->Type));
 	InitAI();
 	_LoadQuests();
 
@@ -193,7 +193,7 @@ void GameObject::Update(uint32 p_time)
 				sp->prepare(&tgt);
 
 				// proc on trap trigger
-				if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
+				if(proto->Type == GAMEOBJECT_TYPE_TRAP)
 				{
 					if(m_summoner != NULL)
 						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, reinterpret_cast< Unit* >(o), spell);
@@ -358,48 +358,48 @@ void GameObject::SaveToFile(std::stringstream & name)
 
 void GameObject::InitAI()
 {
-	if(!pInfo)
+	if(proto == NULL)
 		return;
 
-	if( pInfo->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+	if( proto->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 		Rebuild();
 
 	// this fixes those fuckers in booty bay
-	if(pInfo->SpellFocus == 0 &&
-	        pInfo->sound1 == 0 &&
-	        pInfo->sound2 == 0 &&
-	        pInfo->sound3 != 0 &&
-	        pInfo->sound5 != 3 &&
-	        pInfo->sound9 == 1)
+	if(proto->SpellFocus == 0 &&
+	        proto->sound1 == 0 &&
+	        proto->sound2 == 0 &&
+	        proto->sound3 != 0 &&
+	        proto->sound5 != 3 &&
+	        proto->sound9 == 1)
 		return;
 
 	uint32 spellid = 0;
-	if(pInfo->Type == GAMEOBJECT_TYPE_TRAP)
+	if(proto->Type == GAMEOBJECT_TYPE_TRAP)
 	{
-		spellid = pInfo->sound3;
+		spellid = proto->sound3;
 	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
+	else if(proto->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
 	{
 		// get spellid from attached gameobject if there is such - by sound2 field
-		if(pInfo->sound2 != 0)
+		if(proto->sound2 != 0)
 		{
 
-			GameObjectProto* gi = GameObjectProtoStorage.LookupEntry(pInfo->sound2);
+			GameObjectProto* gi = GameObjectProtoStorage.LookupEntry(proto->sound2);
 			if(gi == NULL)
 			{
-				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", pInfo->ID, pInfo->sound2);
+				LOG_ERROR("Gamobject %u is of spellfocus type, has attachment GO data ( %u ), but attachment not found in database.", proto->ID, proto->sound2);
 				return;
 			}
 
 			spellid = gi->sound3;
 		}
 	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
+	else if(proto->Type == GAMEOBJECT_TYPE_RITUAL)
 	{
-		m_ritualmembers = new uint32[pInfo->SpellFocus];
-		memset(m_ritualmembers, 0, sizeof(uint32)*pInfo->SpellFocus);
+		m_ritualmembers = new uint32[proto->SpellFocus];
+		memset(m_ritualmembers, 0, sizeof(uint32)*proto->SpellFocus);
 	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
+	else if(proto->Type == GAMEOBJECT_TYPE_CHEST)
 	{
 		Lock* pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
 		if(pLock)
@@ -421,7 +421,7 @@ void GameObject::InitAI()
 		}
 
 	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
+	else if(proto->Type == GAMEOBJECT_TYPE_FISHINGHOLE)
 	{
 		CalcFishRemaining(true);
 	}
@@ -723,10 +723,10 @@ void GameObject::OnPushToWorld()
 
 	// We have a field supposedly for this, but it's pointless to waste CPU time for this
 	// unless it's longer than a minute ( since usually then it's much longer )
-	if( ( pInfo->Type == GAMEOBJECT_TYPE_CHEST ) && ( pInfo->sound3 == 0 ) ){
+	if( ( proto->Type == GAMEOBJECT_TYPE_CHEST ) && ( proto->sound3 == 0 ) ){
 		time_t restockTime = 60 * 1000;
-		if( pInfo->sound2 > 60 )
-			restockTime = pInfo->sound2 * 1000;
+		if( proto->sound2 > 60 )
+			restockTime = proto->sound2 * 1000;
 
 		EventMgr::getSingleton().AddEvent( this, &GameObject::ReStock, EVENT_GO_CHEST_RESTOCK, restockTime, 0, 0 );
 	}
@@ -851,7 +851,7 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 		
 		SetFlags( GAMEOBJECT_FLAG_DESTROYED );
 		SetFlags( GetFlags() & ~GAMEOBJECT_FLAG_DAMAGED );
-		SetDisplayId( pInfo->sound9); // destroyed display id
+		SetDisplayId( proto->sound9); // destroyed display id
 
 		CALL_GO_SCRIPT_EVENT( this, OnDestroyed)();
 	
@@ -863,9 +863,9 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 			// Intact  ->  Damaged
 			
 			// Are we below the intact-damaged transition treshold?
-			if( hitpoints <= ( maxhitpoints - pInfo->SpellFocus ) ){
+			if( hitpoints <= ( maxhitpoints - proto->SpellFocus ) ){
 				SetFlags( GAMEOBJECT_FLAG_DAMAGED );
-				SetDisplayId( pInfo->sound4 ); // damaged display id
+				SetDisplayId( proto->sound4 ); // damaged display id
 			}
 		}
 
@@ -879,8 +879,8 @@ void GameObject::Damage( uint32 damage, uint64 AttackerGUID, uint64 ControllerGU
 
 void GameObject::Rebuild(){
 	SetFlags( GetFlags() & uint32( ~( GAMEOBJECT_FLAG_DAMAGED | GAMEOBJECT_FLAG_DESTROYED ) ) );
-	SetDisplayId( pInfo->DisplayID );
-	maxhitpoints = pInfo->SpellFocus + pInfo->sound5;
+	SetDisplayId( proto->DisplayID );
+	maxhitpoints = proto->SpellFocus + proto->sound5;
 	hitpoints = maxhitpoints;
 }
 
@@ -895,6 +895,6 @@ void GameObject::ReStock(){
 	if( loot.HasRoll() )
 		return;
 
-	lootmgr.FillGOLoot( &loot, pInfo->sound1, m_mapMgr->iInstanceMode );
+	lootmgr.FillGOLoot( &loot, proto->sound1, m_mapMgr->iInstanceMode );
 }
 

@@ -174,8 +174,8 @@ class SERVER_DECL GameObject : public Object
 		GameObject(uint64 guid);
 		~GameObject();
 
-		GameObjectProto* GetInfo() { return pInfo; }
-		void SetInfo(GameObjectProto* goi) { pInfo = goi; }
+		GameObjectProto* GetInfo() { return proto; }
+		void SetInfo(GameObjectProto* goi) { proto = goi; }
 
 		bool CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0 = 0.0f, float r1 = 0.0f, float r2 = 0.0f, float r3 = 0.0f, uint32 overrides = 0);
 
@@ -408,7 +408,7 @@ class SERVER_DECL GameObject : public Object
 
 		bool m_summonedGo;
 		bool m_deleted;
-		GameObjectProto* pInfo;
+		GameObjectProto* proto;
 		GameObjectAIScript* myScript;
 		uint32 _fields[GAMEOBJECT_END];
 		uint32 usage_remaining; //used for mining to mark times it can be mined

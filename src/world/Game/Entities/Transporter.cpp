@@ -38,8 +38,8 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 	//Maybe this would be the perfect way, so there would be no extra checks in Object.cpp:
 	//SetByte( GAMEOBJECT_BYTES_1, 0, GAMEOBJECT_TYPE_TRANSPORT );
 	//but these fields seems to change often and between server flavours (ArcEmu, Aspire, name another one) - by: VLack aka. VLsoft
-	if(pInfo)
-		pInfo->Type = GAMEOBJECT_TYPE_TRANSPORT;
+	if(proto != NULL)
+		proto->Type = GAMEOBJECT_TYPE_TRANSPORT;
 	else
 		LOG_ERROR("Transporter id[%i] name[%s] - can't set GAMEOBJECT_TYPE - it will behave badly!", EntryID, Name);
 
@@ -369,7 +369,7 @@ void Transporter::UpdatePosition()
 			HookInterface *hookInterface = HookInterface::getSingletonPtr();			
 			if( hookInterface != NULL )
 			{
-				hookInterface->onTransportArrived(this, pInfo->SpellFocus);
+				hookInterface->onTransportArrived(this, proto->SpellFocus);
 			}
 		}
 	}
