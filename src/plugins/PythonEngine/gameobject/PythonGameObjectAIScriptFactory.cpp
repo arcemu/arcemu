@@ -46,7 +46,7 @@ GameObjectAIScript* PythonGameObjectAIScriptFactory::createScript( GameObject* s
 {
 	Guard g( lock );
 
-	uint32 id = src->GetInfo()->ID;
+	uint32 id = src->getProto()->ID;
 	PythonGameObjectAIScript* script = NULL;
 	
 	GOFunctionTuple* tuple = FunctionRegistry::getGOEventFunctions( id );
@@ -75,7 +75,7 @@ void PythonGameObjectAIScriptFactory::onReload()
 	{
 		PythonGameObjectAIScript *script = (PythonGameObjectAIScript*)(*itr);
 
-		GOFunctionTuple* tuple = FunctionRegistry::getGOEventFunctions( script->getGameObject()->GetInfo()->ID );
+		GOFunctionTuple* tuple = FunctionRegistry::getGOEventFunctions( script->getGameObject()->getProto()->ID );
 		if( tuple != NULL )
 		{
 			script->setFunctions( *tuple );

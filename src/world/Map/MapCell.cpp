@@ -174,7 +174,7 @@ void MapCell::RemoveObjects()
 		objects_iterator++;
 
 		//If MapUnloadTime is non-zero, a transport could get deleted here (when it arrives to a cell that's scheduled to be unloaded because players left from it), so don't delete it! - By: VLack aka. VLsoft
-		if(!bServerShutdown && obj->IsGameObject() && TO< GameObject* >(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT)
+		if(!bServerShutdown && obj->IsGameObject() && TO< GameObject* >(obj)->getProto()->Type == GAMEOBJECT_TYPE_TRANSPORT)
 			continue;
 
 		if(obj->IsActive())

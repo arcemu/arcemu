@@ -3500,7 +3500,7 @@ uint8 Spell::CanCast(bool tolerate)
 				if(!(p_caster->GetPhase() & (*itr)->GetPhase()))    //We can't see this, can't be the focus, skip further checks
 					continue;
 
-				GameObjectProto* info = TO_GAMEOBJECT(*itr)->GetInfo();
+				GameObjectProto* info = TO_GAMEOBJECT(*itr)->getProto();
 				if(!info)
 				{
 					LOG_DEBUG("Warning: could not find info about game object %u", (*itr)->GetEntry());

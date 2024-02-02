@@ -1759,7 +1759,7 @@ void HeiganTheUncleanAI::OnCombatStart(Unit* pTarget)
 
 				Fissure = TO< GameObject* >(*Iter);
 
-				if(Fissure->GetInfo() == NULL)
+				if(Fissure->getProto() == NULL)
 					continue;
 
 				if(Fissure->GetUInt32Value(GAMEOBJECT_DISPLAYID) != 6785 && Fissure->GetUInt32Value(GAMEOBJECT_DISPLAYID) != 1287)

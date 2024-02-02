@@ -647,7 +647,7 @@ void ArathiBasin::HookOnAreaTrigger(Player* plr, uint32 id)
 	if(m_buffs[x] && m_buffs[x]->IsInWorld())
 	{
 		// apply the spell
-		spellid = m_buffs[x]->GetInfo()->sound3;
+		spellid = m_buffs[x]->getProto()->sound3;
 		m_buffs[x]->RemoveFromWorld(false);
 
 		// respawn it in buffrespawntime

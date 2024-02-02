@@ -784,7 +784,7 @@ bool ChatHandler::HandleGODistance(const char* args, WorldSession* m_session)
 		return true;
 	}
 
-	GameObjectProto *info = go->GetInfo();
+	GameObjectProto *info = go->getProto();
 
 	Player *player = m_session->GetPlayer();
 
@@ -1420,7 +1420,7 @@ bool ChatHandler::HandleGODamageCommand( const char *args, WorldSession *session
 		return true;
 	}
 
-	if( go->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
+	if( go->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
 		RedSystemMessage( session, "The selected GO must be a destructible building!" );
 		return true;
 	}
@@ -1455,7 +1455,7 @@ bool ChatHandler::HandleGORebuildCommand( const char *args, WorldSession *sessio
 		return true;
 	}
 
-	if( go->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
+	if( go->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING ){
 		RedSystemMessage( session, "The selected GO must be a destructible building!" );
 		return true;
 	}

@@ -174,7 +174,7 @@ class SERVER_DECL GameObject : public Object
 		GameObject(uint64 guid);
 		~GameObject();
 
-		GameObjectProto* GetInfo() { return proto; }
+		GameObjectProto* getProto() { return proto; }
 		void setProto(GameObjectProto* proto) { this->proto = proto; }
 
 		bool CreateFromProto(uint32 entry, uint32 mapid, float x, float y, float z, float ang, float r0 = 0.0f, float r1 = 0.0f, float r2 = 0.0f, float r3 = 0.0f, uint32 overrides = 0);
@@ -275,14 +275,14 @@ class SERVER_DECL GameObject : public Object
 		void CalcMineRemaining(bool force)
 		{
 			if(force || !usage_remaining)
-				usage_remaining = GetInfo()->sound4 + RandomUInt(GetInfo()->sound5 - GetInfo()->sound4) - 1;
+				usage_remaining = getProto()->sound4 + RandomUInt(getProto()->sound5 - getProto()->sound4) - 1;
 		}
 		bool CanFish() { return (usage_remaining > 0); }
 		void CatchFish() { if(usage_remaining) usage_remaining--; }
 		void CalcFishRemaining(bool force)
 		{
 			if(force || !usage_remaining)
-				usage_remaining = GetInfo()->sound2 + RandomUInt(GetInfo()->sound3 - GetInfo()->sound2) - 1;
+				usage_remaining = getProto()->sound2 + RandomUInt(getProto()->sound3 - getProto()->sound2) - 1;
 		}
 		bool HasLoot();
 		uint32 GetGOReqSkill();

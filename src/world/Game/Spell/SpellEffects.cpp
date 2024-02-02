@@ -2588,7 +2588,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				}
 				else if(gameObjTarget)
 				{
-					GameObjectProto* info = gameObjTarget->GetInfo();
+					GameObjectProto* info = gameObjTarget->getProto();
 					if(gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
 						return;
 
@@ -2607,9 +2607,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 							if(gameObjTarget->loot.items.size() == 0)
 							{
 								if(gameObjTarget->GetMapMgr() != NULL)
-									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
+									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
 								else
-									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+									lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  0);
 
 
 								DetermineSkillUp(SKILL_LOCKPICKING, v / 5); //to prevent free skill up
@@ -2641,9 +2641,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 						if(gameObjTarget->loot.items.size() == 0)
 						{
 							if(gameObjTarget->GetMapMgr() != NULL)
-								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
+								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
 							else
-								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+								lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  0);
 						}
 						else
 							bAlreadyUsed = true;
@@ -2676,9 +2676,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					else if(gameObjTarget->loot.items.size() == 0)
 					{
 						if(gameObjTarget->GetMapMgr() != NULL)
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
+							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
 						else
-							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+							lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  0);
 					}
 					else
 						bAlreadyUsed = true;
@@ -2701,7 +2701,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					if(p_caster->m_bg->HookSlowLockOpen(gameObjTarget, p_caster, this))
 						return;
 
-				uint32 spellid = !gameObjTarget->GetInfo()->Unknown1 ? 23932 : gameObjTarget->GetInfo()->Unknown1;
+				uint32 spellid = !gameObjTarget->getProto()->Unknown1 ? 23932 : gameObjTarget->getProto()->Unknown1;
 				SpellEntry* en = dbcSpell.LookupEntryForced(spellid);
 				if( en != NULL )
 				{
@@ -2712,7 +2712,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				}
 				else
 				{
-					LOG_DEBUG( "Spell %u not found while slow opening gameobject '%s' (%u)", spellid, gameObjTarget->GetInfo()->Name, gameObjTarget->GetInfo()->ID );
+					LOG_DEBUG( "Spell %u not found while slow opening gameobject '%s' (%u)", spellid, gameObjTarget->getProto()->Name, gameObjTarget->getProto()->ID );
 				}
 
 				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(p_caster);
@@ -2754,7 +2754,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 				if( gameObjTarget->GetType() == GAMEOBJECT_TYPE_GOOBER )
 				{
-					GameObjectProto *goInfo = gameObjTarget->GetInfo();
+					GameObjectProto *goInfo = gameObjTarget->getProto();
 
 					/// If there's a spell to cast, cast it
 					if( goInfo->Unknown1 != 0 )
@@ -2772,9 +2772,9 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if(gameObjTarget->loot.items.size() == 0)
 				{
 					if(gameObjTarget->GetMapMgr() != NULL)
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
+						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  gameObjTarget->GetMapMgr()->iInstanceMode);
 					else
-						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->GetInfo()->sound1,  0);
+						lootmgr.FillGOLoot(&gameObjTarget->loot, gameObjTarget->getProto()->sound1,  0);
 				}
 				loottype = LOOT_CORPSE ;
 			}
@@ -4103,7 +4103,7 @@ void Spell::SpellEffectBuildingDamage(uint32 i){
 	if( gameObjTarget == NULL )
 		return;
 
-	if( gameObjTarget->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+	if( gameObjTarget->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 		return;
 
 	if( u_caster == NULL )

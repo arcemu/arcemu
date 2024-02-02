@@ -604,7 +604,7 @@ public:
 			return;
 		}
 
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_ZM_BANNER_BEACON_WEST:
 				beaconId = ZM_BEACON_WEST;

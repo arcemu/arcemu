@@ -90,7 +90,7 @@ bool FillPathVector(uint32 PathID, TransportPath & Path)
 bool Transporter::GenerateWaypoints()
 {
 	TransportPath path;
-	FillPathVector(GetInfo()->SpellFocus, path);
+	FillPathVector(getProto()->SpellFocus, path);
 
 	if(path.Size() == 0) return false;
 
@@ -324,7 +324,7 @@ void Transporter::UpdatePosition()
 
 	while(((m_timer - mCurrentWaypoint->first) % m_pathTime) >= ((mNextWaypoint->first - mCurrentWaypoint->first) % m_pathTime))
 	{
-		/*printf("%s from %u %f %f %f to %u %f %f %f\n", this->GetInfo()->Name,
+		/*printf("%s from %u %f %f %f to %u %f %f %f\n", this->getProto()->Name,
 			mCurrentWaypoint->second.mapid, mCurrentWaypoint->second.x,mCurrentWaypoint->second.y,mCurrentWaypoint->second.z,
 			mNextWaypoint->second.mapid, mNextWaypoint->second.x,mNextWaypoint->second.y,mNextWaypoint->second.z);*/
 
@@ -344,7 +344,7 @@ void Transporter::UpdatePosition()
 		if(mCurrentWaypoint->second.delayed)
 		{
 			//Transprter Script = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
-			switch(GetInfo()->DisplayID)
+			switch(getProto()->DisplayID)
 			{
 				case 3015:
 				case 7087:
@@ -363,7 +363,7 @@ void Transporter::UpdatePosition()
 					}
 					break;
 			}
-			TransportGossip(GetInfo()->DisplayID);
+			TransportGossip(getProto()->DisplayID);
 			
 			/// Transports start up before scripts and the HookInterface
 			HookInterface *hookInterface = HookInterface::getSingletonPtr();			

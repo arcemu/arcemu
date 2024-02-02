@@ -1041,7 +1041,7 @@ public:
 
 	void OnSpawn()
 	{
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_DESTROYED_WYVERN_ROOST_NE_A:
 			case GO_DESTROYED_WYVERN_ROOST_NE_H:
@@ -1121,7 +1121,7 @@ public:
 
 	void OnSpawn()
 	{
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_WYVERN_ROOST_NE_A:
 			case GO_WYVERN_ROOST_NE_H:
@@ -1176,7 +1176,7 @@ public:
 
 	void OnSpawn()
 	{
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_BOMB_WAGON_NE_A:
 			case GO_BOMB_WAGON_NE_H:

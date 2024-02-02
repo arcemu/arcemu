@@ -59,7 +59,7 @@ static void ArcPyGameObject_dealloc( ArcPyGameObject* self )
 static PyObject* ArcPyGameObject_getName( ArcPyGameObject *self, PyObject *args )
 {
 	GameObject* gameObject = self->gameObjectPtr;
-	PyObject *name = PyUnicode_FromString(  gameObject->GetInfo()->Name );	
+	PyObject *name = PyUnicode_FromString(  gameObject->getProto()->Name );	
 	return name;
 }
 
@@ -79,7 +79,7 @@ static PyObject* ArcPyGameObject_getName( ArcPyGameObject *self, PyObject *args 
 static PyObject* ArcPyGameObject_getId( ArcPyGameObject* self, PyObject* args )
 {
 	GameObject *gameObject = self->gameObjectPtr;
-	PyObject *id = PyLong_FromLong( gameObject->GetInfo()->ID );
+	PyObject *id = PyLong_FromLong( gameObject->getProto()->ID );
 	return id;
 }
 

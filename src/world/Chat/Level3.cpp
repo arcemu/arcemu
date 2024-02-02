@@ -2290,7 +2290,7 @@ bool ChatHandler::HandleModPeriodCommand(const char* args, WorldSession* m_sessi
 	}
 
 	trans->SetPeriod(np);
-	BlueSystemMessage(m_session, "Period of %s set to %u.", trans->GetInfo()->Name, np);
+	BlueSystemMessage(m_session, "Period of %s set to %u.", trans->getProto()->Name, np);
 	return true;
 }
 

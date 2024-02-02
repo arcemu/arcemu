@@ -335,7 +335,7 @@ public:
 					}
 					
 					GameObject *go = TO_GAMEOBJECT( obj );
-					if( go->GetInfo()->ID != other )
+					if( go->getProto()->ID != other )
 					{
 						continue;
 					}
@@ -431,7 +431,7 @@ public:
 			return;
 		}
 
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_HP_BANNER_STADIUM:
 				fortId = HP_FORT_STADIUM;
@@ -556,7 +556,7 @@ public:
 			return;
 		}
 
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_HP_BANNER_MISC_STADIUM:
 				fortId = HP_FORT_STADIUM;

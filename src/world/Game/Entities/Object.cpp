@@ -146,7 +146,7 @@ bool Object::SetPosition(float newX, float newY, float newZ, float newOrientatio
 	ARCEMU_ASSERT(!isnan(newX) && !isnan(newY) && !isnan(newOrientation));
 
 	//It's a good idea to push through EVERY transport position change, no matter how small they are. By: VLack aka. VLsoft
-	if(IsGameObject() && TO< GameObject* >(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT)
+	if(IsGameObject() && TO< GameObject* >(this)->getProto()->Type == GAMEOBJECT_TYPE_TRANSPORT)
 		updateMap = true;
 
 	//if (m_position.x != newX || m_position.y != newY)

@@ -6401,13 +6401,13 @@ void Player::UpdateNearbyGameObjects()
 		{
 			GameObject* go = TO_GAMEOBJECT(obj);
 			QuestLogEntry* qle = NULL;
-			GameObjectProto* info = go->GetInfo();
+			GameObjectProto* info = go->getProto();
 
 			if(info &&
 			        (info->goMap.size() || info->itemMap.size()))
 			{
-				for(GameObjectGOMap::iterator GOitr = go->GetInfo()->goMap.begin();
-				        GOitr != go->GetInfo()->goMap.end();
+				for(GameObjectGOMap::iterator GOitr = go->getProto()->goMap.begin();
+				        GOitr != go->getProto()->goMap.end();
 				        ++GOitr)
 				{
 					if((qle = GetQuestLogForEntry(GOitr->first->id)) != 0)
@@ -6428,8 +6428,8 @@ void Player::UpdateNearbyGameObjects()
 
 				if(!activate)
 				{
-					for(GameObjectItemMap::iterator GOitr = go->GetInfo()->itemMap.begin();
-					        GOitr != go->GetInfo()->itemMap.end();
+					for(GameObjectItemMap::iterator GOitr = go->getProto()->itemMap.begin();
+					        GOitr != go->getProto()->itemMap.end();
 					        ++GOitr)
 					{
 						if( GetQuestLogForEntry( GOitr->first->id ) != NULL )

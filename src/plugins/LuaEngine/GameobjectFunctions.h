@@ -182,9 +182,9 @@ class LuaGameObject
 		static int GetName(lua_State* L, GameObject* ptr)
 		{
 			TEST_GO()
-			if(!ptr->GetInfo())
+			if(!ptr->getProto())
 				return 0;
-			lua_pushstring(L, ptr->GetInfo()->Name);
+			lua_pushstring(L, ptr->getProto()->Name);
 			return 1;
 		}
 
@@ -1152,7 +1152,7 @@ class LuaGameObject
 		static int Damage( lua_State *L, GameObject *ptr ){
 			TEST_GO();
 
-			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+			if( ptr->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 				return 0;
 
 			if( lua_gettop( L ) != 3 )
@@ -1170,7 +1170,7 @@ class LuaGameObject
 		static int Rebuild( lua_State *L, GameObject *ptr ){
 			TEST_GO();
 
-			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+			if( ptr->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 				return 0;
 
 			ptr->Rebuild();
@@ -1182,7 +1182,7 @@ class LuaGameObject
 		static int GetHP( lua_State *L, GameObject *ptr ){
 			TEST_GO();
 
-			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+			if( ptr->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 				return 0;
 
 			lua_pushinteger( L, ptr->GetHP() );
@@ -1193,7 +1193,7 @@ class LuaGameObject
 		static int GetMaxHP( lua_State *L, GameObject *ptr ){
 			TEST_GO();
 
-			if( ptr->GetInfo()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
+			if( ptr->getProto()->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING )
 				return 0;
 
 			lua_pushinteger( L, ptr->GetMaxHP() );

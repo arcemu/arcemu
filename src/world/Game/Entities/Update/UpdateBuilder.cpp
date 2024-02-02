@@ -102,10 +102,10 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 	    }
 	    else
 	    {
-		info = go->GetInfo();
+		info = go->getProto();
 		if(info && (info->goMap.size() || info->itemMap.size()))
 		{
-		    for(GameObjectGOMap::iterator itr = go->GetInfo()->goMap.begin(); itr != go->GetInfo()->goMap.end(); ++itr)
+		    for(GameObjectGOMap::iterator itr = go->getProto()->goMap.begin(); itr != go->getProto()->goMap.end(); ++itr)
 		    {
 			qle = target->GetQuestLogForEntry(itr->first->id);
 			if(qle != NULL)
@@ -127,8 +127,8 @@ void UpdateBuilder::_BuildValuesUpdate( ByteBuffer* data, UpdateMask* updateMask
 
 		    if(!activate_quest_object)
 		    {
-			for(GameObjectItemMap::iterator itr = go->GetInfo()->itemMap.begin();
-				itr != go->GetInfo()->itemMap.end();
+			for(GameObjectItemMap::iterator itr = go->getProto()->itemMap.begin();
+				itr != go->getProto()->itemMap.end();
 				++itr)
 			{
 			    for(std::map<uint32, uint32>::iterator it2 = itr->second.begin();
@@ -302,7 +302,7 @@ uint32 UpdateBuilder::BuildCreateUpdateBlockForPlayer( ByteBuffer* data, Object*
 		break;
 	}
 	//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they always face north, etc... By: VLack
-	if(flags != 0x0352 && object->IsGameObject() && TO< GameObject* >(object)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(TO< GameObject* >(object)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT))
+	if(flags != 0x0352 && object->IsGameObject() && TO< GameObject* >(object)->getProto()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(TO< GameObject* >(object)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT))
 	    flags = 0x0352;
     }
 

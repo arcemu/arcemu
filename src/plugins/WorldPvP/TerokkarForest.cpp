@@ -582,7 +582,7 @@ public:
 			return;
 		}
 
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_TEROKKAR_BANNER_NW:
 				towerId = TF_TOWER_NW;

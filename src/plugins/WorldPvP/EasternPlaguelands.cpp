@@ -212,7 +212,7 @@ public:
 			go = mapMgr->GetInterface()->GetGameObjectNearestCoords( shrineLocation[ 0 ], shrineLocation[ 1 ], shrineLocation[ 2 ], shrineIds[ i ] );
 			if( go != NULL )
 			{
-				uint32 aura = go->GetInfo()->Unknown3;
+				uint32 aura = go->getProto()->Unknown3;
 
 				go->Despawn( 1, 0 );
 					
@@ -247,7 +247,7 @@ public:
 		{
 			/// Get the aura id from the go, and then spawn it
 			go->SetFaction( entityFactions[ towerOwner[ EP_TOWER_NORTHPASS ] ] );
-			uint32 aura = go->GetInfo()->Unknown3;
+			uint32 aura = go->getProto()->Unknown3;
 			if( aura != 0 )
 			{
 				mapMgr->GetInterface()->SpawnGameObject(
@@ -737,7 +737,7 @@ public:
 			}
 
 			GameObject *go = TO_GAMEOBJECT( obj );
-			if( go->GetInfo()->ID != GO_EP_TOWER_BANNER_MISC )
+			if( go->getProto()->ID != GO_EP_TOWER_BANNER_MISC )
 			{
 				continue;
 			}
@@ -834,7 +834,7 @@ public:
 		if( _gameobject->GetMapId() != MAP_EASTERN_KINGDOMS )
 			return;
 
-		switch( _gameobject->GetInfo()->ID )
+		switch( _gameobject->getProto()->ID )
 		{
 			case GO_EP_TOWER_BANNER_NORTHPASS:
 				towerId = EP_TOWER_NORTHPASS;

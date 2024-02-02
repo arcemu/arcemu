@@ -401,7 +401,7 @@ void GameObject::InitAI()
 	}
 	else if(proto->Type == GAMEOBJECT_TYPE_CHEST)
 	{
-		Lock* pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
+		Lock* pLock = dbcLock.LookupEntryForced(getProto()->SpellFocus);
 		if(pLock)
 		{
 			for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
@@ -534,7 +534,7 @@ void GameObject::UseFishingNode(Player* player)
 		if((*it) == NULL || !(*it)->IsGameObject() || TO_GAMEOBJECT(*it)->GetType() != GAMEOBJECT_TYPE_FISHINGHOLE)
 			continue;
 		school = TO< GameObject* >(*it);
-		if(!isInRange(school, (float)school->GetInfo()->sound1))
+		if(!isInRange(school, (float)school->getProto()->sound1))
 		{
 			school = NULL;
 			continue;
@@ -547,9 +547,9 @@ void GameObject::UseFishingNode(Player* player)
 	{
 
 		if(school->GetMapMgr() != NULL)
-			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->sound1, school->GetMapMgr()->iInstanceMode);
+			lootmgr.FillGOLoot(&school->loot, school->getProto()->sound1, school->GetMapMgr()->iInstanceMode);
 		else
-			lootmgr.FillGOLoot(&school->loot, school->GetInfo()->sound1, 0);
+			lootmgr.FillGOLoot(&school->loot, school->getProto()->sound1, 0);
 
 		player->SendLoot(school->GetGUID(), LOOT_FISHING, school->GetMapId());
 		EndFishing(player, false);
@@ -778,11 +778,11 @@ uint32 GameObject::GetGOReqSkill()
 		return 300;
 
 	//! Gameobject does not require a skill, so let everyone use it.
-	if(GetInfo() == NULL)
+	if(getProto() == NULL)
 		return 0;
 
 	//! Here we check the SpellFocus table against the dbcs
-	Lock* lock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
+	Lock* lock = dbcLock.LookupEntryForced(getProto()->SpellFocus);
 	if(!lock) return 0;
 	for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
 	{

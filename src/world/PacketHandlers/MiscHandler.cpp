@@ -509,10 +509,10 @@ void WorldSession::HandleLootReleaseOpcode(WorldPacket & recv_data)
 					//check for locktypes
 
 					bool despawn = false;
-					if( pGO->GetInfo()->sound3 == 1 )
+					if( pGO->getProto()->sound3 == 1 )
 						despawn = true;
 
-					Lock* pLock = dbcLock.LookupEntryForced(pGO->GetInfo()->SpellFocus);
+					Lock* pLock = dbcLock.LookupEntryForced(pGO->getProto()->SpellFocus);
 					if(pLock)
 					{
 						for(uint32 i = 0; i < LOCK_NUM_CASES; i++)
@@ -1463,7 +1463,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 	GameObject* obj = _player->GetMapMgr()->GetGameObject((uint32)guid);
 	if(!obj) return;
-	GameObjectProto* goinfo = obj->GetInfo();
+	GameObjectProto* goinfo = obj->getProto();
 	if(!goinfo) return;
 
 	Player* plyr = GetPlayer();
@@ -2281,7 +2281,7 @@ void WorldSession::HandleLootRollOpcode(WorldPacket & recv_data)
 			return;
 		if(slotid >= pGO->loot.items.size() || pGO->loot.items.size() == 0)
 			return;
-		if(pGO->GetInfo() && pGO->GetInfo()->Type == GAMEOBJECT_TYPE_CHEST)
+		if(pGO->getProto() && pGO->getProto()->Type == GAMEOBJECT_TYPE_CHEST)
 			li = pGO->loot.items[slotid].roll;
 	}
 	else if(guidtype == HIGHGUID_TYPE_UNIT)
