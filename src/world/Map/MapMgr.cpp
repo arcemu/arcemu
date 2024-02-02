@@ -33,6 +33,7 @@ Arcemu::Utility::TLSObject<MapMgr*> t_currentMapContext;
 
 #define Z_SEARCH_RANGE 2
 
+#define PLAYER_CELL_LOAD_RADIUS 2
 
 extern bool bServerShutdown;
 
@@ -195,7 +196,6 @@ uint32 MapMgr::GetTeamPlayersCount(uint32 teamId)
 	return result;
 }
 
-
 void MapMgr::PushObject(Object* obj)
 {
 	/////////////
@@ -337,7 +337,7 @@ void MapMgr::PushObject(Object* obj)
 	if(plObj != NULL)
 	{
 		m_PlayerStorage[plObj->GetLowGUID()] = plObj;
-		UpdateCellActivity(x, y, 2);
+		UpdateCellActivity(x, y, PLAYER_CELL_LOAD_RADIUS);
 	}
 	else
 	{
@@ -376,7 +376,7 @@ void MapMgr::PushObject(Object* obj)
 
 		if( obj->getFarsightViewer() != NULL || obj->IsDynamicObject() )
 		{
-			UpdateCellActivity(x, y, 2);
+			UpdateCellActivity(x, y, PLAYER_CELL_LOAD_RADIUS);
 		}
 	}
 
@@ -576,7 +576,7 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 		{
 			uint32 x = GetPosX(obj->GetPositionX());
 			uint32 y = GetPosY(obj->GetPositionY());
-			UpdateCellActivity(x, y, 2);
+			UpdateCellActivity(x, y, PLAYER_CELL_LOAD_RADIUS);
 		}
 		m_PlayerStorage.erase(TO< Player* >(obj)->GetLowGUID());
 	}
@@ -761,14 +761,14 @@ void MapMgr::ChangeObjectLocation(Object* obj)
 		if(obj->IsPlayer() || ( obj->getFarsightViewer() != NULL ) )
 		{
 			// have to unlock/lock here to avoid a deadlock situation.
-			UpdateCellActivity(cellX, cellY, 2);
+			UpdateCellActivity(cellX, cellY, PLAYER_CELL_LOAD_RADIUS);
 			if(pOldCell != NULL)
 			{
-				// only do the second check if there's -/+ 2 difference
-				if(abs((int)cellX - (int)pOldCell->_x) > 2 ||
-				        abs((int)cellY - (int)pOldCell->_y) > 2)
+				// only do the second check if there's -/+ PLAYER_CELL_LOAD_RADIUS difference
+				if(abs((int)cellX - (int)pOldCell->_x) > PLAYER_CELL_LOAD_RADIUS ||
+				        abs((int)cellY - (int)pOldCell->_y) > PLAYER_CELL_LOAD_RADIUS)
 				{
-					UpdateCellActivity(pOldCell->_x, pOldCell->_y, 2);
+					UpdateCellActivity(pOldCell->_x, pOldCell->_y, PLAYER_CELL_LOAD_RADIUS);
 				}
 			}
 		}
