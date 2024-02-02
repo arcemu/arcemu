@@ -321,13 +321,18 @@ void MapCell::CancelPendingUnload()
 
 void MapCell::Unload()
 {
-	Log.Debug("MapCell", "Unloading cell %u %u", _x, _y);
+	Log.Debug("MapCell", "Trying to unload cell %u %u", _x, _y);
+
 	ARCEMU_ASSERT(_unloadpending);
+	
 	if(_active)
 	{
+		Log.Debug("MapCell", "Cell %u %u is still active. Aborting unload.", _x, _y);
 		_unloadpending = false;
 		return;
 	}
+
+	Log.Debug("MapCell", "Unloading cell %u %u", _x, _y);
 
 	_unloadpending = false;
 
