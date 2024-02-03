@@ -246,8 +246,6 @@ static float destroyedRoostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 	{ -1507.9f, 8132.11f, -19.55f, -1.34f }
 };
 
-static uint32 destroyedRoostFactions[ 2 ] = { 84, 83 };
-
 enum WyvernRoostGOIds
 {
 	GO_WYVERN_ROOST_NE_A  = 182281,
@@ -279,8 +277,6 @@ static float wyvernRoostLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 	{ -1508.3f, 8132.84f, -19.58f, 1.45f }
 };
 
-static uint32 wyvernRoostFactions[ 2 ] = { 1802, 1801 };
-
 enum BombWagonGOIds
 {
 	GO_BOMB_WAGON_NE_A  = 182307,
@@ -311,8 +307,6 @@ static float bombwagonLocations[ HALAA_WYVERN_CAMP_COUNT ][ 4 ] =
 	{ -1818.48f, 8040.24f, -26.67f, 1.26f  },
 	{ -1517.45f, 8140.24f, -20.18f, -2.81f }
 };
-
-static uint32 bombwagonFactions[ 2 ] = { 1802, 1801 };
 
 static uint32 wyvernCampTaxiPaths[ HALAA_WYVERN_CAMP_COUNT ] = 
 {
@@ -403,7 +397,6 @@ public:
 			destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ], destroyedRoostLocations[ campId ][ 3 ],
 			false, 0, 0 );
 		
-		go->SetFaction( destroyedRoostFactions[ roostTeam ] );
 		go->PushToWorld( mgr );
 	}
 
@@ -1087,7 +1080,6 @@ public:
 			wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ], wyvernRoostLocations[ campId ][ 3 ],
 			false, 0, 0 );
 
-		go->SetFaction( wyvernRoostFactions[ team ] );
 		go->PushToWorld( mgr );
 
 		/// Spawn the bomb wagon
@@ -1096,7 +1088,6 @@ public:
 			bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ], bombwagonLocations[ campId ][ 3 ],
 			false, 0, 0 );
 
-		go->SetFaction( bombwagonFactions[ enemyTeam ] );
 		go->PushToWorld( mgr );
 
 		/// Despawn us
