@@ -108,6 +108,7 @@ struct GameObjectProto
 	uint32 Unknown14;
 	float Size;
 	uint32 QuestItems[6];
+	uint32 faction;
 
 	// Quests
 	GameObjectGOMap goMap;

@@ -642,6 +642,7 @@ CREATE TABLE `gameobject_proto` (
   `QuestItem4` int(11) unsigned NOT NULL DEFAULT '0',
   `QuestItem5` int(11) unsigned NOT NULL DEFAULT '0',
   `QuestItem6` int(11) unsigned NOT NULL DEFAULT '0',
+  `faction` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Gameobject System';
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -123,6 +123,12 @@ bool GameObject::CreateFromProto(uint32 entry, uint32 mapid, float x, float y, f
 	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 	SetDisplayId(proto->DisplayID);
 	SetType(static_cast<uint8>(proto->Type));
+
+	if( proto->faction != 0 )
+	{
+		SetFaction( proto->faction );
+	}
+
 	InitAI();
 	_LoadQuests();
 
