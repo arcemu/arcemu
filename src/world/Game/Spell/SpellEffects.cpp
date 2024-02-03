@@ -749,7 +749,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 						dmg += int((0.15f * sph) + (0.15f * ap));
 						if(unitTarget && unitTarget->IsCreature())
 						{
-							uint32 type = TO_CREATURE(unitTarget)->GetCreatureInfo()->Type;
+							uint32 type = TO_CREATURE(unitTarget)->GetProto()->Type;
 							if(type == UNIT_TYPE_UNDEAD || type == UNIT_TYPE_DEMON)
 								force_crit = true;
 						}
@@ -2014,10 +2014,9 @@ void Spell::SpellEffectSummon(uint32 i)
 
 	uint32 entry = m_spellInfo->EffectMiscValue[ i ];
 
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
 	CreatureProto* cp = CreatureProtoStorage.LookupEntry(entry);
 
-	if((ci == NULL) || (cp == NULL))
+	if((cp == NULL))
 	{
 		LOG_ERROR("Spell %u ( %s ) tried to summon creature %u without database data", m_spellInfo->Id, m_spellInfo->Name, entry);
 		return;
@@ -2221,9 +2220,6 @@ void Spell::SpellEffectSummonTemporaryPet(uint32 i, SummonPropertiesEntry* spe, 
 	else
 		count = damage;
 
-	// We know for sure that this will suceed because we checked in Spell::SpellEffectSummon
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(proto->Id);
-
 	float angle_for_each_spawn = -M_PI_FLOAT * 2 / damage;
 
 	for(int32 i = 0; i < count; i++)
@@ -2238,7 +2234,7 @@ void Spell::SpellEffectSummonTemporaryPet(uint32 i, SummonPropertiesEntry* spe, 
 
 		Pet* pet = objmgr.CreatePet(proto->Id);
 
-		if(!pet->CreateAsSummon(proto->Id, ci, NULL, p_caster, m_spellInfo, 1, GetDuration(), &v, false))
+		if(!pet->CreateAsSummon(proto->Id, NULL, p_caster, m_spellInfo, 1, GetDuration(), &v, false))
 		{
 			pet->DeleteMe();
 			pet = NULL;
@@ -2320,7 +2316,7 @@ void Spell::SpellEffectSummonCompanion(uint32 i, SummonPropertiesEntry* spe, Cre
 	{
 		Unit* critter = u_caster->GetMapMgr()->GetUnit(u_caster->GetSummonedCritterGUID());
 		Creature* c = TO< Creature* >(critter);
-		uint32 currententry = c->GetCreatureInfo()->Id;
+		uint32 currententry = c->GetProto()->Id;
 
 		c->RemoveFromWorld(false, true);
 		u_caster->SetSummonedCritterGUID(0);
@@ -3475,7 +3471,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	// Remove target
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 	Pet* pPet = objmgr.CreatePet(tame->GetEntry());
-	if(! pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0))
+	if(! pPet->CreateAsSummon(tame->GetEntry(), tame, p_caster, NULL, 2, 0))
 	{
 		pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 		pPet = NULL;
@@ -3525,7 +3521,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	if(old)
 		old->Dismiss();
 
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
+	CreatureProto* ci = CreatureProtoStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
 	if(ci)
 	{
 		if(p_caster->getClass() == WARLOCK)
@@ -3539,7 +3535,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		}
 
 		Pet* summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-		if(! summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 2, 0))
+		if(! summon->CreateAsSummon(GetProto()->EffectMiscValue[i], NULL, p_caster, GetProto(), 2, 0))
 		{
 			summon->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 			summon = NULL;
@@ -3839,7 +3835,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 		return;
 
 	Creature* target = TO< Creature* >(unitTarget);
-	if(target->IsPickPocketed() || (target->GetCreatureInfo()->Type != UNIT_TYPE_HUMANOID))
+	if(target->IsPickPocketed() || (target->GetProto()->Type != UNIT_TYPE_HUMANOID))
 	{
 		SendCastResult(SPELL_FAILED_TARGET_NO_POCKETS);
 		return;
@@ -3847,7 +3843,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 
 	lootmgr.FillPickpocketingLoot(&TO< Creature* >(unitTarget)->loot, unitTarget->GetEntry());
 
-	uint32 _rank = TO< Creature* >(unitTarget)->GetCreatureInfo()->Rank;
+	uint32 _rank = TO< Creature* >(unitTarget)->GetProto()->Rank;
 	unitTarget->loot.gold = int((_rank + 1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
 	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING, unitTarget->GetMapId());
@@ -3925,7 +3921,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 
 void Spell::SpellEffectHealMechanical(uint32 i)
 {
-	if(!unitTarget || !unitTarget->IsCreature() || TO< Creature* >(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
+	if(!unitTarget || !unitTarget->IsCreature() || TO< Creature* >(unitTarget)->GetProto()->Type != UNIT_TYPE_MECHANICAL)
 		return;
 
 	Heal(damage);
@@ -4245,7 +4241,7 @@ void Spell::SpellEffectSkinning(uint32 i)
 		cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 		cr->Skinned = true;
 
-		if(cr->GetCreatureInfo()->Rank > 0)
+		if(cr->GetProto()->Rank > 0)
 			DetermineSkillUp(skill , sk < lvl * 5 ? sk / 5 : lvl, 2);
 		else
 			DetermineSkillUp(skill , sk < lvl * 5 ? sk / 5 : lvl, 1);
@@ -4928,14 +4924,14 @@ void Spell::SpellEffectStartTaxi(uint32 i)
 
 	if(playerTarget->IsTeamHorde())
 	{
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->horde_mount);
+		CreatureProto* ci = CreatureProtoStorage.LookupEntry(taxinode->horde_mount);
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
 		if(!modelid) return;
 	}
 	else
 	{
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->alliance_mount);
+		CreatureProto* ci = CreatureProtoStorage.LookupEntry(taxinode->alliance_mount);
 		if(!ci) return;
 		modelid = ci->Male_DisplayID;
 		if(!modelid) return;
@@ -5153,7 +5149,7 @@ void Spell::SpellEffectForgetSpecialization(uint32 i)
 
 void Spell::SpellEffectKillCredit(uint32 i)
 {
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
+	CreatureProto* ci = CreatureProtoStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
 	if( ci == NULL )
 		return;
 
@@ -5224,11 +5220,11 @@ void Spell::SpellEffectCreatePet(uint32 i)
 
 	if(playerTarget->GetSummon())
 		playerTarget->GetSummon()->Remove(true, true);
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
-	if(ci)
+	CreatureProto *proto = CreatureProtoStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
+	if(proto)
 	{
 		Pet* pPet = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
-		if(! pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, playerTarget, GetProto(), 1, 0))
+		if(! pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], NULL, playerTarget, GetProto(), 1, 0))
 		{
 			pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 			pPet = NULL;

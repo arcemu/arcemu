@@ -66,7 +66,7 @@ static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
 
 	Unit *unit = self->unitPtr;
 	if( unit->IsCreature() )
-		name = PyUnicode_FromString( TO_CREATURE( unit )->GetCreatureInfo()->Name );	
+		name = PyUnicode_FromString( TO_CREATURE( unit )->GetProto()->Name );	
 	else
 		name = PyUnicode_FromString( TO_PLAYER( unit )->GetName() );	
 	return name;
@@ -286,10 +286,9 @@ static PyObject* ArcPyUnit_addVehiclePassenger( ArcPyUnit *self, PyObject *args 
 	if( !v->HasEmptySeat() )
 		Py_RETURN_NONE;
 	
-	CreatureInfo  *ci = CreatureNameStorage.LookupEntry( creatureId );
 	CreatureProto *cp = CreatureProtoStorage.LookupEntry( creatureId );
 	
-	if( ( ci == NULL ) || ( cp == NULL ) )
+	if( ( cp == NULL ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "The command requires a creature that exists." );
 		return NULL;

@@ -522,10 +522,6 @@ void Vehicle::InstallAccessories(){
 		if( seats[ accessory->seat ]->HasPassenger() )
 			EjectPassengerFromSeat( accessory->seat );
 
-		CreatureInfo  *ci = CreatureNameStorage.LookupEntry( accessory->accessory_entry );
-		if( ci == NULL )
-			continue;
-		
 		CreatureProto *cp = CreatureProtoStorage.LookupEntry( accessory->accessory_entry );
 		if( cp == NULL )
 			continue;

@@ -493,9 +493,8 @@ bool MasterDemonologist5(uint32 i, Spell* s)
 bool SummonSuccubusQuest(uint32 i, Spell* s)
 {
 
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(5677);
 	CreatureProto* cp = CreatureProtoStorage.LookupEntry(5677);
-	if(!ci || !cp)
+	if(!cp)
 		return false;
 
 	Creature* pCreature = s->p_caster->GetMapMgr()->CreateCreature(cp->Id);
@@ -512,10 +511,9 @@ bool SummonVoidWalkerQuest(uint32 i, Spell* s)
 {
 	Player* p_caster = s->p_caster;
 
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(5676);
 	CreatureProto* cp = CreatureProtoStorage.LookupEntry(5676);
 
-	if(!ci || !cp)
+	if(!cp)
 		return false;
 
 	Creature* pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
@@ -532,9 +530,8 @@ bool SummonFelHunterQuest(uint32 i, Spell* s)
 {
 	Player* p_caster = s->p_caster;
 
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(6268);
 	CreatureProto* cp = CreatureProtoStorage.LookupEntry(6268);
-	if(!ci || !cp)
+	if(!cp)
 		return false;
 
 	Creature* pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);

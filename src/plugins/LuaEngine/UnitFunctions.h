@@ -218,7 +218,7 @@ class LuaUnit
 			switch(ptr->GetTypeId())
 			{
 				case TYPEID_UNIT:
-					lua_pushstring(L, TO_CREATURE(ptr)->GetCreatureInfo() ? TO_CREATURE(ptr)->GetCreatureInfo()->Name : "Unknown");
+					lua_pushstring(L, TO_CREATURE(ptr)->GetProto() ? TO_CREATURE(ptr)->GetProto()->Name : "Unknown");
 					break;
 
 				case TYPEID_PLAYER:
@@ -539,9 +539,8 @@ class LuaUnit
 				return 1;
 			}
 			CreatureProto* p = CreatureProtoStorage.LookupEntry(entry);
-			CreatureInfo* i = CreatureNameStorage.LookupEntry(entry);
 
-			if(p == NULL || i == NULL)
+			if(p == NULL )
 			{
 				lua_pushnil(L);
 				return 1;
@@ -835,7 +834,7 @@ class LuaUnit
 			wp->waittime = waittime;
 			if(!pCreature->GetAIInterface()->addWayPointUnsafe(wp))
 			{
-				sLog.outDetail("WayPoint created by a Lua script for Creature ID %u wasn't added due to an error occurred in CreateWaypoint()", pCreature->GetCreatureInfo()->Id);
+				sLog.outDetail("WayPoint created by a Lua script for Creature ID %u wasn't added due to an error occurred in CreateWaypoint()", pCreature->GetProto()->Id);
 				delete wp;
 			}
 			return 0;
@@ -5866,10 +5865,6 @@ class LuaUnit
 			if( ( ptr->GetCurrentVehicle() != NULL ) && ( !ptr->IsPlayer() || !ptr->IsVehicle() ) )
 				return 0;
 
-			CreatureInfo *ci = CreatureNameStorage.LookupEntry( creature_entry );
-			if( ci == NULL )
-				return 0;
-
 			CreatureProto *cp = CreatureProtoStorage.LookupEntry( creature_entry );
 			if( cp == NULL )
 				return 0;
@@ -5942,10 +5937,9 @@ class LuaUnit
 
 			uint32 creature_entry = luaL_checkint( L, 1 );
 			
-			CreatureInfo  *ci = CreatureNameStorage.LookupEntry( creature_entry );
 			CreatureProto *cp = CreatureProtoStorage.LookupEntry( creature_entry );
 			
-			if( ( ci == NULL ) || ( cp == NULL ) )
+			if( ( cp == NULL ) )
 				return 0;
 
 			Unit *u = v->GetOwner();

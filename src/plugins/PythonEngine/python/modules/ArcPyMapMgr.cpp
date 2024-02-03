@@ -90,12 +90,6 @@ static PyObject* ArcPyMapMgr_spawnCreature( ArcPyMapMgr *self, PyObject *args )
 		return NULL;
 	}
 
-	CreatureInfo *info = CreatureNameStorage.LookupEntry( id );
-	if( info == NULL )
-	{
-		Py_RETURN_NONE;
-	}
-
 	CreatureProto *proto = CreatureProtoStorage.LookupEntry( id );
 	if( proto == NULL )
 	{

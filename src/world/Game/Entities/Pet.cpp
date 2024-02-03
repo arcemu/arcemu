@@ -126,9 +126,9 @@ void Pet::SetNameForEntry(uint32 entry)
 	}
 }
 
-bool Pet::CreateAsSummon(uint32 entry, CreatureInfo* ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec, bool dismiss_old_pet)
+bool Pet::CreateAsSummon(uint32 entry, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec, bool dismiss_old_pet)
 {
-	if(ci == NULL || owner == NULL)
+	if(owner == NULL)
 	{
 		return false;//the caller will delete us.
 	}
@@ -138,12 +138,17 @@ bool Pet::CreateAsSummon(uint32 entry, CreatureInfo* ci, Creature* created_from_
 		owner->DismissActivePets();
 	}
 
+	proto = CreatureProtoStorage.LookupEntry( entry );
+	if( proto == NULL )
+	{
+		return false;
+	}
+	
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
 	m_phase = m_Owner->GetPhase();
 	m_PetNumber = m_Owner->GeneratePetNumber();
-	creature_info = ci;
-	myFamily = dbcCreatureFamily.LookupEntry(ci->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(proto->Family);
 
 	float x, y, z;
 	if(Vec)
@@ -169,8 +174,8 @@ bool Pet::CreateAsSummon(uint32 entry, CreatureInfo* ci, Creature* created_from_
 
 	SetEntry(entry);
 	setLevel(level);
-	SetDisplayId(ci->Male_DisplayID);
-	SetNativeDisplayId(ci->Male_DisplayID);
+	SetDisplayId(proto->Male_DisplayID);
+	SetNativeDisplayId(proto->Male_DisplayID);
 	EventModelChange();
 	SetSummonedByGUID(owner->GetGUID());
 	SetCreatedByGUID(owner->GetGUID());
@@ -188,7 +193,7 @@ bool Pet::CreateAsSummon(uint32 entry, CreatureInfo* ci, Creature* created_from_
 
 	if(created_from_creature == NULL)
 	{
-		m_name.assign(creature_info->Name);
+		m_name.assign(proto->Name);
 
 		if(created_by_spell != NULL)
 		{
@@ -386,7 +391,7 @@ void Pet::SendTalentsToOwner()
 	std::vector< std::pair< uint32, uint8 > > talents;
 
 
-	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntryForced(GetCreatureInfo()->Family);
+	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntryForced(GetProto()->Family);
 	if(!cfe || static_cast<int32>(cfe->talenttree) < 0)
 		return;
 
@@ -520,9 +525,8 @@ void Pet::LoadFromDB(Player* owner, PlayerPet* pi)
 	m_OwnerGuid = m_Owner->GetGUID();
 	m_phase = m_Owner->GetPhase();
 	mPi = pi;
-	creature_info = CreatureNameStorage.LookupEntry(mPi->entry);
 	proto = CreatureProtoStorage.LookupEntry(mPi->entry);
-	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(proto->Family);
 
 	Create(pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() + 2, owner->GetPositionZ(), owner->GetOrientation());
 
@@ -620,8 +624,8 @@ void Pet::LoadFromDB(Player* owner, PlayerPet* pi)
 	setLevel(mPi->level);
 
 
-	SetDisplayId(creature_info->Male_DisplayID);
-	SetNativeDisplayId(creature_info->Male_DisplayID);
+	SetDisplayId(proto->Male_DisplayID);
+	SetNativeDisplayId(proto->Male_DisplayID);
 
 	EventModelChange();
 
@@ -671,7 +675,6 @@ void Pet::InitializeMe(bool first)
 	GetAIInterface()->SetUnitToFollow(m_Owner);
 	GetAIInterface()->SetFollowDistance(3.0f);
 
-	SetCreatureInfo(CreatureNameStorage.LookupEntry(GetEntry()));
 	proto = CreatureProtoStorage.LookupEntry(GetEntry());
 
 	m_Owner->AddSummon(this);
@@ -680,7 +683,7 @@ void Pet::InitializeMe(bool first)
 	SetUInt32Value(UNIT_FIELD_PETNUMBER, GetUIdFromGUID());
 	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
 
-	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(GetProto()->Family);
 
 	SetPetDiet();
 	_setFaction();
@@ -994,7 +997,7 @@ void Pet::UpdateSpellList(bool showLearnSpells)
 		}
 	}
 
-	if(GetCreatureInfo()->Family == 0 && Summon)
+	if(GetProto()->Family == 0 && Summon)
 	{
 		// Get spells from the owner
 		map<uint32, set<uint32> >::iterator it1;
@@ -1013,7 +1016,7 @@ void Pet::UpdateSpellList(bool showLearnSpells)
 	else
 	{
 		// Get Creature family from DB (table creature_names, field family), load the skill line from CreatureFamily.dbc for use with SkillLineAbiliby.dbc entry
-		CreatureFamilyEntry* f = dbcCreatureFamily.LookupEntryForced(GetCreatureInfo()->Family);
+		CreatureFamilyEntry* f = dbcCreatureFamily.LookupEntryForced(GetProto()->Family);
 		if(f)
 		{
 			s = f->skilline;
@@ -1371,7 +1374,7 @@ void Pet::ApplySummonLevelAbilities()
 
 	if(stat_index < 0)
 	{
-		LOG_ERROR("PETSTAT: No stat index found for entry %u, `%s`! Using 5 as a default.", GetEntry(), GetCreatureInfo()->Name);
+		LOG_ERROR("PETSTAT: No stat index found for entry %u, `%s`! Using 5 as a default.", GetEntry(), GetProto()->Name);
 		stat_index = 5;
 	}
 
@@ -1463,7 +1466,7 @@ void Pet::ApplySummonLevelAbilities()
 
 void Pet::ApplyPetLevelAbilities()
 {
-	uint32 pet_family = GetCreatureInfo()->Family;
+	uint32 pet_family = GetProto()->Family;
 	uint32 level = getLevel();
 	if(level > PLAYER_LEVEL_CAP)
 		level = PLAYER_LEVEL_CAP;

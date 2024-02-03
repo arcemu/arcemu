@@ -127,9 +127,8 @@ class TROLLGORE_AI : public CreatureAIScript
 				for(uint8 i = 0; i < INVADERS_PER_INVASION; i++)
 				{
 					CreatureProto* cp = CreatureProtoStorage.LookupEntry(DRAKKARI_INVADER_ENTRY);
-					CreatureInfo* ci = CreatureNameStorage.LookupEntry(DRAKKARI_INVADER_ENTRY);
 					Creature* c = NULL;
-					if(cp && ci)
+					if(cp != NULL)
 					{
 						c = _unit->GetMapMgr()->CreateCreature(DRAKKARI_INVADER_ENTRY);
 						if(c)
@@ -450,9 +449,8 @@ class NOVOS_THE_SUMMONER_AI : public CreatureAIScript
 			{
 				mob_entry = 26627;
 				CreatureProto* cp = CreatureProtoStorage.LookupEntry(mob_entry);
-				CreatureInfo* ci = CreatureNameStorage.LookupEntry(mob_entry);
 				Creature* c = NULL;
-				if(cp && ci)
+				if(cp != NULL)
 				{
 					c = _unit->GetMapMgr()->CreateCreature(mob_entry);
 					if(c)
@@ -484,9 +482,8 @@ class NOVOS_THE_SUMMONER_AI : public CreatureAIScript
 						mob_entry = mobs[Rand(1)];
 					}
 					CreatureProto* cp = CreatureProtoStorage.LookupEntry(mob_entry);
-					CreatureInfo* ci = CreatureNameStorage.LookupEntry(mob_entry);
 					Creature* c = NULL;
-					if(cp && ci)
+					if(cp != NULL)
 					{
 						c = _unit->GetMapMgr()->CreateCreature(mob_entry);
 						if(c)

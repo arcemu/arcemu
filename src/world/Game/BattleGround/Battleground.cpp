@@ -673,15 +673,15 @@ Creature* CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, ui
 	if(horde > 1)
 		horde = 1;
 
-	CreatureInfo* pInfo = CreatureNameStorage.LookupEntry(13116 + horde);
-	if(pInfo == NULL)
+	CreatureProto *proto = CreatureProtoStorage.LookupEntry(13116 + horde);
+	if(proto == NULL)
 	{
 		return NULL;
 	}
 
-	Creature* pCreature = m_mapMgr->CreateCreature(pInfo->Id);
+	Creature* pCreature = m_mapMgr->CreateCreature(proto->Id);
 
-	pCreature->Create(pInfo->Name, m_mapMgr->GetMapId(), x, y, z, o);
+	pCreature->Create(proto->Name, m_mapMgr->GetMapId(), x, y, z, o);
 
 	pCreature->SetEntry(13116 + horde);
 	pCreature->SetScale(1.0f);
@@ -724,8 +724,7 @@ Creature* CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, ui
 
 	pCreature->DisableAI();
 
-	pCreature->SetCreatureInfo(pInfo);
-	pCreature->SetCreatureProto(CreatureProtoStorage.LookupEntry(pInfo->Id));
+	pCreature->SetCreatureProto(proto);
 
 	pCreature->PushToWorld(m_mapMgr);
 	return pCreature;

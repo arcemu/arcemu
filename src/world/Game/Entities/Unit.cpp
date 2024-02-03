@@ -2871,7 +2871,7 @@ uint32 Unit::GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, Spel
 		if(pVictim->IsCreature())
 		{
 			Creature* c = TO_CREATURE(pVictim);
-			if(c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if(c->GetProto()->Rank == ELITE_WORLDBOSS)
 			{
 				victim_skill = std::max(victim_skill, ((int32)this->getLevel() + 3) * 5); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -2942,7 +2942,7 @@ uint32 Unit::GetSpellDidHitResult(Unit* pVictim, uint32 weapon_damage_type, Spel
 		if(IsCreature())
 		{
 			Creature* c = TO_CREATURE(this);
-			if(c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if(c->GetProto()->Rank == ELITE_WORLDBOSS)
 				self_skill = std::max(self_skill, ((int32)pVictim->getLevel() + 3) * 5); //used max to avoid situation when lowlvl hits boss.
 		}
 	}
@@ -3170,7 +3170,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		victim_skill = pVictim->getLevel() * 5;
 		if(pVictim->IsCreature())
 		{
-			if(c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if(c->GetProto()->Rank == ELITE_WORLDBOSS)
 			{
 				victim_skill = std::max(victim_skill, ((int32)getLevel() + 3) * 5);     //used max to avoid situation when lowlvl hits boss.
 			}
@@ -3246,7 +3246,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 		if(IsCreature())
 		{
 			Creature* c = TO_CREATURE(this);
-			if(c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if(c->GetProto()->Rank == ELITE_WORLDBOSS)
 				self_skill = std::max(self_skill, ((int32)pVictim->getLevel() + 3) * 5); //used max to avoid situation when lowlvl hits boss.
 		}
 		crit = 5.0f; //will be modified later
@@ -3710,7 +3710,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 									dmg.full_damage += dmg.full_damage * TO< Player* >(this)->m_modphyscritdmgPCT / 100;
 								}
 								if(!pVictim->IsPlayer())
-									dmg.full_damage += int(dmg.full_damage * TO< Player* >(this)->IncreaseCricticalByTypePCT[TO_CREATURE(pVictim)->GetCreatureInfo()->Type]);
+									dmg.full_damage += int(dmg.full_damage * TO< Player* >(this)->IncreaseCricticalByTypePCT[TO_CREATURE(pVictim)->GetProto()->Type]);
 								//sLog.outString( "DEBUG: After IncreaseCricticalByTypePCT: %u" , dmg.full_damage );
 							}
 
@@ -3731,7 +3731,7 @@ void Unit::Strike(Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability,
 								//sLog.outString( "DEBUG: After Resilience check: %u" , dmg.full_damage );
 							}
 
-							if(pVictim->IsCreature() && TO< Creature* >(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
+							if(pVictim->IsCreature() && TO< Creature* >(pVictim)->GetProto()->Rank != ELITE_WORLDBOSS)
 								pVictim->Emote(EMOTE_ONESHOT_WOUNDCRITICAL);
 
 							vproc |= PROC_ON_CRIT_HIT_VICTIM;
@@ -5150,7 +5150,7 @@ int32 Unit::GetSpellDmgBonus(Unit* pVictim, SpellEntry* spellInfo, int32 base_dm
 	plus_damage += static_cast< float >( base_dmg * ( caster->GetDamageDonePctMod(school)-1) ); //value is initialized with 1
 //------------------------------by victim type----------------------------------------------
 	if( !pVictim->IsPlayer() && caster->IsPlayer() )
-		plus_damage += static_cast< float >( TO< Player* >(caster)->IncreaseDamageByType[TO< Creature* >(pVictim)->GetCreatureInfo()->Type] );
+		plus_damage += static_cast< float >( TO< Player* >(caster)->IncreaseDamageByType[TO< Creature* >(pVictim)->GetProto()->Type] );
 //==========================================================================================
 //==============================+Spell Damage Bonus Modifications===========================
 //==========================================================================================
@@ -5251,11 +5251,11 @@ void Unit::Emote(EmoteType emote)
 
 void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char* msg)
 {
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
-	if(!ci)
+	CreatureProto *proto = CreatureProtoStorage.LookupEntry(entry);
+	if(proto == NULL)
 		return;
 
-	Messenger::SendChatMessageToSet( this, type, lang, string( ci->Name ), string( msg ) );
+	Messenger::SendChatMessageToSet( this, type, lang, string( proto->Name ), string( msg ) );
 }
 
 void Unit::AddInRangeObject(Object* pObj)
@@ -7963,7 +7963,7 @@ float Unit::GetCriticalDamageBonusForSpell(Object* victim, SpellEntry* spell, fl
 		amount -= amount * dmg_reduction_pct;
 	}
 
-	if(victim->IsCreature() && TO< Creature* >(victim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
+	if(victim->IsCreature() && TO< Creature* >(victim)->GetProto()->Rank != ELITE_WORLDBOSS)
 		TO< Creature* >(victim)->Emote(EMOTE_ONESHOT_WOUNDCRITICAL);
 
 	return amount;

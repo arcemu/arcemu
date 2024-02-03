@@ -55,7 +55,6 @@ class Spell;
 class AIInterface;
 class GameObject;
 
-struct CreatureInfo;
 struct FactionTemplateDBC;
 struct FactionDBC;
 

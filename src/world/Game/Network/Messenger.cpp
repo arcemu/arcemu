@@ -828,7 +828,7 @@ void Messenger::SendCreatureSpells(Player *player, Creature *creature)
 {
 	WorldPacket data( SMSG_PET_SPELLS, 100 );
 	data << uint64(creature->GetGUID());
-	data << uint16( creature->GetCreatureInfo()->Family );
+	data << uint16( creature->GetProto()->Family );
 	data << uint32(0);
 
 	if( ! creature->IsVehicle() )

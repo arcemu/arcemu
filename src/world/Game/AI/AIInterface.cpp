@@ -355,7 +355,7 @@ void AIInterface::_UpdateTargets()
 {
 	if(m_Unit->IsPlayer() || (m_AIType != AITYPE_PET && disable_targeting))
 		return;
-	if(TO_CREATURE(m_Unit)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER && TO_CREATURE(m_Unit)->GetType() != CREATURE_TYPE_GUARDIAN)
+	if(TO_CREATURE(m_Unit)->GetProto()->Type == UNIT_TYPE_CRITTER && TO_CREATURE(m_Unit)->GetType() != CREATURE_TYPE_GUARDIAN)
 		return;
 
 	if(m_Unit->GetMapMgr() == NULL)
@@ -877,7 +877,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 									break;
 								}
 							default:
-								LOG_ERROR("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, TO< Creature* >(m_Unit)->GetCreatureInfo()->Id);
+								LOG_ERROR("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, TO< Creature* >(m_Unit)->GetProto()->Id);
 						}
 						// CastSpell(m_Unit, spellInfo, targets);
 						if(m_nextSpell && m_nextSpell->cooldown)
@@ -1455,7 +1455,7 @@ bool AIInterface::FindFriends(float dist)
 		}
 	}
 
-	uint32 family = TO_CREATURE(m_Unit)->GetCreatureInfo()->Type;
+	uint32 family = TO_CREATURE(m_Unit)->GetProto()->Type;
 
 	CreatureProto* pt = TO< Creature* >(m_Unit)->GetProto();
 
@@ -1487,7 +1487,7 @@ bool AIInterface::FindFriends(float dist)
 		if(team == 1) guardid = zoneSpawn->HordeEntry;
 		if(!guardid) return result;
 
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(guardid);
+		CreatureProto* ci = CreatureProtoStorage.LookupEntry(guardid);
 		if(!ci)
 			return result;
 
@@ -1598,9 +1598,9 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	}
 
 	// Multiply by elite value
-	if(m_Unit->IsCreature() && TO_CREATURE(m_Unit)->GetCreatureInfo()->Rank > 0)
+	if(m_Unit->IsCreature() && TO_CREATURE(m_Unit)->GetProto()->Rank > 0)
 	{
-		AggroRange *= (TO_CREATURE(m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
+		AggroRange *= (TO_CREATURE(m_Unit)->GetProto()->Rank) * 1.50f;
 	}
 
 	// Cap Aggro range at 40.0f
@@ -2085,7 +2085,6 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			//Create
 			Creature* pWayPoint = new Creature((uint64)HIGHGUID_TYPE_WAYPOINT << 32 | wp->id);
 			pWayPoint->CreateWayPoint(wp->id, pPlayer->GetMapId(), wp->x, wp->y, wp->z, 0);
-			pWayPoint->SetCreatureInfo(c->GetCreatureInfo());
 			pWayPoint->SetCreatureProto(c->GetProto());
 			pWayPoint->SetEntry(1);
 			pWayPoint->SetScale(0.5f);
@@ -3969,7 +3968,7 @@ void AIInterface::EventEnterCombat(Unit* pUnit, uint32 misc1)
 
 
 	// dismount if mounted
-	if(m_Unit->IsCreature() && !(TO_CREATURE(m_Unit)->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
+	if(m_Unit->IsCreature() && !(TO_CREATURE(m_Unit)->GetProto()->Flags1 & CREATURE_FLAG1_FIGHT_MOUNTED))
 		m_Unit->SetMount(0);
 
 	if(m_AIState != STATE_ATTACKING)
@@ -3980,7 +3979,7 @@ void AIInterface::EventEnterCombat(Unit* pUnit, uint32 misc1)
 	{
 		if(m_Unit->IsCreature())
 		{
-			if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
+			if(TO< Creature* >(m_Unit)->GetProto()->Rank == 3)
 			{
 				m_Unit->GetMapMgr()->AddCombatInProgress(m_Unit->GetGUID());
 			}
@@ -4130,7 +4129,7 @@ void AIInterface::EventLeaveCombat(Unit* pUnit, uint32 misc1)
 	{
 		if(m_Unit->IsCreature())
 		{
-			if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
+			if(TO< Creature* >(m_Unit)->GetProto()->Rank == 3)
 			{
 				m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 			}
@@ -4378,7 +4377,7 @@ void AIInterface::EventUnitDied(Unit* pUnit, uint32 misc1)
 	{
 		if(m_Unit->IsCreature())
 		{
-			if(TO< Creature* >(m_Unit)->GetCreatureInfo()->Rank == 3)
+			if(TO< Creature* >(m_Unit)->GetProto()->Rank == 3)
 			{
 				m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 			}

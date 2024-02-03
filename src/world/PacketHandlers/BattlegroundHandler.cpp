@@ -87,7 +87,7 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 	uint32 t = BATTLEGROUND_WARSONG_GULCH;
 	if(mapid == 0)
 	{
-		if(strstr(pCreature->GetCreatureInfo()->SubName, "Arena") != NULL)
+		if(strstr(pCreature->GetProto()->SubName, "Arena") != NULL)
 		{
 			t = BATTLEGROUND_ARENA_2V2;
 		}

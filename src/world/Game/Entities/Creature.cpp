@@ -182,7 +182,6 @@ Creature::Creature(uint64 guid)
 	proto = NULL;
 	spawnid = 0;
 
-	creature_info = NULL;
 	m_H_regenTimer = 0;
 	m_P_regenTimer = 0;
 	m_useAI = true;
@@ -278,9 +277,9 @@ void Creature::Update(uint32 p_time)
 	if(m_corpseEvent)
 	{
 		sEventMgr.RemoveEvents(this);
-		if(this->creature_info->Rank == ELITE_WORLDBOSS)
+		if(proto->Rank == ELITE_WORLDBOSS)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_BOSSCORPSE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		else if(this->creature_info->Rank == ELITE_RAREELITE || this->creature_info->Rank == ELITE_RARE)
+		else if(proto->Rank == ELITE_RAREELITE || proto->Rank == ELITE_RARE)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_RARECORPSE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		else
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_CORPSE, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -347,7 +346,7 @@ void Creature::OnRespawn(MapMgr* m)
 		for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
 		{
 			// Is killed boss?
-			if((*killedNpc) == creature_info->Id)
+			if((*killedNpc) == proto->Id)
 			{
 				skip = true;
 				break;
@@ -703,7 +702,7 @@ void Creature::setDeathState(DeathState s)
 			m_currentSpell->cancel();
 
 		// if it's not a Pet, and not a summon and it has skinningloot then we will allow skinning
-		if((GetCreatedByGUID() == 0) && (GetSummonedByGUID() == 0) && lootmgr.IsSkinnable(creature_info->Id))
+		if((GetCreatedByGUID() == 0) && (GetSummonedByGUID() == 0) && lootmgr.IsSkinnable(proto->Id))
 			SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 
 
@@ -718,10 +717,11 @@ void Creature::AddToWorld()
 	if(m_faction == NULL || m_factionDBC == NULL)
 		_setFaction();
 
-	if(creature_info == NULL)
-		creature_info = CreatureNameStorage.LookupEntry(GetEntry());
+	/// TODO: Check how this could be possible?
+	if(proto == NULL)
+		proto = CreatureProtoStorage.LookupEntry(GetEntry());
 
-	if(creature_info == NULL)
+	if(proto == NULL)
 		return;
 
 	if(m_faction == NULL || m_factionDBC == NULL)
@@ -735,11 +735,12 @@ void Creature::AddToWorld(MapMgr* pMapMgr)
 	// force set faction
 	if(m_faction == NULL || m_factionDBC == NULL)
 		_setFaction();
+	
+	/// TODO: Check how this could be possible?
+	if(proto == NULL)
+		proto = CreatureProtoStorage.LookupEntry(GetEntry());
 
-	if(creature_info == NULL)
-		creature_info = CreatureNameStorage.LookupEntry(GetEntry());
-
-	if(creature_info == NULL)
+	if(proto == NULL)
 		return;
 
 	if(m_faction == NULL || m_factionDBC == NULL)
@@ -753,7 +754,7 @@ bool Creature::CanAddToWorld()
 	if(m_factionDBC == NULL || m_faction == NULL)
 		_setFaction();
 
-	if(creature_info == NULL || m_faction == NULL || m_factionDBC == NULL || proto == NULL)
+	if(m_faction == NULL || m_factionDBC == NULL || proto == NULL)
 		return false;
 
 	return true;
@@ -795,7 +796,7 @@ void Creature::EnslaveExpire()
 	m_walkSpeed = m_base_walkSpeed;
 	m_runSpeed = m_base_runSpeed;
 
-	switch(GetCreatureInfo()->Type)
+	switch(GetProto()->Type)
 	{
 		case UNIT_TYPE_DEMON:
 			SetFaction(90);
@@ -989,7 +990,7 @@ void Creature::RegenerateHealth()
 	if(PctRegenModifier)
 		amt += (amt * PctRegenModifier) / 100;
 
-	if(GetCreatureInfo()->Rank == 3)
+	if(GetProto()->Rank == 3)
 		amt *= 10000.0f;
 	//Apply shit from conf file
 	amt *= sWorld.getRate(RATE_HEALTH);
@@ -1172,9 +1173,6 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 	proto = CreatureProtoStorage.LookupEntry(spawn->entry);
 	if(proto == NULL)
 		return false;
-	creature_info = CreatureNameStorage.LookupEntry(spawn->entry);
-	if(creature_info == NULL)
-		return false;
 
 	spawnid = spawn->id;
 	m_phase = spawn->phase;
@@ -1201,9 +1199,9 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 	// difficutly coefficient
 	float diff_coeff = 1.0f;
 
-	if(creature_info->Rank == ELITE_WORLDBOSS)
+	if(proto->Rank == ELITE_WORLDBOSS)
 		diff_coeff = CalcHPCoefficient(info, mode, true);
-	else if(creature_info->Type != UNIT_TYPE_CRITTER)
+	else if(proto->Type != UNIT_TYPE_CRITTER)
 		diff_coeff = CalcHPCoefficient(info, mode, false);
 
 	health = static_cast< uint32 >(health * diff_coeff);
@@ -1218,11 +1216,11 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 
 	// Whee, thank you blizz, I love patch 2.2! Later on, we can randomize male/female mobs! xD
 	// Determine gender (for voices)
-	//if(spawn->displayid != creature_info->Male_DisplayID)
+	//if(spawn->displayid != proto->Male_DisplayID)
 	//	setGender(1);   // Female
 
 	// uint32 model = 0;
-	// uint32 gender = creature_info->GenerateModelId(&model);
+	// uint32 gender = proto->GenerateModelId(&model);
 	// setGender(gender);
 
 	SetDisplayId(spawn->displayid);
@@ -1241,7 +1239,7 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 		}
 		else
 		{
-			LOG_DEBUG( "Unable to set heroic level for creature %u ( %s ), because there's no level mod, or heroic minlevel data", creature_info->Id, creature_info->Name );
+			LOG_DEBUG( "Unable to set heroic level for creature %u ( %s ), because there's no level mod, or heroic minlevel data", proto->Id, proto->Name );
 		}
 	}
 
@@ -1369,14 +1367,14 @@ bool Creature::Load(CreatureSpawn* spawn, uint32 mode, MapInfo* info)
 
 //////////////AI
 
-	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(proto->Family);
 
 
 //HACK!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 	        m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
 	        m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
-	        (creature_info->Family == UNIT_TYPE_MISC))
+	        (proto->Family == UNIT_TYPE_MISC))
 	{
 		m_useAI = false;
 	}
@@ -1444,10 +1442,6 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 {
 	proto = proto_;
 
-	creature_info = CreatureNameStorage.LookupEntry(proto->Id);
-	if(!creature_info)
-		return;
-
 	if(proto_->isTrainingDummy == 0 && !IsVehicle() )
 	{
 		GetAIInterface()->SetAllowedToEnterCombat(true);
@@ -1476,7 +1470,7 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 	SetPower(POWER_TYPE_MANA, proto->Mana);
 
 	uint32 model = 0;
-	uint8 gender = creature_info->GenerateModelId(&model);
+	uint8 gender = proto->GenerateModelId(&model);
 	setGender(gender);
 
 	SetDisplayId(model);
@@ -1580,14 +1574,14 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 
 	//////////////AI
 
-	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(proto->Family);
 
 
 	//HACK!
 	if(m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 17743 ||
 	        m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 20242 ||
 	        m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 15435 ||
-	        creature_info->Type == UNIT_TYPE_MISC)
+	        proto->Type == UNIT_TYPE_MISC)
 	{
 		m_useAI = false;
 	}
@@ -1629,15 +1623,6 @@ void Creature::OnPushToWorld()
 		ARCEMU_ASSERT(false);
 #else
 		SetCreatureProto(CreatureProtoStorage.LookupEntry(GetEntry()));
-#endif
-	}
-	if(creature_info == NULL)
-	{
-		LOG_ERROR("Something tried to push to world Creature ID %u with creature_info set to NULL.", GetEntry());
-#ifdef _DEBUG
-		ARCEMU_ASSERT(false);
-#else
-		SetCreatureInfo(CreatureNameStorage.LookupEntry(GetEntry()));
 #endif
 	}
 
@@ -1832,11 +1817,11 @@ bool Creature::HasLootForPlayer(Player* plr)
 
 uint32 Creature::GetRequiredLootSkill()
 {
-	if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_HERBLOOT)
+	if(GetProto()->Flags1 & CREATURE_FLAG1_HERBLOOT)
 		return SKILL_HERBALISM;     // herbalism
-	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_MININGLOOT)
+	else if(GetProto()->Flags1 & CREATURE_FLAG1_MININGLOOT)
 		return SKILL_MINING;        // mining
-	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_ENGINEERLOOT)
+	else if(GetProto()->Flags1 & CREATURE_FLAG1_ENGINEERLOOT)
 		return SKILL_ENGINEERING;
 	else
 		return SKILL_SKINNING;      // skinning
@@ -1953,7 +1938,7 @@ void Creature::PrepareForRemove()
 
 	if(GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 	{
-		if(GetCreatureInfo()->Rank == 3)
+		if(GetProto()->Rank == 3)
 		{
 			GetMapMgr()->RemoveCombatInProgress(GetGUID());
 		}
@@ -1962,7 +1947,7 @@ void Creature::PrepareForRemove()
 
 bool Creature::isCritter()
 {
-	if(creature_info->Type == UNIT_TYPE_CRITTER)
+	if(proto->Type == UNIT_TYPE_CRITTER)
 		return true;
 	else
 		return false;
@@ -2174,12 +2159,12 @@ void Creature::SendChatMessage(uint8 type, uint32 lang, const char* msg, uint32 
 		return;
 	}
 
-	Messenger::SendChatMessageToSet( this, type, lang, string( GetCreatureInfo()->Name ), string( msg ) );
+	Messenger::SendChatMessageToSet( this, type, lang, string( GetProto()->Name ), string( msg ) );
 }
 
 void Creature::HandleMonsterSayEvent(MONSTER_SAY_EVENTS Event)
 {
-	NpcMonsterSay* ms = creature_info->MonsterSay[Event];
+	NpcMonsterSay* ms = proto->MonsterSay[Event];
 	if(ms == NULL)
 		return;
 
@@ -2272,7 +2257,7 @@ Object* Creature::GetPlayerOwner()
 
 void Creature::AddVehicleComponent( uint32 creature_entry, uint32 vehicleid ){
 	if( vehicle != NULL ){
-		LOG_ERROR( "Creature %u ( %s ) with GUID %u already has a vehicle component.", proto->Id, creature_info->Name, GetUIdFromGUID() );
+		LOG_ERROR( "Creature %u ( %s ) with GUID %u already has a vehicle component.", proto->Id, proto->Name, GetUIdFromGUID() );
 		return;
 	}
 

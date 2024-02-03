@@ -823,9 +823,8 @@ class MALGANIS_AI : public CreatureAIScript
 						{
 							citizen = _unit->GetMapMgr()->CreatureStorage[i];
 							CreatureProto* cp = CreatureProtoStorage.LookupEntry(27737);//risen zombie
-							CreatureInfo* ci = CreatureNameStorage.LookupEntry(27737);
 							Creature* c = NULL;
-							if(cp && ci)
+							if(cp != NULL)
 							{
 								c = _unit->GetMapMgr()->CreateCreature(27737);
 								if(c)
@@ -1204,9 +1203,8 @@ class ARTHAS_AI : public CreatureAIScript
 						//we need that tricky animation here
 						//spawn Mal'Ganis
 						CreatureProto* cp = CreatureProtoStorage.LookupEntry(26533);
-						CreatureInfo* ci = CreatureNameStorage.LookupEntry(26533);
 						Creature* c = NULL;
-						if(cp && ci)
+						if(cp != NULL)
 						{
 							c = _unit->GetMapMgr()->CreateCreature(26533);
 							if(c)

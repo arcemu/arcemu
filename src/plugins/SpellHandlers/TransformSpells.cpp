@@ -214,14 +214,14 @@ bool PolymorphAuraHandler( uint32 i, Aura* aura, bool apply )
 	}
 	else
 	{
-		CreatureInfo *ci = CreatureNameStorage.LookupEntry( spe->EffectMiscValue[ i ] );
-		if( ci == NULL )
+		CreatureProto *proto = CreatureProtoStorage.LookupEntry( spe->EffectMiscValue[ i ] );
+		if( proto == NULL )
 		{
 			LOG_ERROR( "No creature data for creature %u while trying to apply a transform aura for spell %u", spe->EffectMiscValue[ i ], spe->Id );
 		}
 		else
 		{
-			displayId = ci->Male_DisplayID;
+			displayId = proto->Male_DisplayID;
 		}
 	}
 

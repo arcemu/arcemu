@@ -23,7 +23,6 @@
 
 extern SERVER_DECL SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >				ItemPrototypeStorage;
 extern SERVER_DECL SQLStorage<ItemName, ArrayStorageContainer<ItemName> > ItemNameStorage;
-extern SERVER_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >				CreatureNameStorage;
 extern SERVER_DECL SQLStorage<GameObjectProto, HashMapStorageContainer<GameObjectProto> >			GameObjectProtoStorage;
 extern SERVER_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >			CreatureProtoStorage;
 extern SERVER_DECL SQLStorage<DisplayBounding, HashMapStorageContainer<DisplayBounding> >		DisplayBoundingStorage;

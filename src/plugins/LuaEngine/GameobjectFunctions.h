@@ -300,9 +300,8 @@ class LuaGameObject
 				return 1;
 			}
 			CreatureProto* p = CreatureProtoStorage.LookupEntry(entry);
-			CreatureInfo* i = CreatureNameStorage.LookupEntry(entry);
 
-			if(p == NULL || i == NULL)
+			if(p == NULL)
 			{
 				lua_pushnil(L);
 				return 1;

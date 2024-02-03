@@ -798,7 +798,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char* args, WorldSession* m_session
 	uint32 guid = Arcemu::Util::GUID_LOPART(m_session->GetPlayer()->GetSelection());
 	Creature* crt = getSelectedCreature(m_session);
 	if(!crt) return false;
-	BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
+	BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetProto()->Name);
 	SystemMessage(m_session, "GUID: %d", guid);
 	SystemMessage(m_session, "Faction: %d", crt->GetFaction());
 	SystemMessage(m_session, "Phase: %u", crt->GetPhase());
@@ -1691,10 +1691,9 @@ bool ChatHandler::HandleCreatePetCommand(const char* args, WorldSession* m_sessi
 	if(entry == 0)
 		return false;
 
-	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
 	CreatureProto* cp = CreatureProtoStorage.LookupEntry(entry);
 
-	if((ci == NULL) || (cp == NULL))
+	if((cp == NULL))
 		return false;
 
 	Player* p = m_session->GetPlayer();
@@ -1710,7 +1709,7 @@ bool ChatHandler::HandleCreatePetCommand(const char* args, WorldSession* m_sessi
 
 	Pet* pet = objmgr.CreatePet(entry);
 
-	if(!pet->CreateAsSummon(entry, ci, NULL, p, NULL, 1, 0, &v, true))
+	if(!pet->CreateAsSummon(entry, NULL, p, NULL, 1, 0, &v, true))
 	{
 		pet->DeleteMe();
 		return true;
@@ -1764,8 +1763,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession* m_session)
 	}
 
 	CreatureProto* pTemplate = CreatureProtoStorage.LookupEntry(Entry);
-	CreatureInfo* pCreatureInfo = CreatureNameStorage.LookupEntry(Entry);
-	if(!pTemplate || !pCreatureInfo)
+	if(!pTemplate)
 	{
 		RedSystemMessage(m_session, "Invalid creature spawn template: %u", Entry);
 		return true;
@@ -1792,7 +1790,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession* m_session)
 		pPet->ReplaceAIInterface( (AIInterface *) new_interface );
 	//	new_interface->Init(pPet,AITYPE_PET,MOVEMENTTYPE_NONE,plr); // i think this will get called automatically for pet
 
-		pPet->CreateAsSummon(Entry, pCreatureInfo, pCreature, plr, NULL, 0x2, 0);
+		pPet->CreateAsSummon(Entry, pCreature, plr, NULL, 0x2, 0);
 
 		pPet->Rename(name);
 
@@ -2268,7 +2266,7 @@ bool ChatHandler::HandleNpcReturnCommand(const char* args, WorldSession* m_sessi
 	creature->GetAIInterface()->WipeTargetList();
 	creature->GetAIInterface()->MoveTo(x, y, z, o);
 
-	sGMLog.writefromsession(m_session, "returned NPC %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id());
+	sGMLog.writefromsession(m_session, "returned NPC %s, sqlid %u", creature->GetProto()->Name, creature->GetSQL_id());
 
 	return true;
 }
@@ -2301,7 +2299,7 @@ bool ChatHandler::HandleFormationLink1Command(const char* args, WorldSession* m_
 	if(pCreature == 0) return true;
 
 	m_session->GetPlayer()->linkTarget = pCreature;
-	BlueSystemMessage(m_session, "Linkup \"master\" set to %s.", pCreature->GetCreatureInfo()->Name);
+	BlueSystemMessage(m_session, "Linkup \"master\" set to %s.", pCreature->GetProto()->Name);
 	return true;
 }
 
@@ -2334,8 +2332,8 @@ bool ChatHandler::HandleFormationLink2Command(const char* args, WorldSession* m_
 	WorldDatabase.Execute("INSERT INTO creature_formations VALUES(%u, %u, '%f', '%f')",
 	                      slave->GetSQL_id(), slave->GetAIInterface()->m_formationLinkSqlId, ang, dist);
 
-	BlueSystemMessage(m_session, "%s linked up to %s with a distance of %f at %f radians.", slave->GetCreatureInfo()->Name,
-	                  m_session->GetPlayer()->linkTarget->GetCreatureInfo()->Name, dist, ang);
+	BlueSystemMessage(m_session, "%s linked up to %s with a distance of %f at %f radians.", slave->GetProto()->Name,
+	                  m_session->GetPlayer()->linkTarget->GetProto()->Name, dist, ang);
 
 	return true;
 }
@@ -2358,7 +2356,7 @@ bool ChatHandler::HandleNpcFollowCommand(const char* args, WorldSession* m_sessi
 
 	ai->SetUnitToFollow(m_session->GetPlayer());
 
-	sGMLog.writefromsession(m_session, "used npc follow command on %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id());
+	sGMLog.writefromsession(m_session, "used npc follow command on %s, sqlid %u", creature->GetProto()->Name, creature->GetSQL_id());
 	return true;
 }
 
@@ -2386,7 +2384,7 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession* m_sess
 	c->GetAIInterface()->SetAIState(STATE_IDLE);
 	c->GetAIInterface()->ResetUnitToFollow();
 
-	sGMLog.writefromsession(m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureInfo()->Name, c->GetSQL_id());
+	sGMLog.writefromsession(m_session, "cancelled npc follow command on %s, sqlid %u", c->GetProto()->Name, c->GetSQL_id());
 	return true;
 }
 
@@ -2792,8 +2790,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 		return false;
 
 	CreatureProto* proto = CreatureProtoStorage.LookupEntry(entry);
-	CreatureInfo* info = CreatureNameStorage.LookupEntry(entry);
-	if(proto == NULL || info == NULL)
+	if(proto == NULL)
 	{
 		RedSystemMessage(m_session, "Invalid entry id.");
 		return true;
@@ -2801,7 +2798,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 
 	CreatureSpawn* sp = new CreatureSpawn;
 	//sp->displayid = info->DisplayID;
-	gender = info->GenerateModelId(&sp->displayid);
+	gender = proto->GenerateModelId(&sp->displayid);
 	sp->entry = entry;
 	sp->form = 0;
 	sp->id = objmgr.GenerateCreatureSpawnID();
@@ -2847,13 +2844,13 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 	if(mCell != NULL)
 		mCell->SetLoaded();
 
-	BlueSystemMessage(m_session, "Spawned a creature `%s` with entry %u at %f %f %f on map %u", info->Name,
+	BlueSystemMessage(m_session, "Spawned a creature `%s` with entry %u at %f %f %f on map %u", proto->Name,
 	                  entry, sp->x, sp->y, sp->z, m_session->GetPlayer()->GetMapId());
 
 	// Save it to the database.
 	p->SaveToDB();
 
-	sGMLog.writefromsession(m_session, "spawned a %s at %u %f %f %f", info->Name, m_session->GetPlayer()->GetMapId(), sp->x, sp->y, sp->z);
+	sGMLog.writefromsession(m_session, "spawned a %s at %u %f %f %f", proto->Name, m_session->GetPlayer()->GetMapId(), sp->x, sp->y, sp->z);
 
 	return true;
 }
@@ -2866,10 +2863,10 @@ bool ChatHandler::HandleCreatureRespawnCommand(const char* args, WorldSession* m
 	{
 		sEventMgr.RemoveEvents(creature, EVENT_CREATURE_RESPAWN);
 
-		BlueSystemMessage(m_session, "Respawning a Creature: `%s` with entry: %u on map: %u sqlid: %u", creature->GetCreatureInfo()->Name,
+		BlueSystemMessage(m_session, "Respawning a Creature: `%s` with entry: %u on map: %u sqlid: %u", creature->GetProto()->Name,
 		                  creature->GetEntry(), creature->GetMapMgr()->GetMapId(), creature->GetSQL_id());
 
-		sGMLog.writefromsession(m_session, "Respawned a Creature: `%s` with entry: %u on map: %u sqlid: %u", creature->GetCreatureInfo()->Name,
+		sGMLog.writefromsession(m_session, "Respawned a Creature: `%s` with entry: %u on map: %u sqlid: %u", creature->GetProto()->Name,
 		                        creature->GetEntry(), creature->GetMapMgr()->GetMapId(), creature->GetSQL_id());
 
 		creature->Despawn(0, 1000);
@@ -3267,11 +3264,11 @@ bool ChatHandler::HandleLookupCreatureCommand(const char* args, WorldSession* m_
 		return true;
 	}
 
-	StorageContainerIterator<CreatureInfo> * itr = CreatureNameStorage.MakeIterator();
+	StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
 
 	GreenSystemMessage(m_session, "Starting search of creature `%s`...", x.c_str());
 	uint32 t = Arcemu::Shared::Util::getMSTime();
-	CreatureInfo* i;
+	CreatureProto* i;
 	uint32 count = 0;
 	while(!itr->AtEnd())
 	{
@@ -3565,7 +3562,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char* args, WorldSession* m_sess
 			sGMLog.writefromsession(m_session, "used possess command on PLAYER %s", TO< Player* >(pTarget)->GetName());
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession(m_session, "used possess command on CREATURE %s, sqlid %u", TO< Creature* >(pTarget)->GetCreatureInfo()->Name, TO< Creature* >(pTarget)->GetSQL_id());
+			sGMLog.writefromsession(m_session, "used possess command on CREATURE %s, sqlid %u", TO< Creature* >(pTarget)->GetProto()->Name, TO< Creature* >(pTarget)->GetSQL_id());
 			break;
 	}
 	return true;

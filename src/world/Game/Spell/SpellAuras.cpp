@@ -4488,7 +4488,7 @@ void Aura::SpellAuraTransform(bool apply)
 		}
 		else
 		{
-			CreatureInfo *ci = CreatureNameStorage.LookupEntry( mod->m_miscValue );
+			CreatureProto *ci = CreatureProtoStorage.LookupEntry( mod->m_miscValue );
 			if( ci == NULL )
 			{
 				LOG_ERROR( "No creature data for creature %u while trying to apply a transform aura for spell %u", mod->m_miscValue, GetSpellId() );
@@ -5073,15 +5073,13 @@ void Aura::SpellAuraMounted(bool apply)
 
 		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_MOUNT);
 
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(mod->m_miscValue);
-		if(!ci) return;
-
-		uint32 displayId = ci->Male_DisplayID;
-		if(!displayId) return;
-
 		CreatureProto *cp = CreatureProtoStorage.LookupEntry( mod->m_miscValue );
 		if( cp == NULL )
 			return;
+
+		uint32 displayId = cp->Male_DisplayID;
+		if( displayId == 0 ) return;
+
 		p_target->m_MountSpellId = m_spellProto->Id;
 		p_target->flying_aura = 0;
 		m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , displayId);
@@ -5430,7 +5428,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 	{
 		if(m_target->IsUnit())
 		{
-			if(m_target->IsCreature() && TO_CREATURE(m_target)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER)
+			if(m_target->IsCreature() && TO_CREATURE(m_target)->GetProto()->Type == UNIT_TYPE_CRITTER)
 				return;
 
 			if(m_target->IsDead())

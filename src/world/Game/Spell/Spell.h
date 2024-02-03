@@ -1214,8 +1214,8 @@ ARCEMU_INLINE bool TargetTypeCheck(Object* obj, uint32 ReqCreatureTypeMask)
 
 	if(obj->IsCreature())
 	{
-		CreatureInfo* inf = TO< Creature* >(obj)->GetCreatureInfo();
-		if(!(1 << (inf->Type - 1) & ReqCreatureTypeMask))
+		CreatureProto* proto = TO< Creature* >(obj)->GetProto();
+		if(!(1 << (proto->Type - 1) & ReqCreatureTypeMask))
 			return false;
 	}
 	else if(obj->IsPlayer() && !(UNIT_TYPE_HUMANOID_BIT & ReqCreatureTypeMask))

@@ -26,6 +26,8 @@
 
 void WorldSession::CharacterEnumProc(QueryResult* result)
 {
+	CreatureProto *info = NULL;
+
 	struct player_item
 	{
 		uint32 displayid;
@@ -40,7 +42,6 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 	uint32 i;
 	ItemPrototype* proto;
 	QueryResult* res;
-	CreatureInfo* info = NULL;
 	uint8 race;
 	has_dk = false;
 	_side = -1; // side should be set on every enumeration for safety
@@ -132,7 +133,7 @@ void WorldSession::CharacterEnumProc(QueryResult* result)
 				if(res)
 				{
 					petLevel = res->Fetch()[1].GetUInt32();
-					info = CreatureNameStorage.LookupEntry(res->Fetch()[0].GetUInt32());
+					info = CreatureProtoStorage.LookupEntry(res->Fetch()[0].GetUInt32());
 					delete res;
 				}
 				else

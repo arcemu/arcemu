@@ -1252,7 +1252,7 @@ bool ChatHandler::CmdSetValueField(WorldSession* m_session, uint32 field, uint32
 		{
 			if(!(field < UNIT_END && fieldmax < UNIT_END)) return false;
 			std::string creaturename = "Unknown Being";
-			creaturename = cr->GetCreatureInfo()->Name;
+			creaturename = cr->GetProto()->Name;
 			if(fieldmax)
 				BlueSystemMessage(m_session, "Setting %s of %s to %d/%d.", fieldname, creaturename.c_str(), av, mv);
 			else
@@ -1363,7 +1363,7 @@ bool ChatHandler::CmdSetFloatField(WorldSession* m_session, uint32 field, uint32
 		{
 			if(!(field < UNIT_END && fieldmax < UNIT_END)) return false;
 			std::string creaturename = "Unknown Being";
-			creaturename = cr->GetCreatureInfo()->Name;
+			creaturename = cr->GetProto()->Name;
 			if(fieldmax)
 				BlueSystemMessage(m_session, "Setting %s of %s to %.1f/%.1f.", fieldname, creaturename.c_str(), av, mv);
 			else

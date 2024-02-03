@@ -32,7 +32,7 @@ void TotemSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & posit
 {
 	Summon::Load(proto, owner, position, spellid, summonslot);
 
-	TotemDisplayIdEntry* totemdisplay = TotemDisplayIdStorage.LookupEntry(creature_info->Male_DisplayID);
+	TotemDisplayIdEntry* totemdisplay = TotemDisplayIdStorage.LookupEntry(proto->Male_DisplayID);
 	uint32 displayID = 0;
 
 	if(totemdisplay != NULL)
@@ -54,7 +54,7 @@ void TotemSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & posit
 	}
 
 	if(displayID == 0)
-		displayID = creature_info->Male_DisplayID;
+		displayID = proto->Male_DisplayID;
 
 	// Set up the creature.
 	SetMaxPower(POWER_TYPE_FOCUS, owner->getLevel() * 30);
@@ -69,7 +69,7 @@ void TotemSummon::Load(CreatureProto* proto, Unit* owner, LocationVector & posit
 	SetBoundingRadius(1.0f);
 	SetCombatReach(1.0f);
 	SetDisplayId(displayID);
-	SetNativeDisplayId(creature_info->Male_DisplayID);
+	SetNativeDisplayId(proto->Male_DisplayID);
 	SetCastSpeedMod(1.0f);
 	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 
@@ -115,7 +115,7 @@ void TotemSummon::SetupSpells()
 
 	if(TotemSpell == NULL)
 	{
-		LOG_DEBUG("Totem %u does not have any spells to cast", creature_info->Id);
+		LOG_DEBUG("Totem %u does not have any spells to cast", proto->Id);
 		return;
 	}
 

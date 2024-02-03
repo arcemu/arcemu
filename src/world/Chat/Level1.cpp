@@ -1503,10 +1503,9 @@ bool ChatHandler::HandleVehicleAddPassengerCommand(const char *args, WorldSessio
 		return false;
 	}
 	
-	CreatureInfo  *ci = CreatureNameStorage.LookupEntry( creature_entry );
 	CreatureProto *cp = CreatureProtoStorage.LookupEntry( creature_entry );
 
-	if( ( ci == NULL ) || ( cp == NULL ) ){
+	if( ( cp == NULL ) ){
 		RedSystemMessage( session, "Creature %u doesn't exist in the database", creature_entry );
 		return false;
 	}

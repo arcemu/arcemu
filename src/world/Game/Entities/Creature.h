@@ -78,10 +78,12 @@ enum MONSTER_SAY_EVENTS
 SERVER_DECL bool Rand(float chance);
 SERVER_DECL bool Rand(uint32 chance);
 SERVER_DECL bool Rand(int32 chance);
+
 #pragma pack(push,1)
-struct CreatureInfo
+
+struct CreatureProto
 {
-	uint32 Id;
+	uint32 Id;	
 	char* Name;
 	char* SubName;
 	char* info_str;
@@ -99,35 +101,6 @@ struct CreatureInfo
 	uint8  Leader;
 	uint32 QuestItems[6];
 	uint32 waypointid;
-
-	std::string lowercase_name;
-	NpcMonsterSay* MonsterSay[NUM_MONSTER_SAY_EVENTS];
-
-	uint8 GenerateModelId(uint32* des)
-	{
-		uint32 models[] = { Male_DisplayID, Male_DisplayID2, Female_DisplayID, Female_DisplayID2 };
-		if(!models[0] && !models[1] && !models[2] && !models[3])
-		{
-			// All models are invalid.
-			Log.Notice("CreatureSpawn", "All model IDs are invalid for creature %u", Id);
-			return 0;
-		}
-
-		while(true)
-		{
-			uint32 res = RandomUInt(3);
-			if(models[res])
-			{
-				*des = models[res];
-				return res < 2 ? 0 : 1;
-			}
-		}
-	}
-};
-
-struct CreatureProto
-{
-	uint32 Id;
 	uint32 MinLevel;
 	uint32 MaxLevel;
 	uint32 Faction;
@@ -177,6 +150,31 @@ struct CreatureProto
 	std::set<uint32> start_auras;
 	std::vector< uint32 > castable_spells;
 	std::list<AI_Spell*> spells;
+
+
+	std::string lowercase_name;
+	NpcMonsterSay* MonsterSay[NUM_MONSTER_SAY_EVENTS];
+
+	uint8 GenerateModelId(uint32* des)
+	{
+		uint32 models[] = { Male_DisplayID, Male_DisplayID2, Female_DisplayID, Female_DisplayID2 };
+		if(!models[0] && !models[1] && !models[2] && !models[3])
+		{
+			// All models are invalid.
+			Log.Notice("CreatureSpawn", "All model IDs are invalid for creature %u", Id);
+			return 0;
+		}
+
+		while(true)
+		{
+			uint32 res = RandomUInt(3);
+			if(models[res])
+			{
+				*des = models[res];
+				return res < 2 ? 0 : 1;
+			}
+		}
+	}
 };
 
 struct VendorRestrictionEntry
@@ -606,8 +604,6 @@ class SERVER_DECL Creature : public Unit
 		/////////////////////////////////////////////////////////////////
 		void deactivate();
 
-		ARCEMU_INLINE CreatureInfo* GetCreatureInfo() { return creature_info; }
-		ARCEMU_INLINE void SetCreatureInfo(CreatureInfo* ci) { creature_info = ci; }
 		void SetCreatureProto(CreatureProto* cp) { proto = cp; }
 
 		ARCEMU_INLINE Trainer* GetTrainer() { return mTrainer; }
@@ -617,7 +613,7 @@ class SERVER_DECL Creature : public Unit
 
 		ARCEMU_INLINE bool IsExotic()
 		{
-			if((GetCreatureInfo()->Flags1 & CREATURE_FLAG1_EXOTIC) != 0)
+			if( (proto->Flags1 & CREATURE_FLAG1_EXOTIC) != 0)
 				return true;
 
 			return false;
@@ -720,7 +716,6 @@ class SERVER_DECL Creature : public Unit
 		uint32 _fields[UNIT_END];
 		uint32 m_healthfromspell;
 
-		CreatureInfo* creature_info;
 		CreatureProto* proto;
 
 	private:

@@ -2663,7 +2663,7 @@ class DarkenerAI : public MoonScriptCreatureAI
 				_unit->GetAIInterface()->modThreatByPtr(mCurrentTarget, 1000000);
 				Player* pPlayer = TO_PLAYER(mCurrentTarget);
 				char msg[256];
-				snprintf((char*)msg, 256, "%s sets eyes on %s", _unit->GetCreatureInfo()->Name, pPlayer->GetName());
+				snprintf((char*)msg, 256, "%s sets eyes on %s", _unit->GetProto()->Name, pPlayer->GetName());
 				_unit->SendChatMessageAlternateEntry(CN_DARKENER, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, msg);
 				return true;
 			}

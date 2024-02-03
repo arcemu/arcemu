@@ -248,51 +248,6 @@ LOCK TABLES `creature_formations` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `creature_names`
---
-
-DROP TABLE IF EXISTS `creature_names`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `creature_names` (
-  `entry` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(100) NOT NULL,
-  `subname` varchar(100) NOT NULL,
-  `info_str` varchar(500) NOT NULL,
-  `flags1` int(10) unsigned NOT NULL DEFAULT '0',
-  `type` int(10) unsigned NOT NULL DEFAULT '0',
-  `family` int(10) unsigned NOT NULL DEFAULT '0',
-  `rank` int(10) unsigned NOT NULL DEFAULT '0',
-  `killcredit1` int(10) unsigned NOT NULL DEFAULT '0',
-  `killcredit2` int(10) unsigned NOT NULL DEFAULT '0',
-  `male_displayid` int(30) unsigned NOT NULL DEFAULT '0',
-  `female_displayid` int(30) unsigned NOT NULL DEFAULT '0',
-  `male_displayid2` int(30) unsigned NOT NULL DEFAULT '0',
-  `female_displayid2` int(30) unsigned NOT NULL DEFAULT '0',
-  `unknown_float1` float NOT NULL DEFAULT '1',
-  `unknown_float2` float NOT NULL DEFAULT '1',
-  `leader` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `questitem1` int(11) unsigned NOT NULL DEFAULT '0',
-  `questitem2` int(11) unsigned NOT NULL DEFAULT '0',
-  `questitem3` int(11) unsigned NOT NULL DEFAULT '0',
-  `questitem4` int(11) unsigned NOT NULL DEFAULT '0',
-  `questitem5` int(11) unsigned NOT NULL DEFAULT '0',
-  `questitem6` int(11) unsigned NOT NULL DEFAULT '0',
-  `waypointid` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `creature_names`
---
-
-LOCK TABLES `creature_names` WRITE;
-/*!40000 ALTER TABLE `creature_names` DISABLE KEYS */;
-/*!40000 ALTER TABLE `creature_names` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `creature_names_localized`
 --
 
@@ -326,6 +281,29 @@ DROP TABLE IF EXISTS `creature_proto`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `creature_proto` (
   `entry` int(30) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(100) NOT NULL,
+  `subname` varchar(100) NOT NULL,
+  `info_str` varchar(500) NOT NULL,
+  `flags1` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` int(10) unsigned NOT NULL DEFAULT '0',
+  `family` int(10) unsigned NOT NULL DEFAULT '0',
+  `rank` int(10) unsigned NOT NULL DEFAULT '0',
+  `killcredit1` int(10) unsigned NOT NULL DEFAULT '0',
+  `killcredit2` int(10) unsigned NOT NULL DEFAULT '0',
+  `male_displayid` int(30) unsigned NOT NULL DEFAULT '0',
+  `female_displayid` int(30) unsigned NOT NULL DEFAULT '0',
+  `male_displayid2` int(30) unsigned NOT NULL DEFAULT '0',
+  `female_displayid2` int(30) unsigned NOT NULL DEFAULT '0',
+  `unknown_float1` float NOT NULL DEFAULT '1',
+  `unknown_float2` float NOT NULL DEFAULT '1',
+  `leader` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `questitem1` int(11) unsigned NOT NULL DEFAULT '0',
+  `questitem2` int(11) unsigned NOT NULL DEFAULT '0',
+  `questitem3` int(11) unsigned NOT NULL DEFAULT '0',
+  `questitem4` int(11) unsigned NOT NULL DEFAULT '0',
+  `questitem5` int(11) unsigned NOT NULL DEFAULT '0',
+  `questitem6` int(11) unsigned NOT NULL DEFAULT '0',
+  `waypointid` int(10) unsigned NOT NULL DEFAULT '0',
   `minlevel` int(30) unsigned NOT NULL,
   `maxlevel` int(30) unsigned NOT NULL,
   `faction` int(30) unsigned NOT NULL DEFAULT '0',
@@ -2876,7 +2854,7 @@ CREATE TABLE `world_db_version` (
 
 LOCK TABLES `world_db_version` WRITE;
 /*!40000 ALTER TABLE `world_db_version` DISABLE KEYS */;
-INSERT INTO `world_db_version` VALUES ('20240202-2225_gameobject_proto');
+INSERT INTO `world_db_version` VALUES ('20240203-0235_creature_proto');
 /*!40000 ALTER TABLE `world_db_version` ENABLE KEYS */;
 UNLOCK TABLES;
 

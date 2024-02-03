@@ -633,7 +633,7 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 		else
 		{
 			Creature* p = TO< Creature* >(pUnit);
-			name = p->GetCreatureInfo()->Name;
+			name = p->GetProto()->Name;
 			namelen = (uint32)strlen(name) + 1;
 		}
 	}

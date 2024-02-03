@@ -60,7 +60,7 @@ class BlackTempleScript : public MoonInstanceScript
 
 		void OnCreatureDeath(Creature* pVictim, Unit* pKiller)
 		{
-			if(pVictim->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
+			if(pVictim->GetProto()->Rank != ELITE_WORLDBOSS)
 				return;
 
 			EncounterMap::iterator Iter = mEncounters.find(pVictim->GetEntry());
@@ -2982,7 +2982,7 @@ class ReliquaryOfSoulsAI : public MoonScriptCreatureAI
 								if((*itr)->IsCreature())
 								{
 									creature = TO_CREATURE((*itr));
-									if(creature->GetCreatureInfo()->Id == CN_ENSLAVED_SOUL && !creature->isAlive())
+									if(creature->GetProto()->Id == CN_ENSLAVED_SOUL && !creature->isAlive())
 										DeadSoulCount++;
 								}
 							}

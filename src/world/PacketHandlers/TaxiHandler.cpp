@@ -193,31 +193,31 @@ void WorldSession::HandleActivateTaxiOpcode(WorldPacket & recv_data)
 	uint32 modelid = 0;
 	if(_player->IsTeamHorde())
 	{
-		CreatureInfo *ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
+		CreatureProto *proto = CreatureProtoStorage.LookupEntry( taxinode->horde_mount );
 		
-		if( ci == NULL )
-			ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
+		if( proto == NULL )
+			proto = CreatureProtoStorage.LookupEntry( taxinode->alliance_mount );
 		
-		if( ci == NULL )
-			ci = CreatureNameStorage.LookupEntry( 541 ); // Riding Gryphon, in case neither of the above work
+		if( proto == NULL )
+			proto = CreatureProtoStorage.LookupEntry( 541 ); // Riding Gryphon, in case neither of the above work
 		
-		if( ci != NULL )
-			modelid = ci->Male_DisplayID;
+		if( proto != NULL )
+			modelid = proto->Male_DisplayID;
 		else
 			modelid = 6852; // Riding Gryphon modelid, in case it wasn't in the db;
 	}
 	else
 	{
-		CreatureInfo *ci = CreatureNameStorage.LookupEntry( taxinode->alliance_mount );
+		CreatureProto *proto = CreatureProtoStorage.LookupEntry( taxinode->alliance_mount );
 		
-		if( ci == NULL )
-			ci = CreatureNameStorage.LookupEntry( taxinode->horde_mount );
+		if( proto == NULL )
+			proto = CreatureProtoStorage.LookupEntry( taxinode->horde_mount );
 		
-		if( ci == NULL )
-			ci = CreatureNameStorage.LookupEntry( 541 ); // Riding Gryphon, in case neither of the above work
+		if( proto == NULL )
+			proto = CreatureProtoStorage.LookupEntry( 541 ); // Riding Gryphon, in case neither of the above work
 
-		if( ci != NULL )
-			modelid = ci->Male_DisplayID;
+		if( proto != NULL )
+			modelid = proto->Male_DisplayID;
 		else
 			modelid = 6852; // Riding Gryphon modelid, in case it wasn't in the db
 	}
@@ -342,16 +342,16 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	uint32 modelid = 0;
 	if(_player->IsTeamHorde())
 	{
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->horde_mount);
-		if(!ci) return;
-		modelid = ci->Male_DisplayID;
+		CreatureProto *proto = CreatureProtoStorage.LookupEntry(taxinode->horde_mount);
+		if( proto == NULL) return;
+		modelid = proto->Male_DisplayID;
 		if(!modelid) return;
 	}
 	else
 	{
-		CreatureInfo* ci = CreatureNameStorage.LookupEntry(taxinode->alliance_mount);
-		if(!ci) return;
-		modelid = ci->Male_DisplayID;
+		CreatureProto *proto = CreatureProtoStorage.LookupEntry(taxinode->alliance_mount);
+		if(proto == NULL) return;
+		modelid = proto->Male_DisplayID;
 		if(!modelid) return;
 	}
 

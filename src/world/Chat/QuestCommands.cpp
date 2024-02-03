@@ -679,7 +679,7 @@ bool ChatHandler::HandleQuestGiverCommand(const char* args, WorldSession* m_sess
 		delete objectResult1;
 
 		std::string creatureName1 = "N/A";
-		CreatureInfo* creatureResult1 = CreatureNameStorage.LookupEntry(atol(creatureId1.c_str()));
+		CreatureProto* creatureResult1 = CreatureProtoStorage.LookupEntry(atol(creatureId1.c_str()));
 		if(creatureResult1)
 		{
 			creatureName1 = creatureResult1->Name;
@@ -1002,7 +1002,7 @@ bool ChatHandler::HandleQuestAddStartCommand(const char* args, WorldSession* m_s
 	recout += qname;
 	recout += "\n\n";
 	SendMultilineMessage(m_session, recout.c_str());
-	sGMLog.writefromsession(m_session, "added starter of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetCreatureInfo()->Name);
+	sGMLog.writefromsession(m_session, "added starter of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetProto()->Name);
 
 	delete qstrel;
 	return true;
@@ -1087,7 +1087,7 @@ bool ChatHandler::HandleQuestAddFinishCommand(const char* args, WorldSession* m_
 	recout += qname;
 	recout += "\n\n";
 	SendMultilineMessage(m_session, recout.c_str());
-	sGMLog.writefromsession(m_session, "added finisher of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetCreatureInfo()->Name);
+	sGMLog.writefromsession(m_session, "added finisher of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetProto()->Name);
 
 	delete qstrel;
 	return true;
@@ -1184,7 +1184,7 @@ bool ChatHandler::HandleQuestDelStartCommand(const char* args, WorldSession* m_s
 	recout += qname;
 	recout += "\n\n";
 	SendMultilineMessage(m_session, recout.c_str());
-	sGMLog.writefromsession(m_session, "deleted starter of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetCreatureInfo()->Name);
+	sGMLog.writefromsession(m_session, "deleted starter of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetProto()->Name);
 
 	delete qstrel;
 	return true;
@@ -1269,7 +1269,7 @@ bool ChatHandler::HandleQuestDelFinishCommand(const char* args, WorldSession* m_
 	recout += qname;
 	recout += "\n\n";
 	SendMultilineMessage(m_session, recout.c_str());
-	sGMLog.writefromsession(m_session, "deleted finisher of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetCreatureInfo()->Name);
+	sGMLog.writefromsession(m_session, "deleted finisher of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetProto()->Name);
 
 	delete qstrel;
 	return true;
@@ -1305,7 +1305,7 @@ bool ChatHandler::HandleQuestFinisherCommand(const char* args, WorldSession* m_s
 		delete objectResult1;
 
 		std::string creatureName1 = "N/A";
-		CreatureInfo* creatureResult1 = CreatureNameStorage.LookupEntry(atol(creatureId1.c_str()));
+		CreatureProto* creatureResult1 = CreatureProtoStorage.LookupEntry(atol(creatureId1.c_str()));
 
 		if(creatureResult1)
 		{
@@ -1434,7 +1434,7 @@ bool ChatHandler::HandleQuestStarterSpawnCommand(const char* args, WorldSession*
 	delete objectResult;
 
 	std::string starterName = "N/A";
-	CreatureInfo* creatureResult = CreatureNameStorage.LookupEntry(atol(starterId.c_str()));
+	CreatureProto* creatureResult = CreatureProtoStorage.LookupEntry(atol(starterId.c_str()));
 
 	if(creatureResult)
 	{
@@ -1508,7 +1508,7 @@ bool ChatHandler::HandleQuestFinisherSpawnCommand(const char* args, WorldSession
 	delete objectResult;
 
 	std::string finisherName = "N/A";
-	CreatureInfo* creatureResult = CreatureNameStorage.LookupEntry(atol(finisherId.c_str()));
+	CreatureProto* creatureResult = CreatureProtoStorage.LookupEntry(atol(finisherId.c_str()));
 
 	if(creatureResult)
 	{

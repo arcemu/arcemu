@@ -481,9 +481,8 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 	guid = ++m_transportGuidMax;
 	m_transportGuidGen.Release();
 
-	CreatureInfo* inf = CreatureNameStorage.LookupEntry(Entry);
 	CreatureProto* proto = CreatureProtoStorage.LookupEntry(Entry);
-	if(inf == NULL || proto == NULL)
+	if(proto == NULL)
 		return;
 
 	Creature* pCreature = new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | guid);

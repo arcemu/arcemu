@@ -75,7 +75,7 @@ class ZerekethAI : public MoonScriptBossAI
 				{
 					creature = TO_CREATURE(obj);
 
-					if(creature->GetCreatureInfo()->Id == 21101 && creature->isAlive())
+					if(creature->GetProto()->Id == 21101 && creature->isAlive())
 					{
 						creature->Despawn(0, 0);
 					}

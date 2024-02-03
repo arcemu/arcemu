@@ -48,7 +48,7 @@ public:
 					    player,
 					    emote,
 					    language,
-					    string( creature->GetCreatureInfo()->Name ),
+					    string( creature->GetProto()->Name ),
 					    string( message ) );
 	}
 };

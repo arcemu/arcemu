@@ -176,7 +176,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession* m_session)
 		SystemMessage(m_session, "You can't delete a pet.");
 		return true;
 	}
-	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureInfo()->Name, unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
+	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetProto()->Name, unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
 
 	unit->GetAIInterface()->hideWayPoints(m_session->GetPlayer());
 
@@ -387,7 +387,7 @@ bool ChatHandler::HandleNPCFlagCommand(const char* args, WorldSession* m_session
 	WorldDatabase.Execute("UPDATE creature_proto SET npcflags = '%lu' WHERE entry = %lu", npcFlags, pCreature->GetProto()->Id);
 	SystemMessage(m_session, "Value saved, you may need to rejoin or clean your client cache.");
 
-	sGMLog.writefromsession(m_session, "changed npc flags of creature %u [%s] to %u", pCreature->GetEntry(), pCreature->GetCreatureInfo()->Name, npcFlags);
+	sGMLog.writefromsession(m_session, "changed npc flags of creature %u [%s] to %u", pCreature->GetEntry(), pCreature->GetProto()->Name, npcFlags);
 
 	return true;
 }
@@ -432,7 +432,7 @@ bool ChatHandler::HandleKillCommand(const char* args, WorldSession* m_session)
 			break;
 
 		case TYPEID_UNIT:
-			sGMLog.writefromsession(m_session, "used kill command on CREATURE %u [%s], sqlid %u%s", TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetCreatureInfo()->Name, TO< Creature* >(target)->GetSQL_id(), m_session->GetPlayer()->InGroup() ? ", in group" : "");
+			sGMLog.writefromsession(m_session, "used kill command on CREATURE %u [%s], sqlid %u%s", TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetProto()->Name, TO< Creature* >(target)->GetSQL_id(), m_session->GetPlayer()->InGroup() ? ", in group" : "");
 			break;
 	}
 
@@ -529,7 +529,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession* m_sessi
 				sGMLog.writefromsession(m_session, "cast spell %d on PLAYER %s", spellid, TO< Player* >(target)->GetName());
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession(m_session, "cast spell %d on CREATURE %u [%s], sqlid %u", spellid, TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetCreatureInfo()->Name, TO< Creature* >(target)->GetSQL_id());
+			sGMLog.writefromsession(m_session, "cast spell %d on CREATURE %u [%s], sqlid %u", spellid, TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetProto()->Name, TO< Creature* >(target)->GetSQL_id());
 			break;
 	}
 
@@ -590,7 +590,7 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession* m_ses
 				sGMLog.writefromsession(m_session, "cast spell %d on PLAYER %s", spellId, TO< Player* >(target)->GetName());
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession(m_session, "cast spell %d on CREATURE %u [%s], sqlid %u", spellId, TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetCreatureInfo()->Name, TO< Creature* >(target)->GetSQL_id());
+			sGMLog.writefromsession(m_session, "cast spell %d on CREATURE %u [%s], sqlid %u", spellId, TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetProto()->Name, TO< Creature* >(target)->GetSQL_id());
 			break;
 	}
 
@@ -630,7 +630,7 @@ bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession* m_sessio
 				sGMLog.writefromsession(m_session, "used castself with spell %d on PLAYER %s", spellid, TO< Player* >(target)->GetName());
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession(m_session, "used castself with spell %d on CREATURE %u [%s], sqlid %u", spellid, TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetCreatureInfo()->Name, TO< Creature* >(target)->GetSQL_id());
+			sGMLog.writefromsession(m_session, "used castself with spell %d on CREATURE %u [%s], sqlid %u", spellid, TO< Creature* >(target)->GetEntry(), TO< Creature* >(target)->GetProto()->Name, TO< Creature* >(target)->GetSQL_id());
 			break;
 	}
 
@@ -1512,7 +1512,7 @@ bool ChatHandler::HandleNpcComeCommand(const char* args, WorldSession* m_session
 	if(!crt) return true;
 
 	crt->GetAIInterface()->MoveTo(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
-	sGMLog.writefromsession(m_session, "used npc come command on %s, sqlid %u", crt->GetCreatureInfo()->Name, crt->GetSQL_id());
+	sGMLog.writefromsession(m_session, "used npc come command on %s, sqlid %u", crt->GetProto()->Name, crt->GetSQL_id());
 	return true;
 }
 
@@ -1529,13 +1529,13 @@ bool ChatHandler::HandleNPCEquipOneCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 
-	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item1: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(MELEE));
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item1: %u.", SelectedCreature->GetProto()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(MELEE));
 
 	if(ItemID == 0)
 	{
 		SelectedCreature->SetEquippedItem(MELEE, 0);
 		SelectedCreature->SaveToDB();
-		m_session->SystemMessage("Reset item 1 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		m_session->SystemMessage("Reset item 1 of %s (%u).", SelectedCreature->GetProto()->Name, SelectedCreature->GetProto()->Id);
 		return true;
 	}
 
@@ -1563,13 +1563,13 @@ bool ChatHandler::HandleNPCEquipTwoCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 
-	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item2: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(OFFHAND));
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item2: %u.", SelectedCreature->GetProto()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(OFFHAND));
 
 	if(ItemID == 0)
 	{
 		SelectedCreature->SetEquippedItem(OFFHAND, 0);
 		SelectedCreature->SaveToDB();
-		m_session->SystemMessage("Reset item 2 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		m_session->SystemMessage("Reset item 2 of %s (%u).", SelectedCreature->GetProto()->Name, SelectedCreature->GetProto()->Id);
 		return true;
 	}
 
@@ -1597,13 +1597,13 @@ bool ChatHandler::HandleNPCEquipThreeCommand(const char* args, WorldSession* m_s
 		return true;
 	}
 
-	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item3: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(RANGED));
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item3: %u.", SelectedCreature->GetProto()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->GetEquippedItem(RANGED));
 
 	if(ItemID == 0)
 	{
 		SelectedCreature->SetEquippedItem(RANGED, 0);
 		SelectedCreature->SaveToDB();
-		m_session->SystemMessage("Reset item 3 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		m_session->SystemMessage("Reset item 3 of %s (%u).", SelectedCreature->GetProto()->Name, SelectedCreature->GetProto()->Id);
 		return true;
 	}
 

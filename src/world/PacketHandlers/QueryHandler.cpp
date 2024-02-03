@@ -73,7 +73,7 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket & recv_data)
 	WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 250); //VLack: thanks Aspire, this was 146 before
 	uint32 entry;
 	uint64 guid;
-	CreatureInfo* ci;
+	CreatureProto* ci;
 
 	recv_data >> entry;
 	recv_data >> guid;
@@ -92,7 +92,7 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket & recv_data)
 	}
 	else
 	{
-		ci = CreatureNameStorage.LookupEntry(entry);
+		ci = CreatureProtoStorage.LookupEntry(entry);
 		if(ci == NULL)
 			return;
 

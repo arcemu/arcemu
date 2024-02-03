@@ -649,7 +649,7 @@ class LeotherasAI : public CreatureAIScript
 				{
 					creature = TO_CREATURE((*itr));
 
-					if(creature->GetCreatureInfo()->Id == CN_GREYHEART_SPELLBINDER && creature->isAlive())
+					if(creature->GetProto()->Id == CN_GREYHEART_SPELLBINDER && creature->isAlive())
 						LeotherasEventGreyheartToKill[_unit->GetInstanceID()]++;
 				}
 			}
@@ -2007,11 +2007,11 @@ class VashjAI : public CreatureAIScript
 				{
 					creature = TO_CREATURE((*itr));
 
-					if((creature->GetCreatureInfo()->Id == CN_ENCHANTED_ELEMENTAL ||
-					        creature->GetCreatureInfo()->Id == CN_TAINTED_ELEMENTAL ||
-					        creature->GetCreatureInfo()->Id == CN_COILFANG_STRIDER ||
-					        creature->GetCreatureInfo()->Id == CN_COILFANG_ELITE ||
-					        creature->GetCreatureInfo()->Id == CN_SHIELD_GENERATOR_CHANNEL)
+					if((creature->GetProto()->Id == CN_ENCHANTED_ELEMENTAL ||
+					        creature->GetProto()->Id == CN_TAINTED_ELEMENTAL ||
+					        creature->GetProto()->Id == CN_COILFANG_STRIDER ||
+					        creature->GetProto()->Id == CN_COILFANG_ELITE ||
+					        creature->GetProto()->Id == CN_SHIELD_GENERATOR_CHANNEL)
 					        && creature->isAlive())
 						creature->Despawn(500, 0);
 				}
@@ -2236,7 +2236,7 @@ class VashjAI : public CreatureAIScript
 					{
 						creature = TO_CREATURE((*itr));
 
-						if(creature->GetCreatureInfo()->Id == CN_ENCHANTED_ELEMENTAL && creature->isAlive())
+						if(creature->GetProto()->Id == CN_ENCHANTED_ELEMENTAL && creature->isAlive())
 							creature->Despawn(0, 0);
 					}
 				}

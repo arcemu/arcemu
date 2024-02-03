@@ -154,8 +154,7 @@ GameObject* MapScriptInterface::SpawnGameObject(GOSpawn* gs, bool AddToWorld)
 Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
 	CreatureProto* proto = CreatureProtoStorage.LookupEntry(Entry);
-	CreatureInfo* info = CreatureNameStorage.LookupEntry(Entry);
-	if(proto == NULL || info == NULL)
+	if(proto == NULL)
 	{
 		return 0;
 	}
@@ -163,7 +162,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	CreatureSpawn* sp = new CreatureSpawn;
 	sp->entry = Entry;
 	uint32 DisplayID = 0;
-	uint8 Gender = info->GenerateModelId(&DisplayID);
+	uint8 Gender = proto->GenerateModelId(&DisplayID);
 	sp->displayid = DisplayID;
 	sp->form = 0;
 	sp->id = 0;
@@ -207,13 +206,12 @@ Creature* MapScriptInterface::SpawnCreature(CreatureSpawn* sp, bool AddToWorld)
 		return NULL;
 
 	CreatureProto* proto = CreatureProtoStorage.LookupEntry(sp->entry);
-	CreatureInfo* info = CreatureNameStorage.LookupEntry(sp->entry);
-	if(proto == NULL || info == NULL)
+	if(proto == NULL)
 	{
 		return 0;
 	}
 
-	uint8 Gender = info->GenerateModelId(&sp->displayid);
+	uint8 Gender = proto->GenerateModelId(&sp->displayid);
 	Creature* p = this->mapMgr.CreateCreature(sp->entry);
 	ARCEMU_ASSERT(p != NULL);
 	p->Load(sp, (uint32)NULL, NULL);

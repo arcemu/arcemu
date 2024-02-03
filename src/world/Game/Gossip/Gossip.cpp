@@ -355,7 +355,7 @@ void Arcemu::Gossip::Trainer::OnHello(Object* pObject, Player* Plr)
 	if(NpcTextStorage.LookupEntry(Text) == NULL)
 		Text = Gossip::DEFAULT_TXTINDEX;
 
-	string name = trainer->GetCreatureInfo()->Name;
+	string name = trainer->GetProto()->Name;
 	string::size_type pos = name.find(" ");	  // only take first name
 
 	if(pos != string::npos)
@@ -634,7 +634,7 @@ void Arcemu::Gossip::ClassTrainer::OnHello(Object* pObject, Player* Plr)
 		{
 			menu.setTextID(traininfo->Can_Train_Gossip_TextId);
 			string itemname = Plr->GetSession()->LocalizedWorldSrv(Gossip::ISEEK);
-			string name = trainer->GetCreatureInfo()->Name;
+			string name = trainer->GetProto()->Name;
 
 			string::size_type pos = name.find(" ");	  // only take first name
 

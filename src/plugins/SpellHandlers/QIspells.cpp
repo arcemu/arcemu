@@ -1437,7 +1437,7 @@ bool HunterTamingQuest(uint32 i, Aura* a, bool apply)
 					tamed->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 
 					Pet* pPet = objmgr.CreatePet(tamed->GetEntry());
-					if(! pPet->CreateAsSummon(tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000))
+					if(! pPet->CreateAsSummon(tamed->GetEntry(), tamed, p_caster, triggerspell, 2, 900000))
 					{
 						pPet->DeleteMe();//CreateAsSummon() returns false if an error occurred.
 						pPet = NULL;
@@ -1497,9 +1497,8 @@ bool ArcaneDisruption(uint32 i, Aura* pAura, bool apply)
 		{
 			//weee, Uther
 			CreatureProto* cp = CreatureProtoStorage.LookupEntry(26528);
-			CreatureInfo* ci = CreatureNameStorage.LookupEntry(26528);
 			Creature* c = NULL;
-			if(cp && ci)
+			if(cp)
 			{
 				c = plr->GetMapMgr()->CreateCreature(26528);
 				if(c)

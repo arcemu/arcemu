@@ -155,13 +155,6 @@ static PyObject* ArcPyPlayer_spawnAndEnterVehicle( ArcPyPlayer *self, PyObject *
 	if( ( ptr->GetCurrentVehicle() != NULL ) && ( !ptr->IsPlayer() || !ptr->IsVehicle() ) )
 		Py_RETURN_NONE;
 	
-	CreatureInfo *ci = CreatureNameStorage.LookupEntry( creatureId );
-	if( ci == NULL )
-	{
-		PyErr_SetString( PyExc_ValueError, "The creature must exist" );
-		return NULL;
-	}
-	
 	CreatureProto *cp = CreatureProtoStorage.LookupEntry( creatureId );
 	if( cp == NULL )
 	{
