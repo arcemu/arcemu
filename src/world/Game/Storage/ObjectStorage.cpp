@@ -24,7 +24,7 @@
  */
 const char * gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gItemNameFormat							= "usu";
-const char * gGameObjectNameFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
+const char * gGameObjectProtoFormat						= "uuussssuuuuuuuuuuuuuuuuuuuuuuuufuuuuuu";
 const char * gCreatureProtoFormat						= "usssuuuuuuuuuuffcuuuuuuuuuuuuufuuuffuuffuuuuuuuuffsuuufffuuuuuuuuuuuuuuuuu";
 const char * gDisplayBoundingFormat						= "ufffffff";
 const char * gVendorRestrictionEntryFormat				= "uuuuuuuu";
@@ -539,7 +539,7 @@ void Storage_FillTaskList(TaskList & tl)
 {
 	make_task(ItemPrototypeStorage, ItemPrototype, ArrayStorageContainer, "items", gItemPrototypeFormat);
 	make_task(ItemNameStorage, ItemName, ArrayStorageContainer, "itemnames", gItemNameFormat);
-	make_task(GameObjectProtoStorage, GameObjectProto, HashMapStorageContainer, "gameobject_proto", gGameObjectNameFormat);
+	make_task(GameObjectProtoStorage, GameObjectProto, HashMapStorageContainer, "gameobject_proto", gGameObjectProtoFormat);
 	make_task(CreatureProtoStorage, CreatureProto, HashMapStorageContainer, "creature_proto", gCreatureProtoFormat);
 	make_task(DisplayBoundingStorage, DisplayBounding, HashMapStorageContainer, "display_bounding_boxes", gDisplayBoundingFormat);
 	make_task(VendorRestrictionEntryStorage, VendorRestrictionEntry, ArrayStorageContainer, "vendor_restrictions", gVendorRestrictionEntryFormat);
@@ -623,7 +623,7 @@ bool LoadAdditionalTable(const char* TableName, const char* SecondName, bool fir
 	else if(firstLoad && !stricmp(TableName, "creature_proto"))		// Creature Proto
 		CreatureProtoStorage.LoadAdditionalData(SecondName, gCreatureProtoFormat);
 	else if(firstLoad && !stricmp(TableName, "gameobject_proto"))	// GO proto
-		GameObjectProtoStorage.LoadAdditionalData(SecondName, gGameObjectNameFormat);
+		GameObjectProtoStorage.LoadAdditionalData(SecondName, gGameObjectProtoFormat);
 	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
 		AreaTriggerStorage.LoadAdditionalData(SecondName, gAreaTriggerFormat);
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
