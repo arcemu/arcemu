@@ -2817,10 +2817,10 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char* args, WorldSession* m_s
 	sp->stand_state = 0;
 	sp->death_state = 0;
 	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
-	sp->MountedDisplayID = 0;
-	sp->Item1SlotDisplay = 0;
-	sp->Item2SlotDisplay = 0;
-	sp->Item3SlotDisplay = 0;
+	sp->MountedDisplayID = proto->mountDisplayId;
+	sp->Item1SlotDisplay = proto->itemSlot1Display;
+	sp->Item2SlotDisplay = proto->itemSlot2Display;
+	sp->Item3SlotDisplay = proto->itemSlot3Display;
 	sp->CanFly = 0;
 	sp->phase = m_session->GetPlayer()->GetPhase();
 
