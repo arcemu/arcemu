@@ -115,6 +115,74 @@ void MapScriptInterface::RemoveGameObjectSpawn( GOSpawn *gs )
 	spawns.erase( itr );
 }
 
+void MapScriptInterface::spawnPersistentGameObject( uint32 entry, LocationVector &location, uint32 phase )
+{
+	GameObjectProto *proto = GameObjectProtoStorage.LookupEntry( entry );
+	if( proto == NULL )
+	{
+		return;
+	}
+
+	/// Create and add the spawn
+	GOSpawn *spawn = new GOSpawn();
+	spawn->id = 0;
+	spawn->entry = entry;
+	spawn->x = location.x;
+	spawn->y = location.y;
+	spawn->z = location.z;
+	spawn->facing = location.o;
+	spawn->o = spawn->o1 = spawn->o2 = spawn->o3 = 0;
+	spawn->state = GAMEOBJECT_STATE_CLOSED;
+	spawn->flags = 0;
+	spawn->faction = proto->faction;
+	spawn->scale = proto->Size;
+	spawn->phase = phase;
+	spawn->overrides = 0;
+
+	AddGameObjectSpawn( spawn );
+
+	/// If the cell is active, push the spawn to the world
+	MapCell *cell = mapMgr.GetCellByCoords( location.x, location.y );
+	if( cell != NULL )
+	{
+		SpawnGameObject( spawn, true );
+	}	
+}
+
+void MapScriptInterface::removePersistentGameObject( uint32 entry, LocationVector &location )
+{
+	uint32 cx = mapMgr.GetPosX( location.x );
+	uint32 cy = mapMgr.GetPosY( location.y );
+
+	/// First remove the spawn entry
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->GetSpawnsList( cx, cy );
+	if( cellSpawns != NULL )
+	{
+		GOSpawnList &spawns = cellSpawns->GOSpawns;
+		GOSpawnList::iterator itr = spawns.begin();
+		while( itr != spawns.end() )
+		{
+			GOSpawn *spawn = *itr;
+
+			if( ( spawn->entry == entry ) && ( spawn->x == location.x ) && ( spawn->y == location.y ) && ( spawn->z == location.z ) )
+			{
+				itr = spawns.erase( itr );
+			}
+			else
+			{
+				++itr;
+			}
+		}
+	}
+
+	/// If the GO is in world despawn it
+	GameObject *go = GetGameObjectNearestCoords( location.x, location.y, location.z, entry );
+	if( go != NULL )
+	{
+		go->Despawn( 1, 0 );
+	}
+}
+
 GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
 
