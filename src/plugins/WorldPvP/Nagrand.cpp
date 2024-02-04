@@ -336,39 +336,22 @@ public:
 
 	void despawnCamp( uint32 campId )
 	{
-		GameObject *go;
+		MapScriptInterface *inf = mgr->GetInterface();
+		LocationVector location;
 
 		for( uint32 team = TEAM_ALLIANCE; team < NAGRAND_PVP_OWNER_NEUTRAL; team++ )
 		{
 			/// Destroyed Wyvern Roost
-			go = mgr->GetInterface()->GetGameObjectNearestCoords(
-				destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ],
-				destroyedRoostIds[ campId ][ team ] );
-				
-			if( go != NULL )
-			{
-				go->Despawn( 1, 0 );
-			}
+			location.ChangeCoords( destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ] );
+			inf->removePersistentGameObject( destroyedRoostIds[ campId ][ team ], location );
 
 			/// Wyvern Roost
-			go = mgr->GetInterface()->GetGameObjectNearestCoords(
-				wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ],
-				wyvernRoostIds[ campId ][ team ] );
-				
-			if( go != NULL )
-			{
-				go->Despawn( 1, 0 );
-			}
+			location.ChangeCoords( wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ] );
+			inf->removePersistentGameObject( wyvernRoostIds[ campId ][ team ], location );
 
 			/// Bomb wagon
-			go = mgr->GetInterface()->GetGameObjectNearestCoords(
-				bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ],
-				bombwagonIds[ campId ][ team ] );
-				
-			if( go != NULL )
-			{
-				go->Despawn( 1, 0 );
-			}
+			location.ChangeCoords( bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ] );
+			inf->removePersistentGameObject( bombwagonIds[ campId ][ team ], location );
 		}
 	}
 
@@ -392,12 +375,9 @@ public:
 			roostTeam = TEAM_ALLIANCE;
 		}
 
-		GameObject *go = mgr->GetInterface()->SpawnGameObject(
-			destroyedRoostIds[ campId ][ roostTeam ],
-			destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ], destroyedRoostLocations[ campId ][ 3 ],
-			false, 0, 0 );
-		
-		go->PushToWorld( mgr );
+		LocationVector location;
+		location.ChangeCoords( destroyedRoostLocations[ campId ][ 0 ], destroyedRoostLocations[ campId ][ 1 ], destroyedRoostLocations[ campId ][ 2 ], destroyedRoostLocations[ campId ][ 3 ] );
+		mgr->GetInterface()->spawnPersistentGameObject( destroyedRoostIds[ campId ][ roostTeam ], location );
 	}
 
 	void spawnCamps()
@@ -1073,26 +1053,17 @@ public:
 			enemyTeam = TEAM_ALLIANCE;
 		}
 
-		/// Spawn the real roost
-		GameObject *go;
-		go = mgr->GetInterface()->SpawnGameObject(
-			wyvernRoostIds[ campId ][ team ],
-			wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ], wyvernRoostLocations[ campId ][ 3 ],
-			false, 0, 0 );
+		MapScriptInterface *inf = mgr->GetInterface();
+		LocationVector location;
 
-		go->PushToWorld( mgr );
+		location.ChangeCoords( wyvernRoostLocations[ campId ][ 0 ], wyvernRoostLocations[ campId ][ 1 ], wyvernRoostLocations[ campId ][ 2 ], wyvernRoostLocations[ campId ][ 3 ] );
+		inf->spawnPersistentGameObject( wyvernRoostIds[ campId ][ team ], location );
 
-		/// Spawn the bomb wagon
-		go = mgr->GetInterface()->SpawnGameObject(
-			bombwagonIds[ campId ][ team ],
-			bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ], bombwagonLocations[ campId ][ 3 ],
-			false, 0, 0 );
+		location.ChangeCoords( bombwagonLocations[ campId ][ 0 ], bombwagonLocations[ campId ][ 1 ], bombwagonLocations[ campId ][ 2 ], bombwagonLocations[ campId ][ 3 ] );
+		inf->spawnPersistentGameObject( bombwagonIds[ campId ][ team ], location );
 
-		go->PushToWorld( mgr );
-
-		/// Despawn us
-		_gameobject->Despawn( 1, 0 );
-
+		location = _gameobject->GetPosition();
+		inf->removePersistentGameObject( _gameobject->getProto()->ID, location );
 
 		pvp.onWyvernCampCaptured( campId, team );
 	}
