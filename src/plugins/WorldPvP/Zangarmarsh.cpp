@@ -92,13 +92,7 @@ enum ZMBattleStandardSpells
 
 static uint32 battleStandardSpells[] = { SPELL_BATTLE_STANDARD_ALLIANCE, SPELL_BATTLE_STANDARD_HORDE };
 
-#define ZM_GY_BANNER_FACTION_ALLIANCE 1739
-#define ZM_GY_BANNER_FACTION_HORDE 1740
-#define ZM_GY_BANNER_FACTION_NEUTRAL 1742
-
 static float graveyardBannerLocation[] = { 253.5299f, 7083.7998f, 36.99f, -0.02f };
-
-static uint32 graveyardBannerFaction[] = { ZM_GY_BANNER_FACTION_ALLIANCE, ZM_GY_BANNER_FACTION_HORDE, ZM_GY_BANNER_FACTION_NEUTRAL };
 
 static uint32 graveyardBannerGoIds[] = { GO_ZM_BANNER_GRAVEYARD_ALLIANCE, GO_ZM_BANNER_GRAVEYARD_HORDE, GO_ZM_BANNER_GRAVEYARD_NEUTRAL };
 
@@ -139,8 +133,6 @@ static uint32 pvpBeamAuras[] =
 
 static float gyBeamLocation[ 4 ] = { 273.87f, 7082.68f, 87.06f, 3.02f };
 
-/// We want to keep this banner respawning when the cell gets reloaded, so we have to handle it specially...
-/// TODO: Refactor! There should be a generic solutions for spawning like this
 class GraveyardBannerSpawner
 {
 private:
@@ -152,53 +144,18 @@ public:
 		this->mgr = mgr;
 	}
 
-	/// Add a banne spawn to the map cell's spawn list and OPTIONALLY push it to the world
-	/// There's no point in pushing when there can be no players around for example (on startup)
-	void spawnBanner( uint32 team, bool push = false )
+	void respawnBanner( uint32 team )
 	{
+		MapScriptInterface *inf = mgr->GetInterface();
+		LocationVector location;
+
+		location.ChangeCoords( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
+
 		/// Remove previous banner if there's one
-		GameObject *go = mgr->GetInterface()->GetGameObjectNearestCoords(
-			graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ], graveyardBannerGoIds[ graveyardOwner.GetVal() ] );
+		inf->removePersistentGameObject( graveyardBannerGoIds[ graveyardOwner.GetVal() ], location );
 
-		if( go != NULL )
-		{
-			if( go->m_spawn != NULL )
-			{
-				mgr->GetInterface()->RemoveGameObjectSpawn( go->m_spawn );
-			}
-
-			go->Despawn( 1, 0 );
-		}
-
-		/// Set up properties of the banner
-		GOSpawn *gs = new GOSpawn();
-		gs->id = 0;
-		gs->entry = graveyardBannerGoIds[ team ];
-		gs->x = graveyardBannerLocation[ 0 ];
-		gs->y = graveyardBannerLocation[ 1 ];
-		gs->z = graveyardBannerLocation[ 2 ];
-		gs->facing = graveyardBannerLocation[ 3 ];
-		gs->o = 0.0f;
-		gs->o1 = 0.0f;
-		gs->o2 = 0.0f;
-		gs->o3 = 0.0f;
-		gs->faction = graveyardBannerFaction[ team ];
-		gs->flags = 0;
-		gs->scale = 2.0f;
-		gs->state = 1;
-		gs->overrides = 0;
-		gs->phase = 0xFFFFFFF;
-
-		/// Spawn away!
-		mgr->GetInterface()->AddGameObjectSpawn( gs );
-		if( push )
-		{
-			GameObject *newBanner = mgr->GetInterface()->SpawnGameObject( gs, true );
-			if( newBanner != NULL )
-			{
-				newBanner->m_spawn = gs;
-			}
-		}
+		/// Spawn the new banner
+		inf->spawnPersistentGameObject( graveyardBannerGoIds[ team ], location );
 	}
 };
 
@@ -304,7 +261,7 @@ public:
 		uint32 oldTeam = graveyardOwner.GetVal();
 
 		GraveyardBannerSpawner spawner( mgr );
-		spawner.spawnBanner( team, true );
+		spawner.respawnBanner( team );
 
 		/// Change graveyard owner
 		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
@@ -869,7 +826,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 	mgr->register_hook( SERVER_HOOK_EVENT_ON_HONORABLE_KILL, (void*)&ZM_onHonorableKill );
 
 	GraveyardBannerSpawner gySpawner( mapMgr );
-	gySpawner.spawnBanner( ZM_BEACON_OWNER_NEUTRAL, false );
+	gySpawner.respawnBanner( ZM_BEACON_OWNER_NEUTRAL );
 
 	LocationVector location( graveyardBannerLocation[ 0 ], graveyardBannerLocation[ 1 ], graveyardBannerLocation[ 2 ] );
 	sGraveyardService.setGraveyardOwner( 530, location, ZM_BEACON_OWNER_NEUTRAL );
