@@ -138,6 +138,10 @@ struct CreatureProto
 	uint32 spelldataid;
 	uint32 vehicleid;
 	uint32 rooted;
+	uint32 mountDisplayId;
+	uint32 itemSlot1Display;
+	uint32 itemSlot2Display;
+	uint32 itemSlot3Display;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;

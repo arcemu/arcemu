@@ -353,7 +353,11 @@ CREATE TABLE `creature_proto` (
   `summonguard` int(10) unsigned NOT NULL DEFAULT '0',
   `spelldataid` int(10) unsigned NOT NULL DEFAULT '0',
   `vehicleid` int(10) unsigned NOT NULL DEFAULT '0',
-  `rooted` int(10) unsigned NOT NULL DEFAULT '0',
+  `rooted` int(10) unsigned NOT NULL DEFAULT '0',  
+  `mount_display_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `item1_display_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `item2_display_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `item3_display_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2855,7 +2859,7 @@ CREATE TABLE `world_db_version` (
 
 LOCK TABLES `world_db_version` WRITE;
 /*!40000 ALTER TABLE `world_db_version` DISABLE KEYS */;
-INSERT INTO `world_db_version` VALUES ('20240203-0235_creature_proto');
+INSERT INTO `world_db_version` VALUES ('20240204-0144_creature_proto');
 /*!40000 ALTER TABLE `world_db_version` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -1475,7 +1475,10 @@ void Creature::Load(CreatureProto* proto_, float x, float y, float z, float o)
 
 	SetDisplayId(model);
 	SetNativeDisplayId(model);
-	SetMount(0);
+	SetMount(proto->mountDisplayId);
+	SetEquippedItem(MELEE, proto->itemSlot1Display);
+	SetEquippedItem(OFFHAND, proto->itemSlot2Display);
+	SetEquippedItem(RANGED, proto->itemSlot3Display);	
 
 	EventModelChange();
 
