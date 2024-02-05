@@ -230,6 +230,21 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 		float  GetLandHeight(float x, float y, float z) { return _terrain->GetLandHeight(x, y, z); }
 		float  GetADTLandHeight(float x, float y) { return _terrain->GetADTLandHeight(x, y); }
 		bool   IsUnderground(float x, float y, float z) { return GetADTLandHeight(x, y) > (z + 0.5f); }
+		
+		/// Tells if the specified coordinates are considered to be on the ground level
+		bool isOnTheGround(float x, float y, float z){
+			float h = GetADTLandHeight(x, y);
+			
+			if( fabs( z - h ) <= 0.5f )
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		bool GetLiquidInfo(float x, float y, float z, float & liquidlevel, uint32 & liquidtype) { return _terrain->GetLiquidInfo(x, y, z, liquidlevel, liquidtype); }
 		float  GetLiquidHeight(float x, float y) { return _terrain->GetLiquidHeight(x, y); }
 		uint8  GetLiquidType(float x, float y) { return _terrain->GetLiquidType(x, y); }
