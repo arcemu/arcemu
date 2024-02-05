@@ -646,34 +646,18 @@ public:
 		}
 	}
 
-	void onGuardSpawned()
-	{
-		if( halaaGuards >= HALAA_GUARD_COUNT )
-		{
-			return;
-		}
-
-		halaaGuards++;
-
-		WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
-		handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
-	}
-
 	void handleNpcs( uint32 lastOwner )
 	{
+		MapScriptInterface *inf = mgr->GetInterface();
+		LocationVector location;
+
 		/// Remove old NPCs if applicable
 		if( lastOwner != NAGRAND_PVP_OWNER_NEUTRAL )
 		{
 			for( int i = 0; i < HALAA_NPC_COUNT; i++ )
 			{
-				Creature *creature = mgr->GetInterface()->GetCreatureNearestCoords(
-					halaaNpcLocations[ i ][ 0 ], halaaNpcLocations[ i ][ 1 ], halaaNpcLocations[ i ][ 2 ],
-					halaaNpcs[ i ][ lastOwner ] );
-
-				if( creature != NULL )
-				{
-					creature->Despawn( 1, 0 );
-				}
+				location.ChangeCoords( halaaNpcLocations[ i ][ 0 ], halaaNpcLocations[ i ][ 1 ], halaaNpcLocations[ i ][ 2 ] );
+				inf->removePersistentCreature( halaaNpcs[ i ][ lastOwner ], location );
 			}
 		}
 
@@ -682,53 +666,45 @@ public:
 		{
 			for( int i = 0; i < HALAA_NPC_COUNT; i++ )
 			{
-				Creature *creature = mgr->GetInterface()->SpawnCreature( 
-					halaaNpcs[ i ][ halaaOwner ],
-					halaaNpcLocations[ i ][ 0 ], halaaNpcLocations[ i ][ 1 ], halaaNpcLocations[ i ][ 2 ], halaaNpcLocations[ i ][ 3 ],
-					false, false, 0, 0 );
-
-				if( creature != NULL )
-				{
-					creature->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
-					creature->PushToWorld( mgr );
-				}
+				location.ChangeCoords( halaaNpcLocations[ i ][ 0 ], halaaNpcLocations[ i ][ 1 ], halaaNpcLocations[ i ][ 2 ], halaaNpcLocations[ i ][ 3 ] );
+				inf->spawnPersistentCreature( halaaNpcs[ i ][ halaaOwner ], location );
 			}
 		}
 	}
 
-	void respawnGuards()
+	void handleGuards( uint32 lastOwner )
 	{
-		halaaGuards = HALAA_GUARD_COUNT;
+		MapScriptInterface *inf = mgr->GetInterface();
+		LocationVector location;
 
-		/// Spawn guards
-		for( int i = 0; i < HALAA_GUARD_COUNT; i++ )
+
+		/// Remove old guards if applicable
+		if( lastOwner != NAGRAND_PVP_OWNER_NEUTRAL )
 		{
-			Creature *guard = mgr->GetInterface()->SpawnCreature(
-				halaaGuardNpcs[ halaaOwner ],
-				halaaGuardLocations[ i ][ 0 ], halaaGuardLocations[ i ][ 1 ], halaaGuardLocations[ i ][ 2 ], halaaGuardLocations[ i ][ 3 ],
-				false, false, 0, 0
-			);
-
-			if( guard != NULL )
+			for( int i = 0; i < HALAA_GUARD_COUNT; i++ )
 			{
-				guard->SetEquippedItem( 0, halaaGuardEquipments[ halaaOwner ][ 0 ] );
-				guard->SetEquippedItem( 1, halaaGuardEquipments[ halaaOwner ][ 1 ] );
-				guard->SetEquippedItem( 2, halaaGuardEquipments[ halaaOwner ][ 2 ] );
-				guard->GetAIInterface()->setMoveType( MOVEMENTTYPE_DONTMOVEWP );
-				guard->PushToWorld( mgr );
+				location.ChangeCoords( halaaGuardLocations[ i ][ 0 ], halaaGuardLocations[ i ][ 1 ], halaaGuardLocations[ i ][ 2 ], halaaGuardLocations[ i ][ 3 ] );
+				inf->removePersistentCreature( halaaGuardNpcs[ lastOwner ], location );
 			}
+		}
+
+		/// Spawn new guards if applicable
+		if( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL )
+		{
+			for( int i = 0; i < HALAA_GUARD_COUNT; i++ )
+			{
+				location.ChangeCoords( halaaGuardLocations[ i ][ 0 ], halaaGuardLocations[ i ][ 1 ], halaaGuardLocations[ i ][ 2 ], halaaGuardLocations[ i ][ 3 ] );
+				inf->spawnPersistentCreature( halaaGuardNpcs[ halaaOwner ], location );
+			}
+
+			halaaGuards = HALAA_GUARD_COUNT;
+			WorldStatesHandler &handler = mgr->GetWorldStatesHandler();
+			handler.SetWorldStateForZone( ZONE_NAGRAND, WORLDSTATE_HALAA_GUARDS_REMAINING, halaaGuards );
 		}
 	}
 
 	void onHalaaBannerSpawned()
 	{
-		if( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL )
-		{
-			respawnGuards();
-		}
-
-		handleNpcs( NAGRAND_PVP_OWNER_NEUTRAL );
-
 		updateHalaaWorldstates();
 	}
 
@@ -753,8 +729,6 @@ public:
 		TeamAndZoneMatcher addMatcher( ZONE_NAGRAND, halaaOwner );
 		CastSpellOnPlayers caster( SPELL_HALAANI_BUFF, false );
 		mgr->visitPlayers( &caster, &addMatcher );
-
-		respawnGuards();
 
 		broadcaster.broadcastHalaaCaptured( halaaOwner );
 	}
@@ -786,6 +760,7 @@ public:
 			broadcaster.broadcastHalaaLost( lastOwner );
 		}
 
+		handleGuards( lastOwner );
 		handleNpcs( lastOwner );
 
 		updateGraveyard();
@@ -808,7 +783,6 @@ public:
 
 	void OnLoad()
 	{
-		pvp.onGuardSpawned();
 	}
 
 	void OnDied( Unit *killer )
