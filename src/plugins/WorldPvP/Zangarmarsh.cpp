@@ -604,7 +604,7 @@ public:
 				continue;
 			}
 
-			if( d > ZM_BEACON_CAPTURE_RANGE )
+			if( ( d > ZM_BEACON_CAPTURE_RANGE ) || ( player->flying ) )
 			{
 				/// If player is outside the capture range, turn off the capture UI
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_ZM_PROGRESS_UI_A, 0 );

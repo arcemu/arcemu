@@ -880,7 +880,7 @@ public:
 			/// Calculate the player's distance from the center of the tower
 			float d = player->CalcDistance( towerCoords[ towerId ][ 0 ], towerCoords[ towerId ][ 1 ], towerCoords[ towerId ][ 2 ] );
 
-			if( d > EP_TOWER_SCAN_RANGE )
+			if( ( d > EP_TOWER_SCAN_RANGE ) || player->flying )
 			{
 				/// No progress bar for players out of range
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS_UI, 0 );

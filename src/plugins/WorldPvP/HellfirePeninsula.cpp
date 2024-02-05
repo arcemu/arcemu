@@ -478,7 +478,7 @@ public:
 				continue;
 			}
 
-			if( d > HP_BANNER_CAPTURE_RANGE )
+			if( d > HP_BANNER_CAPTURE_RANGE || player->flying )
 			{
 				/// If player is outside the capture range, turn off the capture UI
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HP_PROGRESS_UI, 0 );

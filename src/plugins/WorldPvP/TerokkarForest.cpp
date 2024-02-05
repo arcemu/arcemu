@@ -645,7 +645,7 @@ public:
 				continue;
 			}
 
-			if( d > TF_TOWER_CAPTURE_RANGE )
+			if( ( d > TF_TOWER_CAPTURE_RANGE ) || ( player->flying ) )
 			{
 				/// If player is outside the capture range, turn off the capture UI
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_UI, 0 );

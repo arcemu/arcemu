@@ -24,7 +24,6 @@
 #define NAGRAND_PVP_OWNER_NEUTRAL 2
 #define NAGRAND_HALAA_SCAN_FREQUENCY (2*1000)
 #define HALAA_CAPTURE_RANGE 50.0f
-#define HALAA_CAPTURE_MAX_ZDIFF 5.0f
 #define HALAA_CAPTURE_PROGRESS_TICK 10
 
 #define HALAA_PVP_DISTANCE 300.0f
@@ -879,7 +878,7 @@ public:
 			float d = player->CalcDistance( _gameobject );
 			float zdiff = fabs( player->GetPositionZ() - _gameobject->GetPositionZ() );
 
-			if( ( d > HALAA_CAPTURE_RANGE ) || ( zdiff > HALAA_CAPTURE_MAX_ZDIFF ) )
+			if( ( d > HALAA_CAPTURE_RANGE ) || ( player->flying ) )
 			{
 				/// If player is outside the capture range, turn off the capture UI
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 0 );
