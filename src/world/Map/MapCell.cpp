@@ -200,6 +200,12 @@ void MapCell::LoadObjects(CellSpawns* sp)
 		return;
 
 	_loaded = true;
+
+	if( sp == NULL )
+	{
+		return;
+	}
+
 	Instance* pInstance = _mapmgr->pInstance;
 	InstanceBossInfoMap* bossInfoMap = objmgr.m_InstanceBossInfoMap[_mapmgr->GetMapId()];
 

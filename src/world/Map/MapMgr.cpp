@@ -1132,7 +1132,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, uint32 radius)
 					           posX, posY, this->_mapId, m_instanceID);
 
 					sp = _map->GetSpawnsList(posX, posY);
-					if(sp) objCell->LoadObjects(sp);
+					objCell->LoadObjects(sp);
 				}
 			}
 			else
@@ -1151,7 +1151,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, uint32 radius)
 						LOG_DETAIL("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 						           posX, posY, this->_mapId, m_instanceID);
 						sp = _map->GetSpawnsList(posX, posY);
-						if(sp) objCell->LoadObjects(sp);
+						objCell->LoadObjects(sp);
 					}
 				}
 				//Cell is no longer active
