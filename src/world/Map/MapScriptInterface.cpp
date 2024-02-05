@@ -141,9 +141,9 @@ void MapScriptInterface::spawnPersistentGameObject( uint32 entry, LocationVector
 
 	AddGameObjectSpawn( spawn );
 
-	/// If the cell is active, push the spawn to the world
+	/// If the cell is loaded, push the spawn to the world
 	MapCell *cell = mapMgr.GetCellByCoords( location.x, location.y );
-	if( cell != NULL )
+	if( ( cell != NULL ) && cell->IsLoaded() )
 	{
 		SpawnGameObject( spawn, true );
 	}	
@@ -217,6 +217,129 @@ GameObject* MapScriptInterface::SpawnGameObject(GOSpawn* gs, bool AddToWorld)
 		pGameObject->PushToWorld(&mapMgr);
 
 	return pGameObject;
+}
+
+
+void MapScriptInterface::addCreatureSpawn( CreatureSpawn *spawn )
+{
+	uint32 cx = mapMgr.GetPosX( spawn->x );
+	uint32 cy = mapMgr.GetPosY( spawn->y );
+
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->CreateAndGetSpawnsList( cx, cy );
+	CreatureSpawnList &spawns = cellSpawns->CreatureSpawns;
+
+	CreatureSpawnList::iterator itr = std::find( spawns.begin(), spawns.end(), spawn );
+	if( itr != spawns.end() )
+	{
+		return;
+	}
+
+	spawns.push_back( spawn );
+}
+
+void MapScriptInterface::removeCreatureSpawn( CreatureSpawn *spawn )
+{
+	uint32 cx = mapMgr.GetPosX( spawn->x );
+	uint32 cy = mapMgr.GetPosY( spawn->y );
+
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->GetSpawnsList( cx, cy );
+	if( cellSpawns == NULL )
+	{
+		return;
+	}
+
+	CreatureSpawnList &spawns = cellSpawns->CreatureSpawns;
+
+	CreatureSpawnList::iterator itr = std::find( spawns.begin(), spawns.end(), spawn );
+	if( itr == spawns.end() )
+	{
+		return;
+	}
+
+	spawns.erase( itr );
+}
+
+void MapScriptInterface::spawnPersistentCreature( uint32 entry, LocationVector &location, uint32 phase )
+{
+	CreatureProto *proto = CreatureProtoStorage.LookupEntry( entry );
+	if( proto == NULL )
+	{
+		return;
+	}
+
+	uint32 displayId;
+	proto->GenerateModelId( &displayId );
+
+	CreatureSpawn *spawn = new CreatureSpawn();
+	spawn->id = 0;
+	spawn->form = NULL;
+	spawn->entry = entry;
+	spawn->x = location.x;
+	spawn->y = location.y;
+	spawn->z = location.z;
+	spawn->o = location.o;
+	spawn->movetype = MOVEMENTTYPE_DONTMOVEWP;	
+	spawn->displayid = displayId;
+	spawn->factionid = proto->Faction;
+	spawn->flags = 0;
+	spawn->bytes0 = 0;
+	spawn->bytes1 = 0;
+	spawn->bytes2 = 0;
+	spawn->emote_state = 0;
+	spawn->channel_spell = 0;
+	spawn->channel_target_go = 0;
+	spawn->channel_target_creature = 0;
+	spawn->stand_state = 0;
+	spawn->death_state = 0;
+	spawn->MountedDisplayID = proto->mountDisplayId;
+	spawn->Item1SlotDisplay = proto->itemSlot1Display;
+	spawn->Item2SlotDisplay = proto->itemSlot2Display;
+	spawn->Item3SlotDisplay = proto->itemSlot3Display;
+	spawn->CanFly = 0;
+	spawn->phase = phase;
+
+	addCreatureSpawn( spawn );
+
+	/// If the cell is loaded, push the spawn to the world
+	MapCell *cell = mapMgr.GetCellByCoords( location.x, location.y );
+	if( ( cell != NULL ) && cell->IsLoaded() )
+	{
+		SpawnCreature( spawn, true );
+	}
+}
+
+void MapScriptInterface::removePersistentCreature( uint32 entry, LocationVector &location )
+{
+	uint32 cx = mapMgr.GetPosX( location.x );
+	uint32 cy = mapMgr.GetPosY( location.y );
+
+	/// First remove the spawn entry
+	CellSpawns *cellSpawns = mapMgr.GetBaseMap()->GetSpawnsList( cx, cy );
+	if( cellSpawns != NULL )
+	{
+		CreatureSpawnList &spawns = cellSpawns->CreatureSpawns;
+		CreatureSpawnList::iterator itr = spawns.begin();
+		while( itr != spawns.end() )
+		{
+			CreatureSpawn *spawn = *itr;
+
+			if( ( spawn->entry == entry ) && ( spawn->x == location.x ) && ( spawn->y == location.y ) && ( spawn->z == location.z ) )
+			{
+				itr = spawns.erase( itr );
+			}
+			else
+			{
+				++itr;
+			}
+		}
+	}
+
+	/// If the Creature is in world despawn it
+	Creature *creature = GetCreatureNearestCoords( location.x, location.y, location.z, entry );
+	if( creature != NULL )
+	{
+		creature->Despawn( 1, 0 );
+	}
 }
 
 Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2, uint32 phase)

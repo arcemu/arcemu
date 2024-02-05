@@ -91,7 +91,7 @@ class SERVER_DECL MapScriptInterface
 		/// Create and add a gameobject spawn to the specified location. Push the spawn to world if the map cell is active
 		void spawnPersistentGameObject( uint32 entry, LocationVector &location, uint32 phase = 0xFFFFFFF );
 
-		/// Remove a gameobject spawn from the specified location. If it is in the world also remove it from the world
+		/// Remove a gameobject spawn from the specified location. If it is in the world also despawn it
 		void removePersistentGameObject( uint32 entry, LocationVector &location );
 
 		/// Spawns a GameObject that doesn't persist through cell reloads
@@ -99,9 +99,25 @@ class SERVER_DECL MapScriptInterface
 		
 		/// Spawns a GameObject that doesn't persist through cell reloads
 		GameObject* SpawnGameObject(GOSpawn* gs, bool AddToWorld);
+
+		/// Add the spawn to the map cell's spawn list
+		void addCreatureSpawn( CreatureSpawn *spawn );
+
+		/// Remove the spawn from the map cell's spawn list
+		void removeCreatureSpawn( CreatureSpawn *spawn );
+
+		/// Create and add a Creature spawn to the specified location. Push the spawn to the world if the map cell is active
+		void spawnPersistentCreature( uint32 entry, LocationVector &location, uint32 phase = 0xFFFFFFF );
+
+		/// Remove a creature spawn from the specified location. If it is in the world also despawn it
+		void removePersistentCreature( uint32 entry, LocationVector &location );
 		
+		/// Spawns a Creature that doesn't persist through cell reloads
 		Creature* SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2, uint32 phase = 0xFFFFFFF);
+
+		/// Spawns a Creature that doesn't persist through cell reloads
 		Creature* SpawnCreature(CreatureSpawn* sp, bool AddToWorld);
+
 		WayPoint* CreateWaypoint();
 
 		void DeleteGameObject(GameObject* ptr);
