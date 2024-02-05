@@ -38,9 +38,9 @@
 #define EP_TOWER_PLAGUEWOOD  3
 #define EP_TOWER_COUNT       4
 
-#define EP_TOWER_ARTKIT_NEUTRAL  0
 #define EP_TOWER_ARTKIT_HORDE    1
 #define EP_TOWER_ARTKIT_ALLIANCE 2
+#define EP_TOWER_ARTKIT_NEUTRAL  21
 
 #define TOWER_ALLIANCE_CONTROL 0
 #define TOWER_HORDE_CONTROL    1
@@ -650,7 +650,7 @@ static uint8 getArtkitForTeam( int32 team )
 	switch( team )
 	{
 		case -1:
-			artkit = 0;
+			artkit = EP_TOWER_ARTKIT_NEUTRAL;
 			break;
 		
 		case TEAM_ALLIANCE:
