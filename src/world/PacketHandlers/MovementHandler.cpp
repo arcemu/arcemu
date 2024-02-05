@@ -335,6 +335,10 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 			break;
 		case MSG_MOVE_FALL_LAND:
 			_player->jumping = false;
+			_player->flying = false;
+			break;
+		case CMSG_MOVE_SET_FLY:
+			_player->flying = true;
 			break;
 
 		default:

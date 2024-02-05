@@ -83,6 +83,7 @@ Player::Player(uint32 guid)
 	moving(false),
 	strafing(false),
 	jumping(false),
+	flying(false),
 	m_isGmInvisible(false),
 	SpellHasteRatingBonus(1.0f),
 	m_furorChance(0),
