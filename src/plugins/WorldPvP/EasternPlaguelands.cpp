@@ -71,14 +71,9 @@ static int32 towerOwner[] = {
 	EP_TOWER_OWNER_NEUTRAL
 };
 
-#define TOWER_CAPTURE_PROGRESS_DEFAULT    50
+#define TOWER_CAPTURE_PROGRESS_DEFAULT 50
 
-static uint32 towerCaptureProgress[ EP_TOWER_COUNT ] = {
-	TOWER_CAPTURE_PROGRESS_DEFAULT,
-	TOWER_CAPTURE_PROGRESS_DEFAULT,
-	TOWER_CAPTURE_PROGRESS_DEFAULT,
-	TOWER_CAPTURE_PROGRESS_DEFAULT
-};
+static Arcemu::Shared::Progress towerCaptureProgress[ EP_TOWER_COUNT ];
 
 static uint32 towerWorldStates[ EP_TOWER_COUNT ][ TOWER_STATES ] = {
 	{ WORLDSTATE_EPL_NORTHPASS_ALLIANCE, WORLDSTATE_EPL_NORTHPASS_HORDE, WORLDSTATE_EPL_NORTHPASS_NEUTRAL },
@@ -769,25 +764,19 @@ public:
 			delta = -1;
 		}
 
-		delta *= TOWER_CAPTURE_PROGRESS_TICK;
+		delta *= ( EP_TOWER_SCAN_UPDATE_FREQ / 1000 );
 
-		int32 progress = towerCaptureProgress[ towerId ];
-
-		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
-			( ( progress > 0 ) && ( delta < 0 ) ) )
-		{
-			progress += delta;
-			progress = Math::clamp< int32 >( progress, 0, 100 );
-			towerCaptureProgress[ towerId ] = progress;
-		}
+		towerCaptureProgress[ towerId ].advanceBy( delta );
 	}
 
 	/// Calculate the current owner based on the current progress
 	/// Returns true on owner change
 	bool calculateOwner()
 	{
+		uint32 progressPercent = towerCaptureProgress[ towerId ].getPercent();
+
 		bool ownerChanged = false;
-		if( towerCaptureProgress[ towerId ] == TOWER_CAPTURE_TRESHOLD_ALLIANCE )
+		if( progressPercent == TOWER_CAPTURE_TRESHOLD_ALLIANCE )
 		{
 			if( towerOwner[ towerId ] != TEAM_ALLIANCE )
 			{
@@ -796,7 +785,7 @@ public:
 			}
 		}
 		else
-		if( towerCaptureProgress[ towerId ] <= TOWER_CAPTURE_TRESHOLD_HORDE )
+		if( progressPercent <= TOWER_CAPTURE_TRESHOLD_HORDE )
 		{
 			if( towerOwner[ towerId ] != TEAM_HORDE )
 			{
@@ -805,7 +794,7 @@ public:
 			}
 		}
 		else
-		if( ( towerCaptureProgress[ towerId ] <= TOWER_CAPTURE_TRESHOLD_NEUTRAL_HI ) && ( towerCaptureProgress[ towerId ] >= TOWER_CAPTURE_TRESHOLD_NEUTRAL_LO ) )
+		if( ( progressPercent <= TOWER_CAPTURE_TRESHOLD_NEUTRAL_HI ) && ( progressPercent >= TOWER_CAPTURE_TRESHOLD_NEUTRAL_LO ) )
 		{
 			if( towerOwner[ towerId ] != EP_TOWER_OWNER_NEUTRAL )
 			{
@@ -916,7 +905,7 @@ public:
 			Player *player = *itr;
 
 			Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS_UI, 1 );
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS, towerCaptureProgress[ towerId ] );
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_EPL_TOWER_PROGRESS, towerCaptureProgress[ towerId ].getPercent() );
 		}
 
 		if( ownerChanged )
@@ -1143,6 +1132,12 @@ static void setupSpells()
 
 void setupEasternPlaguelands( ScriptMgr *mgr )
 {
+	for( int i = 0; i < EP_TOWER_COUNT; i++ )
+	{
+		towerCaptureProgress[ i ].setMax( 120 );
+		towerCaptureProgress[ i ].setPercent( TOWER_CAPTURE_PROGRESS_DEFAULT );
+	}
+
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_EASTERN_KINGDOMS );
 	pvp.setMapMgr( mapMgr );
 	pvp.registerTowerEventHandler( EP_TOWER_NORTHPASS, new NorthpassTowerEventHandler( mapMgr ) );
