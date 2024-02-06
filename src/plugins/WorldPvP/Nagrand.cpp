@@ -24,7 +24,6 @@
 #define NAGRAND_PVP_OWNER_NEUTRAL 2
 #define NAGRAND_HALAA_SCAN_FREQUENCY (2*1000)
 #define HALAA_CAPTURE_RANGE 50.0f
-#define HALAA_CAPTURE_PROGRESS_TICK 10
 
 #define HALAA_PVP_DISTANCE 300.0f
 
@@ -51,7 +50,7 @@ static uint8 halaaBannerArtkits[ 3 ] =
 
 static uint32 halaaOwner = NAGRAND_PVP_OWNER_NEUTRAL;
 
-static uint32 halaaProgress = 50;
+static Arcemu::Shared::Progress halaaProgress;
 
 static uint32 halaaWorldStates[] =
 {
@@ -784,25 +783,19 @@ public:
 			delta = -1;
 		}
 
-		delta *= HALAA_CAPTURE_PROGRESS_TICK;
+		delta *= ( NAGRAND_HALAA_SCAN_FREQUENCY / 1000 );
 
-		int32 progress = halaaProgress;
-
-		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
-			( ( progress > 0 ) && ( delta < 0 ) ) )
-		{
-			progress += delta;
-			progress = Math::clamp< int32 >( progress, 0, 100 );
-			halaaProgress = progress;
-		}
+		halaaProgress.advanceBy( delta );
 	}
 
 	/// Calculate the current owner based on the current progress
 	/// Returns true on owner change
 	bool calculateOwner()
 	{
+		uint32 progress = halaaProgress.getPercent();
+
 		bool ownerChanged = false;
-		if( halaaProgress == HALAA_CAPTURE_THRESHOLD_ALLIANCE )
+		if( progress == HALAA_CAPTURE_THRESHOLD_ALLIANCE )
 		{
 			if( halaaOwner != TEAM_ALLIANCE )
 			{
@@ -811,7 +804,7 @@ public:
 			}
 		}
 		else
-		if( halaaProgress <= HALAA_CAPTURE_THRESHOLD_HORDE )
+		if( progress <= HALAA_CAPTURE_THRESHOLD_HORDE )
 		{
 			if( halaaOwner != TEAM_HORDE )
 			{
@@ -820,7 +813,7 @@ public:
 			}
 		}
 		else
-		if( ( halaaProgress <= HALAA_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( halaaProgress >= HALAA_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
+		if( ( progress <= HALAA_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( progress >= HALAA_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
 		{
 			if( halaaOwner != NAGRAND_PVP_OWNER_NEUTRAL )
 			{
@@ -935,7 +928,7 @@ public:
 			{
 				Player *player = *itr;
 				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS_UI, 1 );
-				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS, halaaProgress );
+				Messenger::SendWorldStateUpdate( player, WORLDSTATE_HALAA_CAPTURE_PROGRESS, halaaProgress.getPercent() );
 			}
 		}
 
@@ -1172,6 +1165,9 @@ void Nagrand_onHonorableKill( Player *killer, Player *victim )
 
 void setupNagrand( ScriptMgr *mgr )
 {
+	halaaProgress.setMax( 120 );
+	halaaProgress.setPercent( 50 );
+
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
 	pvp.setMapMgr( mapMgr );
 
