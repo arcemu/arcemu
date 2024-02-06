@@ -24,7 +24,6 @@
 #define TF_TOWER_SCAN_UPDATE_FREQ (2*1000)
 #define TF_TOWER_SCAN_RANGE 150.0f
 #define TF_TOWER_CAPTURE_RANGE 50.0f
-#define TF_TOWER_CAPTURE_PROGRESS_TICK 10
 
 #define TF_TOWER_CAPTURE_THRESHOLD_ALLIANCE   100
 #define TF_TOWER_CAPTURE_THRESHOLD_HORDE      0
@@ -68,14 +67,7 @@ static uint32 towerOwners[ TF_TOWER_COUNT ] =
 	TF_TOWER_OWNER_NEUTRAL
 };
 
-static uint32 towerCaptureProgress[ TF_TOWER_COUNT ] = 
-{
-	50,
-	50,
-	50,
-	50,
-	50
-};
+static Arcemu::Shared::Progress towerCaptureProgress[ TF_TOWER_COUNT ];
 
 /// The capture points are intentionally lower than the tower banner GOs, as the banners are on top of the towers
 /// We calculate the players' distance from this lowered point
@@ -517,25 +509,19 @@ public:
 			delta = -1;
 		}
 
-		delta *= TF_TOWER_CAPTURE_PROGRESS_TICK;
+		delta *= ( TF_TOWER_SCAN_UPDATE_FREQ / 1000 );
 
-		int32 progress = towerCaptureProgress[ towerId ];
-
-		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
-			( ( progress > 0 ) && ( delta < 0 ) ) )
-		{
-			progress += delta;
-			progress = Math::clamp< int32 >( progress, 0, 100 );
-			towerCaptureProgress[ towerId ] = progress;
-		}
+		towerCaptureProgress[ towerId ].advanceBy( delta );
 	}
 
 	/// Calculate the current owner based on the current progress
 	/// Returns true on owner change
 	bool calculateOwner()
 	{
+		uint32 progress = towerCaptureProgress[ towerId ].getPercent();
+
 		bool ownerChanged = false;
-		if( towerCaptureProgress[ towerId ] == TF_TOWER_CAPTURE_THRESHOLD_ALLIANCE )
+		if( progress == TF_TOWER_CAPTURE_THRESHOLD_ALLIANCE )
 		{
 			if( towerOwners[ towerId ] != TEAM_ALLIANCE )
 			{
@@ -544,7 +530,7 @@ public:
 			}
 		}
 		else
-		if( towerCaptureProgress[ towerId ] <= TF_TOWER_CAPTURE_THRESHOLD_HORDE )
+		if( progress <= TF_TOWER_CAPTURE_THRESHOLD_HORDE )
 		{
 			if( towerOwners[ towerId ] != TEAM_HORDE )
 			{
@@ -553,7 +539,7 @@ public:
 			}
 		}
 		else
-		if( ( towerCaptureProgress[ towerId ] <= TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( towerCaptureProgress[ towerId ] >= TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
+		if( ( progress <= TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( progress >= TF_TOWER_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
 		{
 			if( towerOwners[ towerId ] != TF_TOWER_OWNER_NEUTRAL )
 			{
@@ -685,7 +671,7 @@ public:
 		{
 			Player *player = *itr;
 			Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_UI, 1 );
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_PROGRESS, towerCaptureProgress[ towerId ] );
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_TF_PROGRESS_BAR_PROGRESS, towerCaptureProgress[ towerId ].getPercent() );
 		}
 			
 		if( ownerChanged )
@@ -745,6 +731,12 @@ void TF_onZoneChange( Player *player, uint32 newZone, uint32 oldZone )
 
 void setupTerokkarForest( ScriptMgr *mgr )
 {
+	for( int i = 0; i < TF_TOWER_COUNT; i++ )
+	{
+		towerCaptureProgress[ i ].setMax( 120 );
+		towerCaptureProgress[ i ].setPercent( 50 );
+	}
+
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
 	pvp.setMapMgr( mapMgr );
 
