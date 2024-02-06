@@ -24,7 +24,6 @@
 #define ZM_BEACON_SCAN_UPDATE_FREQ (2*1000)
 #define ZM_BEACON_SCAN_RANGE 100.0f
 #define ZM_BEACON_CAPTURE_RANGE 50.0f
-#define ZM_BEACON_CAPTURE_PROGRESS_TICK 10
 
 #define ZM_BEACON_CAPTURE_THRESHOLD_ALLIANCE 100
 #define ZM_BEACON_CAPTURE_THRESHOLD_HORDE 0
@@ -54,7 +53,7 @@ static const char* beaconNames[ ZM_BEACON_COUNT ] =
 
 static uint32 beaconOwners[ ZM_BEACON_COUNT ] = { ZM_BEACON_OWNER_NEUTRAL, ZM_BEACON_OWNER_NEUTRAL };
 
-static uint32 beaconCaptureProgress[ ZM_BEACON_COUNT ] = { 50, 50 };
+static Arcemu::Shared::Progress beaconCaptureProgress[ ZM_BEACON_COUNT ];
 
 enum ZangarmarshGOs
 {
@@ -506,25 +505,19 @@ public:
 			delta = -1;
 		}
 
-		delta *= ZM_BEACON_CAPTURE_PROGRESS_TICK;
+		delta *= ( ZM_BEACON_SCAN_UPDATE_FREQ / 1000 );
 
-		int32 progress = beaconCaptureProgress[ beaconId ];
-
-		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
-			( ( progress > 0 ) && ( delta < 0 ) ) )
-		{
-			progress += delta;
-			progress = Math::clamp< int32 >( progress, 0, 100 );
-			beaconCaptureProgress[ beaconId ] = progress;
-		}
+		beaconCaptureProgress[ beaconId ].advanceBy( delta );
 	}
 
 	/// Calculate the current owner based on the current progress
 	/// Returns true on owner change
 	bool calculateOwner()
 	{
+		uint32 progress = beaconCaptureProgress[ beaconId ].getPercent();
+
 		bool ownerChanged = false;
-		if( beaconCaptureProgress[ beaconId ] == ZM_BEACON_CAPTURE_THRESHOLD_ALLIANCE )
+		if( progress == ZM_BEACON_CAPTURE_THRESHOLD_ALLIANCE )
 		{
 			if( beaconOwners[ beaconId ] != TEAM_ALLIANCE )
 			{
@@ -533,7 +526,7 @@ public:
 			}
 		}
 		else
-		if( beaconCaptureProgress[ beaconId ] <= ZM_BEACON_CAPTURE_THRESHOLD_HORDE )
+		if( progress <= ZM_BEACON_CAPTURE_THRESHOLD_HORDE )
 		{
 			if( beaconOwners[ beaconId ] != TEAM_HORDE )
 			{
@@ -542,7 +535,7 @@ public:
 			}
 		}
 		else
-		if( ( beaconCaptureProgress[ beaconId ] <= ZM_BEACON_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( beaconCaptureProgress[ beaconId ] >= ZM_BEACON_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
+		if( ( progress <= ZM_BEACON_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( progress >= ZM_BEACON_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
 		{
 			if( beaconOwners[ beaconId ] != ZM_BEACON_OWNER_NEUTRAL )
 			{
@@ -643,7 +636,7 @@ public:
 			Player *player = *itr;
 
 			Messenger::SendWorldStateUpdate( player, WORLDSTATE_ZM_PROGRESS_UI_A, 1 );
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_ZM_PROGRESS_A, beaconCaptureProgress[ beaconId ] );
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_ZM_PROGRESS_A, beaconCaptureProgress[ beaconId ].getPercent() );
 		}
 
 		if( ownerChanged )
@@ -807,6 +800,12 @@ void ZM_onHonorableKill( Player *killer, Player *victim )
 
 void setupZangarmarsh( ScriptMgr *mgr )
 {
+	for( int i = 0; i < ZM_BEACON_COUNT; i++ )
+	{
+		beaconCaptureProgress[ i ].setMax( 120 );
+		beaconCaptureProgress[ i ].setPercent( 50 );
+	}
+
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
 	pvp.setMapMgr( mapMgr );
 
