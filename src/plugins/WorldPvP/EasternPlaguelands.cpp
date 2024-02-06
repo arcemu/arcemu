@@ -29,6 +29,8 @@
 #define GO_LORDAERON_SHRINE_ALLIANCE 181682
 #define GO_LORDAERON_SHRINE_HORDE    181955
 
+#define EP_TOWER_OWNER_NEUTRAL 2
+
 #define EP_TOWER_SCAN_UPDATE_FREQ (2 * 1000)
 #define EP_TOWER_SCAN_RANGE 50.0f
 
@@ -63,10 +65,10 @@ static const char* towerNames[] =
 };
 
 static int32 towerOwner[] = {
-	-1,
-	-1,
-	-1,
-	-1
+	EP_TOWER_OWNER_NEUTRAL,
+	EP_TOWER_OWNER_NEUTRAL,
+	EP_TOWER_OWNER_NEUTRAL,
+	EP_TOWER_OWNER_NEUTRAL
 };
 
 #define TOWER_CAPTURE_PROGRESS_DEFAULT    50
@@ -196,7 +198,7 @@ public:
 
 	void onTowerSpawns()
 	{
-		if( towerOwner[ EP_TOWER_NORTHPASS ] != -1 )
+		if( towerOwner[ EP_TOWER_NORTHPASS ] != EP_TOWER_OWNER_NEUTRAL )
 		{
 			onTowerCaptured();
 		}
@@ -272,7 +274,7 @@ public:
 
 	void onTowerSpawns()
 	{
-		if( towerOwner[ EP_TOWER_NORTHPASS ] != -1 )
+		if( towerOwner[ EP_TOWER_NORTHPASS ] != EP_TOWER_OWNER_NEUTRAL )
 		{
 			onTowerCaptured();
 		}
@@ -374,7 +376,7 @@ public:
 
 	void onTowerSpawns()
 	{
-		if( towerOwner[ EP_TOWER_NORTHPASS ] != -1 )
+		if( towerOwner[ EP_TOWER_NORTHPASS ] != EP_TOWER_OWNER_NEUTRAL )
 		{
 			onTowerCaptured();
 		}
@@ -580,7 +582,7 @@ public:
 
 		switch( lastOwner )
 		{
-			case -1:
+			case EP_TOWER_OWNER_NEUTRAL:
 				if( towerOwner[ towerId ] == TEAM_ALLIANCE )
 				{
 					allianceDelta = 1;
@@ -617,7 +619,7 @@ public:
 		
 		switch( towerOwner[ towerId ] )
 		{
-			case -1:
+			case EP_TOWER_OWNER_NEUTRAL:
 				handler.SetWorldStateForZone( ZONE_EPL, towerWorldStates[ towerId ][ TOWER_ALLIANCE_CONTROL ], 0 );
 				handler.SetWorldStateForZone( ZONE_EPL, towerWorldStates[ towerId ][ TOWER_HORDE_CONTROL ], 0 );
 				handler.SetWorldStateForZone( ZONE_EPL, towerWorldStates[ towerId ][ TOWER_NEUTRAL ], 1 );
@@ -649,7 +651,7 @@ static uint8 getArtkitForTeam( int32 team )
 	uint8 artkit;
 	switch( team )
 	{
-		case -1:
+		case EP_TOWER_OWNER_NEUTRAL:
 			artkit = EP_TOWER_ARTKIT_NEUTRAL;
 			break;
 		
@@ -805,10 +807,10 @@ public:
 		else
 		if( ( towerCaptureProgress[ towerId ] <= TOWER_CAPTURE_TRESHOLD_NEUTRAL_HI ) && ( towerCaptureProgress[ towerId ] >= TOWER_CAPTURE_TRESHOLD_NEUTRAL_LO ) )
 		{
-			if( towerOwner[ towerId ] != -1 )
+			if( towerOwner[ towerId ] != EP_TOWER_OWNER_NEUTRAL )
 			{
 				ownerChanged = true;
-				towerOwner[ towerId ] = -1;
+				towerOwner[ towerId ] = EP_TOWER_OWNER_NEUTRAL;
 			}
 		}
 
@@ -921,7 +923,7 @@ public:
 		{
 			onOwnerChange( lastOwner );
 
-			if( lastOwner == -1 )
+			if( lastOwner == EP_TOWER_OWNER_NEUTRAL )
 			{
 				rewardPlayers( playersInRange );
 			}
