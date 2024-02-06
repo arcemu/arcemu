@@ -24,7 +24,6 @@
 #define HP_BANNER_SCAN_UPDATE_FREQ (2 * 1000)
 #define HP_BANNER_CAPTURE_RANGE 50.0f
 #define HP_BANNER_SCAN_RANGE 80.0f
-#define HP_FORT_CAPTURE_PROGRESS_TICK 10
 
 enum HPMainBanners
 {
@@ -107,7 +106,7 @@ static uint8 fortBannerArtkit[ HP_FORT_COUNT ] =
 
 static uint32 fortOwner[ HP_FORT_COUNT ] = { HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNER_NEUTRAL, HP_FORT_OWNER_NEUTRAL };
 
-static uint32 fortCaptureProgress[ HP_FORT_COUNT ] = { 50, 50, 50 };
+static Arcemu::Shared::Progress fortCaptureProgress[ HP_FORT_COUNT ];
 
 static Arcemu::Threading::AtomicULong allianceFortsCache( 0 );
 static Arcemu::Threading::AtomicULong hordeFortsCache( 0 );
@@ -376,25 +375,19 @@ public:
 			delta = -1;
 		}
 
-		delta *= HP_FORT_CAPTURE_PROGRESS_TICK;
+		delta *= ( HP_BANNER_SCAN_UPDATE_FREQ / 1000 );
 
-		int32 progress = fortCaptureProgress[ fortId ];
-
-		if( ( ( progress < 100 ) && ( delta > 0 ) ) ||
-			( ( progress > 0 ) && ( delta < 0 ) ) )
-		{
-			progress += delta;
-			progress = Math::clamp< int32 >( progress, 0, 100 );
-			fortCaptureProgress[ fortId ] = progress;
-		}
+		fortCaptureProgress[ fortId ].advanceBy( delta );
 	}
 
 	/// Calculate the current owner based on the current progress
 	/// Returns true on owner change
 	bool calculateOwner()
 	{
+		uint32 progress = fortCaptureProgress[ fortId ].getPercent();
+
 		bool ownerChanged = false;
-		if( fortCaptureProgress[ fortId ] == HP_FORT_CAPTURE_THRESHOLD_ALLIANCE )
+		if( progress == HP_FORT_CAPTURE_THRESHOLD_ALLIANCE )
 		{
 			if( fortOwner[ fortId ] != TEAM_ALLIANCE )
 			{
@@ -403,7 +396,7 @@ public:
 			}
 		}
 		else
-		if( fortCaptureProgress[ fortId ] <= HP_FORT_CAPTURE_THRESHOLD_HORDE )
+		if( progress <= HP_FORT_CAPTURE_THRESHOLD_HORDE )
 		{
 			if( fortOwner[ fortId ] != TEAM_HORDE )
 			{
@@ -412,7 +405,7 @@ public:
 			}
 		}
 		else
-		if( ( fortCaptureProgress[ fortId ] <= HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( fortCaptureProgress[ fortId ] >= HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
+		if( ( progress <= HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_HI ) && ( progress >= HP_FORT_CAPTURE_THRESHOLD_NEUTRAL_LO ) )
 		{
 			if( fortOwner[ fortId ] != HP_FORT_OWNER_NEUTRAL )
 			{
@@ -517,7 +510,7 @@ public:
 			Player *player = *itr;
 
 			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HP_PROGRESS_UI, 1 );
-			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HP_PROGRESS, fortCaptureProgress[ fortId ] );
+			Messenger::SendWorldStateUpdate( player, WORLDSTATE_HP_PROGRESS, fortCaptureProgress[ fortId ].getPercent() );
 		}
 
 		if( ownerChanged )
@@ -671,6 +664,12 @@ void HP_onHonorableKill( Player *killer, Player *victim )
 
 void setupHellfirePeninsula( ScriptMgr *mgr )
 {
+	for( int i = 0; i < HP_FORT_COUNT; i++ )
+	{
+		fortCaptureProgress[ i ].setMax( 120 );
+		fortCaptureProgress[ i ].setPercent( 50 );
+	}
+
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );
 	pvp.setMapMgr( mapMgr );
 
