@@ -264,5 +264,6 @@ extern SERVER_DECL SessionLogWriter* Player_Log;
 #include "PacketHandlers/InventoryListBuilder.h"
 #include "Game/Entities/Player/PlayerMatcher.h"
 #include "Game/Entities/Player/PlayerVisitor.h"
+#include "../shared/Util/Progress.h"
 
 #endif

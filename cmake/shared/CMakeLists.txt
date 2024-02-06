@@ -66,6 +66,7 @@ set( headers
 	Container/Storage.h
 	System/SysInfo.hpp
 	System/TextFile.h
+	Util/Progress.h
 	Util/Util.h
 	Network/PacketBuffer.h
 	Crypto/BigNumber.h
