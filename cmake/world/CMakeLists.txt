@@ -357,6 +357,7 @@ SET( headers
 	PacketHandlers/InventoryListBuilder.h
 	Game/Entities/Player/PlayerMatcher.h
 	Game/Entities/Player/PlayerVisitor.h
+	Game/Util/PvPCaptureRateBonusCalculator.h
 )
 
 foreach(src IN ITEMS ${sources} )
