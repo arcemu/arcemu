@@ -48,6 +48,19 @@ public:
 	static float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
 	static bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y);
 	static bool isInFront( float ax, float ay, float ao, float bx, float by );
+
+	/// Return the difference between two values
+	template< typename T > static T diff( const T a, const T b )
+	{
+		if( a > b )
+		{
+			return a - b;
+		}
+		else
+		{
+			return b - a;
+		}
+	}
 	
 	/// Based on the input value returns a value that is between min and max
 	template< typename T > static T clamp( const T value, const T min, const T max )

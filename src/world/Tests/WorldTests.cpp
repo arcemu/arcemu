@@ -17,6 +17,7 @@
  *
  */
 
+int MathTestRun();
 int PvPCaptureRateBonusCalculatorTestRun();
 int WorldUtilTestRun();
 
@@ -24,6 +25,7 @@ typedef int (*TestRunnerFunction)();
 
 static TestRunnerFunction testRunnerFunctions[] =
 {
+	MathTestRun,
 	PvPCaptureRateBonusCalculatorTestRun,
 	WorldUtilTestRun
 };

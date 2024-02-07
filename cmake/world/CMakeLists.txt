@@ -412,6 +412,7 @@ install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 ENABLE_TESTING()
 
 SET( TEST_SOURCES
+${prefix}/Tests/MathTest.cpp
 ${prefix}/Tests/PvPCaptureRateBonusCalculatorTest.cpp
 ${prefix}/Tests/UtilTest.cpp
 ${prefix}/Tests/WorldTests.cpp
