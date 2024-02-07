@@ -86,7 +86,7 @@ bool WorldUtilTest::run()
 	RUN_TESTS();
 }
 
-int main(int arc, char *argv[])
+int WorldUtilTestRun()
 {
 	RUN_TESTCLASS( WorldUtilTest );
 }
