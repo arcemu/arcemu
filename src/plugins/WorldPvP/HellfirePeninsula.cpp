@@ -290,11 +290,14 @@ class HPBannerAI : public GameObjectAIScript
 private:
 	uint32 fortId;
 
+	PvPCaptureRateBonusFactorCalculator bonusFactorCalculator;
+
 public:
 	ADD_GAMEOBJECT_FACTORY_FUNCTION( HPBannerAI );
 
 	HPBannerAI( GameObject *go ) :
-	GameObjectAIScript( go )
+	GameObjectAIScript( go ),
+	bonusFactorCalculator( 5 )
 	{
 		fortId = std::numeric_limits<uint32>::max();
 	}
@@ -375,7 +378,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= HP_BANNER_SCAN_UPDATE_FREQ;
+		delta = delta * HP_BANNER_SCAN_UPDATE_FREQ * bonusFactorCalculator.calculateBonusFactor( Math::diff< uint32 >( alliancePlayers, hordePlayers ) );
 
 		fortCaptureProgress[ fortId ].advanceBy( delta );
 	}

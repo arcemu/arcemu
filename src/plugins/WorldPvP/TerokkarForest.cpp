@@ -487,8 +487,12 @@ class TerokkarSpiritTowerAI : public GameObjectAIScript
 private:
 	uint32 towerId;
 
+	PvPCaptureRateBonusFactorCalculator bonusFactorCalculator;
+
 public:
-	TerokkarSpiritTowerAI( GameObject *go ) : GameObjectAIScript( go )
+	TerokkarSpiritTowerAI( GameObject *go ) :
+	GameObjectAIScript( go ),
+	bonusFactorCalculator( 5 )
 	{
 		towerId = std::numeric_limits< uint32 >::max();
 	}
@@ -509,7 +513,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= TF_TOWER_SCAN_UPDATE_FREQ;
+		delta = delta * TF_TOWER_SCAN_UPDATE_FREQ * bonusFactorCalculator.calculateBonusFactor( Math::diff< uint32 >( alliancePlayers, hordePlayers ) );
 
 		towerCaptureProgress[ towerId ].advanceBy( delta );
 	}

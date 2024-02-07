@@ -762,8 +762,13 @@ public:
 
 class HalaaBannerAI : public GameObjectAIScript
 {
+private:
+	PvPCaptureRateBonusFactorCalculator bonusFactorCalculator;
+
 public:
-	HalaaBannerAI( GameObject *go ) : GameObjectAIScript( go )
+	HalaaBannerAI( GameObject *go ) :
+	GameObjectAIScript( go ),
+	bonusFactorCalculator( 5 )
 	{
 	}
 
@@ -783,7 +788,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= NAGRAND_HALAA_SCAN_FREQUENCY;
+		delta = delta * NAGRAND_HALAA_SCAN_FREQUENCY * bonusFactorCalculator.calculateBonusFactor( Math::diff< uint32 >( alliancePlayers, hordePlayers ) );
 
 		halaaProgress.advanceBy( delta );
 	}

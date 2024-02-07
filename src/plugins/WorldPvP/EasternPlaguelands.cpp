@@ -705,10 +705,13 @@ class EPTowerBannerAI : public GameObjectAIScript
 private:
 	uint32 towerId;
 
+	PvPCaptureRateBonusFactorCalculator bonusFactorCalculator;
+
 public:
 	ADD_GAMEOBJECT_FACTORY_FUNCTION( EPTowerBannerAI );
 
-	EPTowerBannerAI( GameObject *go ) : GameObjectAIScript( go )
+	EPTowerBannerAI( GameObject *go ) : GameObjectAIScript( go ),
+	bonusFactorCalculator( 5 )
 	{
 		towerId = 0;
 	}
@@ -764,7 +767,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= EP_TOWER_SCAN_UPDATE_FREQ;
+		delta = delta * EP_TOWER_SCAN_UPDATE_FREQ * bonusFactorCalculator.calculateBonusFactor( Math::diff< uint32 >( alliancePlayers, hordePlayers ) );
 
 		towerCaptureProgress[ towerId ].advanceBy( delta );
 	}

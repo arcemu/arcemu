@@ -476,10 +476,16 @@ public:
 
 class ZangarmarshBeaconBannerAI : public GameObjectAIScript
 {
-public:
+private:
 	uint32 beaconId;
 
-	ZangarmarshBeaconBannerAI( GameObject *go ) : GameObjectAIScript( go )
+	PvPCaptureRateBonusFactorCalculator bonusFactorCalculator;
+
+public:
+
+	ZangarmarshBeaconBannerAI( GameObject *go ) :
+	GameObjectAIScript( go ),
+	bonusFactorCalculator( 5 )
 	{
 		beaconId = std::numeric_limits<uint32>::max();
 	}
@@ -505,7 +511,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= ZM_BEACON_SCAN_UPDATE_FREQ;
+		delta = delta * ZM_BEACON_SCAN_UPDATE_FREQ * bonusFactorCalculator.calculateBonusFactor( Math::diff< uint32 >( alliancePlayers, hordePlayers ) );
 
 		beaconCaptureProgress[ beaconId ].advanceBy( delta );
 	}
