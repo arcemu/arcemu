@@ -505,7 +505,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= ( ZM_BEACON_SCAN_UPDATE_FREQ / 1000 );
+		delta *= ZM_BEACON_SCAN_UPDATE_FREQ;
 
 		beaconCaptureProgress[ beaconId ].advanceBy( delta );
 	}
@@ -802,7 +802,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 {
 	for( int i = 0; i < ZM_BEACON_COUNT; i++ )
 	{
-		beaconCaptureProgress[ i ].setMax( 120 );
+		beaconCaptureProgress[ i ].setMax( 120000 );
 		beaconCaptureProgress[ i ].setPercent( 50 );
 	}
 

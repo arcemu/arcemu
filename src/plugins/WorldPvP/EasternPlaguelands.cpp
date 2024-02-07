@@ -764,7 +764,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= ( EP_TOWER_SCAN_UPDATE_FREQ / 1000 );
+		delta *= EP_TOWER_SCAN_UPDATE_FREQ;
 
 		towerCaptureProgress[ towerId ].advanceBy( delta );
 	}
@@ -1134,7 +1134,7 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 {
 	for( int i = 0; i < EP_TOWER_COUNT; i++ )
 	{
-		towerCaptureProgress[ i ].setMax( 120 );
+		towerCaptureProgress[ i ].setMax( 120000 );
 		towerCaptureProgress[ i ].setPercent( TOWER_CAPTURE_PROGRESS_DEFAULT );
 	}
 

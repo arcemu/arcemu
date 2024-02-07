@@ -375,7 +375,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= ( HP_BANNER_SCAN_UPDATE_FREQ / 1000 );
+		delta *= HP_BANNER_SCAN_UPDATE_FREQ;
 
 		fortCaptureProgress[ fortId ].advanceBy( delta );
 	}
@@ -666,7 +666,7 @@ void setupHellfirePeninsula( ScriptMgr *mgr )
 {
 	for( int i = 0; i < HP_FORT_COUNT; i++ )
 	{
-		fortCaptureProgress[ i ].setMax( 120 );
+		fortCaptureProgress[ i ].setMax( 120000 );
 		fortCaptureProgress[ i ].setPercent( 50 );
 	}
 

@@ -783,7 +783,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= ( NAGRAND_HALAA_SCAN_FREQUENCY / 1000 );
+		delta *= NAGRAND_HALAA_SCAN_FREQUENCY;
 
 		halaaProgress.advanceBy( delta );
 	}
@@ -1165,7 +1165,7 @@ void Nagrand_onHonorableKill( Player *killer, Player *victim )
 
 void setupNagrand( ScriptMgr *mgr )
 {
-	halaaProgress.setMax( 120 );
+	halaaProgress.setMax( 120000 );
 	halaaProgress.setPercent( 50 );
 
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );

@@ -509,7 +509,7 @@ public:
 			delta = -1;
 		}
 
-		delta *= ( TF_TOWER_SCAN_UPDATE_FREQ / 1000 );
+		delta *= TF_TOWER_SCAN_UPDATE_FREQ;
 
 		towerCaptureProgress[ towerId ].advanceBy( delta );
 	}
@@ -733,7 +733,7 @@ void setupTerokkarForest( ScriptMgr *mgr )
 {
 	for( int i = 0; i < TF_TOWER_COUNT; i++ )
 	{
-		towerCaptureProgress[ i ].setMax( 120 );
+		towerCaptureProgress[ i ].setMax( 120000 );
 		towerCaptureProgress[ i ].setPercent( 50 );
 	}
 
