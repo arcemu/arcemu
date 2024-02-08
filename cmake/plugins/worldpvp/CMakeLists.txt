@@ -29,7 +29,12 @@ link_directories( ${EXTRA_LIBS_PATH} ${DEPENDENCY_LIBS} )
 include_directories( ${include_dirs} ${prefix} )
 add_library( ${PROJECT_NAME} SHARED ${SRCS} ${HEADERS} )
 add_dependencies( ${PROJECT_NAME} ${dependancies} )
-target_link_libraries( ${PROJECT_NAME} ${linkages} shared )
+
+IF( WIN32 )
+	target_link_libraries( ${PROJECT_NAME} ${linkages} shared )
+ELSE()
+	target_link_libraries( ${PROJECT_NAME} ${linkages} )
+ENDIF()
 
 include(PCHSupport)
 IF( CMAKE_GENERATOR MATCHES Visual*)
