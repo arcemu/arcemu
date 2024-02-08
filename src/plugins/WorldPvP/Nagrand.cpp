@@ -768,7 +768,7 @@ private:
 public:
 	HalaaBannerAI( GameObject *go ) :
 	GameObjectAIScript( go ),
-	bonusFactorCalculator( 5 )
+	bonusFactorCalculator( Config.MainConfig.GetUIntDefault( "WorldPvP", "Halaa_BonusFactor_MaxAdvantage", 5 ) )
 	{
 	}
 

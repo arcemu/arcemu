@@ -492,7 +492,7 @@ private:
 public:
 	TerokkarSpiritTowerAI( GameObject *go ) :
 	GameObjectAIScript( go ),
-	bonusFactorCalculator( 5 )
+	bonusFactorCalculator( Config.MainConfig.GetUIntDefault( "WorldPvP", "TF_BonusFactor_MaxAdvantage", 5 ) )
 	{
 		towerId = std::numeric_limits< uint32 >::max();
 	}

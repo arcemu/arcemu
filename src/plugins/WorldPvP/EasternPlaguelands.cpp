@@ -710,8 +710,9 @@ private:
 public:
 	ADD_GAMEOBJECT_FACTORY_FUNCTION( EPTowerBannerAI );
 
-	EPTowerBannerAI( GameObject *go ) : GameObjectAIScript( go ),
-	bonusFactorCalculator( 5 )
+	EPTowerBannerAI( GameObject *go ) :
+	GameObjectAIScript( go ),
+	bonusFactorCalculator( Config.MainConfig.GetUIntDefault( "WorldPvP", "EP_BonusFactor_MaxAdvantage", 5 ) )
 	{
 		towerId = 0;
 	}

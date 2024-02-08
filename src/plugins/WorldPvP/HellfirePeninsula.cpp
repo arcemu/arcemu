@@ -297,7 +297,7 @@ public:
 
 	HPBannerAI( GameObject *go ) :
 	GameObjectAIScript( go ),
-	bonusFactorCalculator( 5 )
+	bonusFactorCalculator( Config.MainConfig.GetUIntDefault( "WorldPvP", "HP_BonusFactor_MaxAdvantage", 5 ) )
 	{
 		fortId = std::numeric_limits<uint32>::max();
 	}

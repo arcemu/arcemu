@@ -485,7 +485,7 @@ public:
 
 	ZangarmarshBeaconBannerAI( GameObject *go ) :
 	GameObjectAIScript( go ),
-	bonusFactorCalculator( 5 )
+	bonusFactorCalculator( Config.MainConfig.GetUIntDefault( "WorldPvP", "ZM_BonusFactor_MaxAdvantage", 5 ) )
 	{
 		beaconId = std::numeric_limits<uint32>::max();
 	}
