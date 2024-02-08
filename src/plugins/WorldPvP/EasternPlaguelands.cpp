@@ -1137,7 +1137,7 @@ void setupEasternPlaguelands( ScriptMgr *mgr )
 {
 	for( int i = 0; i < EP_TOWER_COUNT; i++ )
 	{
-		towerCaptureProgress[ i ].setMax( 120000 );
+		towerCaptureProgress[ i ].setMax( Config.MainConfig.GetUIntDefault( "WorldPvP", "EP_CaptureTime", 120 ) * 1000 );
 		towerCaptureProgress[ i ].setPercent( TOWER_CAPTURE_PROGRESS_DEFAULT );
 	}
 

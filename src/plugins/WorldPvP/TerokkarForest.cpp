@@ -737,7 +737,7 @@ void setupTerokkarForest( ScriptMgr *mgr )
 {
 	for( int i = 0; i < TF_TOWER_COUNT; i++ )
 	{
-		towerCaptureProgress[ i ].setMax( 120000 );
+		towerCaptureProgress[ i ].setMax( Config.MainConfig.GetUIntDefault( "WorldPvP", "TF_CaptureTime", 120 ) * 1000 );
 		towerCaptureProgress[ i ].setPercent( 50 );
 	}
 

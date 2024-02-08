@@ -1170,7 +1170,7 @@ void Nagrand_onHonorableKill( Player *killer, Player *victim )
 
 void setupNagrand( ScriptMgr *mgr )
 {
-	halaaProgress.setMax( 120000 );
+	halaaProgress.setMax( Config.MainConfig.GetUIntDefault( "WorldPvP", "Halaa_CaptureTime", 120 ) * 1000 );
 	halaaProgress.setPercent( 50 );
 
 	MapMgr *mapMgr = sInstanceMgr.GetMapMgr( MAP_OUTLAND );

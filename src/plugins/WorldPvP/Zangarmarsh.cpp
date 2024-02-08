@@ -808,7 +808,7 @@ void setupZangarmarsh( ScriptMgr *mgr )
 {
 	for( int i = 0; i < ZM_BEACON_COUNT; i++ )
 	{
-		beaconCaptureProgress[ i ].setMax( 120000 );
+		beaconCaptureProgress[ i ].setMax( Config.MainConfig.GetUIntDefault( "WorldPvP", "ZM_CaptureTime", 120 ) * 1000 );
 		beaconCaptureProgress[ i ].setPercent( 50 );
 	}
 

@@ -669,7 +669,7 @@ void setupHellfirePeninsula( ScriptMgr *mgr )
 {
 	for( int i = 0; i < HP_FORT_COUNT; i++ )
 	{
-		fortCaptureProgress[ i ].setMax( 120000 );
+		fortCaptureProgress[ i ].setMax( Config.MainConfig.GetUIntDefault( "WorldPvP", "HP_CaptureTime", 120 ) * 1000 );
 		fortCaptureProgress[ i ].setPercent( 50 );
 	}
 
