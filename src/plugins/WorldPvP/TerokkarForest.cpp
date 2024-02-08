@@ -101,8 +101,8 @@ static uint32 timerWorldStates[] = {
 	WORLDSTATE_TF_TIMER_NEUTRAL
 };
 
-#define TF_TIMER_MINUTES (6 * 60)
-#define TF_TIMER_UPDATE_FREQUENCY (1 * 1000)
+#define TF_LOCKOUT_TIMER_MINUTES (6 * 60)
+#define TF_TIMER_UPDATE_FREQUENCY 1
 
 #define SPELL_BLESSING_OF_AUCHINDOUN 33377
 
@@ -283,7 +283,7 @@ public:
 
 	void reset()
 	{
-		minutesLeft = TF_TIMER_MINUTES;
+		minutesLeft = Config.MainConfig.GetUIntDefault( "WorldPvP", "TF_LockoutTimer", TF_LOCKOUT_TIMER_MINUTES );
 
 		updateWorldStates();
 	}
@@ -398,7 +398,10 @@ public:
 
 			/// Star the timer, which in turn disables capturing
 			pvpTimer.reset();
-			sEventMgr.AddEvent( this, &TerokkarForestPvP::updateTimer, EVENT_ZONE_PVP_TIMER_UPDATE, TF_TIMER_UPDATE_FREQUENCY, 0, 0 );
+
+			uint32 frequency = Config.MainConfig.GetUIntDefault( "WorldPvP", "TF_LockoutTimerUpdateFrequency", TF_TIMER_UPDATE_FREQUENCY ) * 1000;
+
+			sEventMgr.AddEvent( this, &TerokkarForestPvP::updateTimer, EVENT_ZONE_PVP_TIMER_UPDATE, frequency, 0, 0 );
 		}
 	}
 
