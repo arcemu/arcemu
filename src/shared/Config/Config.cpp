@@ -106,6 +106,8 @@ void apply_setting(string & str, ConfigSetting & setting)
 			setting.AsInt = 0;
 		}
 	}
+
+	setting.AsUInt = static_cast< unsigned int >( setting.AsInt );
 }
 
 uint32 ahash(const char* str)
@@ -480,6 +482,19 @@ bool ConfigFile::GetInt(const char* block, const char* name, int* value)
 	return true;
 }
 
+bool ConfigFile::GetUInt(const char* block, const char* name, unsigned int* value)
+{
+	ConfigSetting* Setting = GetSetting(block, name);
+	if(Setting == NULL)
+	{
+		return false;
+	}
+
+	*value = Setting->AsUInt;
+
+	return true;
+}
+
 bool ConfigFile::GetFloat(const char* block, const char* name, float* value)
 {
 	ConfigSetting* Setting = GetSetting(block, name);
@@ -494,6 +509,19 @@ int ConfigFile::GetIntDefault(const char* block, const char* name, const int def
 {
 	int val;
 	return GetInt(block, name, &val) ? val : def;
+}
+
+unsigned int ConfigFile::GetUIntDefault(const char* block, const char* name, const unsigned int default_value)
+{
+	unsigned int value;
+	if( GetUInt( block, name, &value ) )
+	{
+		return value;
+	}
+	else
+	{
+		return default_value;
+	}
 }
 
 float ConfigFile::GetFloatDefault(const char* block, const char* name, const float def)

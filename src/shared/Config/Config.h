@@ -43,6 +43,7 @@ struct SERVER_DECL ConfigSetting
 	string AsString;
 	bool AsBool;
 	int AsInt;
+	unsigned int AsUInt;
 	float AsFloat;
 };
 
@@ -68,6 +69,9 @@ class SERVER_DECL ConfigFile
 		bool GetInt(const char* block, const char* name, int* value);
 		int GetIntDefault(const char* block, const char* name, const int def);
 		int GetIntVA(const char* block, int def, const char* name, ...);
+
+		bool GetUInt(const char* block, const char* name, unsigned int* value);
+		unsigned int GetUIntDefault(const char* block, const char* name, const unsigned int default_value);
 
 		bool GetFloat(const char* block, const char* name, float* value);
 		float GetFloatDefault(const char* block, const char* name, const float def);
