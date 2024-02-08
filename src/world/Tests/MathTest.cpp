@@ -28,6 +28,11 @@ public:
 	bool testDiffWhenALarger();
 	bool testDiffWhenBLarger();
 	bool testDiffWhenAEqualsB();
+
+	bool testClampWhenSmaller();
+	bool testClampWhenLarger();
+	bool testClampWhenInRange();
+
 	bool run();
 };
 
@@ -35,6 +40,10 @@ TESTCASE_REGISTRY_FOR( MathTest )
 	TESTCASE( MathTest, testDiffWhenALarger,  "Test that the diff method works when A is the larger number" )
 	TESTCASE( MathTest, testDiffWhenBLarger,  "Test that the diff method works when B is the larger number" )
 	TESTCASE( MathTest, testDiffWhenAEqualsB, "Test that the diff method works when A equals B" )
+
+	TESTCASE( MathTest, testClampWhenSmaller, "Test that clamp returns min when value is smaller than min" )
+	TESTCASE( MathTest, testClampWhenLarger,  "Test that clamp returns max when value is larger than max" )
+	TESTCASE( MathTest, testClampWhenInRange, "Test that clamp returns the value when it is between min and max" )
 TESTCASE_REGISTRY_END()
 
 bool MathTest::testDiffWhenALarger()
@@ -54,6 +63,27 @@ bool MathTest::testDiffWhenBLarger()
 bool MathTest::testDiffWhenAEqualsB()
 {
 	TEST_EQ( 0, Math::diff< unsigned int >( 1, 1 ) );
+
+	TESTCASE_END();
+}
+
+bool MathTest::testClampWhenSmaller()
+{
+	TEST_EQ( 50, Math::clamp< uint32 >( 45, 50, 100 ) );
+
+	TESTCASE_END();
+}
+
+bool MathTest::testClampWhenLarger()
+{
+	TEST_EQ( 100, Math::clamp< uint32 >( 150, 50, 100 ) );
+
+	TESTCASE_END();
+}
+
+bool MathTest::testClampWhenInRange()
+{
+	TEST_EQ( 60, Math::clamp< uint32 >( 60, 50, 100 ) );
 
 	TESTCASE_END();
 }
