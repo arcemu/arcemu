@@ -25,6 +25,8 @@
 class MathTest
 {
 public:
+	bool testToRadians();
+	bool testToAngle();
 	bool testCalcAngle0();
 	bool testCalcAngle45();
 	bool testCalcAngle90();
@@ -46,6 +48,9 @@ public:
 };
 
 TESTCASE_REGISTRY_FOR( MathTest )
+	TESTCASE( MathTest, testToRadians,        "Test that toRadians works" )
+	TESTCASE( MathTest, testToAngle,          "Test that toAngle works" )
+
 	TESTCASE( MathTest, testCalcAngle0,       "Test that calcAngle returns 0.0 " )
 	TESTCASE( MathTest, testCalcAngle45,      "Test that calcAngle returns 45.0 " )
 	TESTCASE( MathTest, testCalcAngle90,      "Test that calcAngle returns 90.0 " )
@@ -63,6 +68,50 @@ TESTCASE_REGISTRY_FOR( MathTest )
 	TESTCASE( MathTest, testClampWhenLarger,  "Test that clamp returns max when value is larger than max" )
 	TESTCASE( MathTest, testClampWhenInRange, "Test that clamp returns the value when it is between min and max" )
 TESTCASE_REGISTRY_END()
+
+bool MathTest::testToRadians()
+{
+	static float testData[ 8 ][ 2 ] =
+	{
+		{ 0.0f, 0.0f },
+		{ 45.0f, M_PI_FLOAT / 4 },
+		{ 90.0f, M_PI_FLOAT / 2 },
+		{ 135.0f, 3.0f/4.0f * M_PI_FLOAT },
+		{ 180.0f, M_PI_FLOAT },
+		{ 225.0f, 5.0f/4.0f * M_PI_FLOAT },
+		{ 270.0f, 3 * M_PI_FLOAT / 2 },
+		{ 315.0f, 7.0f/4.0f * M_PI_FLOAT }
+	};
+
+	for( int i = 0; i < 8; i++ )
+	{
+		TEST_TRUE( ( Math::diff< float >( testData[ i ][ 1 ], Math::toRadians( testData[ i ][ 0 ] ) ) <= TOLERANCE_FLOAT ) );
+	}
+
+	TESTCASE_END();
+}
+
+bool MathTest::testToAngle()
+{
+	static float testData[ 8 ][ 2 ] =
+	{
+		{ 0.0f, 0.0f },
+		{ 45.0f, M_PI_FLOAT / 4 },
+		{ 90.0f, M_PI_FLOAT / 2 },
+		{ 135.0f, 3.0f/4.0f * M_PI_FLOAT },
+		{ 180.0f, M_PI_FLOAT },
+		{ 225.0f, 5.0f/4.0f * M_PI_FLOAT },
+		{ 270.0f, 3 * M_PI_FLOAT / 2 },
+		{ 315.0f, 7.0f/4.0f * M_PI_FLOAT }
+	};
+
+	for( int i = 0; i < 8; i++ )
+	{
+		TEST_TRUE( ( Math::diff< float >( testData[ i ][ 0 ], Math::toAngle( testData[ i ][ 1 ] ) ) <= TOLERANCE_FLOAT ) );
+	}
+
+	TESTCASE_END();
+}
 
 bool MathTest::testDiffWhenALarger()
 {

@@ -38,9 +38,23 @@
 #define M_Q_PI     0.785398163397448309615
 #define M_PI_FLOAT 3.14159f
 
+#define TOLERANCE_FLOAT 0.00001f
+
 class SERVER_DECL Math
 {
 public:
+	/// Converts a normalized angle (0-360) in degrees to radians
+	static float toRadians( float angle )
+	{
+		return angle * ( M_PI_FLOAT / 180.0f );
+	}
+
+	/// Converts normalized radians (0-2PI) to an angle in degrees
+	static float toAngle( float radians )
+	{
+		return radians * ( 180.0f / M_PI_FLOAT );
+	}
+
 	static float calcAngle(float Position1X, float Position1Y, float Position2X, float Position2Y);
 	static float calcRadAngle(float Position1X, float Position1Y, float Position2X, float Position2Y);
 	static float getEasyAngle(float angle);
