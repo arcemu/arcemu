@@ -96,7 +96,7 @@ float Math::calcRadAngle(float Position1X, float Position1Y, float Position2X, f
 	return float(angle);
 }
 
-float Math::getEasyAngle(float angle)
+float Math::normalizeAngle(float angle)
 {
 	while(angle < 0)
 	{
