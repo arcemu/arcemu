@@ -40,6 +40,16 @@
 	std::cout << "With expansion: TEST_EQ( " << EXPECTED << ", " << ACTUAL << " )" << std::endl; \
 	return false; }
 
+#define TEST_TRUE( CONDITION ); if( !( CONDITION ) ){ \
+	std::cout << "Condition test failed: TEST_TRUE( " << #CONDITION << " )" << std::endl; \
+	std::cout << "With expansion: TEST_TRUE( " << CONDITION  << " )" << std::endl; \
+	return false; }
+
+#define TEST_FALSE( CONDITION ); if( ( CONDITION ) ){ \
+	std::cout << "Condition test failed: TEST_FALSE( " << #CONDITION << " )" << std::endl; \
+	std::cout << "With expansion: TEST_FALSE( " << CONDITION  << " )" << std::endl; \
+	return false; }
+
 #define TESTCASE_END(); return true;
 
 #define RUN_TESTS(); \
