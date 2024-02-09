@@ -32,6 +32,8 @@ public:
 
 	bool testCalcRadAngle();
 
+	bool testNormalizeAngle();
+
 	bool testDiffWhenALarger();
 	bool testDiffWhenBLarger();
 	bool testDiffWhenAEqualsB();
@@ -50,6 +52,8 @@ TESTCASE_REGISTRY_FOR( MathTest )
 	TESTCASE( MathTest, testCalcAngle,        "Test that calcAngle works" )
 
 	TESTCASE( MathTest, testCalcRadAngle,     "Test that calcRadAngle works" )
+
+	TESTCASE( MathTest, testNormalizeAngle,   "Test that normalizeAngle works" )
 
 	TESTCASE( MathTest, testDiffWhenALarger,  "Test that the diff method works when A is the larger number" )
 	TESTCASE( MathTest, testDiffWhenBLarger,  "Test that the diff method works when B is the larger number" )
@@ -189,6 +193,29 @@ bool MathTest::testCalcRadAngle()
 		float rad = Math::calcRadAngle( testData[ i ][ 0 ], testData[ i ][ 1 ], testData[ i ][ 2 ], testData[ i ][ 3 ] );
 
 		TEST_TRUE( ( ( Math::diff< float >( rad, testData[ i ][ 4 ] ) ) <= TOLERANCE_FLOAT ) );
+	}
+
+	TESTCASE_END();
+}
+
+bool MathTest::testNormalizeAngle()
+{
+	static float testData[][ 2 ] = 
+	{
+		{ -3600.0f, 0.0f },
+		{ -90.0f, 270.0f },
+		{ 0.0f, 0.0f },
+		{ 180.0f, 180.0f },
+		{ 360.0f, 0.0f },
+		{ 450.0f, 90.0f },
+		{ 3600.0f, 0.0f }
+	};
+
+	int count = sizeof( testData ) / ( 2 * sizeof( float ) );
+
+	for( int i = 0; i < count; i++ )
+	{
+		TEST_EQ( testData[ i ][ 1 ], Math::normalizeAngle( testData[ i ][ 0 ] ) );
 	}
 
 	TESTCASE_END();
