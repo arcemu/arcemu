@@ -27,14 +27,8 @@ class MathTest
 public:
 	bool testToRadians();
 	bool testToAngle();
-	bool testCalcAngle0();
-	bool testCalcAngle45();
-	bool testCalcAngle90();
-	bool testCalcAngle135();
-	bool testCalcAngle180();
-	bool testCalcAngle225();
-	bool testCalcAngle270();
-	bool testCalcAngle315();
+
+	bool testCalcAngle();
 
 	bool testDiffWhenALarger();
 	bool testDiffWhenBLarger();
@@ -51,14 +45,7 @@ TESTCASE_REGISTRY_FOR( MathTest )
 	TESTCASE( MathTest, testToRadians,        "Test that toRadians works" )
 	TESTCASE( MathTest, testToAngle,          "Test that toAngle works" )
 
-	TESTCASE( MathTest, testCalcAngle0,       "Test that calcAngle returns 0.0 " )
-	TESTCASE( MathTest, testCalcAngle45,      "Test that calcAngle returns 45.0 " )
-	TESTCASE( MathTest, testCalcAngle90,      "Test that calcAngle returns 90.0 " )
-	TESTCASE( MathTest, testCalcAngle135,     "Test that calcAngle returns 135.0 " )
-	TESTCASE( MathTest, testCalcAngle180,     "Test that calcAngle returns 180.0 " )
-	TESTCASE( MathTest, testCalcAngle225,     "Test that calcAngle returns 225.0 " )
-	TESTCASE( MathTest, testCalcAngle270,     "Test that calcAngle returns 270.0 " )
-	TESTCASE( MathTest, testCalcAngle315,     "Test that calcAngle returns 315.0 " )
+	TESTCASE( MathTest, testCalcAngle,        "Test that calcAngle works" )
 
 	TESTCASE( MathTest, testDiffWhenALarger,  "Test that the diff method works when A is the larger number" )
 	TESTCASE( MathTest, testDiffWhenBLarger,  "Test that the diff method works when B is the larger number" )
@@ -155,59 +142,25 @@ bool MathTest::testClampWhenInRange()
 	TESTCASE_END();
 }
 
-bool MathTest::testCalcAngle0()
+bool MathTest::testCalcAngle()
 {
-	TEST_EQ( 0.0f, Math::calcAngle( 10.0f, 10.0f, 10.0f, 10.0f ) );
-	TEST_EQ( 0.0f, Math::calcAngle( 10.0f, 10.0f, 20.0f, 10.0f ) );	
+	static float testData[ 9 ][ 5 ] = 
+	{
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 0.0f  },
+		{ 10.0f, 10.0f, 20.0f, 10.0f, 0.0f  },
+		{ 10.0f, 10.0f, 20.0f, 20.0f, 45.0f },
+		{ 10.0f, 10.0f, 10.0f, 20.0f, 90.0f },
+		{ 10.0f, 10.0f, 0.0f, 20.0f, 135.0f },
+		{ 10.0f, 10.0f, 0.0f, 10.0f, 180.0f },
+		{ 10.0f, 10.0f, 0.0f, 0.0f,  225.0f },
+		{ 10.0f, 10.0f, 10.0f, 0.0f, 270.0f },
+		{ 10.0f, 10.0f, 20.0f, 0.0f, 315.0f }
+	};
 
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle45()
-{
-	TEST_EQ( 45.0f, Math::calcAngle( 10.0f, 10.0f, 20.0f, 20.0f ) );
-
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle90()
-{
-	TEST_EQ( 90.0f, Math::calcAngle( 10.0f, 10.0f, 10.0f, 20.0f ) );
-
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle135()
-{
-	TEST_EQ( 135.0f, Math::calcAngle( 10.0f, 10.0f, 0.0f, 20.0f ) );
-
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle180()
-{
-	TEST_EQ( 180.0f, Math::calcAngle( 10.0f, 10.0f, 0.0f, 10.0f ) );
-
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle225()
-{
-	TEST_EQ( 225.0f, Math::calcAngle( 10.0f, 10.0f, 0.0f, 0.0f ) );
-
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle270()
-{
-	TEST_EQ( 270.0f, Math::calcAngle( 10.0f, 10.0f, 10.0f, 0.0f ) );
-
-	TESTCASE_END();
-}
-
-bool MathTest::testCalcAngle315()
-{
-	TEST_EQ( 315.0f, Math::calcAngle( 10.0f, 10.0f, 20.0f, 0.0f ) );
+	for( int i = 0; i < 9; i++ )
+	{
+		TEST_EQ( testData[ i ][ 4 ], Math::calcAngle( testData[ i ][ 0 ], testData[ i ][ 1 ], testData[ i ][ 2 ], testData[ i ][ 3 ] ) );
+	}
 
 	TESTCASE_END();
 }
