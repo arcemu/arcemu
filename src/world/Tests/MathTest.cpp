@@ -30,6 +30,8 @@ public:
 
 	bool testCalcAngle();
 
+	bool testCalcRadAngle();
+
 	bool testDiffWhenALarger();
 	bool testDiffWhenBLarger();
 	bool testDiffWhenAEqualsB();
@@ -46,6 +48,8 @@ TESTCASE_REGISTRY_FOR( MathTest )
 	TESTCASE( MathTest, testToAngle,          "Test that toAngle works" )
 
 	TESTCASE( MathTest, testCalcAngle,        "Test that calcAngle works" )
+
+	TESTCASE( MathTest, testCalcRadAngle,     "Test that calcRadAngle works" )
 
 	TESTCASE( MathTest, testDiffWhenALarger,  "Test that the diff method works when A is the larger number" )
 	TESTCASE( MathTest, testDiffWhenBLarger,  "Test that the diff method works when B is the larger number" )
@@ -160,6 +164,31 @@ bool MathTest::testCalcAngle()
 	for( int i = 0; i < 9; i++ )
 	{
 		TEST_EQ( testData[ i ][ 4 ], Math::calcAngle( testData[ i ][ 0 ], testData[ i ][ 1 ], testData[ i ][ 2 ], testData[ i ][ 3 ] ) );
+	}
+
+	TESTCASE_END();
+}
+
+bool MathTest::testCalcRadAngle()
+{
+	static float testData[ 9 ][ 5 ] = 
+	{
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 0.0f  },
+		{ 10.0f, 10.0f, 20.0f, 10.0f, 0.0f  },
+		{ 10.0f, 10.0f, 20.0f, 20.0f, M_PI_FLOAT / 4.0f },
+		{ 10.0f, 10.0f, 10.0f, 20.0f, M_PI_FLOAT / 2.0f },
+		{ 10.0f, 10.0f, 0.0f, 20.0f, 3.0f/4.0f * M_PI_FLOAT },
+		{ 10.0f, 10.0f, 0.0f, 10.0f, M_PI_FLOAT },
+		{ 10.0f, 10.0f, 0.0f, 0.0f,  5.0f/4.0f * M_PI_FLOAT },
+		{ 10.0f, 10.0f, 10.0f, 0.0f, 3 * M_PI_FLOAT / 2 },
+		{ 10.0f, 10.0f, 20.0f, 0.0f, 7.0f/4.0f * M_PI_FLOAT }
+	};
+
+	for( int i = 0; i < 9; i++ )
+	{
+		float rad = Math::calcRadAngle( testData[ i ][ 0 ], testData[ i ][ 1 ], testData[ i ][ 2 ], testData[ i ][ 3 ] );
+
+		TEST_TRUE( ( ( Math::diff< float >( rad, testData[ i ][ 4 ] ) ) <= TOLERANCE_FLOAT ) );
 	}
 
 	TESTCASE_END();
