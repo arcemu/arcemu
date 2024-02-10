@@ -98,7 +98,7 @@ static PyObject* ArcPyCreature_createCustomWaypoint( ArcPyCreature *self, PyObje
 	uint32 flags;
 	uint32 model;
 
-	if( !PyArg_ParseTuple( args, "ffffkkk", &x, &y, &z, &o, &wait, &flags, &model ) )
+    if( !PyArg_ParseTuple( args, "ffffIII", &x, &y, &z, &o, &wait, &flags, &model ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires x,y,z,o,wait,flags,model parameters" );
 		return NULL;
@@ -159,7 +159,7 @@ static PyObject* ArcPyCreature_createCustomWaypoint( ArcPyCreature *self, PyObje
 static PyObject* ArcPyCreature_setMovementType( ArcPyCreature *self, PyObject *args )
 {
 	uint32 type;
-	if( !PyArg_ParseTuple( args, "k", &type ) )
+    if( !PyArg_ParseTuple( args, "I", &type ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a type parameter" );
 		return NULL;
@@ -207,7 +207,7 @@ static PyObject* ArcPyCreature_resetWaypoint( ArcPyCreature *self, PyObject *arg
 static PyObject* ArcPyCreature_setCanRegenerateHP( ArcPyCreature *self, PyObject *args )
 {
 	uint32 canRegenerate;
-	if( !PyArg_ParseTuple( args, "k", &canRegenerate ) )
+    if( !PyArg_ParseTuple( args, "I", &canRegenerate ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires an integer parameter" );
 		return NULL;
@@ -238,7 +238,7 @@ static PyObject* ArcPyCreature_stopMovement( ArcPyCreature *self, PyObject *args
 {
 	uint32 time = 0;
 
-	if( !PyArg_ParseTuple( args, "k", &time ) )
+    if( !PyArg_ParseTuple( args, "I", &time ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a time parameter" );
 		return NULL;
@@ -268,7 +268,7 @@ static PyObject* ArcPyCreature_despawn( ArcPyCreature *self, PyObject *args )
 	uint32 delay;
 	uint32 respawnTime;
 
-	if( !PyArg_ParseTuple( args, "kk", &delay, &respawnTime ) )
+    if( !PyArg_ParseTuple( args, "II", &delay, &respawnTime ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a delay and a respawntime parameter" );
 		return NULL;
@@ -300,7 +300,7 @@ static PyObject* ArcPyCreature_addNpcFlag( ArcPyCreature *self, PyObject *args )
 {
 	uint32 flag;
 
-	if( !PyArg_ParseTuple( args, "k", &flag ) )
+    if( !PyArg_ParseTuple( args, "I", &flag ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a flag as a parameter" );
 		return NULL;
@@ -328,7 +328,7 @@ static PyObject* ArcPyCreature_removeNpcFlag( ArcPyCreature *self, PyObject *arg
 {
 	uint32 flag;
 
-	if( !PyArg_ParseTuple( args, "k", &flag ) )
+    if( !PyArg_ParseTuple( args, "I", &flag ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a flag as a parameter" );
 		return NULL;
@@ -357,7 +357,7 @@ static PyObject* ArcPyCreature_hasNpcFlag( ArcPyCreature *self, PyObject *args )
 {
 	uint32 flag;
 
-	if( !PyArg_ParseTuple( args, "k", &flag ) )
+    if( !PyArg_ParseTuple( args, "I", &flag ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a flag as a parameter" );
 		return NULL;
@@ -397,7 +397,7 @@ static PyObject* ArcPyCreature_addVendorItem( ArcPyCreature *self, PyObject *arg
 	uint32 amount = 1;
 	uint32 extendedCostId = 0;
 
-	if( !PyArg_ParseTuple( args, "k|kk", &id, &amount, &extendedCostId ) )
+    if( !PyArg_ParseTuple( args, "I|II", &id, &amount, &extendedCostId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an item Id as parameter" );
 		return NULL;
@@ -439,7 +439,7 @@ static PyObject* ArcPyCreature_removeVendorItem( ArcPyCreature *self, PyObject *
 {
 	uint32 id;
 
-	if( !PyArg_ParseTuple( args, "k", &id ) )
+    if( !PyArg_ParseTuple( args, "I", &id ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an item Id as parameter" );
 		return NULL;

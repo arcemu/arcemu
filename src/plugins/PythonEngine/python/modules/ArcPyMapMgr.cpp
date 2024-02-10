@@ -84,7 +84,7 @@ static PyObject* ArcPyMapMgr_spawnCreature( ArcPyMapMgr *self, PyObject *args )
 	float y;
 	float z;
 
-	if( !PyArg_ParseTuple( args, "kfff", &id, &x, &y, &z ) )
+    if( !PyArg_ParseTuple( args, "Ifff", &id, &x, &y, &z ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires id,x,y,z parameters" );
 		return NULL;
@@ -131,7 +131,7 @@ static PyObject* ArcPyMapMgr_spawnGameObject( ArcPyMapMgr *self, PyObject *args 
 	float y;
 	float z;
 
-	if( !PyArg_ParseTuple( args, "kfff", &id, &x, &y, &z ) )
+    if( !PyArg_ParseTuple( args, "Ifff", &id, &x, &y, &z ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires id,x,y,z parameters" );
 		return NULL;
@@ -236,7 +236,7 @@ static PyObject* ArcPyMapMgr_getWorldState( ArcPyMapMgr *self, PyObject *args )
 	uint32 zoneId;
 	uint32 field;
 
-	if( !PyArg_ParseTuple( args, "kk", &zoneId, &field ) )
+    if( !PyArg_ParseTuple( args, "II", &zoneId, &field ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires zone, field parameters" );
 		return NULL;
@@ -270,7 +270,7 @@ static PyObject* ArcPyMapMgr_updateWorldState( ArcPyMapMgr *self, PyObject *args
 	uint32 field;
 	uint32 value;
 
-	if( !PyArg_ParseTuple( args, "kkk", &zoneId, &field, &value ) )
+    if( !PyArg_ParseTuple( args, "III", &zoneId, &field, &value ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires zone, field, value parameters" );
 		return NULL;
@@ -307,7 +307,7 @@ static PyObject* ArcPyMapMgr_getCreatureNearestCoords( ArcPyMapMgr *self, PyObje
 	float z;
 	uint32 id;
 
-	if( !PyArg_ParseTuple( args, "fffk", &x, &y, &z, &id ) ) 
+    if( !PyArg_ParseTuple( args, "fffI", &x, &y, &z, &id ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires x,y,z and entry parameters" );
 		return NULL;
@@ -349,7 +349,7 @@ static PyObject* ArcPyMapMgr_getGameObjectNearestCoords( ArcPyMapMgr *self, PyOb
 	float z;
 	uint32 id;
 
-	if( !PyArg_ParseTuple( args, "fffk", &x, &y, &z, &id ) ) 
+    if( !PyArg_ParseTuple( args, "fffI", &x, &y, &z, &id ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires x,y,z and entry parameters" );
 		return NULL;

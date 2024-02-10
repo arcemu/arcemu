@@ -84,11 +84,11 @@ static PyObject* ArcPyPlayer_getName( ArcPyPlayer *self, PyObject *args )
 ///
 static PyObject* ArcPyPlayer_sendChatMessage( ArcPyPlayer *self, PyObject *args )
 {
-	unsigned long type = 0;
-	unsigned long lang = 0;
+    uint32 type = 0;
+    uint32 lang = 0;
 	const char *msg = NULL;
 
-	if( ! PyArg_ParseTuple( args, "kks", &type, &lang, &msg ) )
+    if( ! PyArg_ParseTuple( args, "IIs", &type, &lang, &msg ) )
 	{
 		return NULL;
 	}
@@ -132,10 +132,10 @@ static PyObject* ArcPyPlayer_toUnit( ArcPyPlayer *self, PyObject *args )
 ///
 static PyObject* ArcPyPlayer_spawnAndEnterVehicle( ArcPyPlayer *self, PyObject *args )
 {
-	unsigned long creatureId;
-	unsigned long delay;
+    uint32 creatureId;
+    uint32 delay;
 
-	if( ! PyArg_ParseTuple( args, "kk", &creatureId, &delay ) )
+    if( ! PyArg_ParseTuple( args, "II", &creatureId, &delay ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "The command requires a creatureId, and a delay." );
 		return NULL;
@@ -205,7 +205,7 @@ static PyObject* ArcPyPlayer_teleport( ArcPyPlayer *self, PyObject *args )
 	float z;
 	float orientation = 0.0f;
 
-	if( ! PyArg_ParseTuple( args, "kfff|f", &map, &x, &y, &z, &orientation ) )
+    if( ! PyArg_ParseTuple( args, "Ifff|f", &map, &x, &y, &z, &orientation ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "The command requires a map Id, and x,y,x coordinates." );
 		return NULL;
@@ -244,7 +244,7 @@ static PyObject* ArcPyPlayer_sendGossipPOI( ArcPyPlayer *self, PyObject *args )
 	uint32 data = 0;
 	const char *name = NULL;
 
-	if( !PyArg_ParseTuple( args, "ffkkks", &x, &y, &icon, &flags, &data, &name ) )
+    if( !PyArg_ParseTuple( args, "ffIIIs", &x, &y, &icon, &flags, &data, &name ) )
 	{
 		return NULL;
 	}
@@ -276,7 +276,7 @@ static PyObject* ArcPyPlayer_markQuestObjectiveAsComplete( ArcPyPlayer *self, Py
 	uint32 objective;
 	uint64 guid = 0;
 
-	if( !PyArg_ParseTuple( args, "kk|K", &quest, &objective, &guid ) )
+    if( !PyArg_ParseTuple( args, "II|K", &quest, &objective, &guid ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a quest, and an objective to be specified" );
 		return NULL;
@@ -312,7 +312,7 @@ static PyObject* ArcPyPlayer_addQuestKill( ArcPyPlayer *self, PyObject *args )
 	uint32 objective;
 	uint64 guid = 0;
 
-	if( !PyArg_ParseTuple( args, "kk|K", &quest, &objective, &guid ) )
+    if( !PyArg_ParseTuple( args, "II|K", &quest, &objective, &guid ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a quest, and an objective to be specified" );
 		return NULL;
@@ -340,7 +340,7 @@ static PyObject* ArcPyPlayer_sendMovie( ArcPyPlayer *self, PyObject *args )
 {
 	uint32 movieId;
 
-	if( !PyArg_ParseTuple( args, "k", &movieId ) )
+    if( !PyArg_ParseTuple( args, "I", &movieId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a movie id to be specified" );
 		return NULL;
@@ -369,7 +369,7 @@ static PyObject* ArcPyPlayer_sendCinematic( ArcPyPlayer *self, PyObject *args )
 {
 	uint32 cinematicId;
 
-	if( !PyArg_ParseTuple( args, "k", &cinematicId ) )
+    if( !PyArg_ParseTuple( args, "I", &cinematicId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a cinematic id to be specified" );
 		return NULL;
@@ -400,7 +400,7 @@ static PyObject* ArcPyPlayer_addItem( ArcPyPlayer *self, PyObject *args )
 	uint32 itemId;
 	uint32 amount;
 
-	if( !PyArg_ParseTuple( args, "kk", &itemId, &amount ) )
+    if( !PyArg_ParseTuple( args, "II", &itemId, &amount ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires an item id and amount to be specified" );
 		return NULL;
@@ -431,7 +431,7 @@ static PyObject* ArcPyPlayer_removeItem( ArcPyPlayer *self, PyObject *args )
 	uint32 itemId;
 	uint32 amount;
 
-	if( !PyArg_ParseTuple( args, "kk", &itemId, &amount ) )
+    if( !PyArg_ParseTuple( args, "II", &itemId, &amount ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires an item id and amount to be specified" );
 		return NULL;
@@ -461,7 +461,7 @@ static PyObject* ArcPyPlayer_hasItem( ArcPyPlayer *self, PyObject *args )
 	uint32 itemId;
 	uint32 amount;
 
-	if( !PyArg_ParseTuple( args, "kk", &itemId, &amount ) )
+    if( !PyArg_ParseTuple( args, "II", &itemId, &amount ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires an item id and amount to be specified" );
 		return NULL;
@@ -515,7 +515,7 @@ static PyObject* ArcPyPlayer_startTaxi( ArcPyPlayer *self, PyObject *args )
 	uint32 displayId;
 	uint32 startNode;
 
-	if( !PyArg_ParseTuple( args, "kkk", &taxiPathId, &displayId, &startNode ) )
+    if( !PyArg_ParseTuple( args, "III", &taxiPathId, &displayId, &startNode ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires taxiPathId, displayId, startNode to be specified" );
 		return NULL;
@@ -551,7 +551,7 @@ static PyObject* ArcPyPlayer_startTaxi( ArcPyPlayer *self, PyObject *args )
 static PyObject* ArcPyPlayer_hasQuest( ArcPyPlayer *self, PyObject *args )
 {
 	uint32 questId;
-	if( !PyArg_ParseTuple( args, "k", &questId ) )
+    if( !PyArg_ParseTuple( args, "I", &questId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a quest Id be specified" );
 		return NULL;
@@ -705,7 +705,7 @@ static PyObject* ArcPyPlayer_sendWeather( ArcPyPlayer *self, PyObject *args )
 	uint32 type = 0;
 	float density = 0.0f;
 
-	if( !PyArg_ParseTuple( args, "k|f", &type, &density ) )
+    if( !PyArg_ParseTuple( args, "I|f", &type, &density ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a type parameter" );
 		return NULL;

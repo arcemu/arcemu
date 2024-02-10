@@ -371,7 +371,7 @@ static PyObject* ArcPyObject_setFloatValue( ArcPyObject *self, PyObject *args )
 	uint32 index;
 	float value;
 
-	if( !PyArg_ParseTuple( args, "kf", &index, &value ) )
+    if( !PyArg_ParseTuple( args, "If", &index, &value ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an index, and a value parameter" );
 		return NULL;
@@ -400,7 +400,7 @@ static PyObject* ArcPyObject_getFloatValue( ArcPyObject *self, PyObject *args )
 {
 	uint32 index;
 
-	if( !PyArg_ParseTuple( args, "k", &index ) )
+    if( !PyArg_ParseTuple( args, "I", &index ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an index parameter" );
 		return NULL;
@@ -428,7 +428,7 @@ static PyObject* ArcPyObject_setUInt32Value( ArcPyObject *self, PyObject *args )
 	uint32 index;
 	uint32 value;
 
-	if( !PyArg_ParseTuple( args, "kk", &index, &value ) )
+    if( !PyArg_ParseTuple( args, "II", &index, &value ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an index, and a value parameter" );
 		return NULL;
@@ -458,7 +458,7 @@ static PyObject* ArcPyObject_getUInt32Value( ArcPyObject *self, PyObject *args )
 {
 	uint32 index;
 
-	if( !PyArg_ParseTuple( args, "k", &index ) )
+    if( !PyArg_ParseTuple( args, "I", &index ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an index parameter" );
 		return NULL;
@@ -486,7 +486,7 @@ static PyObject* ArcPyObject_setUInt64Value( ArcPyObject *self, PyObject *args )
 	uint32 index;
 	uint64 value;
 
-	if( !PyArg_ParseTuple( args, "kK", &index, &value ) )
+    if( !PyArg_ParseTuple( args, "IK", &index, &value ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an index, and a value parameter" );
 		return NULL;
@@ -515,7 +515,7 @@ static PyObject* ArcPyObject_getUInt64Value( ArcPyObject *self, PyObject *args )
 {
 	uint32 index;
 
-	if( !PyArg_ParseTuple( args, "k", &index ) )
+    if( !PyArg_ParseTuple( args, "I", &index ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an index, and a value parameter" );
 		return NULL;
@@ -575,7 +575,7 @@ static PyObject* ArcPyObject_setByteFlags( ArcPyObject *self, PyObject *args )
 	uint8 byte;
 	uint8 flags;
 
-	if( !PyArg_ParseTuple( args, "kbb", &index, &byte, &flags ) )
+    if( !PyArg_ParseTuple( args, "Ibb", &index, &byte, &flags ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires index, byte, flags parameters" );
 		return NULL;
@@ -605,7 +605,7 @@ static PyObject* ArcPyObject_setPhase( ArcPyObject *self, PyObject *args )
 {
 	uint32 phase;
 
-	if( !PyArg_ParseTuple( args, "k", &phase ) )
+    if( !PyArg_ParseTuple( args, "I", &phase ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a phase parameter" );
 		return NULL;
@@ -634,7 +634,7 @@ static PyObject* ArcPyObject_addPhase( ArcPyObject *self, PyObject *args )
 {
 	uint32 phase;
 
-	if( !PyArg_ParseTuple( args, "k", &phase ) )
+    if( !PyArg_ParseTuple( args, "I", &phase ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a phase parameter" );
 		return NULL;
@@ -662,7 +662,7 @@ static PyObject* ArcPyObject_removePhase( ArcPyObject *self, PyObject *args )
 {
 	uint32 phase;
 
-	if( !PyArg_ParseTuple( args, "k", &phase ) )
+    if( !PyArg_ParseTuple( args, "I", &phase ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a phase parameter" );
 		return NULL;
@@ -711,7 +711,7 @@ static PyObject* ArcPyObject_sendZoneWeather( ArcPyObject *self, PyObject *args 
 	uint32 type = 0;
 	float density = 0.0f;
 
-	if( !PyArg_ParseTuple( args, "k|f", &type, &density ) )
+    if( !PyArg_ParseTuple( args, "I|f", &type, &density ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a type parameter" );
 		return NULL;
@@ -756,7 +756,7 @@ static PyObject* ArcPyObject_setZoneWeather( ArcPyObject *self, PyObject *args )
 	uint32 type = 0;
 	float density = 0.0f;
 
-	if( !PyArg_ParseTuple( args, "k|f", &type, &density ) )
+    if( !PyArg_ParseTuple( args, "I|f", &type, &density ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a type parameter" );
 		return NULL;
