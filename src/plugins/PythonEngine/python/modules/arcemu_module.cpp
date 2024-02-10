@@ -57,7 +57,7 @@ extern int registerArcPyWorldSession( PyObject *module );
 ///
 static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 {
-	unsigned long serverEvent = 0;
+    uint32 serverEvent = 0;
 	PyObject *callback = NULL;
 
 	if( !PyArg_ParseTuple( args, "IO", &serverEvent, &callback ) )
@@ -93,8 +93,8 @@ static PyObject* arcemu_RegisterServerHook( PyObject *self, PyObject *args )
 ///
 static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args )
 {
-	unsigned long creatureId = 0;
-	unsigned long gossipEvent = 0;
+    uint32 creatureId = 0;
+    uint32 gossipEvent = 0;
 	PyObject *callback = NULL;
 
 	if( !PyArg_ParseTuple( args, "IIO", &creatureId, &gossipEvent, &callback ) )
@@ -128,8 +128,8 @@ static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args 
 ///
 static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args )
 {
-	unsigned long itemId = 0;
-	unsigned long gossipEvent = 0;
+    uint32 itemId = 0;
+    uint32 gossipEvent = 0;
 	PyObject *callback = NULL;
 
 	if( !PyArg_ParseTuple( args, "IIO", &itemId, &gossipEvent, &callback ) )
@@ -162,8 +162,8 @@ static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args 
 ///
 static PyObject* arcemu_RegisterGOGossipEvent( PyObject *self, PyObject *args )
 {
-	unsigned long goId = 0;
-	unsigned long gossipEvent = 0;
+    uint32 goId = 0;
+    uint32 gossipEvent = 0;
 	PyObject *callback = NULL;
 
 	if( !PyArg_ParseTuple( args, "IIO", &goId, &gossipEvent, &callback ) )
@@ -197,8 +197,8 @@ static PyObject* arcemu_RegisterGOGossipEvent( PyObject *self, PyObject *args )
 ///
 static PyObject* arcemu_RegisterGameObjectEvent( PyObject *self, PyObject *args )
 {
-	unsigned long goId = 0;
-	unsigned long goEvent = 0;
+    uint32 goId = 0;
+    uint32 goEvent = 0;
 	PyObject *callback = NULL;
 
 	if( !PyArg_ParseTuple( args, "IIO", &goId, &goEvent, &callback ) )
@@ -232,8 +232,8 @@ static PyObject* arcemu_RegisterGameObjectEvent( PyObject *self, PyObject *args 
 ///
 static PyObject* arcemu_RegisterUnitEvent( PyObject *self, PyObject *args )
 {
-	unsigned long creatureId = 0;
-	unsigned long creatureEvent = 0;
+    uint32 creatureId = 0;
+    uint32 creatureEvent = 0;
 	PyObject *callback = NULL;
 
 	if( !PyArg_ParseTuple( args, "IIO", &creatureId, &creatureEvent, &callback ) )
@@ -266,8 +266,8 @@ static PyObject* arcemu_RegisterUnitEvent( PyObject *self, PyObject *args )
 ///
 static PyObject* arcemu_RegisterQuestEvent( PyObject *self, PyObject *args )
 {
-	unsigned long questId = 0;
-	unsigned long questEvent = 0;
+    uint32 questId = 0;
+    uint32 questEvent = 0;
 	PyObject *callback = NULL;
 
 
@@ -301,8 +301,8 @@ static PyObject* arcemu_RegisterQuestEvent( PyObject *self, PyObject *args )
 ///
 static PyObject* arcemu_RegisterInstanceEvent( PyObject *self, PyObject *args )
 {
-	unsigned long mapId = 0;
-	unsigned long instanceEvent = 0;
+    uint32 mapId = 0;
+    uint32 instanceEvent = 0;
 	PyObject *callback = NULL;
 
 
@@ -336,7 +336,7 @@ static PyObject* arcemu_RegisterInstanceEvent( PyObject *self, PyObject *args )
 ///
 static PyObject* arcemu_RegisterDummySpellHandler( PyObject *self, PyObject *args )
 {
-	unsigned long spellId;
+    uint32 spellId;
 	PyObject *callback;
 
 	if( !PyArg_ParseTuple( args, "IO", &spellId, &callback ) )
@@ -370,7 +370,7 @@ static PyObject* arcemu_RegisterDummySpellHandler( PyObject *self, PyObject *arg
 ///
 static PyObject* arcemu_RegisterScriptedEffectHandler( PyObject *self, PyObject *args )
 {
-	unsigned long spellId;
+    uint32 spellId;
 	PyObject *callback;
 
 	if( !PyArg_ParseTuple( args, "IO", &spellId, &callback ) )
@@ -403,10 +403,10 @@ static PyObject* arcemu_RegisterScriptedEffectHandler( PyObject *self, PyObject 
 ///
 static PyObject* arcemu_RegisterDummyAuraHandler( PyObject *self, PyObject *args )
 {
-	unsigned long spellId;
+    uint32 spellId;
 	PyObject *callback;
 
-	if( !PyArg_ParseTuple( args, "kO", &spellId, &callback ) )
+    if( !PyArg_ParseTuple( args, "IO", &spellId, &callback ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This function requires a spell Id and a callback function be specified" );
 		return NULL;

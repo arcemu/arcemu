@@ -101,7 +101,7 @@ static PyObject* ArcPyGameObject_RegisterAIUpdateEvent( ArcPyGameObject* self, P
 
 	uint32 interval;
 
-	if( !PyArg_ParseTuple( args, "k", &interval ) )
+    if( !PyArg_ParseTuple( args, "I", &interval ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an interval parameter" );
 		return NULL;
@@ -136,7 +136,7 @@ static PyObject* ArcPyGameObject_ModifyAIUpdateEvent( ArcPyGameObject* self, PyO
 
 	uint32 interval;
 
-	if( !PyArg_ParseTuple( args, "k", &interval ) )
+    if( !PyArg_ParseTuple( args, "I", &interval ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires an interval parameter" );
 		return NULL;
@@ -186,7 +186,7 @@ static PyObject* ArcPyGameObject_despawn( ArcPyGameObject* self, PyObject* args 
 	uint32 delay;
 	uint32 respawnTime;
 
-	if( !PyArg_ParseTuple( args, "kk", &delay, &respawnTime ) )
+    if( !PyArg_ParseTuple( args, "II", &delay, &respawnTime ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a delay, and a respawn time parameter" );
 		return NULL;

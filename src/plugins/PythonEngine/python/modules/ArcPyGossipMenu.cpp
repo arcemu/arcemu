@@ -53,11 +53,11 @@ static PyObject* ArcPyGossipMenu_new( PyTypeObject *type, PyObject *args, PyObje
 ///
 static int ArcPyGossipMenu_init( ArcPyGossipMenu *self, PyObject *args, PyObject *keywords )
 {
-	unsigned long textId = 0;
+    uint32 textId = 0;
 	PyObject* obj = NULL;
-	unsigned long autoSend = 0;
+    uint32 autoSend = 0;
 
-	if( ! PyArg_ParseTuple( args, "kOk", &textId, &obj, &autoSend ) )
+    if( ! PyArg_ParseTuple( args, "IOI", &textId, &obj, &autoSend ) )
 	{
 		return -1;
 	}
@@ -104,17 +104,17 @@ static void ArcPyGossipMenu_dealloc( ArcPyGossipMenu* self )
 ///
 static PyObject* ArcPyGossipMenu_addItem( ArcPyGossipMenu *self, PyObject *args )
 {
-	unsigned long icon = 0;
+    uint32 icon = 0;
 	const char* text = NULL;
-	unsigned long optionId = 0;
-	unsigned long coded = 0;
+    uint32 optionId = 0;
+    uint32 coded = 0;
 
 	const char *boxMessage = "";
-	unsigned long boxMoney = 0;
+    uint32 boxMoney = 0;
 
 	ARCEMU_ASSERT( self->gossipMenuPtr != NULL );
 
-	if( ! PyArg_ParseTuple( args, "kskk|sk", &icon, &text, &optionId, &coded, &boxMessage, &boxMoney ) )
+    if( ! PyArg_ParseTuple( args, "IsII|sI", &icon, &text, &optionId, &coded, &boxMessage, &boxMoney ) )
 	{
 		return NULL;
 	}

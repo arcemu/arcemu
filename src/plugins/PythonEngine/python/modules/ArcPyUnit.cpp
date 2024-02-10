@@ -90,12 +90,12 @@ static PyObject* ArcPyUnit_getName( ArcPyUnit *self, PyObject *args )
 ///
 static PyObject* ArcPyUnit_sendChatMessage( ArcPyUnit *self, PyObject *args )
 {
-	unsigned long type = 0;
-	unsigned long lang = 0;
+    uint32 type = 0;
+    uint32 lang = 0;
 	const char *msg = NULL;
 	uint32 delay = 0;
 
-	if( ! PyArg_ParseTuple( args, "kks|k", &type, &lang, &msg, &delay ) )
+    if( ! PyArg_ParseTuple( args, "IIs|I", &type, &lang, &msg, &delay ) )
 	{
 		return NULL;
 	}
@@ -122,7 +122,7 @@ static PyObject* ArcPyUnit_RegisterAIUpdateEvent( ArcPyUnit *self, PyObject *arg
 {
 	uint32 interval;
 
-	if( !PyArg_ParseTuple( args, "k", &interval ) )
+    if( !PyArg_ParseTuple( args, "I", &interval ) )
 	{
 		return NULL;
 	}
@@ -156,7 +156,7 @@ static PyObject* ArcPyUnit_ModifyAIUpdateEvent( ArcPyUnit* self, PyObject* args 
 
 	uint32 interval;
 
-	if( !PyArg_ParseTuple( args, "k", &interval ) )
+    if( !PyArg_ParseTuple( args, "I", &interval ) )
 	{
 		return NULL;
 	}
@@ -262,9 +262,9 @@ static PyObject* ArcPyUnit_dismissVehicle( ArcPyUnit *self, PyObject *args )
 ///
 static PyObject* ArcPyUnit_addVehiclePassenger( ArcPyUnit *self, PyObject *args )
 {
-	unsigned long creatureId;
+    uint32 creatureId;
 
-	if( !PyArg_ParseTuple( args, "k", &creatureId ) )
+    if( !PyArg_ParseTuple( args, "I", &creatureId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "The command requires a creatureId." );
 		return NULL;
@@ -360,7 +360,7 @@ static PyObject* ArcPyUnit_enterVehicle( ArcPyUnit *self, PyObject *args )
 	uint64 guid;
 	uint32 delay;
 
-	if( !PyArg_ParseTuple( args, "Kk", &guid, &delay ) )
+    if( !PyArg_ParseTuple( args, "KI", &guid, &delay ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a guid and a delay parameter" );
 		return NULL;
@@ -487,7 +487,7 @@ static PyObject* ArcPyUnit_playSoundToSet( ArcPyUnit *self, PyObject *args )
 {
 	uint32 soundId;
 
-	if( !PyArg_ParseTuple( args, "k", &soundId ) )
+    if( !PyArg_ParseTuple( args, "I", &soundId ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a sound Id parameter" );
 		return NULL;
@@ -516,7 +516,7 @@ static PyObject* ArcPyUnit_setFaction( ArcPyUnit *self, PyObject *args )
 {
 	uint32 faction;
 
-	if( !PyArg_ParseTuple( args, "k", &faction ) )
+    if( !PyArg_ParseTuple( args, "I", &faction ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a faction Id parameter" );
 		return NULL;
@@ -630,7 +630,7 @@ static PyObject* ArcPyUnit_setMount( ArcPyUnit *self, PyObject *args )
 {
 	uint32 mountId;
 
-	if( !PyArg_ParseTuple( args, "k", &mountId ) )
+    if( !PyArg_ParseTuple( args, "I", &mountId ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a mount Id parameter" );
 		return NULL;
@@ -662,7 +662,7 @@ static PyObject* ArcPyUnit_equipWeapons( ArcPyUnit *self, PyObject *args )
 	uint32 offhandWeaponId;
 	uint32 rangedWeaponId;
 
-	if( !PyArg_ParseTuple( args, "k|kk", &meleeWeaponId, &offhandWeaponId, &rangedWeaponId ) )
+    if( !PyArg_ParseTuple( args, "I|II", &meleeWeaponId, &offhandWeaponId, &rangedWeaponId ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires at least a melee weapon Id parameter" );
 		return NULL;
@@ -693,7 +693,7 @@ static PyObject* ArcPyUnit_setSheatState( ArcPyUnit *self, PyObject *args )
 {
 	uint32 sheatState = 0;
 
-	if( !PyArg_ParseTuple( args, "k", &sheatState ) )
+    if( !PyArg_ParseTuple( args, "I", &sheatState ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a sheat state parameter ( 0 or 1 )" );
 		return NULL;
@@ -795,7 +795,7 @@ static PyObject* ArcPyUnit_hasAura( ArcPyUnit *self, PyObject *args )
 {
 	uint32 spellId;
 
-	if( !PyArg_ParseTuple( args, "k", &spellId ) )
+    if( !PyArg_ParseTuple( args, "I", &spellId ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a spellId parameter" );
 		return NULL;
@@ -827,7 +827,7 @@ static PyObject* ArcPyUnit_getAuraBySpellId( ArcPyUnit *self, PyObject *args )
 {
 	uint32 spellId;
 
-	if( !PyArg_ParseTuple( args, "k", &spellId ) )
+    if( !PyArg_ParseTuple( args, "I", &spellId ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a spellId parameter" );
 		return NULL;
@@ -884,7 +884,7 @@ static PyObject* ArcPyUnit_setStandState( ArcPyUnit *self, PyObject *args )
 {
 	uint32 state;
 
-	if( !PyArg_ParseTuple( args, "k", &state ) )
+    if( !PyArg_ParseTuple( args, "I", &state ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a standstate parameter" );
 		return NULL;
@@ -933,7 +933,7 @@ static PyObject* ArcPyUnit_setMaxHealth( ArcPyUnit *self, PyObject *args )
 {
 	uint32 maxHealth;
 
-	if( !PyArg_ParseTuple( args, "k", &maxHealth ) )
+    if( !PyArg_ParseTuple( args, "I", &maxHealth ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a maxHealth parameter" );
 		return NULL;
@@ -982,7 +982,7 @@ static PyObject* ArcPyUnit_setHealth( ArcPyUnit *self, PyObject *args )
 {
 	uint32 health;
 
-	if( !PyArg_ParseTuple( args, "k", &health ) )
+    if( !PyArg_ParseTuple( args, "I", &health ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a health parameter" );
 		return NULL;
@@ -1182,7 +1182,7 @@ static PyObject* ArcPyUnit_emote( ArcPyUnit *self, PyObject *args )
 	uint32 emote;
 	uint32 time = 0;
 
-	if( !PyArg_ParseTuple( args, "k|k", &emote, &time ) )
+    if( !PyArg_ParseTuple( args, "I|I", &emote, &time ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires an emote parameter" );
 		return NULL;
@@ -1216,7 +1216,7 @@ static PyObject* ArcPyUnit_setEmoteState( ArcPyUnit *self, PyObject *args )
 	uint32 emote;
 	uint32 delay = 0;
 
-	if( !PyArg_ParseTuple( args, "k|k", &emote, &delay ) )
+    if( !PyArg_ParseTuple( args, "I|I", &emote, &delay ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires an emote parameter" );
 		return NULL;
@@ -1341,7 +1341,7 @@ static PyObject* ArcPyUnit_castSpell( ArcPyUnit *self, PyObject *args )
 	int triggeredInt = 0;
 	PyObject *target = NULL;
 
-	if( !PyArg_ParseTuple( args, "k|pO", &spellId, &triggeredInt, &target ) )
+    if( !PyArg_ParseTuple( args, "I|pO", &spellId, &triggeredInt, &target ) )
 	{
 		PyErr_SetString( PyExc_TypeError, "This method requires a spellId" );
 		return NULL;
@@ -1410,7 +1410,7 @@ static PyObject* ArcPyUnit_setDisplayId( ArcPyUnit *self, PyObject *args )
 {
 	uint32 displayId;
 
-	if( !PyArg_ParseTuple( args, "k", &displayId ) )
+    if( !PyArg_ParseTuple( args, "I", &displayId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a display Id" );
 		return NULL;
@@ -1456,7 +1456,7 @@ static PyObject* ArcPyUnit_setNativeDisplayId( ArcPyUnit *self, PyObject *args )
 {
 	uint32 displayId;
 
-	if( !PyArg_ParseTuple( args, "k", &displayId ) )
+    if( !PyArg_ParseTuple( args, "I", &displayId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a display Id" );
 		return NULL;
@@ -1702,7 +1702,7 @@ static PyObject* ArcPyUnit_setChannelSpellId( ArcPyUnit *self, PyObject *args )
 {
 	uint32 spellId;
 
-	if( !PyArg_ParseTuple( args, "k", &spellId ) )
+    if( !PyArg_ParseTuple( args, "I", &spellId ) )
 	{
 		PyErr_SetString( PyExc_ValueError, "This method requires a spellId parameter" );
 		return NULL;
