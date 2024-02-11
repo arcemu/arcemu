@@ -34,6 +34,8 @@ public:
 
 	bool testNormalizeAngle();
 
+	bool testCalcDistance();
+
 	bool testDiffWhenALarger();
 	bool testDiffWhenBLarger();
 	bool testDiffWhenAEqualsB();
@@ -54,6 +56,8 @@ TESTCASE_REGISTRY_FOR( MathTest )
 	TESTCASE( MathTest, testCalcRadAngle,     "Test that calcRadAngle works" )
 
 	TESTCASE( MathTest, testNormalizeAngle,   "Test that normalizeAngle works" )
+
+	TESTCASE( MathTest, testCalcDistance,     "Test that calcDistance works" )
 
 	TESTCASE( MathTest, testDiffWhenALarger,  "Test that the diff method works when A is the larger number" )
 	TESTCASE( MathTest, testDiffWhenBLarger,  "Test that the diff method works when B is the larger number" )
@@ -216,6 +220,39 @@ bool MathTest::testNormalizeAngle()
 	for( int i = 0; i < count; i++ )
 	{
 		TEST_EQ( testData[ i ][ 1 ], Math::normalizeAngle( testData[ i ][ 0 ] ) );
+	}
+
+	TESTCASE_END();
+}
+
+bool MathTest::testCalcDistance()
+{
+	static float testData[][ 7 ] = 
+	{
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 0.0f },
+
+		{ 10.0f, 10.0f, 10.0f, 15.0f, 10.0f, 10.0f, 5.0f },
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 15.0f, 10.0f, 5.0f },
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 15.0f, 5.0f },
+
+		{ 10.0f, 10.0f, 10.0f, 5.0f, 10.0f, 10.0f, 5.0f },
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 5.0f, 10.0f, 5.0f },
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 5.0f, 5.0f },
+
+		{ 10.0f, 10.0f, 10.0f, 15.0f, 15.0f, 10.0f, sqrtf( 50.0f ) },
+		{ 10.0f, 10.0f, 10.0f, 15.0f, 10.0f, 15.0f, sqrtf( 50.0f ) },
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 15.0f, 15.0f, sqrtf( 50.0f ) },
+
+		{ 10.0f, 10.0f, 10.0f, 5.0f, 5.0f, 10.0f, sqrtf( 50.0f ) },
+		{ 10.0f, 10.0f, 10.0f, 5.0f, 10.0f, 5.0f, sqrtf( 50.0f ) },
+		{ 10.0f, 10.0f, 10.0f, 10.0f, 5.0f, 5.0f, sqrtf( 50.0f ) },
+	};
+
+	int count = sizeof( testData ) / ( 7 * sizeof( float ) );
+
+	for( int i = 0; i < count; i++ )
+	{
+		TEST_EQ( testData[ i ][ 6 ], Math::CalcDistance( testData[ i ][ 0 ], testData[ i ][ 1 ], testData[ i ][ 2 ], testData[ i ][ 3 ], testData[ i ][ 4 ], testData[ i ][ 5 ]  ) );
 	}
 
 	TESTCASE_END();
