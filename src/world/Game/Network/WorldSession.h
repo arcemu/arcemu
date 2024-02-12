@@ -189,8 +189,12 @@ enum WorldSessionUpdateResult
 
 class SERVER_DECL WorldSession
 {
-		friend class WorldSocket;
+	friend class WorldSocket;
+
 	public:
+
+		Player* ActivePlayer();
+
 		WorldSession(uint32 id, string Name, WorldSocket* sock);
 		~WorldSession();
 
