@@ -36,6 +36,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > FunctionRegistry:
 HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::dummySpellFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::scriptedEffectHandlerFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::dummyAuraFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::creatureScriptFactories;
 
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
@@ -182,6 +183,19 @@ void FunctionRegistry::registerDummyAuraHandler( unsigned long spellId, void* fu
 	}
 }
 
+void FunctionRegistry::registerCreatureScriptFactory( unsigned int creatureId, void* function )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureScriptFactories.find( creatureId );
+	if( itr != creatureScriptFactories.end() )
+	{
+		void *oldFactory = itr->second;
+		Py_DECREF( oldFactory );
+		oldFactory = NULL;
+	}
+
+	creatureScriptFactories[ creatureId ] = function;
+}
+
 void* FunctionRegistry::getDummySpellHandler( unsigned long spellId )
 {
 	void* function = NULL;
@@ -317,6 +331,16 @@ void FunctionRegistry::visitDummyAuraHandlerFunctions( DummyAuraHandlerVisitor *
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummyAuraFunctions.begin();
 	while( itr != dummyAuraFunctions.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitCreatureScriptFactories( CreatureScriptFactoryVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureScriptFactories.begin();
+	while( itr != creatureScriptFactories.end() )
 	{
 		visitor->visit( itr->first, itr->second );
 		++itr;
@@ -519,6 +543,16 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	dummyAuraFunctions.clear();
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator creatureScriptFactoryIterator = creatureScriptFactories.begin();
+	while( creatureScriptFactoryIterator != creatureScriptFactories.end() )
+	{
+		Py_DECREF( (PyObject*)creatureScriptFactoryIterator->second );
+		creatureScriptFactoryIterator->second = NULL;
+		creatureScriptFactoryIterator++;
+	}
+
+	creatureScriptFactories.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
@@ -552,6 +586,15 @@ InstanceFunctionTuple* FunctionRegistry::getInstanceFunctions( unsigned int mapI
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator itr = instanceFunctions.find( mapId );
 	if( itr == instanceFunctions.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+
+void* FunctionRegistry::getCreatureScriptFactory( unsigned int creatureId )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureScriptFactories.find( creatureId );
+	if( itr == creatureScriptFactories.end() )
 		return NULL;
 	else
 		return itr->second;

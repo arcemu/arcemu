@@ -15,6 +15,9 @@ ${prefix}/creature/CreatureGossipScriptRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptReleaser.cpp
 ${prefix}/creature/PythonCreatureAIScript.cpp
 ${prefix}/creature/PythonCreatureAIScriptFactory.cpp
+${prefix}/creature/PythonCreatureOOScript.cpp
+${prefix}/creature/PythonCreatureOOScriptFactory.cpp
+${prefix}/creature/PythonCreatureOOScriptRegisterer.cpp
 ${prefix}/engine/FunctionRegistry.cpp
 ${prefix}/engine/plugin.cpp
 ${prefix}/engine/PythonEngine.cpp
@@ -36,6 +39,7 @@ ${prefix}/python/modules/arcemu_module.cpp
 ${prefix}/python/modules/arcemu_module_consts.cpp
 ${prefix}/python/modules/ArcPyAura.cpp
 ${prefix}/python/modules/ArcPyCreature.cpp
+${prefix}/python/modules/ArcPyCreatureScript.cpp
 ${prefix}/python/modules/ArcPyGameObject.cpp
 ${prefix}/python/modules/ArcPyGossipMenu.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
@@ -71,9 +75,13 @@ ${prefix}/creature/CreatureFunctionTuple.hpp
 ${prefix}/creature/CreatureFunctionTupleVisitor.hpp
 ${prefix}/creature/CreatureGossipScriptRegisterer.hpp
 ${prefix}/creature/CreatureGossipScriptReleaser.hpp
+${prefix}/creature/CreatureScriptFactoryVisitor.hpp
 ${prefix}/creature/PythonCreatureAIScript.hpp
 ${prefix}/creature/PythonCreatureAIScriptFactory.hpp
 ${prefix}/creature/PythonCreatureEventTypes.hpp
+${prefix}/creature/PythonCreatureOOScript.hpp
+${prefix}/creature/PythonCreatureOOScriptFactory.hpp
+${prefix}/creature/PythonCreatureOOScriptRegisterer.hpp
 ${prefix}/engine/FunctionRegistry.hpp
 ${prefix}/engine/PythonEngine.hpp
 ${prefix}/engine/FunctionTuple.hpp
@@ -106,6 +114,7 @@ ${prefix}/python/PythonTuple.hpp
 ${prefix}/python/PythonValue.hpp
 ${prefix}/python/modules/ArcPyAura.hpp
 ${prefix}/python/modules/ArcPyCreature.hpp
+${prefix}/python/modules/ArcPyCreatureScript.hpp
 ${prefix}/python/modules/ArcPyGameObject.hpp
 ${prefix}/python/modules/ArcPyGossipMenu.hpp
 ${prefix}/python/modules/ArcPyGuild.hpp

@@ -39,6 +39,8 @@
 #include "spells/ScriptedEffectHandlerVisitor.hpp"
 #include "spells/DummyAuraHandlerVisitor.hpp"
 
+#include "creature/CreatureScriptFactoryVisitor.hpp"
+
 /// Organized storage of Python function references
 class FunctionRegistry
 {
@@ -178,6 +180,19 @@ public:
 
 
 	///
+	/// Registers a creature script factory function
+	///
+	/// Parameters
+	///   creatureId    -  The id of the creature that would use the creature script
+	///   function      -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerCreatureScriptFactory( unsigned int creatureId, void* function );
+
+
+	///
 	/// Visits all registered creature gossip functions
 	///
 	/// Parameters
@@ -291,6 +306,18 @@ public:
 
 
 	///
+	/// Visits all registered creature script factory functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitCreatureScriptFactories( CreatureScriptFactoryVisitor *visitor );
+
+
+	///
 	/// Deallocate / release all registered functions
 	///
 	/// Parameters
@@ -391,6 +418,19 @@ public:
 	///
 	static void* getDummyAuraHandler( unsigned long spellId );
 
+
+	///
+	/// Retrieve the Creature script factory function for the specified creature
+	///
+	/// Parameters
+	///   creatureId - The numeric identifier of the Creature
+	///
+	/// Return value
+	///   Returns a pointer to the Creature script factory function
+	///   Returns NULL if there are no functions registered for the specified Id
+	///
+	static void* getCreatureScriptFactory( unsigned int creatureId );
+
 private:
 	///
 	/// Contains the gossip event handler functions registered for Creatures
@@ -471,6 +511,15 @@ private:
 	/// value: Pointer to a function that handles the dummy aura
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > dummyAuraFunctions;
+
+
+	///
+	/// Contains factory functions that create Python based Creature Scripts
+	///
+	/// key: creature Id
+	/// value: Pointer to a function that creates a creature script class instance
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > creatureScriptFactories;
 };
 
 #endif

@@ -26,6 +26,7 @@
 #include "serverhooks/ServerHookHandler.hpp"
 #include "engine/FunctionRegistry.hpp"
 #include "creature/CreatureFunctionRegisterer.hpp"
+#include "creature/PythonCreatureOOScriptRegisterer.hpp"
 #include "creature/CreatureGossipScriptRegisterer.hpp"
 #include "creature/CreatureGossipScriptReleaser.hpp"
 #include "gameobject/GOScriptRegisterer.hpp"
@@ -36,6 +37,7 @@
 #include "item/ItemGossipScriptReleaser.hpp"
 #include "quest/QuestScriptRegisterer.hpp"
 #include "creature/PythonCreatureAIScriptFactory.hpp"
+#include "creature/PythonCreatureOOScriptFactory.hpp"
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 #include "instance/PythonInstanceScriptFactory.hpp"
 #include "quest/PythonQuestScriptFactory.hpp"
@@ -60,6 +62,7 @@ PythonEngine::~PythonEngine()
 {
 	/// First release the functions we loaded from scripts
 	PythonCreatureAIScriptFactory::onShutdown();
+	PythonCreatureOOScriptFactory::onShutdown();
 	PythonGameObjectAIScriptFactory::onShutdown();
 	PythonQuestScriptFactory::onShutDown();
 	PythonInstanceScriptFactory::onShutdown();
@@ -105,6 +108,7 @@ void PythonEngine::onReload()
 	/// Unfortunately there's no way to remove the script classes that we have already created for spawned entities
 	/// So the best we can do is to change the functions in them, or set NULL if the script function was removed
 	PythonCreatureAIScriptFactory::onReload();
+	PythonCreatureOOScriptFactory::onReload();
 	PythonGameObjectAIScriptFactory::onReload();
 	PythonInstanceScriptFactory::onReload();
 	PythonQuestScriptFactory::onReload();
@@ -217,6 +221,9 @@ void PythonEngine::registerScripts()
 
 	CreatureFunctionRegisterer creatureFunctionRegisterer( this->mgr );
 	FunctionRegistry::visitCreatureEventFunctions( &creatureFunctionRegisterer );
+
+	PythonCreatureOOScriptRegisterer creatureOOScriptRegisterer( this->mgr );
+	FunctionRegistry::visitCreatureScriptFactories( &creatureOOScriptRegisterer );
 
 	QuestScriptRegisterer questScriptRegisterer( this->mgr );
 	FunctionRegistry::visitQuestEventFunctions( &questScriptRegisterer );
