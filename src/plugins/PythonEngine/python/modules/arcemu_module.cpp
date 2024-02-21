@@ -46,6 +46,7 @@ extern int registerArcPySpell( PyObject *module );
 extern int registerArcPyWorldSession( PyObject *module );
 
 extern int registerArcPyCreatureScript( PyObject *module );
+extern int registerArcPyGameObjectScript( PyObject *module );
 
 /// RegisterServerHook
 ///   Registers a server event handler
@@ -460,6 +461,39 @@ static PyObject* arcemu_RegisterCreatureScriptFactory( PyObject *self, PyObject 
 	Py_RETURN_NONE;
 }
 
+/// RegisterGameObjectScriptFactory
+///   Registers a Python GameObject Script factory function
+///
+/// Parameters:
+///   goId        - The numerical identifier of the gameobject
+///   function    - The factory function
+///
+/// Example:
+///   RegisterGameObjectScriptFactory( 1234, ValamiScript.create )
+///
+static PyObject* arcemu_RegisterGameObjectScriptFactory( PyObject *self, PyObject *args )
+{
+	uint32 goId;
+	PyObject *factoryFunction;
+
+	if( !PyArg_ParseTuple( args, "IO", &goId, &factoryFunction ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a gameobject Id and a factory function to be specified" );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( factoryFunction )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( factoryFunction );
+	FunctionRegistry::registerGameObjectScriptFactory( goId, factoryFunction );
+
+	Py_RETURN_NONE;
+}
+
 
 /// toUnit
 ///   Casts the ArcPyObject parameter to an ArcPyUnit
@@ -565,6 +599,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterScriptedEffectHandler", arcemu_RegisterScriptedEffectHandler, METH_VARARGS, "Registers a scripted spell effect handler function" },
 	{ "RegisterDummyAuraHandler", arcemu_RegisterDummyAuraHandler, METH_VARARGS, "Registers a dummy aura handler function" },
 	{ "RegisterCreatureScript", arcemu_RegisterCreatureScriptFactory, METH_VARARGS, "Registers a creature script factory function" },
+	{ "RegisterGameObjectScript", arcemu_RegisterGameObjectScriptFactory, METH_VARARGS, "Registers a gameobject script factory function" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{ "getGameTime", arcemu_getGameTime, METH_NOARGS, "Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)" },
@@ -601,6 +636,7 @@ PyObject* PyInit_Arcemu(void)
 	registerArcPyWorldSession( module );
 
 	registerArcPyCreatureScript( module );
+	registerArcPyGameObjectScript( module );
 
 	return module;
 }

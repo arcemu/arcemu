@@ -26,6 +26,9 @@ ${prefix}/gameobject/GOGossipScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptReleaser.cpp
 ${prefix}/gameobject/PythonGameObjectAIScript.cpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
+${prefix}/gameobject/PythonGameObjectOOScript.cpp
+${prefix}/gameobject/PythonGameObjectOOScriptFactory.cpp
+${prefix}/gameobject/PythonGameObjectOOScriptRegisterer.cpp
 ${prefix}/gossip/PythonGossipScript.cpp
 ${prefix}/instance/InstanceScriptRegisterer.cpp
 ${prefix}/instance/PythonInstanceScript.cpp
@@ -41,6 +44,7 @@ ${prefix}/python/modules/ArcPyAura.cpp
 ${prefix}/python/modules/ArcPyCreature.cpp
 ${prefix}/python/modules/ArcPyCreatureScript.cpp
 ${prefix}/python/modules/ArcPyGameObject.cpp
+${prefix}/python/modules/ArcPyGameObjectScript.cpp
 ${prefix}/python/modules/ArcPyGossipMenu.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
 ${prefix}/python/modules/ArcPyItem.cpp
@@ -85,6 +89,7 @@ ${prefix}/creature/PythonCreatureOOScriptRegisterer.hpp
 ${prefix}/engine/FunctionRegistry.hpp
 ${prefix}/engine/PythonEngine.hpp
 ${prefix}/engine/FunctionTuple.hpp
+${prefix}/gameobject/GameObjectScriptFactoryVisitor.hpp
 ${prefix}/gameobject/GOFunctionTuple.hpp
 ${prefix}/gameobject/GOFunctionTupleVisitor.hpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.hpp
@@ -92,6 +97,9 @@ ${prefix}/gameobject/GOGossipScriptReleaser.hpp
 ${prefix}/gameobject/GOScriptRegisterer.hpp
 ${prefix}/gameobject/PythonGameObjectAIScript.hpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.hpp
+${prefix}/gameobject/PythonGameObjectOOScript.hpp
+${prefix}/gameobject/PythonGameObjectOOScriptFactory.hpp
+${prefix}/gameobject/PythonGameObjectOOScriptRegisterer.hpp
 ${prefix}/gameobject/PythonGOEventTypes.hpp
 ${prefix}/gossip/GossipFunctionTuple.hpp
 ${prefix}/gossip/GossipFunctionTupleVisitor.hpp
@@ -116,6 +124,7 @@ ${prefix}/python/modules/ArcPyAura.hpp
 ${prefix}/python/modules/ArcPyCreature.hpp
 ${prefix}/python/modules/ArcPyCreatureScript.hpp
 ${prefix}/python/modules/ArcPyGameObject.hpp
+${prefix}/python/modules/ArcPyGameObjectScript.hpp
 ${prefix}/python/modules/ArcPyGossipMenu.hpp
 ${prefix}/python/modules/ArcPyGuild.hpp
 ${prefix}/python/modules/ArcPyItem.hpp

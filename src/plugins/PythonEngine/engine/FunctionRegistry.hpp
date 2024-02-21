@@ -40,6 +40,7 @@
 #include "spells/DummyAuraHandlerVisitor.hpp"
 
 #include "creature/CreatureScriptFactoryVisitor.hpp"
+#include "gameobject/GameObjectScriptFactoryVisitor.hpp"
 
 /// Organized storage of Python function references
 class FunctionRegistry
@@ -191,6 +192,18 @@ public:
 	///
 	static void registerCreatureScriptFactory( unsigned int creatureId, void* function );
 
+	///
+	/// Registers a gameobject script factory function
+	///
+	/// Parameters
+	///   goId      -  The id of the gameobject that would use the gameobject script
+	///   function  -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerGameObjectScriptFactory( unsigned int goId, void* function );
+
 
 	///
 	/// Visits all registered creature gossip functions
@@ -316,6 +329,17 @@ public:
 	///
 	static void visitCreatureScriptFactories( CreatureScriptFactoryVisitor *visitor );
 
+	///
+	/// Visits all registered gameobject script factory functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitGameObjectScriptFactories( GameObjectScriptFactoryVisitor *visitor );
+
 
 	///
 	/// Deallocate / release all registered functions
@@ -431,6 +455,18 @@ public:
 	///
 	static void* getCreatureScriptFactory( unsigned int creatureId );
 
+	///
+	/// Retrieve the GameObject script factory function for the specified gameobject
+	///
+	/// Parameters
+	///   goId - The numeric identifier of the GameObject
+	///
+	/// Return value
+	///   Returns a pointer to the GameObject script factory function
+	///   Returns NULL if there are no functions registered for the specified Id
+	///
+	static void* getGameObjectScriptFactory( unsigned int goId );
+
 private:
 	///
 	/// Contains the gossip event handler functions registered for Creatures
@@ -520,6 +556,14 @@ private:
 	/// value: Pointer to a function that creates a creature script class instance
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > creatureScriptFactories;
+
+	///
+	/// Contains factory functions that create Python based GameObject Scripts
+	///
+	/// key: creature Id
+	/// value: Pointer to a function that creates a gameobject script class instance
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > gameobjectScriptFactories;
 };
 
 #endif
