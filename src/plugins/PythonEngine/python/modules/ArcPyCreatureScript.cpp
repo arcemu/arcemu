@@ -66,6 +66,7 @@ static int ArcPyCreatureScript_init( ArcPyCreatureScript *self, PyObject *args, 
 		self->creature = NULL;
 	}
 
+	Py_INCREF( o );
 	self->creature = o;
 
 	return 0;
@@ -73,6 +74,12 @@ static int ArcPyCreatureScript_init( ArcPyCreatureScript *self, PyObject *args, 
 
 static void ArcPyCreatureScript_dealloc( ArcPyCreatureScript* self )
 {
+	if( self->creature != NULL )
+	{
+		Py_DecRef( self->creature );
+		self->creature = NULL;
+	}
+
 	Py_TYPE( self )->tp_free( (PyObject*)self );
 }
 
