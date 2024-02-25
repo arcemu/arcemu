@@ -25,5 +25,8 @@
 
 void PythonCreatureOOScriptRegisterer::visit( unsigned int id, void *factoryFunction )
 {
-	mgr->register_creature_script( id, &PythonCreatureOOScriptFactory::createScript );
+	if( !mgr->has_creature_script( id ) )
+	{
+		mgr->register_creature_script( id, &PythonCreatureOOScriptFactory::createScript );
+	}
 }

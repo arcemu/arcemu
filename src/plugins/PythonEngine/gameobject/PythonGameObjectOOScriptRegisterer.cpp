@@ -24,5 +24,8 @@
 
 void PythonGameObjectOOScriptRegisterer::visit( unsigned int id, void *factoryFunction )
 {
-	mgr->register_gameobject_script( id, &PythonGameObjectOOScriptFactory::createScript );
+	if( !mgr->has_gameobject_script( id ) )
+	{
+		mgr->register_gameobject_script( id, &PythonGameObjectOOScriptFactory::createScript );
+	}
 }
