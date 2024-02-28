@@ -33,6 +33,8 @@
 #include "gameobject/GOGossipScriptRegisterer.hpp"
 #include "gameobject/GOGossipScriptReleaser.hpp"
 #include "gameobject/PythonGameObjectOOScriptRegisterer.hpp"
+#include "gameobject/GOGossipOOScriptRegisterer.hpp"
+#include "gameobject/GOGossipOOScriptReleaser.hpp"
 #include "instance/InstanceScriptRegisterer.hpp"
 #include "item/ItemGossipScriptRegisterer.hpp"
 #include "item/ItemGossipScriptReleaser.hpp"
@@ -97,7 +99,9 @@ void PythonEngine::onReload()
 	CreatureGossipScriptReleaser creatureGossipReleaser( mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
 	GOGossipScriptReleaser goGossipReleaser( mgr );
-	FunctionRegistry::visitGOGossipFunctions( &goGossipReleaser );
+	FunctionRegistry::visitGOGossipFunctions( &goGossipReleaser );	
+	GOGossipOOScriptReleaser goGossipOOReleaser( mgr );
+	FunctionRegistry::visitGOGossipOOScripts( &goGossipOOReleaser );
 	ItemGossipScriptReleaser itemGossipReleaser( mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipReleaser );
 	FunctionRegistry::releaseFunctions();
@@ -213,6 +217,9 @@ void PythonEngine::registerScripts()
 
 	GOGossipScriptRegisterer goGossipRegisterer( this->mgr );
 	FunctionRegistry::visitGOGossipFunctions( &goGossipRegisterer );
+
+	GOGossipOOScriptRegisterer goOOGossipRegisterer( this->mgr );
+	FunctionRegistry::visitGOGossipOOScripts( &goOOGossipRegisterer );	
 
 	ItemGossipScriptRegisterer itemGossipRegisterer( this->mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipRegisterer );

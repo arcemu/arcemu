@@ -26,6 +26,7 @@
 #include "ArcPyObject.hpp"
 #include "ArcPyUnit.hpp"
 #include "ArcPyCreature.hpp"
+#include "ArcPyGameObject.hpp"
 
 
 /// These are all in their own files
@@ -47,6 +48,7 @@ extern int registerArcPyWorldSession( PyObject *module );
 
 extern int registerArcPyCreatureScript( PyObject *module );
 extern int registerArcPyGameObjectScript( PyObject *module );
+extern int registerArcPyGossipScript( PyObject *module );
 
 /// RegisterServerHook
 ///   Registers a server event handler
@@ -495,6 +497,40 @@ static PyObject* arcemu_RegisterGameObjectScriptFactory( PyObject *self, PyObjec
 }
 
 
+/// RegisterGameObjectGossipScript
+///   Registers a Python gossip script for a gameobject
+///
+/// Parameters:
+///   goId        - The numerical identifier of the gameobject
+///   script      - The python gossip script
+///
+/// Example:
+///   RegisterGameObjectGossip( 1234, ValamiGossip )
+///
+static PyObject* arcemu_RegisterGameObjectGossipScript( PyObject *self, PyObject *args )
+{
+	uint32 goId;
+	PyObject *gossipScript;
+
+	if( !PyArg_ParseTuple( args, "IO", &goId, &gossipScript ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a gameobject Id and gossip script" );
+		return NULL;
+	}
+
+	if( ( Py_TYPE( gossipScript )->tp_base == NULL ) || ( strcmp( Py_TYPE( gossipScript )->tp_base->tp_name, "ArcPyGossipScript" ) != 0 ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a class instance object that is a subclass of GossipScript!" );
+		return NULL;
+	}
+
+	Py_IncRef( gossipScript );
+	FunctionRegistry::registerGOGossipScript( goId, gossipScript );
+
+	Py_RETURN_NONE;
+}
+
+
 /// toUnit
 ///   Casts the ArcPyObject parameter to an ArcPyUnit
 ///
@@ -567,6 +603,42 @@ static PyObject* arcemu_toCreature( PyObject *self, PyObject *args )
 	}
 }
 
+/// toGameObject
+///   Casts the ArcPyObject parameter to an ArcPyGameObject
+///
+/// Parameters:
+///   object     -  An ArcPyObject
+///
+/// Example:
+///   go = arcemu.toGameObject( object )
+///
+static PyObject* arcemu_toGameObject( PyObject *self, PyObject *args )
+{
+	PyObject *po;
+
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyObject( po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	ArcPyObject *apo = (ArcPyObject*)po;
+	if( apo->objectPtr->IsGameObject() )
+	{
+		return (PyObject*)createArcPyGameObject( static_cast< GameObject* >( apo->objectPtr ) );
+	}
+	else
+	{
+		Py_RETURN_NONE;
+	}
+}
+
 
 /// getGameTime
 ///   Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)
@@ -600,8 +672,10 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterDummyAuraHandler", arcemu_RegisterDummyAuraHandler, METH_VARARGS, "Registers a dummy aura handler function" },
 	{ "RegisterCreatureScript", arcemu_RegisterCreatureScriptFactory, METH_VARARGS, "Registers a creature script factory function" },
 	{ "RegisterGameObjectScript", arcemu_RegisterGameObjectScriptFactory, METH_VARARGS, "Registers a gameobject script factory function" },
+	{ "RegisterGameObjectGossipScript", arcemu_RegisterGameObjectGossipScript, METH_VARARGS, "Registers a gameobject gossip script object" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
+	{ "toGameObject", arcemu_toGameObject, METH_VARARGS, "Casts the Object to a GameObject" },
 	{ "getGameTime", arcemu_getGameTime, METH_NOARGS, "Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)" },
 	{NULL, NULL, 0, NULL }
 };
@@ -637,6 +711,7 @@ PyObject* PyInit_Arcemu(void)
 
 	registerArcPyCreatureScript( module );
 	registerArcPyGameObjectScript( module );
+	registerArcPyGossipScript( module );
 
 	return module;
 }

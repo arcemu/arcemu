@@ -24,12 +24,15 @@ ${prefix}/engine/PythonEngine.cpp
 ${prefix}/gameobject/GOScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.cpp
 ${prefix}/gameobject/GOGossipScriptReleaser.cpp
+${prefix}/gameobject/GOGossipOOScriptRegisterer.cpp
+${prefix}/gameobject/GOGossipOOScriptReleaser.cpp
 ${prefix}/gameobject/PythonGameObjectAIScript.cpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.cpp
 ${prefix}/gameobject/PythonGameObjectOOScript.cpp
 ${prefix}/gameobject/PythonGameObjectOOScriptFactory.cpp
 ${prefix}/gameobject/PythonGameObjectOOScriptRegisterer.cpp
 ${prefix}/gossip/PythonGossipScript.cpp
+${prefix}/gossip/PythonGossipOOScript.cpp
 ${prefix}/instance/InstanceScriptRegisterer.cpp
 ${prefix}/instance/PythonInstanceScript.cpp
 ${prefix}/instance/PythonInstanceScriptFactory.cpp
@@ -46,6 +49,7 @@ ${prefix}/python/modules/ArcPyCreatureScript.cpp
 ${prefix}/python/modules/ArcPyGameObject.cpp
 ${prefix}/python/modules/ArcPyGameObjectScript.cpp
 ${prefix}/python/modules/ArcPyGossipMenu.cpp
+${prefix}/python/modules/ArcPyGossipScript.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
 ${prefix}/python/modules/ArcPyItem.cpp
 ${prefix}/python/modules/ArcPyMapMgr.cpp
@@ -94,6 +98,9 @@ ${prefix}/gameobject/GOFunctionTuple.hpp
 ${prefix}/gameobject/GOFunctionTupleVisitor.hpp
 ${prefix}/gameobject/GOGossipScriptRegisterer.hpp
 ${prefix}/gameobject/GOGossipScriptReleaser.hpp
+${prefix}/gameobject/GOGossipOOScriptRegisterer.hpp
+${prefix}/gameobject/GOGossipOOScriptReleaser.hpp
+${prefix}/gameobject/GOGossipOOScriptVisitor.hpp
 ${prefix}/gameobject/GOScriptRegisterer.hpp
 ${prefix}/gameobject/PythonGameObjectAIScript.hpp
 ${prefix}/gameobject/PythonGameObjectAIScriptFactory.hpp
@@ -105,6 +112,7 @@ ${prefix}/gossip/GossipFunctionTuple.hpp
 ${prefix}/gossip/GossipFunctionTupleVisitor.hpp
 ${prefix}/gossip/PythonGossipEventTypes.hpp
 ${prefix}/gossip/PythonGossipScript.hpp
+${prefix}/gossip/PythonGossipOOScript.hpp
 ${prefix}/instance/InstanceFunctionTuple.hpp
 ${prefix}/instance/InstanceFunctionTupleVisitor.hpp
 ${prefix}/instance/InstanceScriptRegisterer.hpp
@@ -126,6 +134,7 @@ ${prefix}/python/modules/ArcPyCreatureScript.hpp
 ${prefix}/python/modules/ArcPyGameObject.hpp
 ${prefix}/python/modules/ArcPyGameObjectScript.hpp
 ${prefix}/python/modules/ArcPyGossipMenu.hpp
+${prefix}/python/modules/ArcPyGossipScript.hpp
 ${prefix}/python/modules/ArcPyGuild.hpp
 ${prefix}/python/modules/ArcPyItem.hpp
 ${prefix}/python/modules/ArcPyMapMgr.hpp

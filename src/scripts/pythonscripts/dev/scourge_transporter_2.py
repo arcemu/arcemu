@@ -6,6 +6,7 @@ import arcemu
 from arcemu import GossipMenu
 from arcemu import Player
 from arcemu import GameObjectScript
+from arcemu import GossipScript
 
 class ScourgeTransporterScript( GameObjectScript ):
 	def __init__( self, go ):
@@ -46,29 +47,38 @@ class ScourgeTransporterScript( GameObjectScript ):
 		return ScourgeTransporterScript( go )
 		
 
-def go_onSelectOption( go, player, id, enteredCode ):
-	GossipMenu.complete( player )
-	
-	if id == 1:
-		player.teleport( 0, -9459.524414, 76.275986, 56.855736 )
-	elif id == 2:
-		player.teleport( 0, -9490.390625, 67.313934, 56.004055 )
-	elif id == 3:
-		player.teleport( 0, -9458.459961, 47.227226, 56.605110 )
-	elif id == 4:
-		go.RegisterAIUpdateEvent( 1000 )
-	elif id == 5:
-		go.RemoveAIUpdateEvent()
-	elif id == 6:
-		go.ModifyAIUpdateEvent( 500 )
-		
-	elif id == 7:
-		coords = "(" + str( go.getPositionX() ) + "," + str( go.getPositionY() ) + "," + str( go.getPositionZ() ) + ")";
-		print( "GO coords: " + coords )
-		print( "GO orientation: " + str( go.getOrientation() ) )
-		
-	elif id == 8:
-		go.despawn( 0, 0 )
 
-arcemu.RegisterGOGossipEvent( 202243, arcemu.GOSSIP_EVENT_SELECT, go_onSelectOption )
+class ScourgeTransporterGossip( GossipScript ):
+	def __init__( self ):
+		GossipScript( self )
+		
+	def OnSelectOption( self, object, player, id, enteredCode ):
+		GossipMenu.complete( player )
+		
+		go = arcemu.toGameObject( object )
+		
+		if id == 1:
+			player.teleport( 0, -9459.524414, 76.275986, 56.855736 )
+		elif id == 2:
+			player.teleport( 0, -9490.390625, 67.313934, 56.004055 )
+		elif id == 3:
+			player.teleport( 0, -9458.459961, 47.227226, 56.605110 )
+			
+		elif id == 4:
+			go.RegisterAIUpdateEvent( 1000 )
+		elif id == 5:
+			go.RemoveAIUpdateEvent()
+		elif id == 6:
+			go.ModifyAIUpdateEvent( 500 )
+			
+		elif id == 7:
+			coords = "(" + str( go.getPositionX() ) + "," + str( go.getPositionY() ) + "," + str( go.getPositionZ() ) + ")";
+			print( "GO coords: " + coords )
+			print( "GO orientation: " + str( go.getOrientation() ) )
+		
+		elif id == 8:
+			go.despawn( 0, 0 )
+		
+		
 arcemu.RegisterGameObjectScript( 202243, ScourgeTransporterScript.create )
+arcemu.RegisterGameObjectGossipScript( 202243, ScourgeTransporterGossip() )
