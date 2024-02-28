@@ -28,6 +28,6 @@ typedef struct
 	Item* itemPtr;
 } ArcPyItem;
 
-ArcPyItem* createArcPyItem();
+ArcPyItem* createArcPyItem( Item *item = NULL );
 
 #endif

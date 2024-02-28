@@ -146,9 +146,10 @@ int registerArcPyItem( PyObject *module )
 	return 0;
 }
 
-ArcPyItem* createArcPyItem()
+ArcPyItem* createArcPyItem( Item *item )
 {
 	PyTypeObject *type = &ArcPyItemType;
-	ArcPyItem* player = (ArcPyItem*)type->tp_alloc( type, 0 );
-	return player;
+	ArcPyItem* pyItem = (ArcPyItem*)type->tp_alloc( type, 0 );
+	pyItem->itemPtr = item;
+	return pyItem;
 }

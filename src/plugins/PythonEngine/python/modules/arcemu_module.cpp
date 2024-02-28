@@ -27,6 +27,7 @@
 #include "ArcPyUnit.hpp"
 #include "ArcPyCreature.hpp"
 #include "ArcPyGameObject.hpp"
+#include "ArcPyItem.hpp"
 
 
 /// These are all in their own files
@@ -639,6 +640,42 @@ static PyObject* arcemu_toGameObject( PyObject *self, PyObject *args )
 	}
 }
 
+/// toItem
+///   Casts the ArcPyObject parameter to an ArcPyItem
+///
+/// Parameters:
+///   object     -  An ArcPyObject
+///
+/// Example:
+///   item = arcemu.toItem( object )
+///
+static PyObject* arcemu_toItem( PyObject *self, PyObject *args )
+{
+	PyObject *po;
+
+	if( !PyArg_ParseTuple( args, "O", &po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	if( !isArcPyObject( po ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires an ArcPyObject parameter" );
+		return NULL;
+	}
+
+	ArcPyObject *apo = (ArcPyObject*)po;
+	if( apo->objectPtr->IsItem() )
+	{
+		return (PyObject*)createArcPyItem( static_cast< Item* >( apo->objectPtr ) );
+	}
+	else
+	{
+		Py_RETURN_NONE;
+	}
+}
+
 
 /// getGameTime
 ///   Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)
@@ -676,6 +713,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{ "toGameObject", arcemu_toGameObject, METH_VARARGS, "Casts the Object to a GameObject" },
+	{ "toItem", arcemu_toItem, METH_VARARGS, "Casts the Object to an Item" },
 	{ "getGameTime", arcemu_getGameTime, METH_NOARGS, "Returns the seconds elapsed since the Unix epoch (1970-01-01 00:00:00)" },
 	{NULL, NULL, 0, NULL }
 };
