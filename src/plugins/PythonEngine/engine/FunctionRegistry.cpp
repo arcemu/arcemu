@@ -39,6 +39,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::dummyAuraFun
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::creatureScriptFactories;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::gameobjectScriptFactories;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::goGossipScripts;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::itemGossipScripts;
 
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
@@ -224,6 +225,19 @@ void FunctionRegistry::registerGOGossipScript( unsigned int goId, void* script )
 	goGossipScripts[ goId ] = script;
 }
 
+void FunctionRegistry::registerItemGossipScript( unsigned int itemId, void* script )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = itemGossipScripts.find( itemId );
+	if( itr != itemGossipScripts.end() )
+	{
+		void *oldScript = itr->second;
+		Py_DECREF( oldScript );
+		oldScript = NULL;
+	}
+
+	itemGossipScripts[ itemId ] = script;
+}
+
 void* FunctionRegistry::getDummySpellHandler( unsigned long spellId )
 {
 	void* function = NULL;
@@ -310,6 +324,16 @@ void FunctionRegistry::visitItemGossipFunctions( GossipFunctionTupleVisitor *vis
 	while( itr != itemGossipFunctions.end() )
 	{
 		visitor->visit( itr->first, *(itr->second) );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitItemGossipScripts( ItemGossipOOScriptVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = itemGossipScripts.begin();
+	while( itr != itemGossipScripts.end() )
+	{
+		visitor->visit( itr->first, itr->second );
 		++itr;
 	}
 }
@@ -622,6 +646,16 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	goGossipScripts.clear();
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itemGossipScriptIterator = itemGossipScripts.begin();
+	while( itemGossipScriptIterator != itemGossipScripts.end() )
+	{
+		Py_DECREF( (PyObject*)itemGossipScriptIterator->second );
+		itemGossipScriptIterator->second = NULL;
+		itemGossipScriptIterator++;
+	}
+
+	itemGossipScripts.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )

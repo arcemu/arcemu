@@ -38,6 +38,8 @@
 #include "instance/InstanceScriptRegisterer.hpp"
 #include "item/ItemGossipScriptRegisterer.hpp"
 #include "item/ItemGossipScriptReleaser.hpp"
+#include "item/ItemGossipOOScriptRegisterer.hpp"
+#include "item/ItemGossipOOScriptReleaser.hpp"
 #include "quest/QuestScriptRegisterer.hpp"
 #include "creature/PythonCreatureAIScriptFactory.hpp"
 #include "creature/PythonCreatureOOScriptFactory.hpp"
@@ -104,6 +106,8 @@ void PythonEngine::onReload()
 	FunctionRegistry::visitGOGossipOOScripts( &goGossipOOReleaser );
 	ItemGossipScriptReleaser itemGossipReleaser( mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipReleaser );
+	ItemGossipOOScriptReleaser itemOOGossipReleaser( mgr );
+	FunctionRegistry::visitItemGossipScripts( &itemOOGossipReleaser );
 	FunctionRegistry::releaseFunctions();
 
 	/// Load current scripts
@@ -223,6 +227,9 @@ void PythonEngine::registerScripts()
 
 	ItemGossipScriptRegisterer itemGossipRegisterer( this->mgr );
 	FunctionRegistry::visitItemGossipFunctions( &itemGossipRegisterer );
+
+	ItemGossipOOScriptRegisterer itemOOGossipRegisterer( mgr );
+	FunctionRegistry::visitItemGossipScripts( &itemOOGossipRegisterer );
 
 	InstanceScriptRegisterer instanceScriptRegisterer( this->mgr );
 	FunctionRegistry::visitInstanceEventFunctions( &instanceScriptRegisterer );

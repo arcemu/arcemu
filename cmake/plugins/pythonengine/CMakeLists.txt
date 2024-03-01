@@ -38,6 +38,8 @@ ${prefix}/instance/PythonInstanceScript.cpp
 ${prefix}/instance/PythonInstanceScriptFactory.cpp
 ${prefix}/item/ItemGossipScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptReleaser.cpp
+${prefix}/item/ItemGossipOOScriptRegisterer.cpp
+${prefix}/item/ItemGossipOOScriptReleaser.cpp
 ${prefix}/python/arcemu_extensions.cpp
 ${prefix}/python/ArcPyTuple.cpp
 ${prefix}/python/ArcPython.cpp
@@ -121,6 +123,8 @@ ${prefix}/instance/PythonInstanceScript.hpp
 ${prefix}/instance/PythonInstanceScriptFactory.hpp
 ${prefix}/item/ItemGossipScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptReleaser.hpp
+${prefix}/item/ItemGossipOOScriptRegisterer.hpp
+${prefix}/item/ItemGossipOOScriptReleaser.hpp
 ${prefix}/python/ArcPyTuple.hpp
 ${prefix}/python/ArcPython.hpp
 ${prefix}/python/Python.hpp

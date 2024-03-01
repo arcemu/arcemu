@@ -44,6 +44,8 @@
 
 #include "gameobject/GOGossipOOScriptVisitor.hpp"
 
+#include "item/ItemGossipOOScriptVisitor.hpp"
+
 /// Organized storage of Python function references
 class FunctionRegistry
 {
@@ -221,6 +223,19 @@ public:
 
 
 	///
+	/// Registers a Python item gossip script
+	///
+	/// Parameters
+	///   itemId    -  The id of the item that would use the gossip script
+	///   script    -  Reference to the gossip script
+	///
+	/// Return value
+	///   None
+	///
+	static void registerItemGossipScript( unsigned int itemId, void* script );
+
+
+	///
 	/// Visits all registered creature gossip functions
 	///
 	/// Parameters
@@ -265,6 +280,19 @@ public:
 	///   None
 	///
 	static void visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor );
+
+
+	///
+	/// Visits all registered item gossip script handles
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitItemGossipScripts( ItemGossipOOScriptVisitor *visitor );
+
 
 	///
 	/// Visits all registered GameObject event functions
@@ -598,6 +626,15 @@ private:
 	/// value: Pointer to an object that is a gameobject gossip script
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > goGossipScripts;
+
+
+	///
+	/// Contains references to Python item gossip scripts
+	///
+	/// key: item Id
+	/// value: Pointer to an object that is a item gossip script
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > itemGossipScripts;
 };
 
 #endif

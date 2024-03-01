@@ -531,6 +531,39 @@ static PyObject* arcemu_RegisterGameObjectGossipScript( PyObject *self, PyObject
 	Py_RETURN_NONE;
 }
 
+/// RegisterItemGossipScript
+///   Registers a Python gossip script for an item
+///
+/// Parameters:
+///   itemId      - The numerical identifier of the item
+///   script      - The python gossip script
+///
+/// Example:
+///   RegisterItemGossipScript( 1234, ValamiGossip )
+///
+static PyObject* arcemu_RegisterItemGossipScript( PyObject *self, PyObject *args )
+{
+	uint32 itemId;
+	PyObject *gossipScript;
+
+	if( !PyArg_ParseTuple( args, "IO", &itemId, &gossipScript ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a item Id and gossip script" );
+		return NULL;
+	}
+
+	if( ( Py_TYPE( gossipScript )->tp_base == NULL ) || ( strcmp( Py_TYPE( gossipScript )->tp_base->tp_name, "ArcPyGossipScript" ) != 0 ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a class instance object that is a subclass of GossipScript!" );
+		return NULL;
+	}
+
+	Py_IncRef( gossipScript );
+	FunctionRegistry::registerItemGossipScript( itemId, gossipScript );
+
+	Py_RETURN_NONE;
+}
+
 
 /// toUnit
 ///   Casts the ArcPyObject parameter to an ArcPyUnit
@@ -709,7 +742,8 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterDummyAuraHandler", arcemu_RegisterDummyAuraHandler, METH_VARARGS, "Registers a dummy aura handler function" },
 	{ "RegisterCreatureScript", arcemu_RegisterCreatureScriptFactory, METH_VARARGS, "Registers a creature script factory function" },
 	{ "RegisterGameObjectScript", arcemu_RegisterGameObjectScriptFactory, METH_VARARGS, "Registers a gameobject script factory function" },
-	{ "RegisterGameObjectGossipScript", arcemu_RegisterGameObjectGossipScript, METH_VARARGS, "Registers a gameobject gossip script object" },
+	{ "RegisterGameObjectGossipScript", arcemu_RegisterGameObjectGossipScript, METH_VARARGS, "Registers a gameobject gossip script object" },	
+	{ "RegisterItemGossipScript", arcemu_RegisterItemGossipScript, METH_VARARGS, "Registers an item gossip script object" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{ "toGameObject", arcemu_toGameObject, METH_VARARGS, "Casts the Object to a GameObject" },
