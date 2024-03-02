@@ -680,6 +680,17 @@ void FunctionRegistry::releaseFunctions()
 	}
 
 	itemGossipScripts.clear();
+
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator creatureGossipScriptIterator = creatureGossipScripts.begin();
+	while( creatureGossipScriptIterator != creatureGossipScripts.end() )
+	{
+		Py_DECREF( (PyObject*)creatureGossipScriptIterator->second );
+		creatureGossipScriptIterator->second = NULL;
+		creatureGossipScriptIterator++;
+	}
+
+	creatureGossipScripts.clear();
 }
 
 GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
