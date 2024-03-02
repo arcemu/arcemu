@@ -29,6 +29,8 @@
 #include "creature/PythonCreatureOOScriptRegisterer.hpp"
 #include "creature/CreatureGossipScriptRegisterer.hpp"
 #include "creature/CreatureGossipScriptReleaser.hpp"
+#include "creature/CreatureGossipOOScriptRegisterer.hpp"
+#include "creature/CreatureGossipOOScriptReleaser.hpp"
 #include "gameobject/GOScriptRegisterer.hpp"
 #include "gameobject/GOGossipScriptRegisterer.hpp"
 #include "gameobject/GOGossipScriptReleaser.hpp"
@@ -100,6 +102,8 @@ void PythonEngine::onReload()
 	ServerHookRegistry::releaseHooks();	
 	CreatureGossipScriptReleaser creatureGossipReleaser( mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
+	CreatureGossipOOScriptReleaser creatureOOGossipReleaser( mgr );
+	FunctionRegistry::visitCreatureGossipScripts( &creatureOOGossipReleaser );
 	GOGossipScriptReleaser goGossipReleaser( mgr );
 	FunctionRegistry::visitGOGossipFunctions( &goGossipReleaser );	
 	GOGossipOOScriptReleaser goGossipOOReleaser( mgr );
@@ -218,6 +222,9 @@ void PythonEngine::registerScripts()
 
 	CreatureGossipScriptRegisterer registerer( this->mgr );
 	FunctionRegistry::visitCreatureGossipFunctions( &registerer );
+
+	CreatureGossipOOScriptRegisterer creatureOOGossipRegisterer( this->mgr );
+	FunctionRegistry::visitCreatureGossipScripts( &creatureOOGossipRegisterer );
 
 	GOGossipScriptRegisterer goGossipRegisterer( this->mgr );
 	FunctionRegistry::visitGOGossipFunctions( &goGossipRegisterer );

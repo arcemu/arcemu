@@ -565,6 +565,40 @@ static PyObject* arcemu_RegisterItemGossipScript( PyObject *self, PyObject *args
 }
 
 
+/// RegisterCreatureGossipScript
+///   Registers a Python gossip script for a creature
+///
+/// Parameters:
+///   creatureId  - The numerical identifier of the creature
+///   script      - The python gossip script
+///
+/// Example:
+///   RegisterCreatureGossipScript( 1234, ValamiGossip )
+///
+static PyObject* arcemu_RegisterCreatureGossipScript( PyObject *self, PyObject *args )
+{
+	uint32 creatureId;
+	PyObject *gossipScript;
+
+	if( !PyArg_ParseTuple( args, "IO", &creatureId, &gossipScript ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a creature Id and gossip script" );
+		return NULL;
+	}
+
+	if( ( Py_TYPE( gossipScript )->tp_base == NULL ) || ( strcmp( Py_TYPE( gossipScript )->tp_base->tp_name, "ArcPyGossipScript" ) != 0 ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a class instance object that is a subclass of GossipScript!" );
+		return NULL;
+	}
+
+	Py_IncRef( gossipScript );
+	FunctionRegistry::registerCreatureGossipScript( creatureId, gossipScript );
+
+	Py_RETURN_NONE;
+}
+
+
 /// toUnit
 ///   Casts the ArcPyObject parameter to an ArcPyUnit
 ///
@@ -744,6 +778,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterGameObjectScript", arcemu_RegisterGameObjectScriptFactory, METH_VARARGS, "Registers a gameobject script factory function" },
 	{ "RegisterGameObjectGossipScript", arcemu_RegisterGameObjectGossipScript, METH_VARARGS, "Registers a gameobject gossip script object" },	
 	{ "RegisterItemGossipScript", arcemu_RegisterItemGossipScript, METH_VARARGS, "Registers an item gossip script object" },
+	{ "RegisterCreatureGossipScript", arcemu_RegisterCreatureGossipScript, METH_VARARGS, "Registers a creature gossip script object" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{ "toGameObject", arcemu_toGameObject, METH_VARARGS, "Casts the Object to a GameObject" },

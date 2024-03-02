@@ -13,6 +13,8 @@ SET( SRCS
 ${prefix}/creature/CreatureFunctionRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptRegisterer.cpp
 ${prefix}/creature/CreatureGossipScriptReleaser.cpp
+${prefix}/creature/CreatureGossipOOScriptRegisterer.cpp
+${prefix}/creature/CreatureGossipOOScriptReleaser.cpp
 ${prefix}/creature/PythonCreatureAIScript.cpp
 ${prefix}/creature/PythonCreatureAIScriptFactory.cpp
 ${prefix}/creature/PythonCreatureOOScript.cpp
@@ -85,6 +87,9 @@ ${prefix}/creature/CreatureFunctionTuple.hpp
 ${prefix}/creature/CreatureFunctionTupleVisitor.hpp
 ${prefix}/creature/CreatureGossipScriptRegisterer.hpp
 ${prefix}/creature/CreatureGossipScriptReleaser.hpp
+${prefix}/creature/CreatureGossipOOScriptRegisterer.hpp
+${prefix}/creature/CreatureGossipOOScriptReleaser.hpp
+${prefix}/creature/CreatureGossipOOScriptVisitor.hpp
 ${prefix}/creature/CreatureScriptFactoryVisitor.hpp
 ${prefix}/creature/PythonCreatureAIScript.hpp
 ${prefix}/creature/PythonCreatureAIScriptFactory.hpp
@@ -125,6 +130,7 @@ ${prefix}/item/ItemGossipScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/item/ItemGossipOOScriptRegisterer.hpp
 ${prefix}/item/ItemGossipOOScriptReleaser.hpp
+${prefix}/item/ItemGossipOOScriptVisitor.hpp
 ${prefix}/python/ArcPyTuple.hpp
 ${prefix}/python/ArcPython.hpp
 ${prefix}/python/Python.hpp

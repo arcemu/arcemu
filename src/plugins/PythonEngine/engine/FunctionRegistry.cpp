@@ -40,6 +40,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::creatureScrip
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::gameobjectScriptFactories;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::goGossipScripts;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::itemGossipScripts;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::creatureGossipScripts;
 
 
 void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
@@ -238,6 +239,19 @@ void FunctionRegistry::registerItemGossipScript( unsigned int itemId, void* scri
 	itemGossipScripts[ itemId ] = script;
 }
 
+void FunctionRegistry::registerCreatureGossipScript( unsigned int creatureId, void* script )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureGossipScripts.find( creatureId );
+	if( itr != creatureGossipScripts.end() )
+	{
+		void *oldScript = itr->second;
+		Py_DECREF( oldScript );
+		oldScript = NULL;
+	}
+
+	creatureGossipScripts[ creatureId ] = script;
+}
+
 void* FunctionRegistry::getDummySpellHandler( unsigned long spellId )
 {
 	void* function = NULL;
@@ -332,6 +346,16 @@ void FunctionRegistry::visitItemGossipScripts( ItemGossipOOScriptVisitor *visito
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = itemGossipScripts.begin();
 	while( itr != itemGossipScripts.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
+void FunctionRegistry::visitCreatureGossipScripts( CreatureGossipOOScriptVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureGossipScripts.begin();
+	while( itr != creatureGossipScripts.end() )
 	{
 		visitor->visit( itr->first, itr->second );
 		++itr;
