@@ -21,7 +21,7 @@
 
 #include <Python.h>
 #include "serverhooks/ServerHookRegistry.hpp"
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 #include "ArcPyObject.hpp"
 #include "ArcPyUnit.hpp"

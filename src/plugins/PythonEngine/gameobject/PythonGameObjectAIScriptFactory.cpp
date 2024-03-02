@@ -23,7 +23,7 @@
 
 #include "gameobject/PythonGameObjectAIScript.hpp"
 
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 
 class FactoryManagedPythonGameObjectAIScript : public PythonGameObjectAIScript

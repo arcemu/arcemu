@@ -22,7 +22,7 @@
 #include "PythonCreatureOOScript.hpp"
 #include "PythonCreatureOOScriptFactory.hpp"
 
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 #include "python/ArcPython.hpp"
 

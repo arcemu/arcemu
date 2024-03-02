@@ -20,7 +20,7 @@ ${prefix}/creature/PythonCreatureAIScriptFactory.cpp
 ${prefix}/creature/PythonCreatureOOScript.cpp
 ${prefix}/creature/PythonCreatureOOScriptFactory.cpp
 ${prefix}/creature/PythonCreatureOOScriptRegisterer.cpp
-${prefix}/engine/FunctionRegistry.cpp
+${prefix}/engine/ReferenceRegistry.cpp
 ${prefix}/engine/plugin.cpp
 ${prefix}/engine/PythonEngine.cpp
 ${prefix}/gameobject/GOScriptRegisterer.cpp
@@ -97,7 +97,7 @@ ${prefix}/creature/PythonCreatureEventTypes.hpp
 ${prefix}/creature/PythonCreatureOOScript.hpp
 ${prefix}/creature/PythonCreatureOOScriptFactory.hpp
 ${prefix}/creature/PythonCreatureOOScriptRegisterer.hpp
-${prefix}/engine/FunctionRegistry.hpp
+${prefix}/engine/ReferenceRegistry.hpp
 ${prefix}/engine/PythonEngine.hpp
 ${prefix}/engine/FunctionTuple.hpp
 ${prefix}/gameobject/GameObjectScriptFactoryVisitor.hpp

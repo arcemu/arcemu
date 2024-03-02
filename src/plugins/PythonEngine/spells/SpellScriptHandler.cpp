@@ -21,7 +21,7 @@
 
 #include "spells/SpellScriptHandler.hpp"
 
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 #include "Python.h"
 

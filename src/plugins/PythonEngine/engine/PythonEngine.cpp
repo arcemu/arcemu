@@ -24,7 +24,7 @@
 #include "python/ArcPython.hpp"
 #include "serverhooks/ServerHookRegistry.hpp"
 #include "serverhooks/ServerHookHandler.hpp"
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 #include "creature/CreatureFunctionRegisterer.hpp"
 #include "creature/PythonCreatureOOScriptRegisterer.hpp"
 #include "creature/CreatureGossipScriptRegisterer.hpp"

@@ -22,7 +22,7 @@
 #include "PythonGameObjectOOScript.hpp"
 #include "PythonGameObjectOOScriptFactory.hpp"
 
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 #include "python/ArcPython.hpp"
 

@@ -23,7 +23,7 @@
 
 #include "PythonCreatureAIScript.hpp"
 
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 
 /// A Python Creature AI script that removes itself from the factory's list when being destructed

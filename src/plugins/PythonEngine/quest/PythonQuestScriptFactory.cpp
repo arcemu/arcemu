@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 #include "quest/PythonQuestScriptFactory.hpp"
-#include "engine/FunctionRegistry.hpp"
+#include "engine/ReferenceRegistry.hpp"
 
 class FactoryCreatedPythonQuestScript : public PythonQuestScript
 {
