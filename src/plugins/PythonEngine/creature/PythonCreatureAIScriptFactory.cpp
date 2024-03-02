@@ -50,7 +50,7 @@ CreatureAIScript* PythonCreatureAIScriptFactory::createScript( Creature* src )
 	uint32 id = src->GetProto()->Id;
 	PythonCreatureAIScript* script = NULL;
 	
-	CreatureFunctionTuple* tuple = FunctionRegistry::getCreatureEventFunctions( id );
+	CreatureFunctionTuple* tuple = ReferenceRegistry::getCreatureEventFunctions( id );
 	if( tuple != NULL )
 	{
 		script = new FactoryManagedPythonCreatureAIScript( src, *tuple );
@@ -77,7 +77,7 @@ void PythonCreatureAIScriptFactory::onReload()
 	{
 		PythonCreatureAIScript *script = (PythonCreatureAIScript*)(*itr);
 
-		CreatureFunctionTuple* tuple = FunctionRegistry::getCreatureEventFunctions( script->GetUnit()->GetProto()->Id );
+		CreatureFunctionTuple* tuple = ReferenceRegistry::getCreatureEventFunctions( script->GetUnit()->GetProto()->Id );
 		if( tuple != NULL )
 		{
 			script->setFunctions( *tuple );

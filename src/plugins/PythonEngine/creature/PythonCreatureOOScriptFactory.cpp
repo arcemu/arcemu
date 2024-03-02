@@ -54,7 +54,7 @@ CreatureAIScript* PythonCreatureOOScriptFactory::createScript( Creature* src )
 	uint32 id = src->GetProto()->Id;
 	PythonCreatureOOScript* script = NULL;
 	
-	void *factoryFunction = FunctionRegistry::getCreatureScriptFactory( id );
+	void *factoryFunction = ReferenceRegistry::getCreatureScriptFactory( id );
 	if( factoryFunction != NULL )
 	{
 		PyObject *instance = PyObject_CallFunction( (PyObject*)factoryFunction, "O", createArcPyCreature( src ) );
@@ -92,7 +92,7 @@ void PythonCreatureOOScriptFactory::onReload()
 		PythonCreatureOOScript *script = (PythonCreatureOOScript*)(*itr);
 		uint32 id = script->GetUnit()->GetProto()->Id;
 
-		void *factoryFunction = FunctionRegistry::getCreatureScriptFactory( id );
+		void *factoryFunction = ReferenceRegistry::getCreatureScriptFactory( id );
 		if( factoryFunction != NULL )
 		{
 			PyObject *instance = PyObject_CallFunction( (PyObject*)factoryFunction, "O", createArcPyCreature( script->GetUnit() ) );

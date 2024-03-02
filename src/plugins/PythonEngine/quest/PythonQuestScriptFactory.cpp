@@ -49,7 +49,7 @@ PythonQuestScript* PythonQuestScriptFactory::createQuestScript( unsigned int que
 {
 	Guard g( lock );
 
-	QuestFunctionTuple *tuple = FunctionRegistry::getQuestFunctions( questId );
+	QuestFunctionTuple *tuple = ReferenceRegistry::getQuestFunctions( questId );
 	FactoryCreatedPythonQuestScript *script = new FactoryCreatedPythonQuestScript( *tuple, questId );
 	createdScripts.insert( script );
 	return script;
@@ -63,7 +63,7 @@ void PythonQuestScriptFactory::onReload()
 	while( itr != createdScripts.end() )
 	{
 		FactoryCreatedPythonQuestScript *script = static_cast< FactoryCreatedPythonQuestScript* >( *itr );
-		QuestFunctionTuple *tuple = FunctionRegistry::getQuestFunctions( script->getQuestId() );
+		QuestFunctionTuple *tuple = ReferenceRegistry::getQuestFunctions( script->getQuestId() );
 
 		if( tuple != NULL )
 		{

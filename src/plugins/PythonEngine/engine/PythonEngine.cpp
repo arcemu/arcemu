@@ -76,7 +76,7 @@ PythonEngine::~PythonEngine()
 	PythonQuestScriptFactory::onShutDown();
 	PythonInstanceScriptFactory::onShutdown();
 	ServerHookRegistry::releaseHooks();
-	FunctionRegistry::releaseFunctions();
+	ReferenceRegistry::releaseFunctions();
 
 	/// then shut Python down
 	delete python;
@@ -101,18 +101,18 @@ void PythonEngine::onReload()
 	/// First release functions that we loaded
 	ServerHookRegistry::releaseHooks();	
 	CreatureGossipScriptReleaser creatureGossipReleaser( mgr );
-	FunctionRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
+	ReferenceRegistry::visitCreatureGossipFunctions( &creatureGossipReleaser );
 	CreatureGossipOOScriptReleaser creatureOOGossipReleaser( mgr );
-	FunctionRegistry::visitCreatureGossipScripts( &creatureOOGossipReleaser );
+	ReferenceRegistry::visitCreatureGossipScripts( &creatureOOGossipReleaser );
 	GOGossipScriptReleaser goGossipReleaser( mgr );
-	FunctionRegistry::visitGOGossipFunctions( &goGossipReleaser );	
+	ReferenceRegistry::visitGOGossipFunctions( &goGossipReleaser );	
 	GOGossipOOScriptReleaser goGossipOOReleaser( mgr );
-	FunctionRegistry::visitGOGossipOOScripts( &goGossipOOReleaser );
+	ReferenceRegistry::visitGOGossipOOScripts( &goGossipOOReleaser );
 	ItemGossipScriptReleaser itemGossipReleaser( mgr );
-	FunctionRegistry::visitItemGossipFunctions( &itemGossipReleaser );
+	ReferenceRegistry::visitItemGossipFunctions( &itemGossipReleaser );
 	ItemGossipOOScriptReleaser itemOOGossipReleaser( mgr );
-	FunctionRegistry::visitItemGossipScripts( &itemOOGossipReleaser );
-	FunctionRegistry::releaseFunctions();
+	ReferenceRegistry::visitItemGossipScripts( &itemOOGossipReleaser );
+	ReferenceRegistry::releaseFunctions();
 
 	/// Load current scripts
 	loadScripts();
@@ -221,48 +221,48 @@ void PythonEngine::registerScripts()
 	/// We register the functions that we loaded from Python scripts here
 
 	CreatureGossipScriptRegisterer registerer( this->mgr );
-	FunctionRegistry::visitCreatureGossipFunctions( &registerer );
+	ReferenceRegistry::visitCreatureGossipFunctions( &registerer );
 
 	CreatureGossipOOScriptRegisterer creatureOOGossipRegisterer( this->mgr );
-	FunctionRegistry::visitCreatureGossipScripts( &creatureOOGossipRegisterer );
+	ReferenceRegistry::visitCreatureGossipScripts( &creatureOOGossipRegisterer );
 
 	GOGossipScriptRegisterer goGossipRegisterer( this->mgr );
-	FunctionRegistry::visitGOGossipFunctions( &goGossipRegisterer );
+	ReferenceRegistry::visitGOGossipFunctions( &goGossipRegisterer );
 
 	GOGossipOOScriptRegisterer goOOGossipRegisterer( this->mgr );
-	FunctionRegistry::visitGOGossipOOScripts( &goOOGossipRegisterer );	
+	ReferenceRegistry::visitGOGossipOOScripts( &goOOGossipRegisterer );	
 
 	ItemGossipScriptRegisterer itemGossipRegisterer( this->mgr );
-	FunctionRegistry::visitItemGossipFunctions( &itemGossipRegisterer );
+	ReferenceRegistry::visitItemGossipFunctions( &itemGossipRegisterer );
 
 	ItemGossipOOScriptRegisterer itemOOGossipRegisterer( mgr );
-	FunctionRegistry::visitItemGossipScripts( &itemOOGossipRegisterer );
+	ReferenceRegistry::visitItemGossipScripts( &itemOOGossipRegisterer );
 
 	InstanceScriptRegisterer instanceScriptRegisterer( this->mgr );
-	FunctionRegistry::visitInstanceEventFunctions( &instanceScriptRegisterer );
+	ReferenceRegistry::visitInstanceEventFunctions( &instanceScriptRegisterer );
 
 	GOScriptRegisterer goScriptRegisterer( this->mgr );
-	FunctionRegistry::visitGOEventFunctions( &goScriptRegisterer );
+	ReferenceRegistry::visitGOEventFunctions( &goScriptRegisterer );
 
 	PythonGameObjectOOScriptRegisterer goOOScriptRegisterer( this->mgr );
-	FunctionRegistry::visitGameObjectScriptFactories( &goOOScriptRegisterer );
+	ReferenceRegistry::visitGameObjectScriptFactories( &goOOScriptRegisterer );
 
 	CreatureFunctionRegisterer creatureFunctionRegisterer( this->mgr );
-	FunctionRegistry::visitCreatureEventFunctions( &creatureFunctionRegisterer );
+	ReferenceRegistry::visitCreatureEventFunctions( &creatureFunctionRegisterer );
 
 	PythonCreatureOOScriptRegisterer creatureOOScriptRegisterer( this->mgr );
-	FunctionRegistry::visitCreatureScriptFactories( &creatureOOScriptRegisterer );
+	ReferenceRegistry::visitCreatureScriptFactories( &creatureOOScriptRegisterer );
 
 	QuestScriptRegisterer questScriptRegisterer( this->mgr );
-	FunctionRegistry::visitQuestEventFunctions( &questScriptRegisterer );
+	ReferenceRegistry::visitQuestEventFunctions( &questScriptRegisterer );
 
 	DummySpellHandlerRegisterer dummySpellRegisterer( this->mgr );
-	FunctionRegistry::visitDummySpellHandlerFunctions( &dummySpellRegisterer );
+	ReferenceRegistry::visitDummySpellHandlerFunctions( &dummySpellRegisterer );
 
 	ScriptedEffectHandlerRegisterer scriptedEffectRegisterer( this->mgr );
-	FunctionRegistry::visitScriptedEffectHandlerFunctions( &scriptedEffectRegisterer );
+	ReferenceRegistry::visitScriptedEffectHandlerFunctions( &scriptedEffectRegisterer );
 
 	DummyAuraHandlerRegisterer dummyAuraRegisterer( this->mgr );
-	FunctionRegistry::visitDummyAuraHandlerFunctions( &dummyAuraRegisterer );
+	ReferenceRegistry::visitDummyAuraHandlerFunctions( &dummyAuraRegisterer );
 }
 

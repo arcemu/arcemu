@@ -41,7 +41,7 @@ InstanceScript* PythonInstanceScriptFactory::createInstanceScript( MapMgr* mgr )
 {
 	Guard g( lock );
 
-	InstanceFunctionTuple *functions = FunctionRegistry::getInstanceFunctions( mgr->GetMapId() );
+	InstanceFunctionTuple *functions = ReferenceRegistry::getInstanceFunctions( mgr->GetMapId() );
 	FactoryCreatedPythonInstanceScript *script = NULL;
 
 	if( functions != NULL )
@@ -75,7 +75,7 @@ void PythonInstanceScriptFactory::onReload()
 	{
 		FactoryCreatedPythonInstanceScript *script = static_cast< FactoryCreatedPythonInstanceScript* >( *itr );
 
-		InstanceFunctionTuple *tuple = FunctionRegistry::getInstanceFunctions( script->GetInstance()->GetMapId() );
+		InstanceFunctionTuple *tuple = ReferenceRegistry::getInstanceFunctions( script->GetInstance()->GetMapId() );
 		if( tuple != NULL )
 		{
 			script->setFunctions( *tuple );

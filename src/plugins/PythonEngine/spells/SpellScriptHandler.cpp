@@ -38,7 +38,7 @@ bool SpellScriptHandler::handleDummySpell( uint32 spellEffectIndex, Spell *spell
 
 	uint32 spellId = spell->GetProto()->Id;
 
-	void *function = FunctionRegistry::getDummySpellHandler( spellId );
+	void *function = ReferenceRegistry::getDummySpellHandler( spellId );
 	if( function == NULL )
 		return false;
 
@@ -73,7 +73,7 @@ bool SpellScriptHandler::handleScriptedEffect( uint32 spellEffectIndex, Spell *s
 
 	uint32 spellId = spell->GetProto()->Id;
 
-	void *function = FunctionRegistry::getScriptedEffectHandler( spellId );
+	void *function = ReferenceRegistry::getScriptedEffectHandler( spellId );
 	if( function == NULL )
 		return false;
 
@@ -108,7 +108,7 @@ bool SpellScriptHandler::handleDummyAura( uint32 i, Aura *aura, bool apply )
 
 	uint32 spellId = aura->GetSpellId();
 
-	void *function = FunctionRegistry::getDummyAuraHandler( spellId );
+	void *function = ReferenceRegistry::getDummyAuraHandler( spellId );
 	if( function == NULL )
 		return false;
 

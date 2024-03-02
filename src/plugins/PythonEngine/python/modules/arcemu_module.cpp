@@ -115,7 +115,7 @@ static PyObject* arcemu_RegisterUnitGossipEvent( PyObject *self, PyObject *args 
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerCreatureGossipFunction( creatureId, gossipEvent, callback );
+	ReferenceRegistry::registerCreatureGossipFunction( creatureId, gossipEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -150,7 +150,7 @@ static PyObject* arcemu_RegisterItemGossipEvent( PyObject *self, PyObject *args 
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerItemGossipFunction( itemId, gossipEvent, callback );
+	ReferenceRegistry::registerItemGossipFunction( itemId, gossipEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -184,7 +184,7 @@ static PyObject* arcemu_RegisterGOGossipEvent( PyObject *self, PyObject *args )
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerGOGossipFunction( goId, gossipEvent, callback );
+	ReferenceRegistry::registerGOGossipFunction( goId, gossipEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -219,7 +219,7 @@ static PyObject* arcemu_RegisterGameObjectEvent( PyObject *self, PyObject *args 
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerGOEventFunction( goId, goEvent, callback );
+	ReferenceRegistry::registerGOEventFunction( goId, goEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -254,7 +254,7 @@ static PyObject* arcemu_RegisterUnitEvent( PyObject *self, PyObject *args )
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerCreatureEventFunction( creatureId, creatureEvent, callback );
+	ReferenceRegistry::registerCreatureEventFunction( creatureId, creatureEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -289,7 +289,7 @@ static PyObject* arcemu_RegisterQuestEvent( PyObject *self, PyObject *args )
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerQuestEventFunction( questId, questEvent, callback );
+	ReferenceRegistry::registerQuestEventFunction( questId, questEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -324,7 +324,7 @@ static PyObject* arcemu_RegisterInstanceEvent( PyObject *self, PyObject *args )
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerInstanceEventFunction( mapId, instanceEvent, callback );
+	ReferenceRegistry::registerInstanceEventFunction( mapId, instanceEvent, callback );
 
 	Py_RETURN_NONE;
 }
@@ -358,7 +358,7 @@ static PyObject* arcemu_RegisterDummySpellHandler( PyObject *self, PyObject *arg
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerDummySpellHandler( spellId, callback );
+	ReferenceRegistry::registerDummySpellHandler( spellId, callback );
 
 	Py_RETURN_NONE;
 }
@@ -392,7 +392,7 @@ static PyObject* arcemu_RegisterScriptedEffectHandler( PyObject *self, PyObject 
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerScriptedEffectHandler( spellId, callback );
+	ReferenceRegistry::registerScriptedEffectHandler( spellId, callback );
 
 	Py_RETURN_NONE;
 }
@@ -425,7 +425,7 @@ static PyObject* arcemu_RegisterDummyAuraHandler( PyObject *self, PyObject *args
 	}
 
 	Py_IncRef( callback );
-	FunctionRegistry::registerDummyAuraHandler( spellId, callback );
+	ReferenceRegistry::registerDummyAuraHandler( spellId, callback );
 
 	Py_RETURN_NONE;
 }
@@ -459,7 +459,7 @@ static PyObject* arcemu_RegisterCreatureScriptFactory( PyObject *self, PyObject 
 	}
 
 	Py_IncRef( factoryFunction );
-	FunctionRegistry::registerCreatureScriptFactory( creatureId, factoryFunction );
+	ReferenceRegistry::registerCreatureScriptFactory( creatureId, factoryFunction );
 
 	Py_RETURN_NONE;
 }
@@ -492,7 +492,7 @@ static PyObject* arcemu_RegisterGameObjectScriptFactory( PyObject *self, PyObjec
 	}
 
 	Py_IncRef( factoryFunction );
-	FunctionRegistry::registerGameObjectScriptFactory( goId, factoryFunction );
+	ReferenceRegistry::registerGameObjectScriptFactory( goId, factoryFunction );
 
 	Py_RETURN_NONE;
 }
@@ -526,7 +526,7 @@ static PyObject* arcemu_RegisterGameObjectGossipScript( PyObject *self, PyObject
 	}
 
 	Py_IncRef( gossipScript );
-	FunctionRegistry::registerGOGossipScript( goId, gossipScript );
+	ReferenceRegistry::registerGOGossipScript( goId, gossipScript );
 
 	Py_RETURN_NONE;
 }
@@ -559,7 +559,7 @@ static PyObject* arcemu_RegisterItemGossipScript( PyObject *self, PyObject *args
 	}
 
 	Py_IncRef( gossipScript );
-	FunctionRegistry::registerItemGossipScript( itemId, gossipScript );
+	ReferenceRegistry::registerItemGossipScript( itemId, gossipScript );
 
 	Py_RETURN_NONE;
 }
@@ -593,7 +593,7 @@ static PyObject* arcemu_RegisterCreatureGossipScript( PyObject *self, PyObject *
 	}
 
 	Py_IncRef( gossipScript );
-	FunctionRegistry::registerCreatureGossipScript( creatureId, gossipScript );
+	ReferenceRegistry::registerCreatureGossipScript( creatureId, gossipScript );
 
 	Py_RETURN_NONE;
 }

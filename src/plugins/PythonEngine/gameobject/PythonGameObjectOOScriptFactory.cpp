@@ -53,7 +53,7 @@ GameObjectAIScript* PythonGameObjectOOScriptFactory::createScript( GameObject* s
 	uint32 id = src->getProto()->ID;
 	PythonGameObjectOOScript* script = NULL;
 	
-	void *factoryFunction = FunctionRegistry::getGameObjectScriptFactory( id );
+	void *factoryFunction = ReferenceRegistry::getGameObjectScriptFactory( id );
 	if( factoryFunction != NULL )
 	{
 		PyObject *instance = PyObject_CallFunction( (PyObject*)factoryFunction, "O", createArcPyGameObject( src ) );
@@ -91,7 +91,7 @@ void PythonGameObjectOOScriptFactory::onReload()
 		PythonGameObjectOOScript *script = (PythonGameObjectOOScript*)(*itr);
 		uint32 id = script->getGameObject()->getProto()->ID;
 
-		void *factoryFunction = FunctionRegistry::getGameObjectScriptFactory( id );
+		void *factoryFunction = ReferenceRegistry::getGameObjectScriptFactory( id );
 		if( factoryFunction != NULL )
 		{
 			PyObject *instance = PyObject_CallFunction( (PyObject*)factoryFunction, "O", createArcPyGameObject( script->getGameObject() ) );

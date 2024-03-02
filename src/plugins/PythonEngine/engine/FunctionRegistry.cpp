@@ -26,24 +26,24 @@
 
 #include "Python.h"
 
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::creatureGossipFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::itemGossipFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > FunctionRegistry::goGossipFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > FunctionRegistry::goFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* > FunctionRegistry::instanceFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > FunctionRegistry::creatureFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > FunctionRegistry::questFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::dummySpellFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::scriptedEffectHandlerFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > FunctionRegistry::dummyAuraFunctions;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::creatureScriptFactories;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::gameobjectScriptFactories;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::goGossipScripts;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::itemGossipScripts;
-HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > FunctionRegistry::creatureGossipScripts;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > ReferenceRegistry::creatureGossipFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > ReferenceRegistry::itemGossipFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* > ReferenceRegistry::goGossipFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* > ReferenceRegistry::goFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* > ReferenceRegistry::instanceFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* > ReferenceRegistry::creatureFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* > ReferenceRegistry::questFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > ReferenceRegistry::dummySpellFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > ReferenceRegistry::scriptedEffectHandlerFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > ReferenceRegistry::dummyAuraFunctions;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::creatureScriptFactories;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::gameobjectScriptFactories;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::goGossipScripts;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::itemGossipScripts;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::creatureGossipScripts;
 
 
-void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
+void ReferenceRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = creatureGossipFunctions.find( creatureId );
 	if( itr == creatureGossipFunctions.end() )
@@ -56,7 +56,7 @@ void FunctionRegistry::registerCreatureGossipFunction( unsigned int creatureId, 
 	tuple->setFunction( gossipEvent, function );
 }
 
-void FunctionRegistry::registerGOGossipFunction( unsigned int goId, unsigned int gossipEvent, void* function )
+void ReferenceRegistry::registerGOGossipFunction( unsigned int goId, unsigned int gossipEvent, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = goGossipFunctions.find( goId );
 	if( itr == goGossipFunctions.end() )
@@ -69,7 +69,7 @@ void FunctionRegistry::registerGOGossipFunction( unsigned int goId, unsigned int
 	tuple->setFunction( gossipEvent, function );
 }
 
-void FunctionRegistry::registerItemGossipFunction( unsigned int itemId, unsigned int gossipEvent, void* function )
+void ReferenceRegistry::registerItemGossipFunction( unsigned int itemId, unsigned int gossipEvent, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = itemGossipFunctions.find( itemId );
 	if( itr == itemGossipFunctions.end() )
@@ -82,7 +82,7 @@ void FunctionRegistry::registerItemGossipFunction( unsigned int itemId, unsigned
 	tuple->setFunction( gossipEvent, function );
 }
 
-void FunctionRegistry::registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function )
+void ReferenceRegistry::registerGOEventFunction( unsigned int goId, unsigned int goEvent, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator itr = goFunctions.find( goId );
 	if( itr == goFunctions.end() )
@@ -94,7 +94,7 @@ void FunctionRegistry::registerGOEventFunction( unsigned int goId, unsigned int 
 	itr->second->setFunction( goEvent, function );
 }
 
-void FunctionRegistry::registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function )
+void ReferenceRegistry::registerCreatureEventFunction( unsigned int creatureId, unsigned int creatureEvent, void* function )
 {
 	ARCEMU_ASSERT( creatureEvent < PYTHON_CREATURE_EVENT_COUNT );
 
@@ -108,7 +108,7 @@ void FunctionRegistry::registerCreatureEventFunction( unsigned int creatureId, u
 	itr->second->setFunction( creatureEvent, function );
 }
 
-void FunctionRegistry::registerQuestEventFunction( unsigned int questId, unsigned int questEvent, void* function )
+void ReferenceRegistry::registerQuestEventFunction( unsigned int questId, unsigned int questEvent, void* function )
 {
 	ARCEMU_ASSERT( questEvent < PYTHON_QUEST_EVENT_COUNT );
 
@@ -122,7 +122,7 @@ void FunctionRegistry::registerQuestEventFunction( unsigned int questId, unsigne
 	itr->second->setFunction( questEvent, function );
 }
 
-void FunctionRegistry::registerInstanceEventFunction( unsigned int mapId, unsigned int instanceEvent, void* function )
+void ReferenceRegistry::registerInstanceEventFunction( unsigned int mapId, unsigned int instanceEvent, void* function )
 {
 	ARCEMU_ASSERT( instanceEvent < PYTHON_INSTANCE_EVENT_COUNT );
 
@@ -136,7 +136,7 @@ void FunctionRegistry::registerInstanceEventFunction( unsigned int mapId, unsign
 	itr->second->setFunction( instanceEvent, function );
 }
 
-void FunctionRegistry::registerDummySpellHandler( unsigned long spellId, void* function )
+void ReferenceRegistry::registerDummySpellHandler( unsigned long spellId, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummySpellFunctions.find( spellId );
 	if( itr == dummySpellFunctions.end() )
@@ -153,7 +153,7 @@ void FunctionRegistry::registerDummySpellHandler( unsigned long spellId, void* f
 	}
 }
 
-void FunctionRegistry::registerScriptedEffectHandler( unsigned long spellId, void* function )
+void ReferenceRegistry::registerScriptedEffectHandler( unsigned long spellId, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = scriptedEffectHandlerFunctions.find( spellId );
 	if( itr == scriptedEffectHandlerFunctions.end() )
@@ -170,7 +170,7 @@ void FunctionRegistry::registerScriptedEffectHandler( unsigned long spellId, voi
 	}
 }
 
-void FunctionRegistry::registerDummyAuraHandler( unsigned long spellId, void* function )
+void ReferenceRegistry::registerDummyAuraHandler( unsigned long spellId, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummyAuraFunctions.find( spellId );
 	if( itr == dummyAuraFunctions.end() )
@@ -187,7 +187,7 @@ void FunctionRegistry::registerDummyAuraHandler( unsigned long spellId, void* fu
 	}
 }
 
-void FunctionRegistry::registerCreatureScriptFactory( unsigned int creatureId, void* function )
+void ReferenceRegistry::registerCreatureScriptFactory( unsigned int creatureId, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureScriptFactories.find( creatureId );
 	if( itr != creatureScriptFactories.end() )
@@ -200,7 +200,7 @@ void FunctionRegistry::registerCreatureScriptFactory( unsigned int creatureId, v
 	creatureScriptFactories[ creatureId ] = function;
 }
 
-void FunctionRegistry::registerGameObjectScriptFactory( unsigned int goId, void* function )
+void ReferenceRegistry::registerGameObjectScriptFactory( unsigned int goId, void* function )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = gameobjectScriptFactories.find( goId );
 	if( itr != gameobjectScriptFactories.end() )
@@ -213,7 +213,7 @@ void FunctionRegistry::registerGameObjectScriptFactory( unsigned int goId, void*
 	gameobjectScriptFactories[ goId ] = function;
 }
 
-void FunctionRegistry::registerGOGossipScript( unsigned int goId, void* script )
+void ReferenceRegistry::registerGOGossipScript( unsigned int goId, void* script )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = goGossipScripts.find( goId );
 	if( itr != goGossipScripts.end() )
@@ -226,7 +226,7 @@ void FunctionRegistry::registerGOGossipScript( unsigned int goId, void* script )
 	goGossipScripts[ goId ] = script;
 }
 
-void FunctionRegistry::registerItemGossipScript( unsigned int itemId, void* script )
+void ReferenceRegistry::registerItemGossipScript( unsigned int itemId, void* script )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = itemGossipScripts.find( itemId );
 	if( itr != itemGossipScripts.end() )
@@ -239,7 +239,7 @@ void FunctionRegistry::registerItemGossipScript( unsigned int itemId, void* scri
 	itemGossipScripts[ itemId ] = script;
 }
 
-void FunctionRegistry::registerCreatureGossipScript( unsigned int creatureId, void* script )
+void ReferenceRegistry::registerCreatureGossipScript( unsigned int creatureId, void* script )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureGossipScripts.find( creatureId );
 	if( itr != creatureGossipScripts.end() )
@@ -252,7 +252,7 @@ void FunctionRegistry::registerCreatureGossipScript( unsigned int creatureId, vo
 	creatureGossipScripts[ creatureId ] = script;
 }
 
-void* FunctionRegistry::getDummySpellHandler( unsigned long spellId )
+void* ReferenceRegistry::getDummySpellHandler( unsigned long spellId )
 {
 	void* function = NULL;
 
@@ -267,7 +267,7 @@ void* FunctionRegistry::getDummySpellHandler( unsigned long spellId )
 
 
 
-void* FunctionRegistry::getScriptedEffectHandler( unsigned long spellId )
+void* ReferenceRegistry::getScriptedEffectHandler( unsigned long spellId )
 {
 	void* function = NULL;
 
@@ -280,7 +280,7 @@ void* FunctionRegistry::getScriptedEffectHandler( unsigned long spellId )
 	return function;
 }
 
-void* FunctionRegistry::getDummyAuraHandler( unsigned long spellId )
+void* ReferenceRegistry::getDummyAuraHandler( unsigned long spellId )
 {
 	void *function = NULL;
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummyAuraFunctions.find( spellId );
@@ -292,7 +292,7 @@ void* FunctionRegistry::getDummyAuraHandler( unsigned long spellId )
 	return function;
 }
 
-void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = creatureGossipFunctions.begin();
 	while( itr != creatureGossipFunctions.end() )
@@ -302,7 +302,7 @@ void FunctionRegistry::visitCreatureGossipFunctions( GossipFunctionTupleVisitor 
 	}
 }
 
-void FunctionRegistry::visitGOGossipFunctions( GossipFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitGOGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = goGossipFunctions.begin();
 	while( itr != goGossipFunctions.end() )
@@ -312,7 +312,7 @@ void FunctionRegistry::visitGOGossipFunctions( GossipFunctionTupleVisitor *visit
 	}
 }
 
-void FunctionRegistry::visitGOGossipOOScripts( GOGossipOOScriptVisitor *visitor )
+void ReferenceRegistry::visitGOGossipOOScripts( GOGossipOOScriptVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = goGossipScripts.begin();
 	while( itr != goGossipScripts.end() )
@@ -322,7 +322,7 @@ void FunctionRegistry::visitGOGossipOOScripts( GOGossipOOScriptVisitor *visitor 
 	}
 }
 
-void FunctionRegistry::visitInstanceEventFunctions( InstanceFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitInstanceEventFunctions( InstanceFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator itr = instanceFunctions.begin();
 	while( itr != instanceFunctions.end() )
@@ -332,7 +332,7 @@ void FunctionRegistry::visitInstanceEventFunctions( InstanceFunctionTupleVisitor
 	}
 }
 
-void FunctionRegistry::visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitItemGossipFunctions( GossipFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr = itemGossipFunctions.begin();
 	while( itr != itemGossipFunctions.end() )
@@ -342,7 +342,7 @@ void FunctionRegistry::visitItemGossipFunctions( GossipFunctionTupleVisitor *vis
 	}
 }
 
-void FunctionRegistry::visitItemGossipScripts( ItemGossipOOScriptVisitor *visitor )
+void ReferenceRegistry::visitItemGossipScripts( ItemGossipOOScriptVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = itemGossipScripts.begin();
 	while( itr != itemGossipScripts.end() )
@@ -352,7 +352,7 @@ void FunctionRegistry::visitItemGossipScripts( ItemGossipOOScriptVisitor *visito
 	}
 }
 
-void FunctionRegistry::visitCreatureGossipScripts( CreatureGossipOOScriptVisitor *visitor )
+void ReferenceRegistry::visitCreatureGossipScripts( CreatureGossipOOScriptVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureGossipScripts.begin();
 	while( itr != creatureGossipScripts.end() )
@@ -363,7 +363,7 @@ void FunctionRegistry::visitCreatureGossipScripts( CreatureGossipOOScriptVisitor
 }
 
 
-void FunctionRegistry::visitGOEventFunctions( GOFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitGOEventFunctions( GOFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator itr = goFunctions.begin();
 	while( itr != goFunctions.end() )
@@ -373,7 +373,7 @@ void FunctionRegistry::visitGOEventFunctions( GOFunctionTupleVisitor *visitor )
 	}
 }
 
-void FunctionRegistry::visitCreatureEventFunctions( CreatureFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitCreatureEventFunctions( CreatureFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator itr = creatureFunctions.begin();
 	while( itr != creatureFunctions.end() )
@@ -383,7 +383,7 @@ void FunctionRegistry::visitCreatureEventFunctions( CreatureFunctionTupleVisitor
 	}
 }
 
-void FunctionRegistry::visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor )
+void ReferenceRegistry::visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* >::iterator itr = questFunctions.begin();
 	while( itr != questFunctions.end() )
@@ -393,7 +393,7 @@ void FunctionRegistry::visitQuestEventFunctions( QuestFunctionTupleVisitor *visi
 	}
 }
 
-void FunctionRegistry::visitDummySpellHandlerFunctions( DummySpellHandlerVisitor *visitor )
+void ReferenceRegistry::visitDummySpellHandlerFunctions( DummySpellHandlerVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummySpellFunctions.begin();
 	while( itr != dummySpellFunctions.end() )
@@ -403,7 +403,7 @@ void FunctionRegistry::visitDummySpellHandlerFunctions( DummySpellHandlerVisitor
 	}
 }
 
-void FunctionRegistry::visitScriptedEffectHandlerFunctions( ScriptedEffectHandlerVisitor *visitor )
+void ReferenceRegistry::visitScriptedEffectHandlerFunctions( ScriptedEffectHandlerVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = scriptedEffectHandlerFunctions.begin();
 	while( itr != scriptedEffectHandlerFunctions.end() )
@@ -413,7 +413,7 @@ void FunctionRegistry::visitScriptedEffectHandlerFunctions( ScriptedEffectHandle
 	}
 }
 
-void FunctionRegistry::visitDummyAuraHandlerFunctions( DummyAuraHandlerVisitor *visitor )
+void ReferenceRegistry::visitDummyAuraHandlerFunctions( DummyAuraHandlerVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* >::iterator itr = dummyAuraFunctions.begin();
 	while( itr != dummyAuraFunctions.end() )
@@ -423,7 +423,7 @@ void FunctionRegistry::visitDummyAuraHandlerFunctions( DummyAuraHandlerVisitor *
 	}
 }
 
-void FunctionRegistry::visitCreatureScriptFactories( CreatureScriptFactoryVisitor *visitor )
+void ReferenceRegistry::visitCreatureScriptFactories( CreatureScriptFactoryVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureScriptFactories.begin();
 	while( itr != creatureScriptFactories.end() )
@@ -433,7 +433,7 @@ void FunctionRegistry::visitCreatureScriptFactories( CreatureScriptFactoryVisito
 	}
 }
 
-void FunctionRegistry::visitGameObjectScriptFactories( GameObjectScriptFactoryVisitor *visitor )
+void ReferenceRegistry::visitGameObjectScriptFactories( GameObjectScriptFactoryVisitor *visitor )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = gameobjectScriptFactories.begin();
 	while( itr != gameobjectScriptFactories.end() )
@@ -443,7 +443,7 @@ void FunctionRegistry::visitGameObjectScriptFactories( GameObjectScriptFactoryVi
 	}
 }
 
-void FunctionRegistry::releaseFunctions()
+void ReferenceRegistry::releaseFunctions()
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr;
 	
@@ -693,7 +693,7 @@ void FunctionRegistry::releaseFunctions()
 	creatureGossipScripts.clear();
 }
 
-GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
+GOFunctionTuple* ReferenceRegistry::getGOEventFunctions( unsigned int goId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GOFunctionTuple* >::iterator itr = goFunctions.find( goId );
 	if( itr == goFunctions.end() )
@@ -702,7 +702,7 @@ GOFunctionTuple* FunctionRegistry::getGOEventFunctions( unsigned int goId )
 		return itr->second;
 }
 
-CreatureFunctionTuple* FunctionRegistry::getCreatureEventFunctions( unsigned int creatureId )
+CreatureFunctionTuple* ReferenceRegistry::getCreatureEventFunctions( unsigned int creatureId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, CreatureFunctionTuple* >::iterator itr = creatureFunctions.find( creatureId );
 	if( itr == creatureFunctions.end() )
@@ -711,7 +711,7 @@ CreatureFunctionTuple* FunctionRegistry::getCreatureEventFunctions( unsigned int
 		return itr->second;
 }
 
-QuestFunctionTuple* FunctionRegistry::getQuestFunctions( unsigned int questId )
+QuestFunctionTuple* ReferenceRegistry::getQuestFunctions( unsigned int questId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, QuestFunctionTuple* >::iterator itr = questFunctions.find( questId );
 	if( itr == questFunctions.end() )
@@ -720,7 +720,7 @@ QuestFunctionTuple* FunctionRegistry::getQuestFunctions( unsigned int questId )
 		return itr->second;
 }
 
-InstanceFunctionTuple* FunctionRegistry::getInstanceFunctions( unsigned int mapId )
+InstanceFunctionTuple* ReferenceRegistry::getInstanceFunctions( unsigned int mapId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, InstanceFunctionTuple* >::iterator itr = instanceFunctions.find( mapId );
 	if( itr == instanceFunctions.end() )
@@ -729,7 +729,7 @@ InstanceFunctionTuple* FunctionRegistry::getInstanceFunctions( unsigned int mapI
 		return itr->second;
 }
 
-void* FunctionRegistry::getCreatureScriptFactory( unsigned int creatureId )
+void* ReferenceRegistry::getCreatureScriptFactory( unsigned int creatureId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureScriptFactories.find( creatureId );
 	if( itr == creatureScriptFactories.end() )
@@ -739,7 +739,7 @@ void* FunctionRegistry::getCreatureScriptFactory( unsigned int creatureId )
 }
 
 
-void* FunctionRegistry::getGameObjectScriptFactory( unsigned int goId )
+void* ReferenceRegistry::getGameObjectScriptFactory( unsigned int goId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = gameobjectScriptFactories.find( goId );
 	if( itr == gameobjectScriptFactories.end() )

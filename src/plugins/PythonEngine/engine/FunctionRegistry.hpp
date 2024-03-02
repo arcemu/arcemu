@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef _FUNCTION_REGISTRY_H_
-#define _FUNCTION_REGISTRY_H_
+#ifndef APE_REFERENCE_REGISTRY_H_
+#define APE_REFERENCE_REGISTRY_H_
 
 #include "creature/CreatureFunctionTuple.hpp"
 #include "creature/CreatureFunctionTupleVisitor.hpp"
@@ -48,8 +48,8 @@
 
 #include "creature/CreatureGossipOOScriptVisitor.hpp"
 
-/// Organized storage of Python function references
-class FunctionRegistry
+/// Organized storage of Python function / object references
+class ReferenceRegistry
 {
 public:
 	///
