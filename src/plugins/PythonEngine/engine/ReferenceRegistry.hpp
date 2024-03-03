@@ -34,6 +34,7 @@
 
 #include "quest/QuestFunctionTuple.hpp"
 #include "quest/QuestFunctionTupleVisitor.hpp"
+#include "quest/PythonQuestOOScriptVisitor.hpp"
 
 #include "spells/DummySpellHandlerVisitor.hpp"
 #include "spells/ScriptedEffectHandlerVisitor.hpp"
@@ -251,6 +252,19 @@ public:
 
 
 	///
+	/// Registers a Python quest script
+	///
+	/// Parameters
+	///   questId       -  The id of the quest that would use the quest script
+	///   script        -  Reference to the quest script
+	///
+	/// Return value
+	///   None
+	///
+	static void registerQuestScript( unsigned int questId, void* script );
+
+
+	///
 	/// Visits all registered creature gossip functions
 	///
 	/// Parameters
@@ -364,6 +378,18 @@ public:
 	///   None
 	///
 	static void visitQuestEventFunctions( QuestFunctionTupleVisitor *visitor );
+
+
+	///
+	/// Visits all registered Quest scripts
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitQuestScripts( PythonQuestOOScriptVisitor *visitor );
 
 	///
 	/// Visits all registered dummy spell handler functions
@@ -548,6 +574,19 @@ public:
 	///
 	static void* getGameObjectScriptFactory( unsigned int goId );
 
+
+	///
+	/// Retrieve the quest script for the specified quest
+	///
+	/// Parameters
+	///   questId - The numeric identifier of the quest
+	///
+	/// Return value
+	///   Returns a reference to the quest script
+	///   Returns NULL if there is no quest script registered
+	///
+	static void* getQuestScript( unsigned int questId );
+
 private:
 	///
 	/// Contains the gossip event handler functions registered for Creatures
@@ -671,6 +710,15 @@ private:
 	/// value: Pointer to an object that is a creature gossip script
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > creatureGossipScripts;
+
+
+	///
+	/// Contains references to Python quest scripts
+	///
+	/// key: item Id
+	/// value: Pointer to an object that is a quest script
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >questScripts;
 };
 
 #endif

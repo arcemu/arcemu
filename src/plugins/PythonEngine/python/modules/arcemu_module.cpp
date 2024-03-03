@@ -50,6 +50,7 @@ extern int registerArcPyWorldSession( PyObject *module );
 extern int registerArcPyCreatureScript( PyObject *module );
 extern int registerArcPyGameObjectScript( PyObject *module );
 extern int registerArcPyGossipScript( PyObject *module );
+extern int registerArcPyQuestScript( PyObject *module );
 
 /// RegisterServerHook
 ///   Registers a server event handler
@@ -599,6 +600,40 @@ static PyObject* arcemu_RegisterCreatureGossipScript( PyObject *self, PyObject *
 }
 
 
+/// RegisterQuestScript
+///   Registers a Python quest script
+///
+/// Parameters:
+///   questId     - The numerical identifier of the quest
+///   script      - The python quest script
+///
+/// Example:
+///   RegisterQuestScript( 1234, ValamiQuestScript )
+///
+static PyObject* arcemu_RegisterQuestScript( PyObject *self, PyObject *args )
+{
+	uint32 questId;
+	PyObject *questScript;
+
+	if( !PyArg_ParseTuple( args, "IO", &questId, &questScript ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a quest Id and quest script" );
+		return NULL;
+	}
+
+	if( ( Py_TYPE( questScript )->tp_base == NULL ) || ( strcmp( Py_TYPE( questScript )->tp_base->tp_name, "ArcPyQuestScript" ) != 0 ) )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a class instance object that is a subclass of QuestScript!" );
+		return NULL;
+	}
+
+	Py_IncRef( questScript );
+	ReferenceRegistry::registerQuestScript( questId, questScript );
+
+	Py_RETURN_NONE;
+}
+
+
 /// toUnit
 ///   Casts the ArcPyObject parameter to an ArcPyUnit
 ///
@@ -779,6 +814,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterGameObjectGossipScript", arcemu_RegisterGameObjectGossipScript, METH_VARARGS, "Registers a gameobject gossip script object" },	
 	{ "RegisterItemGossipScript", arcemu_RegisterItemGossipScript, METH_VARARGS, "Registers an item gossip script object" },
 	{ "RegisterCreatureGossipScript", arcemu_RegisterCreatureGossipScript, METH_VARARGS, "Registers a creature gossip script object" },
+	{ "RegisterQuestScript", arcemu_RegisterQuestScript, METH_VARARGS, "Registers a quest script object" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{ "toGameObject", arcemu_toGameObject, METH_VARARGS, "Casts the Object to a GameObject" },
@@ -819,6 +855,7 @@ PyObject* PyInit_Arcemu(void)
 	registerArcPyCreatureScript( module );
 	registerArcPyGameObjectScript( module );
 	registerArcPyGossipScript( module );
+	registerArcPyQuestScript( module );
 
 	return module;
 }

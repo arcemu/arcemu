@@ -63,6 +63,7 @@ ${prefix}/python/modules/ArcPyObjectLocator.cpp
 ${prefix}/python/modules/ArcPyUnit.cpp
 ${prefix}/python/modules/ArcPyPlayer.cpp
 ${prefix}/python/modules/ArcPyQuest.cpp
+${prefix}/python/modules/ArcPyQuestScript.cpp
 ${prefix}/python/modules/ArcPySpell.cpp
 ${prefix}/python/modules/ArcPyWorldSession.cpp
 ${prefix}/python/Python.cpp
@@ -73,6 +74,9 @@ ${prefix}/python/PythonValue.cpp
 ${prefix}/quest/PythonQuestScriptFactory.cpp
 ${prefix}/quest/PythonQuestScript.cpp
 ${prefix}/quest/QuestScriptRegisterer.cpp
+${prefix}/quest/PythonQuestOOScriptFactory.cpp
+${prefix}/quest/PythonQuestOOScript.cpp
+${prefix}/quest/PythonQuestOOScriptRegisterer.cpp
 ${prefix}/serverhooks/ServerHookRegistry.cpp
 ${prefix}/serverhooks/ServerHookHandler.cpp
 ${prefix}/spells/DummyAuraHandlerRegisterer.cpp
@@ -154,6 +158,7 @@ ${prefix}/python/modules/ArcPyObjectLocator.hpp
 ${prefix}/python/modules/ArcPyUnit.hpp
 ${prefix}/python/modules/ArcPyPlayer.hpp
 ${prefix}/python/modules/ArcPyQuest.hpp
+${prefix}/python/modules/ArcPyQuestScript.hpp
 ${prefix}/python/modules/ArcPySpell.hpp
 ${prefix}/python/modules/ArcPyWorldSession.hpp
 ${prefix}/quest/PythonQuestEventTypes.hpp
@@ -162,6 +167,10 @@ ${prefix}/quest/PythonQuestScriptFactory.hpp
 ${prefix}/quest/QuestFunctionTuple.hpp
 ${prefix}/quest/QuestFunctionTupleVisitor.hpp
 ${prefix}/quest/QuestScriptRegisterer.hpp
+${prefix}/quest/PythonQuestOOScript.hpp
+${prefix}/quest/PythonQuestOOScriptFactory.hpp
+${prefix}/quest/PythonQuestOOScriptRegisterer.hpp
+${prefix}/quest/PythonQuestOOScriptVisitor.hpp
 ${prefix}/serverhooks/ServerHookRegistry.hpp
 ${prefix}/serverhooks/ServerHookHandler.hpp
 ${prefix}/spells/DummyAuraHandlerRegisterer.hpp

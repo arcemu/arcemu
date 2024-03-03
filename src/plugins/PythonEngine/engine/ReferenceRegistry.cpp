@@ -41,6 +41,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::gameobjectSc
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::goGossipScripts;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::itemGossipScripts;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::creatureGossipScripts;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::questScripts;
 
 
 void ReferenceRegistry::registerCreatureGossipFunction( unsigned int creatureId, unsigned int gossipEvent, void* function )
@@ -252,6 +253,19 @@ void ReferenceRegistry::registerCreatureGossipScript( unsigned int creatureId, v
 	creatureGossipScripts[ creatureId ] = script;
 }
 
+void ReferenceRegistry::registerQuestScript( unsigned int questId, void* script )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = questScripts.find( questId );
+	if( itr != questScripts.end() )
+	{
+		void *oldScript = itr->second;
+		Py_DECREF( oldScript );
+		oldScript = NULL;
+	}
+
+	questScripts[ questId ] = script;
+}
+
 void* ReferenceRegistry::getDummySpellHandler( unsigned long spellId )
 {
 	void* function = NULL;
@@ -356,6 +370,16 @@ void ReferenceRegistry::visitCreatureGossipScripts( CreatureGossipOOScriptVisito
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = creatureGossipScripts.begin();
 	while( itr != creatureGossipScripts.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
+void ReferenceRegistry::visitQuestScripts( PythonQuestOOScriptVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = questScripts.begin();
+	while( itr != questScripts.end() )
 	{
 		visitor->visit( itr->first, itr->second );
 		++itr;
@@ -691,6 +715,17 @@ void ReferenceRegistry::releaseFunctions()
 	}
 
 	creatureGossipScripts.clear();
+
+
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator questScriptIterator = questScripts.begin();
+	while( questScriptIterator != questScripts.end() )
+	{
+		Py_DECREF( (PyObject*)questScriptIterator->second );
+		questScriptIterator->second = NULL;
+		questScriptIterator++;
+	}
+
+	questScripts.clear();
 }
 
 GOFunctionTuple* ReferenceRegistry::getGOEventFunctions( unsigned int goId )
@@ -743,6 +778,15 @@ void* ReferenceRegistry::getGameObjectScriptFactory( unsigned int goId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = gameobjectScriptFactories.find( goId );
 	if( itr == gameobjectScriptFactories.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+
+void* ReferenceRegistry::getQuestScript( unsigned int questId )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = questScripts.find( questId );
+	if( itr == questScripts.end() )
 		return NULL;
 	else
 		return itr->second;

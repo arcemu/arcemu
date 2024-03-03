@@ -43,6 +43,8 @@
 #include "item/ItemGossipOOScriptRegisterer.hpp"
 #include "item/ItemGossipOOScriptReleaser.hpp"
 #include "quest/QuestScriptRegisterer.hpp"
+#include "quest/PythonQuestOOScriptFactory.hpp"
+#include "quest/PythonQuestOOScriptRegisterer.hpp"
 #include "creature/PythonCreatureAIScriptFactory.hpp"
 #include "creature/PythonCreatureOOScriptFactory.hpp"
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
@@ -74,6 +76,7 @@ PythonEngine::~PythonEngine()
 	PythonGameObjectAIScriptFactory::onShutdown();
 	PythonGameObjectOOScriptFactory::onShutdown();
 	PythonQuestScriptFactory::onShutDown();
+	PythonQuestOOScriptFactory::onShutDown();
 	PythonInstanceScriptFactory::onShutdown();
 	ServerHookRegistry::releaseHooks();
 	ReferenceRegistry::releaseFunctions();
@@ -128,6 +131,7 @@ void PythonEngine::onReload()
 	PythonGameObjectOOScriptFactory::onReload();
 	PythonInstanceScriptFactory::onReload();
 	PythonQuestScriptFactory::onReload();
+	PythonQuestOOScriptFactory::onReload();
 }
 
 int PythonEngine::loadScript( const char *fileName )
@@ -255,6 +259,9 @@ void PythonEngine::registerScripts()
 
 	QuestScriptRegisterer questScriptRegisterer( this->mgr );
 	ReferenceRegistry::visitQuestEventFunctions( &questScriptRegisterer );
+
+	PythonQuestOOScriptRegisterer questOOScriptRegisterer( this->mgr );
+	ReferenceRegistry::visitQuestScripts( &questOOScriptRegisterer );
 
 	DummySpellHandlerRegisterer dummySpellRegisterer( this->mgr );
 	ReferenceRegistry::visitDummySpellHandlerFunctions( &dummySpellRegisterer );
