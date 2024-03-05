@@ -49,6 +49,8 @@
 
 #include "creature/CreatureGossipOOScriptVisitor.hpp"
 
+#include "instance/PythonInstanceOOScriptFactoryVisitor.hpp"
+
 /// Organized storage of Python function / object references
 class ReferenceRegistry
 {
@@ -210,6 +212,19 @@ public:
 	///   None
 	///
 	static void registerGameObjectScriptFactory( unsigned int goId, void* function );
+
+
+	///
+	/// Registers a instance script factory function
+	///
+	/// Parameters
+	///   mapId      -  The id of the map that would use the instance script
+	///   function   -  The function reference
+	///
+	/// Return value
+	///   None
+	///
+	static void registerInstanceScriptFactory( unsigned int mapId, void* function );
 
 
 	///
@@ -449,6 +464,18 @@ public:
 
 
 	///
+	/// Visits all registered instance script factory functions
+	///
+	/// Parameters
+	///   visitor - The visitor object
+	///
+	/// Return value
+	///   None
+	///
+	static void visitInstanceScriptFactories( PythonInstanceOOScriptFactoryVisitor *visitor );
+
+
+	///
 	/// Deallocate / release all registered functions
 	///
 	/// Parameters
@@ -576,6 +603,19 @@ public:
 
 
 	///
+	/// Retrieve the Instance script factory function for the specified map
+	///
+	/// Parameters
+	///   mapId - The numeric identifier of the map
+	///
+	/// Return value
+	///   Returns a pointer to the Instance script factory function
+	///   Returns NULL if there are no functions registered for the specified Id
+	///
+	static void* getInstanceScriptFactory( unsigned int goId );
+
+
+	///
 	/// Retrieve the quest script for the specified quest
 	///
 	/// Parameters
@@ -684,6 +724,14 @@ private:
 	/// value: Pointer to a function that creates a gameobject script class instance
 	///
 	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > gameobjectScriptFactories;
+
+	///
+	/// Contains factory functions that create Python based Instance Scripts
+	///
+	/// key: map Id
+	/// value: Pointer to a function that creates a instance script class instance
+	///
+	static HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > instanceScriptFactories;
 
 	///
 	/// Contains references to Python gameobject gossip scripts

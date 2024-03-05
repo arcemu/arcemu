@@ -51,6 +51,7 @@ extern int registerArcPyCreatureScript( PyObject *module );
 extern int registerArcPyGameObjectScript( PyObject *module );
 extern int registerArcPyGossipScript( PyObject *module );
 extern int registerArcPyQuestScript( PyObject *module );
+extern int registerArcPyInstanceScript( PyObject *module );
 
 /// RegisterServerHook
 ///   Registers a server event handler
@@ -499,6 +500,40 @@ static PyObject* arcemu_RegisterGameObjectScriptFactory( PyObject *self, PyObjec
 }
 
 
+/// RegisterInstanceScriptFactory
+///   Registers a Python Instance Script factory function
+///
+/// Parameters:
+///   mapId       - The id of the map that uses the instance script
+///   function    - The factory function
+///
+/// Example:
+///   RegisterInstanceScriptFactory( 530, ValamiScript.create )
+///
+static PyObject* arcemu_RegisterInstanceScriptFactory( PyObject *self, PyObject *args )
+{
+	uint32 mapId;
+	PyObject *factoryFunction;
+
+	if( !PyArg_ParseTuple( args, "IO", &mapId, &factoryFunction ) )
+	{
+		PyErr_SetString( PyExc_ValueError, "This function requires a gameobject Id and a factory function to be specified" );
+		return NULL;
+	}
+
+	if( strcmp( Py_TYPE( factoryFunction )->tp_name, "function" ) != 0 )
+	{
+		PyErr_SetString( PyExc_TypeError, "Second argument should be a function!" );
+		return NULL;
+	}
+
+	Py_IncRef( factoryFunction );
+	ReferenceRegistry::registerInstanceScriptFactory( mapId, factoryFunction );
+
+	Py_RETURN_NONE;
+}
+
+
 /// RegisterGameObjectGossipScript
 ///   Registers a Python gossip script for a gameobject
 ///
@@ -815,6 +850,7 @@ static PyMethodDef ArcemuMethods[] = {
 	{ "RegisterItemGossipScript", arcemu_RegisterItemGossipScript, METH_VARARGS, "Registers an item gossip script object" },
 	{ "RegisterCreatureGossipScript", arcemu_RegisterCreatureGossipScript, METH_VARARGS, "Registers a creature gossip script object" },
 	{ "RegisterQuestScript", arcemu_RegisterQuestScript, METH_VARARGS, "Registers a quest script object" },
+	{ "RegisterInstanceScript", arcemu_RegisterInstanceScriptFactory, METH_VARARGS, "Registers an instance script factory function" },
 	{ "toUnit", arcemu_toUnit, METH_VARARGS, "Casts the Object to a Unit" },
 	{ "toCreature", arcemu_toCreature, METH_VARARGS, "Casts the Object to a Creature" },
 	{ "toGameObject", arcemu_toGameObject, METH_VARARGS, "Casts the Object to a GameObject" },
@@ -856,6 +892,7 @@ PyObject* PyInit_Arcemu(void)
 	registerArcPyGameObjectScript( module );
 	registerArcPyGossipScript( module );
 	registerArcPyQuestScript( module );
+	registerArcPyInstanceScript( module );
 
 	return module;
 }

@@ -38,6 +38,9 @@ ${prefix}/gossip/PythonGossipOOScript.cpp
 ${prefix}/instance/InstanceScriptRegisterer.cpp
 ${prefix}/instance/PythonInstanceScript.cpp
 ${prefix}/instance/PythonInstanceScriptFactory.cpp
+${prefix}/instance/PythonInstanceOOScriptRegisterer.cpp
+${prefix}/instance/PythonInstanceOOScript.cpp
+${prefix}/instance/PythonInstanceOOScriptFactory.cpp
 ${prefix}/item/ItemGossipScriptRegisterer.cpp
 ${prefix}/item/ItemGossipScriptReleaser.cpp
 ${prefix}/item/ItemGossipOOScriptRegisterer.cpp
@@ -55,6 +58,7 @@ ${prefix}/python/modules/ArcPyGameObjectScript.cpp
 ${prefix}/python/modules/ArcPyGossipMenu.cpp
 ${prefix}/python/modules/ArcPyGossipScript.cpp
 ${prefix}/python/modules/ArcPyGuild.cpp
+${prefix}/python/modules/ArcPyInstanceScript.cpp
 ${prefix}/python/modules/ArcPyItem.cpp
 ${prefix}/python/modules/ArcPyMapMgr.cpp
 ${prefix}/python/modules/ArcPyMath.cpp
@@ -130,6 +134,10 @@ ${prefix}/instance/InstanceScriptRegisterer.hpp
 ${prefix}/instance/PythonInstanceEventTypes.hpp
 ${prefix}/instance/PythonInstanceScript.hpp
 ${prefix}/instance/PythonInstanceScriptFactory.hpp
+${prefix}/instance/PythonInstanceOOScript.hpp
+${prefix}/instance/PythonInstanceOOScriptFactory.hpp
+${prefix}/instance/PythonInstanceOOScriptRegisterer.hpp
+${prefix}/instance/PythonInstanceOOScriptFactoryVisitor.hpp
 ${prefix}/item/ItemGossipScriptRegisterer.hpp
 ${prefix}/item/ItemGossipScriptReleaser.hpp
 ${prefix}/item/ItemGossipOOScriptRegisterer.hpp
@@ -150,6 +158,7 @@ ${prefix}/python/modules/ArcPyGameObjectScript.hpp
 ${prefix}/python/modules/ArcPyGossipMenu.hpp
 ${prefix}/python/modules/ArcPyGossipScript.hpp
 ${prefix}/python/modules/ArcPyGuild.hpp
+${prefix}/python/modules/ArcPyInstanceScript.hpp
 ${prefix}/python/modules/ArcPyItem.hpp
 ${prefix}/python/modules/ArcPyMapMgr.hpp
 ${prefix}/python/modules/ArcPyMath.hpp

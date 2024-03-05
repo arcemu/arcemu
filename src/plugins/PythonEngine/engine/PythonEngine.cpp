@@ -50,6 +50,8 @@
 #include "gameobject/PythonGameObjectAIScriptFactory.hpp"
 #include "gameobject/PythonGameObjectOOScriptFactory.hpp"
 #include "instance/PythonInstanceScriptFactory.hpp"
+#include "instance/PythonInstanceOOScriptFactory.hpp"
+#include "instance/PythonInstanceOOScriptRegisterer.hpp"
 #include "quest/PythonQuestScriptFactory.hpp"
 #include "spells/DummySpellHandlerRegisterer.hpp"
 #include "spells/ScriptedEffectHandlerRegisterer.hpp"
@@ -78,6 +80,7 @@ PythonEngine::~PythonEngine()
 	PythonQuestScriptFactory::onShutDown();
 	PythonQuestOOScriptFactory::onShutDown();
 	PythonInstanceScriptFactory::onShutdown();
+	PythonInstanceOOScriptFactory::onShutdown();
 	ServerHookRegistry::releaseHooks();
 	ReferenceRegistry::releaseFunctions();
 
@@ -130,6 +133,7 @@ void PythonEngine::onReload()
 	PythonGameObjectAIScriptFactory::onReload();
 	PythonGameObjectOOScriptFactory::onReload();
 	PythonInstanceScriptFactory::onReload();
+	PythonInstanceOOScriptFactory::onReload();
 	PythonQuestScriptFactory::onReload();
 	PythonQuestOOScriptFactory::onReload();
 }
@@ -244,6 +248,9 @@ void PythonEngine::registerScripts()
 
 	InstanceScriptRegisterer instanceScriptRegisterer( this->mgr );
 	ReferenceRegistry::visitInstanceEventFunctions( &instanceScriptRegisterer );
+
+	PythonInstanceOOScriptRegisterer ooInstanceScriptRegisterer( this->mgr );
+	ReferenceRegistry::visitInstanceScriptFactories( &ooInstanceScriptRegisterer );
 
 	GOScriptRegisterer goScriptRegisterer( this->mgr );
 	ReferenceRegistry::visitGOEventFunctions( &goScriptRegisterer );

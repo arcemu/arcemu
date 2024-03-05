@@ -38,6 +38,7 @@ HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > ReferenceRegistry::scriptedEff
 HM_NAMESPACE::HM_HASH_MAP< unsigned long, void* > ReferenceRegistry::dummyAuraFunctions;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::creatureScriptFactories;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::gameobjectScriptFactories;
+HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::instanceScriptFactories;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::goGossipScripts;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::itemGossipScripts;
 HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* > ReferenceRegistry::creatureGossipScripts;
@@ -212,6 +213,19 @@ void ReferenceRegistry::registerGameObjectScriptFactory( unsigned int goId, void
 	}
 
 	gameobjectScriptFactories[ goId ] = function;
+}
+
+void ReferenceRegistry::registerInstanceScriptFactory( unsigned int mapId, void* function )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = instanceScriptFactories.find( mapId );
+	if( itr != instanceScriptFactories.end() )
+	{
+		void *oldFactory = itr->second;
+		Py_DECREF( oldFactory );
+		oldFactory = NULL;
+	}
+
+	instanceScriptFactories[ mapId ] = function;
 }
 
 void ReferenceRegistry::registerGOGossipScript( unsigned int goId, void* script )
@@ -467,6 +481,16 @@ void ReferenceRegistry::visitGameObjectScriptFactories( GameObjectScriptFactoryV
 	}
 }
 
+void ReferenceRegistry::visitInstanceScriptFactories( PythonInstanceOOScriptFactoryVisitor *visitor )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = instanceScriptFactories.begin();
+	while( itr != instanceScriptFactories.end() )
+	{
+		visitor->visit( itr->first, itr->second );
+		++itr;
+	}
+}
+
 void ReferenceRegistry::releaseFunctions()
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, GossipFunctionTuple* >::iterator itr;
@@ -685,6 +709,16 @@ void ReferenceRegistry::releaseFunctions()
 
 	gameobjectScriptFactories.clear();
 
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator instanceScriptFactoryIterator = instanceScriptFactories.begin();
+	while( instanceScriptFactoryIterator != instanceScriptFactories.end() )
+	{
+		Py_DECREF( (PyObject*)instanceScriptFactoryIterator->second );
+		instanceScriptFactoryIterator->second = NULL;
+		instanceScriptFactoryIterator++;
+	}
+
+	instanceScriptFactories.clear();
+
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator goGossipScriptIterator = goGossipScripts.begin();
 	while( goGossipScriptIterator != goGossipScripts.end() )
 	{
@@ -778,6 +812,15 @@ void* ReferenceRegistry::getGameObjectScriptFactory( unsigned int goId )
 {
 	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = gameobjectScriptFactories.find( goId );
 	if( itr == gameobjectScriptFactories.end() )
+		return NULL;
+	else
+		return itr->second;
+}
+
+void* ReferenceRegistry::getInstanceScriptFactory( unsigned int mapId )
+{
+	HM_NAMESPACE::HM_HASH_MAP< unsigned int, void* >::iterator itr = instanceScriptFactories.find( mapId );
+	if( itr == instanceScriptFactories.end() )
 		return NULL;
 	else
 		return itr->second;
