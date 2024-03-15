@@ -42,6 +42,16 @@ static PacketHandler PacketHandlers[NUM_MSG_TYPES];
 
 OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
+//===========================================================================
+Player* WorldSession::ActivePlayer()
+{
+	if (!_player || !_player->IsInWorld())
+		return nullptr;
+	// Return the active player object for this session
+	// if that player is loaded in the world... of Warcraft
+	return _player;
+}
+
 WorldSession::WorldSession(uint32 id, string Name, WorldSocket* sock):
 	m_loggingInPlayer(NULL),
 	m_currMsTime(Arcemu::Shared::Util::getMSTime()),
