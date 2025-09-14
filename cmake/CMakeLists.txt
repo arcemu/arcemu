@@ -150,7 +150,7 @@ ELSEIF( CMAKE_GENERATOR MATCHES Visual* )
 	
 	#Check support for unordered_map/set
 	GetCompilerVersion( msvc_version)
-	IF(DEFINED ${msvc_version} AND ${msvc_version} GREATER "1599" )
+	IF(DEFINED msvc_version AND ${msvc_version} GREATER "1599" )
 		add_definitions(-DHAS_CXX0X)
 	ENDIF()
 	
