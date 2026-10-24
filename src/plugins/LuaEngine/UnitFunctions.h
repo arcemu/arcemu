@@ -5138,6 +5138,11 @@ class LuaUnit
 			TEST_PLAYER()
 			const char* channel_name = luaL_checkstring(L, 1);
 			Channel* pChannel = channelmgr.GetChannel(channel_name, TO_PLAYER(ptr));
+			if( pChannel == NULL )
+			{
+				return 0;
+			}
+
 			const char* pw = luaL_optstring(L, 2, pChannel->m_password.c_str());
 
 			if(!ptr || !channel_name || pChannel->HasMember(TO_PLAYER(ptr)) || !pChannel)
