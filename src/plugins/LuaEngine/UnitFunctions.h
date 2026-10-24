@@ -5126,6 +5126,13 @@ class LuaUnit
 				return 0;
 
 			Channel* pChannel = channelmgr.GetChannel(channel_name, TO_PLAYER(ptr));
+			if( pChannel == NULL )
+			{
+				/// The channel doesn't exist, so the player is NOT in the channel
+				lua_pushboolean(L, 0);
+				return 1;
+			}
+
 			if(pChannel->HasMember(TO_PLAYER(ptr))) // Channels: "General", "Trade", "LocalDefense", "GuildRecruitment", "LookingForGroup", (or any custom channel)
 				lua_pushboolean(L, 1);
 			else
