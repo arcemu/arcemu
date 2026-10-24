@@ -6,7 +6,7 @@ assert(type(mod) == "table")
 local info = debug.getinfo(1)
 local src = string.reverse(string.sub(info.source,2,string.len(info.source)))
 local file_sep;
-if(GetPlatform() == "Win32") then
+if(GetPlatform() == "Windows") then
 	file_sep = "\\"
 else
 	file_sep = "/"
