@@ -710,6 +710,7 @@ void Arcemu::Gossip::ClassTrainer::OnSelectOption(Object* pObject, Player* Plr, 
 			Gossip::Menu::Complete(Plr);
 			SendTalentResetConfirmDialogCommand command( Plr );
 			command.execute();
+			Plr->Reset_Talents();
 			}
 			break;
 		case 4:
