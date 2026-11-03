@@ -1702,6 +1702,19 @@ class LuaCreature : public CreatureAIScript
 			RELEASE_LOCK;
 		}
 
+		void OnCastSpell(uint32 iSpellId)
+		{
+			CHECK_BINDING_ACQUIRELOCK;
+
+			sLuaMgr.BeginCall(m_binding->m_functionReferences[ CREATURE_EVENT_ON_CAST_SPELL ] );
+			sLuaMgr.PushUnit( _unit );
+			sLuaMgr.PUSH_INT( CREATURE_EVENT_ON_CAST_SPELL );
+			sLuaMgr.PUSH_UINT( iSpellId );
+			sLuaMgr.ExecuteCall( 3 );
+
+			RELEASE_LOCK;
+		}
+
 		void StringFunctionCall(int fRef)
 		{
 
