@@ -471,7 +471,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
 		qst_giver = GetPlayer()->GetMapMgr()->GetObject(guid);
 	if(qst_giver != NULL)
 	{
-		if(guidtype == HIGHGUID_TYPE_UNIT)
+		if(guidtype == HIGHGUID_TYPE_UNIT || guidtype == HIGHGUID_TYPE_VEHICLE)
 			script = Arcemu::Gossip::Script::GetInterface(TO_CREATURE(qst_giver));
 		else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 			script = Arcemu::Gossip::Script::GetInterface(TO_GAMEOBJECT(qst_giver));
