@@ -6144,5 +6144,13 @@ class LuaUnit
 
 			return 0;
 		}
+
+		static int SetAllowedToEnterCombat(lua_State* L, Unit* ptr)
+		{
+			TEST_UNIT_RET()
+			bool allowed = CHECK_BOOL(L, 1);
+			TO_CREATURE(ptr)->GetAIInterface()->SetAllowedToEnterCombat(allowed);
+			RET_BOOL(true)
+		}
 };
 #endif
