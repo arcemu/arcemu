@@ -6144,5 +6144,47 @@ class LuaUnit
 
 			return 0;
 		}
+
+		static int SetAllowedToEnterCombat(lua_State* L, Unit* ptr)
+		{
+			TEST_UNIT_RET()
+			bool allowed = CHECK_BOOL(L, 1);
+			TO_CREATURE(ptr)->GetAIInterface()->SetAllowedToEnterCombat(allowed);
+			RET_BOOL(true)
+		}
+
+		static int SetAIType(lua_State* L, Unit* ptr)
+		{
+			TEST_UNIT()
+			uint32 type = luaL_checkint(L, 1);
+			if( type )
+			{
+				switch( type )
+				{
+					case 0:
+						ptr->GetAIInterface()->SetAIType(AITYPE_LONER);
+						break;
+					case 1:
+						ptr->GetAIInterface()->SetAIType(AITYPE_AGRO);
+						break;
+					case 2:
+						ptr->GetAIInterface()->SetAIType(AITYPE_SOCIAL);
+						break;
+					case 3:
+						ptr->GetAIInterface()->SetAIType(AITYPE_PET);
+						break;
+					case 4:
+						ptr->GetAIInterface()->SetAIType(AITYPE_TOTEM);
+						break;
+					case 5:
+						ptr->GetAIInterface()->SetAIType(AITYPE_GUARDIAN);
+						break;
+					case 6:
+						ptr->GetAIInterface()->SetAIType(AITYPE_PASSIVE);
+						break;
+				}
+			}
+			return 0;
+		}
 };
 #endif
