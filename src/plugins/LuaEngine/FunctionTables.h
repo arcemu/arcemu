@@ -547,6 +547,8 @@ RegType<Unit> UnitMethods[] =
 	{ "GetWorldStateForZone", &LuaUnit::GetWorldStateForZone },
 	{ "SetWorldStateForZone", &LuaUnit::SetWorldStateForZone },
 	{ "SetWorldStateForPlayer", &LuaUnit::SetWorldStateForPlayer },
+	{ "SetAllowedToEnterCombat", &LuaUnit::SetAllowedToEnterCombat },
+	{ "SetAIType", &LuaUnit::SetAIType },
 	{ NULL, NULL },
 };
 
