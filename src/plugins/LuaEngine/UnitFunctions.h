@@ -6147,7 +6147,7 @@ class LuaUnit
 
 		static int SetAllowedToEnterCombat(lua_State* L, Unit* ptr)
 		{
-			TEST_UNIT_RET()
+			TEST_UNIT_RET();
 			bool allowed = CHECK_BOOL(L, 1);
 			TO_CREATURE(ptr)->GetAIInterface()->SetAllowedToEnterCombat(allowed);
 			RET_BOOL(true)
@@ -6155,7 +6155,7 @@ class LuaUnit
 
 		static int SetAIType(lua_State* L, Unit* ptr)
 		{
-			TEST_UNIT()
+			TEST_UNIT();
 			uint32 type = luaL_checkint(L, 1);
 			if( type )
 			{
