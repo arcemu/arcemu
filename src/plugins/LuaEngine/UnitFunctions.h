@@ -6162,5 +6162,14 @@ class LuaUnit
 			return 0;
 		}
 
+		static int Deactivate(lua_State*  L, Unit* ptr)
+		{
+			TEST_UNIT();
+
+			TO_CREATURE(ptr)->deactivate();
+
+			return 0;
+		}
+
 };
 #endif
