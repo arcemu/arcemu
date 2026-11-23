@@ -6144,5 +6144,32 @@ class LuaUnit
 
 			return 0;
 		}
+
+		static int Activate(lua_State*  L, Unit* ptr)
+		{
+			TEST_UNIT();
+
+			if (lua_gettop(L) != 1)
+				return 0;
+
+			Unit *activator = CHECK_UNIT(L, 1);
+
+			if (activator == NULL)
+				return 0;
+
+			TO_CREATURE(ptr)->activate(activator);
+
+			return 0;
+		}
+
+		static int Deactivate(lua_State*  L, Unit* ptr)
+		{
+			TEST_UNIT();
+
+			TO_CREATURE(ptr)->deactivate();
+
+			return 0;
+		}
+
 };
 #endif
