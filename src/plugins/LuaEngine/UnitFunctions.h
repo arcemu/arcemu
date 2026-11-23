@@ -6156,6 +6156,10 @@ class LuaUnit
 		static int SetAIType(lua_State* L, Unit* ptr)
 		{
 			TEST_UNIT();
+
+			if( lua_gettop( L ) != 1 )
+				return 0;
+			
 			uint32 type = luaL_checkint(L, 1);
 			if( type )
 			{
