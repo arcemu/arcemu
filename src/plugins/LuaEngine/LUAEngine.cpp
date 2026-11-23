@@ -1695,7 +1695,7 @@ class LuaCreature : public CreatureAIScript
 		{
 			CHECK_BINDING_ACQUIRELOCK;
 
-			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_ACTIVATE ] );
+			sLuaMgr.BeginCall( m_binding->m_functionReferences[ CREATURE_EVENT_ON_DEACTIVATE ] );
 			sLuaMgr.PushUnit( _unit );
 			sLuaMgr.ExecuteCall( 1 );
 
